@@ -1,7 +1,12 @@
 import Vue from 'vue';
+import BootstrapVue from 'bootstrap-vue';
 import App from './App.vue';
 import router from './router';
+import './custom.scss';
 
+Vue.use(BootstrapVue);
+
+/* Set this to false to prevent the production tip on Vue startup */
 Vue.config.productionTip = false;
 
 new Vue({
