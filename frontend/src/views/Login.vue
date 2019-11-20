@@ -48,6 +48,7 @@
 
 <script>
 const axios = require('axios');
+const config = require('../../config.json');
 
 export default {
   name: 'login',
@@ -62,19 +63,21 @@ export default {
   methods: {
     onSubmit(evt) {
       evt.preventDefault();
-      axios.get('http://localhost:8081/test', {
+      axios.get(config.server.concat('saltValue'), {
         params: {
-          id: 12345,
+          id: this.form.email,
         },
-      })
-        .then((response) => {
-          alert(JSON.stringify(response));
+      }).then((response) => {
+        // response contiene sale, ora calcola hash
+        alert(JSON.stringify(response));
         // console.log(response);
-        })
-        .catch((error) => {
-          alert(JSON.stringify(error));
-          // console.log(error);
-        });
+      }).then((response) => {
+        // response è token
+        alert(JSON.stringify(response));
+      }).catch((error) => {
+        alert(JSON.stringify(error));
+        // console.log(error);
+      });
       // alert(JSON.stringify(this.form));
     },
   },
