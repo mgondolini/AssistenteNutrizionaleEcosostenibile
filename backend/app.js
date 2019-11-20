@@ -5,9 +5,9 @@ const bodyParser = require('body-parser')
 const cors = require('cors')
 const morgan = require('morgan') 
 
-var User = require('./src/model/userModel')
-var Product = require('./src/model/productModel')
-var Meal = require('./src/model/mealModel')
+var User = require('./src/models/userModel')
+var Product = require('./src/models/productModel')
+var Meal = require('./src/models/mealModel')
 
 const app = express()
 app.use(morgan('combined'))
