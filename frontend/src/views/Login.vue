@@ -47,6 +47,8 @@
 </template>
 
 <script>
+const axios = require('axios');
+
 export default {
   name: 'login',
   data() {
@@ -60,7 +62,20 @@ export default {
   methods: {
     onSubmit(evt) {
       evt.preventDefault();
-      alert(JSON.stringify(this.form));
+      axios.get('http://localhost:8081/test', {
+        params: {
+          id: 12345,
+        },
+      })
+        .then((response) => {
+          alert(JSON.stringify(response));
+        // console.log(response);
+        })
+        .catch((error) => {
+          alert(JSON.stringify(error));
+          // console.log(error);
+        });
+      // alert(JSON.stringify(this.form));
     },
   },
 };
