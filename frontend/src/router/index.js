@@ -15,7 +15,7 @@ const routes = [
   {
     path: '/login',
     name: 'login',
-    component: About, // Login
+    component: Login,
   },
   {
     path: '/info_prod',
