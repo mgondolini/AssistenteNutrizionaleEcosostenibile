@@ -15,8 +15,8 @@ app.use(cors())
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
-mongoose.connect('mongodb://admin:teamASW1920@ds241688.mlab.com:41688/eco-assistant', { useNewUrlParser: true, useUnifiedTopology: true });
-
+mongoose.connect('mongodb://localhost:27017/eco-assistant', { useNewUrlParser: true, useUnifiedTopology: true });
+// 'mongodb://admin:teamASW1920@ds241688.mlab.com:41688/eco-assistant'
 //Get the default connection
 var db = mongoose.connection;
 
