@@ -32,10 +32,12 @@ exports.new_meal = function(req, res) {
 		if (err) res.send(err);
 		else{
 			if(meals==null){
-				this.create_meal(req, res)
+				this.create_meal(req, res);
 				console.log("meals list not found - insterting"); //DEBUG
 			}else{
 				res.json(meals);
+				// aggiungo in coda il pasto
+				this.add_meal(req, meals, res);
 				console.log("meal already found ->"+meals); //DEBUG
 			}	
 		}	
@@ -43,17 +45,30 @@ exports.new_meal = function(req, res) {
 
 };
 
-exports.create_meal = function(req, res){
+exports.create_meal = function(req, res) {
+	//await ????
 	var new_meal = new Meal(req.body);
 	new_meal.save(function(err, meal) { //vedere le differenze con insertOne per id
 	if (err){
 		console.log("error while creating new meal"); //DEBUG
 		res.send(err);
 	} 
-	console.log("meal created"+meal)	//DEBUG
+	console.log("meal created"+meal);	//DEBUG
 	res.status(201).json(meal);
 	});	
 }
+
+exports.add_meal = function(req, meals, res) {
+	var query = meals
+	var meal_to_add = req.body.meals //parsing in modo da pigliare solo meals
+	var projection = {$push: {"meals": meal_to_add}}
+
+	// Sets `name` and unsets all other properties
+	meals.overwrite({$push: {"meals": meal_to_add}});
+	await meals.save();
+}
+
+// TODO update solo della quantità di un componente di un prodotto
 
 
 exports.load_meal = function(req, res){

@@ -26,9 +26,10 @@
                 <label for="timestamp">timestamp</label>
                 <input v-model="new_meal.meals.timestamp" type="text" class="form-control">
             </div>
-        <button @click.prevent="addMeal" type="submit" class="btn btn-primary">Add Meal</button>
+        <button @click.prevent="newMeal" type="submit" class="btn btn-primary">New Meal</button>
         <button @click.prevent="loadMeal" type="submit" class="btn btn-primary">Load</button>
-        <button @click.prevent="updateUser" type="submit" class="btn btn-primary">Update</button>
+        <button @click.prevent="addMeal" type="submit" class="btn btn-primary">Add Meal</button>
+        <button @click.prevent="addMealComponent" type="submit" class="btn btn-primary">addMealComponent</button>
         </form>
         <span> {{ mealList }} </span>
     </div>
@@ -64,7 +65,7 @@ export default {
         .then(response => {this.mealList = response.data})// entra in sessione
         .catch(error => (console.log(error)));
     },
-    addMeal() {
+    newMeal() {
       console.log(this.new_meal);
       this.$http.post('http://localhost:3000/api/meals/', this.new_meal)
         .then(response => this.meals.push(response.data))
@@ -76,6 +77,15 @@ export default {
       this.$http.get(`http://localhost:3000/api/meals/${mealName}`, userInSession)
         .then(response => {this.mealList = response.data})
         .catch(error => (console.log(error)));
+    },
+    addMeal() {
+      //aggiunge un pasto al set
+    },
+    updateMeal() {
+      //update di tutto il pasto (calorie, ecc), da chiamre dentro updateMealComponents
+    },
+    addMealComponent(){
+      //aggiunge prodotti all'array
     },
     init() {
       this.loadMealsList();
