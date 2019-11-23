@@ -1,3 +1,4 @@
 {
-  "debugmode": "emptyMeIfNotInDebugMode"
+  "debugmode": "emptyMeIfNotInDebugMode",
+  "port": "8081"
 }
