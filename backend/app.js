@@ -9,11 +9,20 @@ const morgan = require('morgan');
 // const Product = require('./src/models/productModel');
 // const Meal = require('./src/models/mealModel');
 
+const path = require('path');
+const config = require('./config.json');
+
 const app = express();
 app.use(morgan('combined'));
 app.use(cors());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
+
+global.log = function log(msg) {
+  if (config.debugMode) {
+    console.log(msg);
+  }
+};
 
 mongoose.connect('mongodb://admin:teamASW1920@ds241688.mlab.com:41688/eco-assistant', { useNewUrlParser: true, useUnifiedTopology: true });
 
@@ -22,8 +31,6 @@ const db = mongoose.connection;
 
 // Bind connection to error event (to get notification of connection errors)
 db.on('error', console.error.bind(console, 'MongoDB connection error:'));
-
-const path = require('path');
 
 global.appRoot = path.resolve(__dirname);
 
@@ -36,5 +43,6 @@ app.use((req, res) => {
 });
 
 app.listen(3000, () => {
-  console.log('Node API server started on port 3000');
+  global.log('Node API server started on port 3000');
+  // console.log('');
 });
