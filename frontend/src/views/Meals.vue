@@ -29,7 +29,6 @@
         <button @click.prevent="newMeal" type="submit" class="btn btn-primary">New Meal</button>
         <button @click.prevent="loadMeal" type="submit" class="btn btn-primary">Load</button>
         <button @click.prevent="addMeal" type="submit" class="btn btn-primary">Add Meal</button>
-        <button @click.prevent="addMealComponent" type="submit" class="btn btn-primary">addMealComponent</button>
         </form>
         <span> {{ mealList }} </span>
     </div>
@@ -59,10 +58,14 @@ export default {
   },
   methods: {
     loadMealsList() {
-      const userInSession = { username: 'asd' };
-      console.log(userInSession);
-      this.$http.get('http://localhost:3000/api/meals/', userInSession)
-        .then(response => {this.mealList = response.data})// entra in sessione
+      // body creato da me per fare una prova (nel mio db locale )
+      const body = { username: 'asd' };
+      console.log(body);
+
+      this.$http.get('http://localhost:3000/api/meals/', body)
+        .then((response) => {
+          this.mealList = response.data;
+        })
         .catch(error => (console.log(error)));
     },
     newMeal() {
@@ -73,26 +76,26 @@ export default {
     },
     loadMeal() {
       const mealName = 'asd';
-      const userInSession = { username: 'asd' };
-      this.$http.get(`http://localhost:3000/api/meals/${mealName}`, userInSession)
-        .then(response => {this.mealList = response.data})
+      const user = { username: 'asd' };
+      this.$http.get(`http://localhost:3000/api/meals/${mealName}`, user)
+        .then((response) => { this.mealList = response.data; })
         .catch(error => (console.log(error)));
     },
     addMeal() {
-      //aggiunge un pasto al set
+      // aggiunge un pasto al set
     },
     updateMeal() {
-      //update di tutto il pasto (calorie, ecc), da chiamre dentro updateMealComponents
+      // update di tutto il pasto (calorie, ecc), da chiamre dentro updateMealComponents
     },
-    addMealComponent(){
-      //aggiunge prodotti all'array
+    addMealComponent() {
+      // aggiunge prodotti all'array
     },
     init() {
       this.loadMealsList();
     },
   },
   mounted() {
-    this.init();
+    this.loadMealsList();
   },
 };
 </script>
