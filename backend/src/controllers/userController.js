@@ -30,6 +30,7 @@ exports.load_user = function (req, res) {
       res.status(404).send({ description: 'user not found' });
       console.log('user not found'); // DEBUG
     } else {
+      res.status(200);
       res.json(user);
       console.log(`found user ->${user.username}`); // DEBUG
     }

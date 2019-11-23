@@ -71,21 +71,14 @@ export default {
   methods: {
     onSubmit(evt) {
       evt.preventDefault();
-      axios.get(config.server.concat('saltValue'), {
-        params: {
-          id: this.form.email,
-        },
-      }).then((response) => {
-        // response contiene sale, ora calcola hash
-        alert(JSON.stringify(response));
-        // console.log(response);
-      }).then((response) => {
-        // response è token
-        alert(JSON.stringify(response));
-      }).catch((error) => {
-        alert(JSON.stringify(error));
-        // console.log(error);
-      });
+      axios.get(config.server.concat(`api/user/${this.form.password}`))
+        .then((response) => {
+          alert(JSON.stringify(response));
+          console.log(response);
+        }).catch((error) => {
+          alert(JSON.stringify(error));
+          // console.log(error);
+        });
       // alert(JSON.stringify(this.form));
     },
   },
