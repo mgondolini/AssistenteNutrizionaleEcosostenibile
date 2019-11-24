@@ -6,10 +6,12 @@ var Meal = mongoose.model('Meals');
 exports.load_meals_list = function(req, res){
 	console.log("looking for meal...") //DEBUG
 
-	console.log(JSON.stringify(req.params.name)) //DEBUG
-	console.log(JSON.stringify(req.body.username)) //DEBUG
+	
+	console.log(req.query);
+	//console.log(JSON.stringify(req.params)) //DEBUG
+	// console.log(JSON.stringify(req.body)) //DEBUG
 
-	var query = req.body.username;
+	var query = req.query;
 	// var query = {'username':'asd'}; //così funziona, req.body è vuoto
 
 	Meal.find(query, function(err, meals) {
@@ -22,7 +24,7 @@ exports.load_meals_list = function(req, res){
 				console.log("meal not found"); //DEBUG
 			}else{
 				res.json(meals);
-				console.log("found meal list->"+meals); //DEBUG
+				// console.log("found meal list->"+meals); //DEBUG
 			}	
 		}	
 	});
@@ -94,13 +96,14 @@ exports.add_meal = function(meal, userMeals, res) {
 // TODO update solo della quantità di un componente di un prodotto
 
 exports.load_meal = function(req, res){
-	console.log("looking for meal...") //DEBUG
+	console.log("looking for meal to load...") //DEBUG
 
-	console.log(JSON.stringify(req.params.name)) //DEBUG
-	console.log(JSON.stringify(req.body)) //DEBUG
+	console.log("aho"+JSON.stringify(req.query))
+	console.log(JSON.stringify(req.query.username)) //DEBUG
+	console.log(JSON.stringify(req.query.mealName)) //DEBUG
 
-	var query = req.body
-	var projection = {"meals": {$elemMatch: {'meal_name': req.params.name}}}
+	var query = { 'username' : req.query.username };
+	var projection = {"meals": {$elemMatch: {'meal_name': req.query.mealName}}}
 
 	Meal.find(query, projection, function(err, meal) {
 		if (err){

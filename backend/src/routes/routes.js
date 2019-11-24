@@ -18,16 +18,13 @@ module.exports = function(app) {
         .get(productController.load_product);
     
     
-    // TODO: meals routes da aggiornare eventualmente
-    app.route('/api/meals')
-        .get(mealController.load_meals_list)
-        .post(mealController.new_meal);
+    app.route('/api/meal/')
+        .get(mealController.load_meal);
 
-    // app.route('/api/meals/:username')
-    //     .get(mealController.load_meals_list)
-    
-    app.route('/api/meals/:name')
-        .get(mealController.load_meal) 
+    // TODO: meals routes da aggiornare eventualmente
+    app.route('/api/meals/')
+        .get(mealController.load_meals_list)
+        .post(mealController.create_meal);
         // .put(mealController.update_meal)
 
 };
