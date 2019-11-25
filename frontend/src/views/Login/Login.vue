@@ -56,6 +56,7 @@
 
 <script>
 const axios = require('axios');
+const crypto = require('crypto');
 const config = require('../../../config.json');
 
 export default {
@@ -71,6 +72,23 @@ export default {
   methods: {
     onSubmit(evt) {
       evt.preventDefault();
+      const psw = this.form.password;
+      axios.get(config.server.concat('api/publickey'))
+        .then((publicKey)=>{
+          const buffer = Buffer.from(psw);
+          const encrypted = crypto.publicEncrypt(publicKey, buffer);
+          const enc = encrypted.toString("base64");
+          axios.post(config.server.concat('api/auth/'.concat(enc)))
+            .then((authToken)=>{
+              // TODO test if token is visible globally
+              this.$token = authToken;
+            }).catch((error)=>{
+              // TODO manage error generating token
+            })
+        }).catch((error)=>{
+          // TODO manage error getting public key
+        });
+      /*
       axios.get(config.server.concat(`api/user/${this.form.password}`))
         .then((response) => {
           alert(JSON.stringify(response));
@@ -79,6 +97,7 @@ export default {
           alert(JSON.stringify(error));
           // console.log(error);
         });
+      */
       // alert(JSON.stringify(this.form));
     },
   },
