@@ -12,11 +12,13 @@
             <div class="form-group">
                 <label for="meal_num">comps</label>
                 <label for="barcode">barcode</label>
-                <input v-model="new_meal.meals.comps.barcode" type="text" class="form-control">
+                <input v-model="new_meal.meals.components.barcode"
+                  type="text" class="form-control">
             </div>
             <div class="form-group">
                 <label for="quantity">quantity</label>
-                <input v-model="new_meal.meals.comps.quantity" type="text" class="form-control">
+                <input v-model="new_meal.meals.components.quantity"
+                  type="text" class="form-control">
             </div>
             <div class="form-group">
                 <label for="calories_tot">calories_tot</label>
@@ -30,7 +32,9 @@
         <button @click.prevent="loadMeal" type="submit" class="btn btn-primary">Load</button>
         <button @click.prevent="addMeal" type="submit" class="btn btn-primary">Add Meal</button>
         <button @click.prevent="loadMealsList"
-        type="submit" class="btn btn-primary">Load Meals</button>
+          type="submit" class="btn btn-primary">Load Meals</button>
+        <button @click.prevent="addMealComponent"
+          type="submit" class="btn btn-primary">Component</button>
         </form>
         <span> {{ mealList }} </span>
     </div>
@@ -46,7 +50,7 @@ export default {
         username: '',
         meals: {
           meal_name: '',
-          comps:
+          components:
             {
               barcode: '',
               quantity: 0,
@@ -86,14 +90,17 @@ export default {
         .then((response) => { this.mealList = response.data; })
         .catch(error => (console.log(error)));
     },
-    addMeal() {
-      // aggiunge un pasto al set
-    },
-    updateMeal() {
-      // update di tutto il pasto (calorie, ecc), da chiamre dentro updateMealComponents
-    },
     addMealComponent() {
-      // aggiunge prodotti all'array
+      // aggiunge prodotti all'array del pasto
+      const paramList = {
+        username: this.new_meal.username,
+        mealName: this.new_meal.meals.meal_name,
+        components: this.new_meal.meals.components,
+      };
+      console.log(paramList);
+      this.$http.put(`http://localhost:8081/api/${paramList.username}/meals/${paramList.mealName}/components`, paramList)
+        .then((response) => { this.mealList = response.data; })
+        .catch(error => (console.log(error)));
     },
     init() {
       this.loadMealsList();

@@ -24,7 +24,8 @@ module.exports = function(app) {
     app.route('/api/:user/meals/:mealName')
         .get(mealController.load_meal);
 
-        // .put(mealController.update_meal)
+    app.route('/api/:user/meals/:mealName/components')
+        .put(mealController.new_component)
 
 };
     

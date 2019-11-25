@@ -34,4 +34,5 @@ var UserMealSchema = new Schema({
 
 
 module.exports = mongoose.model('Meals', UserMealSchema, 'Meals');
+module.exports = mongoose.model('MealComponents', MealComponentSchema);
 
