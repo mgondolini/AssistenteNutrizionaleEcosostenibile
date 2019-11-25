@@ -5,14 +5,9 @@ var Meal = mongoose.model('Meals');
 
 exports.load_meals_list = function(req, res){
 	console.log("looking for meal...") //DEBUG
-
-	
-	console.log(req.query);
-	//console.log(JSON.stringify(req.params)) //DEBUG
-	// console.log(JSON.stringify(req.body)) //DEBUG
+	console.log(req.query); //DEBUG
 
 	var query = req.query;
-	// var query = {'username':'asd'}; //così funziona, req.body è vuoto
 
 	Meal.find(query, function(err, meals) {
 		if (err){
@@ -24,7 +19,7 @@ exports.load_meals_list = function(req, res){
 				console.log("meal not found"); //DEBUG
 			}else{
 				res.json(meals);
-				// console.log("found meal list->"+meals); //DEBUG
+				console.log("found meal list->"+meals); //DEBUG
 			}	
 		}	
 	});
@@ -36,27 +31,25 @@ exports.load_meals_list = function(req, res){
 // se non c'è creo il nuovo pasto, altrimenti devo chiamare una funzione di update
 exports.new_meal = function(req, res) {
 	var query = {'username': req.body.username};
-	var meal = {'meals:': req.body.meals};
 
-	console.log(query+"--"+meal);
+	console.log(JSON.stringify(query));
 	Meal.find(query, function(err, userMeals) {
 		if (err) res.send(err);
 		else{
-			if(userMeals==null){
-				this.create_meal(req, res);
+			if(userMeals.length == 0){
+				create_meal(req, res);
 				console.log("meal not found - insterting"); //DEBUG
 			}else{
 				// aggiungo in coda il pasto
-				res.json(userMeals);
-				// this.add_meal(meal, userMeals, res);
+				add_meal(req, userMeals, res);
 				console.log("meal already found ->"+userMeals); //DEBUG
 			}	
 		}	
 	});
-
 };
 
-exports.create_meal = function(req, res) {
+
+function create_meal(req, res) {
 	var new_meal = new Meal(req.body);
 	new_meal.save(function(err, meal) { //vedere le differenze con insertOne per id
 		if (err){
@@ -68,10 +61,13 @@ exports.create_meal = function(req, res) {
 	});	
 }
 
-exports.add_meal = function(meal, userMeals, res) {
-	var query = userMeals
-	var meal_to_add = meal//parsing in modo da pigliare solo meals
-	var projection = {$push: {"meals": meal_to_add}}
+
+function add_meal(req, userMeals, res) {
+	var query = userMeals;
+	var meal_to_add = req.body.meals;
+	var projection = {$push: {'meals': meal_to_add}}
+
+	console.log("update \n"+JSON.stringify(meal_to_add)+"\n-"+JSON.stringify(projection))
 
 	// Sets `name` and unsets all other properties
 	// userMeals.overwrite(projection);
@@ -102,7 +98,7 @@ exports.load_meal = function(req, res){
 	console.log(JSON.stringify(req.query.username)) //DEBUG
 	console.log(JSON.stringify(req.query.mealName)) //DEBUG
 
-	var query = { 'username' : req.query.username };
+	var query = {'username': req.query.username};
 	var projection = {"meals": {$elemMatch: {'meal_name': req.query.mealName}}}
 
 	Meal.find(query, projection, function(err, meal) {

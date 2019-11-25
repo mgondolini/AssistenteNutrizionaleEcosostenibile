@@ -17,14 +17,13 @@ module.exports = function(app) {
     app.route('/api/product/:barcode')
         .get(productController.load_product);
     
+    app.route('/api/:user/meals/')
+        .get(mealController.load_meals_list)
+        .post(mealController.new_meal);
     
-    app.route('/api/meal/')
+    app.route('/api/:user/meals/:mealName')
         .get(mealController.load_meal);
 
-    // TODO: meals routes da aggiornare eventualmente
-    app.route('/api/meals/')
-        .get(mealController.load_meals_list)
-        .post(mealController.create_meal);
         // .put(mealController.update_meal)
 
 };

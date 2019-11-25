@@ -56,7 +56,6 @@ export default {
         },
       },
       mealList: '',
-      user: 'asd',
     };
   },
   methods: {
@@ -65,7 +64,7 @@ export default {
       const param = { username: this.new_meal.username };
       console.log(param);
 
-      this.$http.get('http://localhost:8081/api/meals', { params: param })
+      this.$http.get(`http://localhost:8081/api/${param.username}/meals`, { params: param })
         .then((response) => {
           this.mealList = response.data;
         })
@@ -73,7 +72,7 @@ export default {
     },
     newMeal() {
       console.log(this.new_meal);
-      this.$http.post('http://localhost:8081/api/meals', this.new_meal)
+      this.$http.post(`http://localhost:8081/api/${this.new_meal.username}/meals`, this.new_meal)
         .then(response => this.meals.push(response.data))
         .catch(error => (console.log(error)));
     },
@@ -83,7 +82,7 @@ export default {
         mealName: this.new_meal.meals.meal_name,
       };
       console.log(paramList);
-      this.$http.get('http://localhost:8081/api/meal', { params: paramList })
+      this.$http.get(`http://localhost:8081/api/${paramList.username}/meals/${paramList.mealName}`, { params: paramList })
         .then((response) => { this.mealList = response.data; })
         .catch(error => (console.log(error)));
     },
