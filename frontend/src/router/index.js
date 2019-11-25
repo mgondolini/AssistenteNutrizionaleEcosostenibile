@@ -3,7 +3,7 @@ import VueRouter from 'vue-router';
 import Home from '../views/Home/Home.vue';
 import About from '../views/About.vue';
 import Login from '../views/Login/Login.vue';
-import CalculateMeal from '../views/Graphics/CalculateMeal.vue';
+import CalculateMeal from '../views/CalculateMeal/CalculateMeal.vue';
 
 Vue.use(VueRouter);
 

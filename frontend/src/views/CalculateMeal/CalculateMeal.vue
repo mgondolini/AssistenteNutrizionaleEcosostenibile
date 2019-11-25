@@ -1,9 +1,7 @@
 <template>
-  <div class="hello">
+  <div class="container">
     <h1>{{ msg }}</h1>
-    <p>
-      Hello
-    </p>
+    <h3>Composizione del tuo pasto</h3>
 
     <router-link to='login' class="wrapper-inner-tab-backgrounds-first"
       v-if='this.$isLogged === false'
