@@ -126,16 +126,20 @@ add_meal = (req, userMeals, res) => {
  */
 exports.new_component = async (req, res) => {
 
-	var query = {'username': req.body.username, 'meals.meal_name': req.body.mealName};
+	var query = {'username': req.body.username};
 	 
-	await Meal.findOne(query)
+	await Meal.find(query)
 	.exec()
     .then((doc) => {
 		if(doc == null) 
 			res.status(404).send({description: 'Meals not found for user '+ req.body.username});
-		else{	
-			doc.meals[0].components.push(req.body.components);
-			doc.save((err) => { if (err) res.send(err); });
+		else{
+			console.log("doc"+doc)
+			doc[0].meals.forEach(d => {
+				if(d.meal_name === req.body.mealName)
+					d.components.push(req.body.components);
+			});	
+			doc[0].save((err) => { if (err) res.send(err); });
 			res.status(201).json(doc);
 		}
 		//update delle calorie tot ecc
