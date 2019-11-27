@@ -6,52 +6,49 @@ var Meal = mongoose.model('Meals');
 /**
  * Loads all the meals for a given user
  */
-exports.load_meals_list = (req, res) => {
+exports.load_meals_list = async (req, res) => {
 	console.log("looking for meal...") //DEBUG
 	console.log(req.query); //DEBUG
 
 	var query = req.query;
 
-	Meal.find(query, function(err, userMeals) {
-		if (err){
-			console.log("error while loading meal"); //DEBUG
-			res.send(err);
+	await Meal.findOne(query)
+	.exec()
+	.then((doc) => {
+		if(doc.length == 0){
+			res.status(404).send({description: 'Meals not found for user '+ req.query.username});
+			console.log('Meals not found for user '+ req.query.username); //DEBUG
 		}else{
-			if(userMeals==null){
-				res.status(404).send({description: 'meal not found'});
-				console.log("meal not found"); //DEBUG
-			}else{
-				res.json(userMeals[0]);
-				console.log("found meals list->"+userMeals); //DEBUG
-			}	
+			res.status(200).json(doc);
+			console.log('Meals list for user '+ req.query.username+":\n"+doc); //DEBUG
 		}	
-	});
+	})
+	.catch((err) => res.send(err));
+
 };
 
 
 /**
  * Loads a specific meal of a user
  */
-exports.load_meal = (req, res) => {
+exports.load_meal = async (req, res) => {
 	console.log("looking for meal to load...") //DEBUG
 
-	var query = {'username': req.query.username};
-	var projection = {"meals": {$elemMatch: {'meal_name': req.query.mealName}}}
+	var query = { 'username' : req.query.username };
+	var projection = { 'username' : req.query.username, 'meals' : { $elemMatch: { 'meal_name': req.query.mealName }}}
 
-	Meal.find(query, projection, function(err, meal) {
-		if (err){
-			console.log("error while loading meal"); //DEBUG
-			res.send(err);
+	await Meal.findOne(query, projection)
+	.exec()
+	.then((doc) => {
+		if(doc.length == 0){
+			res.status(404).send({description: 'Meal not found for user '+ req.query.username});
+			console.log('Meal not found for user '+ req.query.username); //DEBUG
 		}else{
-			if(meal==null){ //migliorare il controllo
-				res.status(404).send({description: 'meal not found'});
-				console.log("meal not found"); //DEBUG
-			}else{
-				res.json(meal);
-				console.log("found meal ->"+meal); //DEBUG
-			}	
+			res.status(200).json(doc);
+			console.log('Meal found for user '+ req.query.username+":\n"+doc); //DEBUG
 		}	
-	});
+	})
+	.catch((err) => res.send(err));
 };
 
 
@@ -104,7 +101,7 @@ exports.new_meal = (req, res) => {
  * @param {*} userMeals 
  * @param {*} res 
  */
-add_meal = (req, userMeals, res) =>{
+add_meal = (req, userMeals, res) => {
 
 	//TODO: GESTIONE RES, CONTROLLO SE ESISTE GIà UN update_meal CON LO STESSO NOME (OPPURE usare un id per evitarlo)
 	var meal_to_add = req.body.meals; 
@@ -134,9 +131,13 @@ exports.new_component = async (req, res) => {
 	await Meal.findOne(query)
 	.exec()
     .then((doc) => {
-        doc.meals[0].components.push(req.body.components);
-        doc.save((err) => { if (err) throw err; });
-		res.send(doc);
+		if(doc == null) 
+			res.status(404).send({description: 'Meals not found for user '+ req.body.username});
+		else{	
+			doc.meals[0].components.push(req.body.components);
+			doc.save((err) => { if (err) res.send(err); });
+			res.status(201).json(doc);
+		}
 		//update delle calorie tot ecc
     })
     .catch((err) => res.send(err));
