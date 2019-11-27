@@ -39,6 +39,9 @@ const routes = require('./src/routes/routes');
 
 routes(app);
 
+// NON ESEGUIRE! Riscrive coppia di chiavi
+// require('./src/controllers/keyController').genKeyPair();
+
 app.use((req, res) => {
   res.status(404).send({ url: `${req.originalUrl} not found` });
 });
