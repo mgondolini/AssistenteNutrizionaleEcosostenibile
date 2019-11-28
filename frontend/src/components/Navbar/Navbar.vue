@@ -35,11 +35,10 @@
 <script>
 export default {
   name: 'navbar',
-
   data() {
     return {
       navhome: 'Eco-assistant',
-      isLogged: false,
+      isLogged: this.$isLogged,
     };
   },
   methods: {

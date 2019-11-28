@@ -1,75 +1,88 @@
-const mongoose = require('mongoose');
+var mongoose = require('mongoose');
+var User = mongoose.model('User');
 
-const User = mongoose.model('User');
-
-// exports.show_index = function(req, res) {
-// res.sendFile(appRoot  + '/www/index.html');
-// };
-
-exports.create_user = function (req, res) {
-  const newUser = new User(req.body);
-  newUser.save((err, user) => {
-    if (err) {
-      console.log('error while creating new user'); // DEBUG
-      res.send(err);
-    }
-    console.log(`user crated${user}`); // DEBUG
-    res.status(201).json(user);
-  });
+/**
+ * Creates a new user
+ */
+exports.create_user = (req, res) => {
+	var new_user = new User(req.body);
+	new_user.save((err, user) => {
+	  if (err){
+		  console.log("Error while creating new user"); //DEBUG
+		  res.send(err);
+	  } 
+	  console.log("user crated"+user)	//DEBUG
+	  res.status(201).json(user);
+	});
 };
 
-exports.load_user = function (req, res) {
-  console.log(`looking for user: ${req.params.username}`); // DEBUG
-  const query = { username: req.params.username };
 
-  User.findOne(query, (err, user) => {
-    if (err) {
-      console.log('error while loading user'); // DEBUG
-      res.send(err);
-    } else if (user == null) {
-      res.status(404).send({ description: 'user not found' });
-      console.log('user not found'); // DEBUG
-    } else {
-      res.status(200);
-      res.json(user);
-      console.log(`found user ->${user.username}`); // DEBUG
-    }
-  });
+/**
+ * Loads a given user
+ */
+exports.load_user = async (req, res) => {
+	console.log("looking for user: "+req.params.username) //DEBUG
+	var query = {username: req.params.username};
+
+	await User.findOne(query)
+	.exec()
+	.then((user) => {
+		if(user == null){
+			res.status(404).send({description: 'User not found'});
+			console.log("User " + req.params.username + " not found"); //DEBUG
+		}else{
+			res.status(200).json(user);
+			console.log("Found user ->" + user.username); //DEBUG
+		}	
+	})
+	.catch((err) => res.send(err));
 };
 
-exports.update_user = function (req, res) {
-  console.log(`update user: ${req.params.username}`);
-  const query = { username: req.params.username }; // forse da cambiare, passare nome utente
-  const update = req.body; // passare il json utente coi campi aggiornati
 
-  User.findOneAndUpdate(query, update, { new: true }, (err, user) => {
-    if (err) {
-      res.send(err);
-      console.log('error while updating user'); // DEBUG
-    } else if (user == null) {
-      res.status(404).send({ description: 'User not found' });
-      console.log('user not found'); // DEBUG
-    } else {
-      res.json(user);
-      console.log('user updated'); // DEBUG
-    }
-  });
+/**
+ * Updates a user
+ */
+exports.update_user = async (req, res) => {
+	console.log("Update user: "+ req.params.username); //DEBUG
+
+	var query = { 'username': req.params.username }; //forse da cambiare, passare nome utente
+	var update = req.body; //passare il json utente coi campi aggiornati
+
+	await User.findOneAndUpdate(query, update, {new: true})
+	.exec()
+	.then((user) => {
+		if(user == null){
+			res.status(404).send({description: 'User not found'});
+			console.log("User" + req.params.username + "not found"); //DEBUG
+		}
+		else{
+			res.json(user);
+			console.log("user updated"); //DEBUG
+		}
+	})
+	.catch((err) => res.send(err));
 };
 
-exports.delete_user = function (req, res) {
-  console.log(`deleting user: ${req.params.username}`); // DEBUG
-  const query = { username: req.params.username };
 
-  User.deleteOne(query, (err, user) => {
-    if (err) {
-      res.send(err);
-      console.log('error while deleting user'); // DEBUG
-    } else if (user == null) {
-      res.status(404).send({ description: 'User not found' });
-      console.log('user not found'); // DEBUG
-    } else {
-      res.json({ message: 'User successfully deleted' });
-      console.log('user deleted'); // DEBUG
-    }
-  });
+/**
+ * Deletes a user
+ */
+exports.delete_user = async (req, res) => {
+	
+	console.log("Deleting user: "+req.params.username); //DEBUG
+	var query = { 'username' : req.params.username };
+	
+	await User.deleteOne(query)
+	.exec()
+	.then((user) => {
+		if(user == null){
+			res.status(404).send({description: 'User not found'});
+			console.log("user not found"); //DEBUG
+		}
+		else{
+			res.json({ message: 'User successfully deleted' });
+			console.log("User deleted"); //DEBUG
+		}
+	})
+	.catch((err) => res.send(err));
 };
