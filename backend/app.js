@@ -14,7 +14,6 @@ app.use(cors());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
-<<<<<<< HEAD
 global.log = function log(msg) {
   if (config.debugmode) {
     console.log(msg);
@@ -22,16 +21,11 @@ global.log = function log(msg) {
 };
 
 mongoose.connect('mongodb://admin:teamASW1920@ds241688.mlab.com:41688/eco-assistant', { useNewUrlParser: true, useUnifiedTopology: true });
+mongoose.set('useFindAndModify', false);
 
 // Get the default connection
 const db = mongoose.connection;
-=======
-mongoose.connect('mongodb://localhost:27017/eco-assistant', { useNewUrlParser: true, useUnifiedTopology: true });
-mongoose.set('useFindAndModify', false);
-// 'mongodb://admin:teamASW1920@ds241688.mlab.com:41688/eco-assistant'
-//Get the default connection
 var db = mongoose.connection;
->>>>>>> ModelRouteController
 
 // Bind connection to error event (to get notification of connection errors)
 db.on('error', console.error.bind(console, 'MongoDB connection error:'));
@@ -51,13 +45,7 @@ app.use((req, res) => {
   res.status(404).send({ url: `${req.originalUrl} not found` });
 });
 
-<<<<<<< HEAD
 app.listen(config.port, () => {
   global.log('Node API server started on port '.concat(config.port));
   // console.log('Node API server started on port '.concat(config.port));
 });
-=======
-app.listen(8081, function () {
-  console.log('Node API server started on port 8081');
-});
->>>>>>> ModelRouteController
