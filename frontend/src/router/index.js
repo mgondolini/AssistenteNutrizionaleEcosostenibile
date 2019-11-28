@@ -3,6 +3,7 @@ import VueRouter from 'vue-router';
 import Home from '../views/Home/Home.vue';
 import About from '../views/About.vue';
 import Login from '../views/Login/Login.vue';
+import LastMeals from '../views/LastMeals/LastMeals.vue';
 import CalculateMeal from '../views/CalculateMeal/CalculateMeal.vue';
 
 
@@ -32,7 +33,7 @@ const routes = [
   {
     path: '/last_meals',
     name: 'last_meals',
-    component: About,
+    component: LastMeals,
   },
   {
     path: '/new_meal',

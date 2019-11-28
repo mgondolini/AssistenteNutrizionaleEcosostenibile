@@ -24,7 +24,7 @@
                 <b-dropdown-item href="profile">Il mio profilo</b-dropdown-item>
                 <b-dropdown-item href="last_meals">I miei ultimi pasti</b-dropdown-item>
                 <b-dropdown-item href="new_meal">Inserisci nuovo pasto</b-dropdown-item>
-                <b-dropdown-item @click.prevent="singout">Esci</b-dropdown-item>
+                <b-dropdown-item @click.prevent="signout">Esci</b-dropdown-item>
             </b-nav-item-dropdown>
           </b-navbar-nav>
         </b-collapse>
