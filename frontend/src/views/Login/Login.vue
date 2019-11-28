@@ -7,7 +7,7 @@
       tag="article"
       class="cardLogin"
     >
-      <img src="../../assets/ecology.png"/>
+      <img class="loginImg" src="../../assets/ecology.png"/>
       <b-form @submit="onSubmit" class="formIns">
         <div class="grey-text">
           <b-form-group
