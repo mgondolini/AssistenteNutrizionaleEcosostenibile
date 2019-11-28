@@ -2,12 +2,18 @@ const crypto = require('crypto');
 const fs = require('fs');
 const config = require('../../config.json');
 
-exports.getPublicKey = function getPublicKey(_req, res) {
-  res.json(fs.readFileSync(config.publicKeyFile, { encoding: 'utf8' }));
+exports.getPrivateKey = function getPrivateKey() {
+  const keyEnc = fs.readFileSync(config.privateKeyFile, { encoding: 'utf8' });
+  return crypto.createPrivateKey({
+    key: keyEnc,
+    type: 'pkcs8',
+    format: 'pem',
+    passphrase: config.privateKeyPass,
+  });
 };
 
-exports.getPrivateKey = function getPrivateKey() {
-
+exports.getPublicKey = function getPublicKey(_req, res) {
+  res.json(fs.readFileSync(config.publicKeyFile, { encoding: 'utf8' }));
 };
 
 exports.genKeyPair = function genKeyPair() {
