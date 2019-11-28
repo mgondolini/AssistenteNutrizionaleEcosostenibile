@@ -5,7 +5,7 @@ var MealComponentSchema = new Schema({
     barcode: String,
     // product_name: String,
     quantity: Number
-});
+}, { _id : false });
 
 var MealSchema = new Schema({
     meal_name: String,
@@ -25,7 +25,7 @@ var MealSchema = new Schema({
     // carbon_footprint_tot: Number,
     // water_footprint_tot: Number, 
     timestamp: String
-});
+}, { _id : false });
 
 var UserMealSchema = new Schema({
     username: String,
