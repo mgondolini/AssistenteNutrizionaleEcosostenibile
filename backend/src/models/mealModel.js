@@ -33,8 +33,3 @@ const UserMealSchema = new Schema({
 });
 
 module.exports = mongoose.model('Meals', UserMealSchema, 'Meals');
-<<<<<<< HEAD
-module.exports = mongoose.model('MealComponents', MealComponentSchema);
-
-=======
->>>>>>> development
