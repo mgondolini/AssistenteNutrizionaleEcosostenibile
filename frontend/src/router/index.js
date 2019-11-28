@@ -3,6 +3,7 @@ import VueRouter from 'vue-router';
 import Home from '../views/Home/Home.vue';
 import About from '../views/About.vue';
 import Login from '../views/Login/Login.vue';
+import ProductInfo from '../views/ProductInfo/ProductInfo.vue';
 
 Vue.use(VueRouter);
 
@@ -19,8 +20,8 @@ const routes = [
   },
   {
     path: '/info_prod',
-    name: 'about',
-    component: About,
+    name: 'productInfo',
+    component: ProductInfo,
   },
   {
     path: '/profile',
