@@ -3,6 +3,7 @@ import VueRouter from 'vue-router';
 import Home from '../views/Home/Home.vue';
 import About from '../views/About.vue';
 import Login from '../views/Login/Login.vue';
+import CalculateMeal from '../views/CalculateMeal/CalculateMeal.vue';
 
 Vue.use(VueRouter);
 
@@ -36,6 +37,11 @@ const routes = [
     path: '/new_meal',
     name: 'new_meal',
     component: About,
+  },
+  {
+    path: '/calculate_meal_composition',
+    name: 'calculate_meal_composition',
+    component: CalculateMeal,
   },
 ];
 

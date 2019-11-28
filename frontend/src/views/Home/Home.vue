@@ -2,19 +2,19 @@
   <div class="homepage">
     <div class="bg-img"></div>
     <div class="page">
-      <HelloWorld msg="HOMEPAGE"/>
+      <Homepage msg="Assistente Nutrizionale Ecosostenibile"/>
     </div>
   </div>
 </template>
 
 <script>
 // @ is an alias to /src
-import HelloWorld from '@/components/HelloWorld.vue';
+import Homepage from '@/components/Homepage/Homepage.vue';
 
 export default {
   name: 'home',
   components: {
-    HelloWorld,
+    Homepage,
   },
 };
 </script>
