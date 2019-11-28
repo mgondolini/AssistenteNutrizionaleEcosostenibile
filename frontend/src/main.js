@@ -10,7 +10,11 @@ Vue.use(BootstrapVue);
 
 /* Set this to false to prevent the production tip on Vue startup */
 Vue.config.productionTip = false;
+
 Vue.prototype.$http = Axios;
+
+Vue.prototype.$isLogged = false;
+
 
 new Vue({
   router,

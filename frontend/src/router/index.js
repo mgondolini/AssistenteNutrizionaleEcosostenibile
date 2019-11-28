@@ -1,7 +1,10 @@
 import Vue from 'vue';
 import VueRouter from 'vue-router';
 import Home from '../views/Home/Home.vue';
-import Meals from '../views/Meals.vue';
+import About from '../views/About.vue';
+import Login from '../views/Login/Login.vue';
+import CalculateMeal from '../views/CalculateMeal/CalculateMeal.vue';
+
 
 Vue.use(VueRouter);
 
@@ -12,19 +15,35 @@ const routes = [
     component: Home,
   },
   {
-    path: '/meals',
-    name: 'meals',
-    component: Meals,
+    path: '/about',
+    path: '/login',
+    name: 'login',
+    component: Login,
   },
   {
-    path: '/about',
+    path: '/info_prod',
     name: 'about',
-    // route level code-splitting
-    // this generates a separate chunk (about.[hash].js) for this route
-    // which is lazy-loaded when the route is visited.
-    component() {
-      return import(/* webpackChunkName: "about" */ '../views/About.vue');
-    },
+    component: About,
+  },
+  {
+    path: '/profile',
+    name: 'profile',
+    component: About,
+  },
+  {
+    path: '/last_meals',
+    name: 'last_meal',
+    component: About,
+  },
+  {
+    path: '/new_meal',
+    name: 'new_meal',
+    component: About,
+  },
+  {
+    path: '/calculate_meal_composition',
+    name: 'calculate_meal_composition',
+    component: CalculateMeal,
   },
 ];
 

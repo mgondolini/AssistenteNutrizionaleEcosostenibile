@@ -1,6 +1,5 @@
-var mongoose = require('mongoose');
-var Meal = mongoose.model('Meals');
-
+const mongoose = require('mongoose');
+const Meal = mongoose.model('Meals');
 
 /**
  * Loads all the meals for a given user
@@ -22,7 +21,6 @@ exports.load_meals_list = async (req, res) => {
 		}	
 	})
 	.catch((err) => res.send(err));
-
 };
 
 
@@ -55,6 +53,7 @@ exports.load_meal = async (req, res) => {
  */
 exports.new_meal = async (req, res) => {
 	var query = {'username': req.body.username};
+
 
 	await Meal.findOne(query)
 	.exec()

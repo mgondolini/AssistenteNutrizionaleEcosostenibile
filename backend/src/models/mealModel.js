@@ -1,13 +1,13 @@
-var mongoose = require('mongoose');
-var Schema = mongoose.Schema;
+const mongoose = require('mongoose');
+const { Schema } = mongoose;
 
-var MealComponentSchema = new Schema({
+const MealComponentSchema = new Schema({
     barcode: String,
     // product_name: String,
     quantity: Number
 }, { _id : false });
 
-var MealSchema = new Schema({
+const MealSchema = new Schema({
     meal_name: String,
     components: [MealComponentSchema],
     calories_tot: Number,
@@ -27,12 +27,14 @@ var MealSchema = new Schema({
     timestamp: String
 }, { _id : false });
 
-var UserMealSchema = new Schema({
-    username: String,
-    meals: [MealSchema]
+const UserMealSchema = new Schema({
+  username: String,
+  meals: [MealSchema],
 });
 
-
 module.exports = mongoose.model('Meals', UserMealSchema, 'Meals');
+<<<<<<< HEAD
 module.exports = mongoose.model('MealComponents', MealComponentSchema);
 
+=======
+>>>>>>> development
