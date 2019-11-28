@@ -16,14 +16,15 @@ module.exports = function (app) {
 
   app.route('/api/product/:barcode')
     .get(productController.load_product);
-
-
-  // TODO: meals routes da aggiornare eventualmente
-  app.route('/api/user/meals')
+    
+  app.route('/api/:user/meals/')
     .get(mealController.load_meals_list)
-    .post(mealController.create_meal);
+    .post(mealController.new_meal);
+    
+  app.route('/api/:user/meals/:mealName')
+    .get(mealController.load_meal);
 
-  app.route('/api/user/meals/:name')
-    .get(mealController.load_meal)
-    .put(mealController.update_meal);
+  app.route('/api/:user/meals/:mealName/components')
+    .put(mealController.new_component)
+
 };
