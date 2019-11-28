@@ -16,6 +16,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
 mongoose.connect('mongodb://localhost:27017/eco-assistant', { useNewUrlParser: true, useUnifiedTopology: true });
+mongoose.set('useFindAndModify', false);
 // 'mongodb://admin:teamASW1920@ds241688.mlab.com:41688/eco-assistant'
 //Get the default connection
 var db = mongoose.connection;
@@ -33,6 +34,6 @@ app.use(function(req, res) {
   res.status(404).send({url: req.originalUrl + ' not found'})
 });
 
-app.listen(3000, function () {
-  console.log('Node API server started on port 3000');
+app.listen(8081, function () {
+  console.log('Node API server started on port 8081');
 });
