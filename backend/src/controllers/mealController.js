@@ -1,14 +1,12 @@
 var mongoose = require('mongoose');
 var Meal = mongoose.model('Meals');
 
-//TODO: migliorare gestione errori nelle callback
 
 /**
  * Loads all the meals for a given user
  */
 exports.load_meals_list = async (req, res) => {
 	console.log("looking for meal...") //DEBUG
-	console.log(req.query); //DEBUG
 
 	var query = req.query;
 
@@ -29,7 +27,7 @@ exports.load_meals_list = async (req, res) => {
 
 
 /**
- * Loads a specific meal of a user
+ * Loads a specific meal for a given user
  */
 exports.load_meal = async (req, res) => {
 	console.log("looking for meal to load...") //DEBUG
@@ -52,64 +50,56 @@ exports.load_meal = async (req, res) => {
 };
 
 
-// Controllo se il documento relativo all'utente esiste, 
-// se non c'è creo il nuovo update_meal, altrimenti lo aggiungo
-// TODO: gestione delle result 
-
 /**
  * Inserts a new meal for a given user
  */
-exports.new_meal = (req, res) => {
+exports.new_meal = async (req, res) => {
 	var query = {'username': req.body.username};
 
-	console.log(JSON.stringify(query)); // DEBUG
-	Meal.find(query, function(err, userMeals) {
-		if (err) res.send(err);
-		else{
-			if(userMeals.length == 0){
-				create_first_meal(req, res);
-				console.log("meal not found - insterting"); //DEBUG
-			}else{
-				add_meal(req, userMeals, res);// aggiungo in coda il update_meal
-				// res.send(userMeals)
-				console.log("meal already found ->"+userMeals); //DEBUG
-			}	
+	await Meal.findOne(query)
+	.exec()
+	.then((doc) => {
+		if(doc == null){
+			create_first_meal(req, res);
+			console.log('Meal not found for user '+ req.query.username+"\n Inserting..."); //DEBUG
+		}else{
+			add_meal(req, doc, res);
+			console.log('Meal found for user '+ req.query.username+":\n"+doc); //DEBUG
 		}	
-	});
+	})
+	.catch((err) => res.send(err));
 };
 
 /**
  * Creates the first meal of a user
- * @param {*} req 
- * @param {*} res 
+ * @param {*} req request received
+ * @param {*} res response to send
  */
  create_first_meal = (req, res) => {
 	var new_meal = new Meal(req.body);
 	new_meal.save(function(err, meal) { 
 		if (err){
-			console.log("error while creating new meal"); //DEBUG
+			console.log("Error while creating new meal"); //DEBUG
 			res.send(err);
 		} 
-		console.log("meal created"+meal);	//DEBUG
+		console.log("Meal created" + meal);	//DEBUG
 		res.status(201).json(meal);
 	});	
 }
 
 /**
  * Adds meals to a user's meals list
- * @param {*} req 
- * @param {*} userMeals 
- * @param {*} res 
+ * @param {*} req request received
+ * @param {*} doc document of the user
+ * @param {*} res response to send
  */
-add_meal = (req, userMeals, res) => {
+add_meal = (req, doc, res) => {
 
 	//TODO: GESTIONE RES, CONTROLLO SE ESISTE GIà UN update_meal CON LO STESSO NOME (OPPURE usare un id per evitarlo)
 	var meal_to_add = req.body.meals; 
-
-	var update_meal = new Meal(userMeals[0]);
+	
+	var update_meal = new Meal(doc);
 	update_meal.meals.push(meal_to_add);
-
-	console.log("update_meal"+update_meal+"---"+meal_to_add); //DEBUG
 
 	update_meal.save(function(err, meal){
 		if (err){
@@ -126,7 +116,7 @@ add_meal = (req, userMeals, res) => {
  */
 exports.new_component = async (req, res) => {
 
-	var query = {'username': req.body.username};
+	var query = { 'username' : req.body.username };
 	 
 	await Meal.find(query)
 	.exec()
@@ -142,7 +132,8 @@ exports.new_component = async (req, res) => {
 			doc[0].save((err) => { if (err) res.send(err); });
 			res.status(201).json(doc);
 		}
-		//update delle calorie tot ecc
+		
+		//TODO: update e calcolo delle calorie tot e degli altri valori totali
     })
     .catch((err) => res.send(err));
 }
