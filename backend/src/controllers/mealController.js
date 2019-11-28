@@ -22,7 +22,6 @@ exports.load_meals_list = async (req, res) => {
 		}	
 	})
 	.catch((err) => res.send(err));
-
 };
 
 
