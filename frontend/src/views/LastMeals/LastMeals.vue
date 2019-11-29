@@ -1,17 +1,17 @@
 <template>
   <div class="last_meals">
     <h1>Your last Meals</h1>
-    <span> {{ userMeals }} </span>
+    <span> {{ mealsList[0] }} </span>
     <h2>Meals</h2>
     <div role="tablist">
-      <div v-for="meal in userMeals[0].meals" v-bind:key="meal.meal_name">
+      <div v-for="(meal, index) in mealsList[0]" v-bind:key="index">
         <b-card no-body class="mb-1">
           <b-card-header header-tag="header" class="p-1" role="tab">
-            <b-button block href="#" v-b-toggle.accordion-1 variant="info">
+            <b-button block href="#" v-b-toggle="'accordion-' + index" variant="info">
               {{ meal.meal_name }}
             </b-button>
           </b-card-header>
-          <b-collapse id="accordion-1" visible accordion="my-accordion" role="tabpanel">
+          <b-collapse :id="'accordion-' + index" visible accordion="my-accordion" role="tabpanel">
             <b-card-body>
               <b-card-text>
                 <li> Nome Pasto: {{ meal.meal_name }} </li>
@@ -19,39 +19,16 @@
                 <li> Timestamp: {{ meal.timestamp }} </li>
                 <div v-if = "meal.components!=null">
                   <div v-for="component in meal.components" v-bind:key="component.barcode">
-                    <h> Components: </h>
+                    <span> Components: </span>
                     <li> Barcode: {{ component.barcode }} </li>
                     <li> Quantità: {{ component.quantity }} </li>
                   </div>
                 </div>
               </b-card-text>
-              <b-card-text>{{ text }}</b-card-text>
             </b-card-body>
           </b-collapse>
         </b-card>
       </div>
-
-      <b-card no-body class="mb-1">
-        <b-card-header header-tag="header" class="p-1" role="tab">
-          <b-button block href="#" v-b-toggle.accordion-2 variant="info">Accordion 2</b-button>
-        </b-card-header>
-        <b-collapse id="accordion-2" accordion="my-accordion" role="tabpanel">
-          <b-card-body>
-            <b-card-text>{{ text }}</b-card-text>
-          </b-card-body>
-        </b-collapse>
-      </b-card>
-
-      <b-card no-body class="mb-1">
-        <b-card-header header-tag="header" class="p-1" role="tab">
-          <b-button block href="#" v-b-toggle.accordion-3 variant="info">Accordion 3</b-button>
-        </b-card-header>
-        <b-collapse id="accordion-3" accordion="my-accordion" role="tabpanel">
-          <b-card-body>
-            <b-card-text>{{ text }}</b-card-text>
-          </b-card-body>
-        </b-collapse>
-      </b-card>
     </div>
   </div>
 </template>
@@ -71,7 +48,6 @@ export default {
         calories_tot: 0,
         timestamp: '',
       },
-      userMeals: [],
       mealsList: [],
     };
   },
@@ -83,7 +59,6 @@ export default {
 
       this.$http.get(`http://localhost:8081/api/${param.username}/meals`, { params: param })
         .then((response) => {
-          this.userMeals.push(response.data);
           this.mealsList.push(response.data.meals);
         })
         .catch(error => (console.log(error)));
