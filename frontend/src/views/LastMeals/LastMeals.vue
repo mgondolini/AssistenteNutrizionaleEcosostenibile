@@ -2,15 +2,24 @@
   <div class="last_meals">
     <h1>Your last Meals</h1>
     <span> {{ userMeals }} </span>
-    <h2> Meals</h2>
-    <span> {{ mealsList }} </span>
-    <ul id="example-1">
-      <li v-for="meal in mealsList[0]" v-bind:key="meal">
-        {{ meal.meal_name }}
-        {{ meal.components }}
-        {{ meal.calories_tot }}
-      </li>
-    </ul>
+    <h2>Meals</h2>
+    <div v-if = "userMeals[0].meals!=null">
+      <div v-for="meal in userMeals[0].meals" v-bind:key="meal.meal_name">
+        <li> {{ meal.meal_name }} </li>
+        <li> {{ meal.calories_tot }} </li>
+        <li> {{ meal.timestamp }} </li>
+        <div v-if = "meal.components!=null">
+          <div v-for="component in meal.components" v-bind:key="component.barcode">
+            <li> {{ component.barcode }} </li>
+            <li> {{ component.quantity }} </li>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- <li v-for="component in mealsList[0].meals.components" v-bind:key="component">
+      {{ component.barcode }}
+      {{ component.quantity }}
+    </li> -->
   </div>
 </template>
 
