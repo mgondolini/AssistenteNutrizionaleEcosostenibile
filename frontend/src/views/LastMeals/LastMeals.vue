@@ -3,23 +3,56 @@
     <h1>Your last Meals</h1>
     <span> {{ userMeals }} </span>
     <h2>Meals</h2>
-    <div v-if = "userMeals[0].meals!=null">
+    <div role="tablist">
       <div v-for="meal in userMeals[0].meals" v-bind:key="meal.meal_name">
-        <li> {{ meal.meal_name }} </li>
-        <li> {{ meal.calories_tot }} </li>
-        <li> {{ meal.timestamp }} </li>
-        <div v-if = "meal.components!=null">
-          <div v-for="component in meal.components" v-bind:key="component.barcode">
-            <li> {{ component.barcode }} </li>
-            <li> {{ component.quantity }} </li>
-          </div>
-        </div>
+        <b-card no-body class="mb-1">
+          <b-card-header header-tag="header" class="p-1" role="tab">
+            <b-button block href="#" v-b-toggle.accordion-1 variant="info">
+              {{ meal.meal_name }}
+            </b-button>
+          </b-card-header>
+          <b-collapse id="accordion-1" visible accordion="my-accordion" role="tabpanel">
+            <b-card-body>
+              <b-card-text>
+                <li> Nome Pasto: {{ meal.meal_name }} </li>
+                <li> Calorie totali: {{ meal.calories_tot }} </li>
+                <li> Timestamp: {{ meal.timestamp }} </li>
+                <div v-if = "meal.components!=null">
+                  <div v-for="component in meal.components" v-bind:key="component.barcode">
+                    <h> Components: </h>
+                    <li> Barcode: {{ component.barcode }} </li>
+                    <li> Quantità: {{ component.quantity }} </li>
+                  </div>
+                </div>
+              </b-card-text>
+              <b-card-text>{{ text }}</b-card-text>
+            </b-card-body>
+          </b-collapse>
+        </b-card>
       </div>
+
+      <b-card no-body class="mb-1">
+        <b-card-header header-tag="header" class="p-1" role="tab">
+          <b-button block href="#" v-b-toggle.accordion-2 variant="info">Accordion 2</b-button>
+        </b-card-header>
+        <b-collapse id="accordion-2" accordion="my-accordion" role="tabpanel">
+          <b-card-body>
+            <b-card-text>{{ text }}</b-card-text>
+          </b-card-body>
+        </b-collapse>
+      </b-card>
+
+      <b-card no-body class="mb-1">
+        <b-card-header header-tag="header" class="p-1" role="tab">
+          <b-button block href="#" v-b-toggle.accordion-3 variant="info">Accordion 3</b-button>
+        </b-card-header>
+        <b-collapse id="accordion-3" accordion="my-accordion" role="tabpanel">
+          <b-card-body>
+            <b-card-text>{{ text }}</b-card-text>
+          </b-card-body>
+        </b-collapse>
+      </b-card>
     </div>
-    <!-- <li v-for="component in mealsList[0].meals.components" v-bind:key="component">
-      {{ component.barcode }}
-      {{ component.quantity }}
-    </li> -->
   </div>
 </template>
 
