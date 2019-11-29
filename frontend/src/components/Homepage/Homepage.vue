@@ -1,6 +1,6 @@
 <template>
   <div class="hello">
-    <img class="eco" center src="../../assets/ecology.png" />
+    <img class="loginImg" center src="../../assets/ecology.png" />
     <h1>{{ msg }}</h1>
     <p>
       Ma la volpe col suo balzo ha raggiunto il quieto Fido.
