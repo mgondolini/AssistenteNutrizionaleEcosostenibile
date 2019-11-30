@@ -67,7 +67,6 @@ export default {
 
 </script>
 
-
-<style scoped>
-
+<style lang="scss">
+  @import './last_meals.scss';
 </style>
