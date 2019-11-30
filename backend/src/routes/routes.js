@@ -3,8 +3,6 @@ const productController = require('../controllers/productController');
 const mealController = require('../controllers/mealController');
 
 module.exports = function (app) {
-  // app.route('/')
-  //     .get(userController.show_index); //mostrare la home
 
   app.route('/api/user')
     .post(userController.create_user);

@@ -3,7 +3,9 @@ import VueRouter from 'vue-router';
 import Home from '../views/Home/Home.vue';
 import About from '../views/About.vue';
 import Login from '../views/Login/Login.vue';
+import LastMeals from '../views/LastMeals/LastMeals.vue';
 import CalculateMeal from '../views/CalculateMeal/CalculateMeal.vue';
+
 
 Vue.use(VueRouter);
 
@@ -14,7 +16,7 @@ const routes = [
     component: Home,
   },
   {
-    path: '/login',
+    path: '/about',
     name: 'login',
     component: Login,
   },
@@ -30,8 +32,8 @@ const routes = [
   },
   {
     path: '/last_meals',
-    name: 'last_meal',
-    component: About,
+    name: 'last_meals',
+    component: LastMeals,
   },
   {
     path: '/new_meal',
