@@ -24,7 +24,7 @@
       quieto Fido. Quel vituperabile xenofobo
     </p>
 
-    <router-link to='calculate_meal_composition' class="wrapper-inner-tab-backgrounds-first"
+    <router-link to='login' class="wrapper-inner-tab-backgrounds-first"
       v-if='this.$isLogged === false'
       style="text-decoration:none">
       <div class="sim-button button1" >
