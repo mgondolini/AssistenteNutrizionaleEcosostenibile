@@ -5,8 +5,6 @@ const keyController = require('../controllers/keyController');
 const authController = require('../controllers/authController');
 
 module.exports = function (app) {
-  // app.route('/')
-  //     .get(userController.show_index); //mostrare la home
 
   app.route('api/publickey')
     .get(keyController.getPublicKey);

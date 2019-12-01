@@ -23,9 +23,11 @@ global.log = function log(msg) {
 mongoose.connect('mongodb://admin:teamASW1920@ds241688.mlab.com:41688/eco-assistant', { useNewUrlParser: true, useUnifiedTopology: true });
 mongoose.set('useFindAndModify', false);
 
+//'mongodb://admin:teamASW1920@ds241688.mlab.com:41688/eco-assistant'
+//'mongodb://localhost:27017/eco-assistant'
+
 // Get the default connection
 const db = mongoose.connection;
-var db = mongoose.connection;
 
 // Bind connection to error event (to get notification of connection errors)
 db.on('error', console.error.bind(console, 'MongoDB connection error:'));

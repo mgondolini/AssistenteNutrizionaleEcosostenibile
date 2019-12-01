@@ -10,7 +10,6 @@ const MealComponentSchema = new Schema({
 const MealSchema = new Schema({
     meal_name: String,
     components: [MealComponentSchema],
-    calories_tot: Number,
     energy_tot: Number,
     carbohydrates_tot: Number,
     sugars_tot: Number,
