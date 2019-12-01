@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
 const Meal = mongoose.model('Meals');
+const Products = mongoose.model('Product');
 
 /**
  * Loads all the meals for a given user
@@ -116,6 +117,7 @@ add_meal = (req, doc, res) => {
 exports.new_component = async (req, res) => {
 
 	var query = { 'username' : req.body.username };
+	
 	 
 	await Meal.find(query)
 	.exec()
@@ -123,13 +125,18 @@ exports.new_component = async (req, res) => {
 		if(doc == null) 
 			res.status(404).send({description: 'Meals not found for user '+ req.body.username});
 		else{
+			var barcodes = [];
 			console.log("doc"+doc)
 			doc[0].meals.forEach(d => {
 				if(d.meal_name === req.body.mealName)
 					d.components.push(req.body.components);
+
+				d.components.forEach(c => barcodes.push(c.barcode))
 			});	
 			doc[0].save((err) => { if (err) res.send(err); });
-			res.status(201).json(doc);
+			// res.status(201).json(doc);
+			console.log("barcodes"+barcodes); //DEBUG
+			compute_values(barcodes, req, res);
 		}
 		
 		//TODO: update e calcolo delle calorie tot e degli altri valori totali
@@ -138,3 +145,23 @@ exports.new_component = async (req, res) => {
 }
 
 
+//per ogni barcode del pasto cerco il prodotto, sommo i valori dei documenti nei campi del pasto
+compute_values = async (barcodes, req, res) => {
+
+	var query = { "code" : {$in: barcodes} };
+
+	await Products.find(query)
+	.exec()
+	.then((docs) => {
+		console.log("documents found:\n"+docs) //DEBUG
+		var energy_tot = 0;
+		docs.forEach(d => {
+			console.log("prodotto: "+d.product_name); //DEBUG
+			energy_tot += (d.energy_100g); // dividere per la quantità
+		})
+		console.log("energy_tot"+energy_tot); //DEBUG
+	})
+	.catch((err) => res.send(err));
+}
+
+// db.Products.find({"code":{$in:[3073781115673,4008400828121]}}) //trovo tutti i documenti con quei barcode
