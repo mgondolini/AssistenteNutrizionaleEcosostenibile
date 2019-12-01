@@ -114,22 +114,30 @@ exports.new_meal = async (req, res) => {
 };
 
 
-// per ogni barcode del pasto cerco il prodotto, sommo i valori dei documenti nei campi del pasto
+/**
+ * Computes values to insert in each meal subdocument
+ * @param {*} barcodes 
+ * @param {*} quantities 
+ * @param {*} res 
+ */
 async function computeValues(barcodes, quantities, res) {
-  let energyTot = 0;
-  let quantity = 0;
-  let i = 0;
+  let energyTot;
+  let quantity;
+  let i;
 
   const query = { code: { $in: barcodes } };
 
   await Products.find(query)
     .exec()
     .then((docs) => {
+      energyTot = 0;
+      quantity = 0;
+      i = 0;
       console.log(`documents found: ${docs}`); // DEBUG
       docs.forEach((d) => {
         quantity = quantities[i];
         console.log(`prodotto: ${d.product_name} - quantità ${quantity}`); // DEBUG
-        energyTot += ((d.energy_100g / 100) * quantity); // dividere per la quantità
+        energyTot += ((d.energy_100g / 100) * quantity); 
         i += 1;
       });
       console.log(`energy_tot ${energyTot}`); // DEBUG
