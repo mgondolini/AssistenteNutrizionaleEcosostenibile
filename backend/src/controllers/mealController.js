@@ -54,6 +54,7 @@ exports.load_meal = async (req, res) => {
 exports.new_meal = async (req, res) => {
 	var query = {'username': req.body.username};
 
+
 	await Meal.findOne(query)
 	.exec()
 	.then((doc) => {
