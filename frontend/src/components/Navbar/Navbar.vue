@@ -9,7 +9,7 @@
 
         <b-collapse id="nav-collapse" class="nav-router" is-nav>
           <b-navbar-nav>
-            <router-link class="info_prod" to="info_prod">Informazioni prodotto</router-link>
+            <router-link class="info_prod" to="info_prod">{{ $t('prod_info') }}</router-link>
           </b-navbar-nav>
 
           <!-- Right aligned nav items -->
@@ -24,7 +24,17 @@
                 <b-dropdown-item href="profile">Il mio profilo</b-dropdown-item>
                 <b-dropdown-item href="last_meals">I miei ultimi pasti</b-dropdown-item>
                 <b-dropdown-item href="new_meal">Inserisci nuovo pasto</b-dropdown-item>
-                <b-dropdown-item @click.prevent="singout">Esci</b-dropdown-item>
+                <b-dropdown-item @click.prevent="signout">Esci</b-dropdown-item>
+            </b-nav-item-dropdown>
+            <b-nav-item-dropdown v-bind:text="$root.$i18n.locale" right>
+              <b-dropdown-item-button
+                v-for="(lang, i) in langs"
+                :key="`Lang${i}`"
+                :value="lang"
+                @click="$root.$i18n.locale = lang">
+                <img class="locale_flag" :src="getLocaleFlagPath(lang)">
+                {{ lang }}
+              </b-dropdown-item-button>
             </b-nav-item-dropdown>
           </b-navbar-nav>
         </b-collapse>
@@ -33,22 +43,41 @@
 </template>
 
 <script>
+// const localeFlagsPath = '@/assets/flags/';
+const localeFlagsExt = '.svg';
+// If localeFlagsPath is passed instead of hardcoded path the function no longer works
+const localeFlagsContext = require.context('@/assets/flags/', false);
+
 export default {
   name: 'navbar',
-
   data() {
     return {
       navhome: 'Eco-assistant',
-      isLogged: false,
+      isLogged: this.$isLogged,
+      langs: ['en', 'it'],
     };
   },
   methods: {
     gotoLogin() {
       this.$router.go('/login');
     },
+    getLocaleFlagPath(lang) {
+      return localeFlagsContext(`./${lang}${localeFlagsExt}`);
+    },
   },
 };
 </script>
+
+<i18n>
+{
+  "en": {
+    "prod_info": "Product informations"
+  },
+  "it": {
+    "prod_info": "Informazioni prodotto"
+  }
+}
+</i18n>
 
 <!--
 <script>
