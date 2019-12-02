@@ -4,6 +4,7 @@ import Axios from 'axios';
 import App from './App.vue';
 import router from './router';
 import './custom.scss';
+import i18n from './i18n';
 
 
 Vue.use(BootstrapVue);
@@ -18,5 +19,6 @@ Vue.prototype.$isLogged = false;
 
 new Vue({
   router,
+  i18n,
   render(h) { return h(App); },
 }).$mount('#app');
