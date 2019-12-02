@@ -113,6 +113,22 @@ exports.new_meal = async (req, res) => {
     .catch((err) => res.send(err));
 };
 
+/**
+ *
+ * @param {*} req
+ * @param {*} energyTot
+ */
+
+async function updateValues(req, doc, energyTot, res) {
+  doc.meals.forEach((d) => {
+    if (d.meal_name === req.body.mealName) {
+      // eslint-disable-next-line no-param-reassign
+      d.energy_tot = energyTot;
+    }
+  });
+  doc.save((err) => { if (err) res.send(err); });
+}
+
 
 /**
  * Computes values to insert in each meal subdocument
@@ -120,7 +136,7 @@ exports.new_meal = async (req, res) => {
  * @param {*} quantities
  * @param {*} res
  */
-async function computeValues(barcodes, quantities, res) {
+async function computeValues(barcodes, quantities, doc, req, res) {
   let energyTot;
   let quantity;
   let carbsTot;
@@ -176,6 +192,7 @@ async function computeValues(barcodes, quantities, res) {
         calciumTot += ((d.calcium_100g / 100) * quantity);
         carbonFootprintTot += ((d.carbon_footprint_100g / 100) * quantity);
         waterFootprintTot += ((d.water_footprint_100g / 100) * quantity);
+
         i += 1;
       });
       console.log(`energy_tot ${energyTot}`); // DEBUG
@@ -191,6 +208,9 @@ async function computeValues(barcodes, quantities, res) {
       console.log(`fiberTot ${fiberTot}`); // DEBUG
       console.log(`carbonFootprintTot ${carbonFootprintTot}`); // DEBUG
       console.log(`waterFootprintTot ${waterFootprintTot}`); // DEBUG
+
+      // Update valori
+      updateValues(req, doc[0], energyTot, res);
     })
     .catch((err) => res.send(err));
 }
@@ -223,7 +243,7 @@ exports.new_component = async (req, res) => {
         doc[0].save((err) => { if (err) res.send(err); });
         // res.status(201).json(doc);
         console.log(`barcodes ${barcodes}\n quantities ${quantities}`); // DEBUG
-        computeValues(barcodes, quantities, res);
+        computeValues(barcodes, quantities, req, doc[0], res);
       }
     })
     .catch((err) => res.send(err));
