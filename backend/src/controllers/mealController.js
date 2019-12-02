@@ -116,13 +116,25 @@ exports.new_meal = async (req, res) => {
 
 /**
  * Computes values to insert in each meal subdocument
- * @param {*} barcodes 
- * @param {*} quantities 
- * @param {*} res 
+ * @param {*} barcodes
+ * @param {*} quantities
+ * @param {*} res
  */
 async function computeValues(barcodes, quantities, res) {
   let energyTot;
   let quantity;
+  let carbsTot;
+  let sugarsTot;
+  let fatTot;
+  let saturatedFatTot;
+  let proteinsTot;
+  let fiberTot;
+  let saltTot;
+  let sodiumTot;
+  let alcoholTot;
+  let calciumTot;
+  let carbonFootprintTot;
+  let waterFootprintTot;
   let i;
 
   const query = { code: { $in: barcodes } };
@@ -132,19 +144,56 @@ async function computeValues(barcodes, quantities, res) {
     .then((docs) => {
       energyTot = 0;
       quantity = 0;
+      carbsTot = 0;
+      sugarsTot = 0;
+      fatTot = 0;
+      saturatedFatTot = 0;
+      proteinsTot = 0;
+      fiberTot = 0;
+      saltTot = 0;
+      sodiumTot = 0;
+      alcoholTot = 0;
+      calciumTot = 0;
+      carbonFootprintTot = 0;
+      waterFootprintTot = 0;
       i = 0;
       console.log(`documents found: ${docs}`); // DEBUG
       docs.forEach((d) => {
         quantity = quantities[i];
+
         console.log(`prodotto: ${d.product_name} - quantità ${quantity}`); // DEBUG
-        energyTot += ((d.energy_100g / 100) * quantity); 
+
+        energyTot += ((d.energy_100g / 100) * quantity);
+        carbsTot += ((d.carbohydrates_100g / 100) * quantity);
+        sugarsTot += ((d.sugars_100g / 100) * quantity);
+        fatTot += ((d.fat_100g / 100) * quantity);
+        saturatedFatTot += ((d.saturated_fat_100g / 100) * quantity);
+        proteinsTot += ((d.proteins_100g / 100) * quantity);
+        fiberTot += ((d.fiber_100g / 100) * quantity);
+        saltTot += ((d.salt_100g / 100) * quantity);
+        sodiumTot += ((d.sodium_100g / 100) * quantity);
+        alcoholTot += ((d.alcohol_100g / 100) * quantity);
+        calciumTot += ((d.calcium_100g / 100) * quantity);
+        carbonFootprintTot += ((d.carbon_footprint_100g / 100) * quantity);
+        waterFootprintTot += ((d.water_footprint_100g / 100) * quantity);
         i += 1;
       });
       console.log(`energy_tot ${energyTot}`); // DEBUG
+      console.log(`carbsTot ${carbsTot}`); // DEBUG
+      console.log(`sugarsTot ${sugarsTot}`); // DEBUG
+      console.log(`fatTot ${fatTot}`); // DEBUG
+      console.log(`saturatedFatTot ${saturatedFatTot}`); // DEBUG
+      console.log(`proteinsTot ${proteinsTot}`); // DEBUG
+      console.log(`saltTot ${saltTot}`); // DEBUG
+      console.log(`sodiumTot ${sodiumTot}`); // DEBUG
+      console.log(`calciumTot ${calciumTot}`); // DEBUG
+      console.log(`alcoholTot ${alcoholTot}`); // DEBUG
+      console.log(`fiberTot ${fiberTot}`); // DEBUG
+      console.log(`carbonFootprintTot ${carbonFootprintTot}`); // DEBUG
+      console.log(`waterFootprintTot ${waterFootprintTot}`); // DEBUG
     })
     .catch((err) => res.send(err));
 }
-
 
 /**
  * Creates a component for an existing meal
