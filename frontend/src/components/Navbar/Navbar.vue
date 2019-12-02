@@ -32,6 +32,7 @@
                 :key="`Lang${i}`"
                 :value="lang"
                 @click="$root.$i18n.locale = lang">
+                <img class="locale_flag" :src="getLocaleFlagPath(lang)">
                 {{ lang }}
               </b-dropdown-item-button>
             </b-nav-item-dropdown>
@@ -42,6 +43,11 @@
 </template>
 
 <script>
+// const localeFlagsPath = '@/assets/flags/';
+const localeFlagsExt = '.svg';
+// If localeFlagsPath is passed instead of hardcoded path the function no longer works
+const localeFlagsContext = require.context('@/assets/flags/', false);
+
 export default {
   name: 'navbar',
   data() {
@@ -54,6 +60,9 @@ export default {
   methods: {
     gotoLogin() {
       this.$router.go('/login');
+    },
+    getLocaleFlagPath(lang) {
+      return localeFlagsContext(`./${lang}${localeFlagsExt}`);
     },
   },
 };
