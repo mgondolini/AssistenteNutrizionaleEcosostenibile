@@ -26,6 +26,15 @@
                 <b-dropdown-item href="new_meal">Inserisci nuovo pasto</b-dropdown-item>
                 <b-dropdown-item @click.prevent="signout">Esci</b-dropdown-item>
             </b-nav-item-dropdown>
+            <b-nav-item-dropdown v-bind:text="$root.$i18n.locale" right>
+              <b-dropdown-item-button
+                v-for="(lang, i) in langs"
+                :key="`Lang${i}`"
+                :value="lang"
+                @click="$root.$i18n.locale = lang">
+                {{ lang }}
+              </b-dropdown-item-button>
+            </b-nav-item-dropdown>
           </b-navbar-nav>
         </b-collapse>
       </b-navbar>
@@ -39,6 +48,7 @@ export default {
     return {
       navhome: 'Eco-assistant',
       isLogged: this.$isLogged,
+      langs: ['en', 'it'],
     };
   },
   methods: {
