@@ -129,7 +129,6 @@ async function updateValues(req, doc, energyTot, res) {
   doc.save((err) => { if (err) res.send(err); });
 }
 
-
 /**
  * Computes values to insert in each meal subdocument
  * @param {*} barcodes
@@ -195,24 +194,27 @@ async function computeValues(barcodes, quantities, doc, req, res) {
 
         i += 1;
       });
-      console.log(`energy_tot ${energyTot}`); // DEBUG
-      console.log(`carbsTot ${carbsTot}`); // DEBUG
-      console.log(`sugarsTot ${sugarsTot}`); // DEBUG
-      console.log(`fatTot ${fatTot}`); // DEBUG
-      console.log(`saturatedFatTot ${saturatedFatTot}`); // DEBUG
-      console.log(`proteinsTot ${proteinsTot}`); // DEBUG
-      console.log(`saltTot ${saltTot}`); // DEBUG
-      console.log(`sodiumTot ${sodiumTot}`); // DEBUG
-      console.log(`calciumTot ${calciumTot}`); // DEBUG
-      console.log(`alcoholTot ${alcoholTot}`); // DEBUG
-      console.log(`fiberTot ${fiberTot}`); // DEBUG
-      console.log(`carbonFootprintTot ${carbonFootprintTot}`); // DEBUG
-      console.log(`waterFootprintTot ${waterFootprintTot}`); // DEBUG
-
-      // Update valori
-      updateValues(req, doc[0], energyTot, res);
     })
     .catch((err) => res.send(err));
+
+  const values = {
+    energy_tot: energyTot,
+    carbohidrates_tot: carbsTot,
+    sugars_tot: sugarsTot,
+    fat_tot: fatTot,
+    saturated_fat_tot: saturatedFatTot,
+    proteins_tot: proteinsTot,
+    salt_tot: saltTot,
+    sodium_tot: sodiumTot,
+    calcium_tot: calciumTot,
+    alcohol_tot: alcoholTot,
+    fiber_tot: fiberTot,
+    carbon_footprint_tot: carbonFootprintTot,
+    water_footprint_tot: waterFootprintTot,
+  };
+  console.log(values);
+
+  return values;
 }
 
 /**
