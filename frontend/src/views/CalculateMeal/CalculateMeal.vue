@@ -1,7 +1,7 @@
 <template>
   <div class="container">
     <h3>Composizione del tuo pasto</h3>
-    <ChartMealComp component=chart />
+    <ChartMealComp v-bind:mealComp="chart" />
     <h3>OMS Tabelle</h3>
     <Apex />
   </div>
@@ -35,7 +35,7 @@ export default {
           console.log({ label: elem.product_name, value: elem.quantity });
         });
         this.chart = tmp;
-        this.$nextTick();
+        // this.$nextTick();
         console.log('chart :'.concat(this.chart[0].label));
       })
       .catch(error => (console.log(error)));

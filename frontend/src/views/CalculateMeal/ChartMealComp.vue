@@ -1,5 +1,5 @@
 <template>
-  <RotatingPieChart class='piechart_meal' :data='component' />
+  <RotatingPieChart class='piechart_meal' v-bind:data='dataToShow' />
 </template>
 
 <script>
@@ -11,26 +11,17 @@ export default {
     RotatingPieChart,
   },
   props: {
-    component: Object,
+    mealComp: Array,
   },
-  /* mounted() {
-    const usr = 'mrossi';
-    const param = { username: usr };
-
-    this.$http.get(`http://localhost:8081/api/${param.username}/meals`, { params: param })
-      .then((response) => {
-        const tmp = [];
-        response.data.meals[0].components.forEach((elem) => {
-          tmp.push({ label: elem.product_name, value: elem.quantity });
-          // console.log(elem);
-          console.log({ label: elem.product_name, value: elem.quantity });
-        });
-        this.chart = tmp;
-        this.$nextTick();
-        console.log('chart :'.concat(this.chart[0].label));
-      })
-      .catch(error => (console.log(error)));
-  }, */
+  data() {
+    return {
+      dataToShow: this.mealComp,
+    };
+  },
+  mounted() {
+    this.dataToShow = this.mealComp;
+    console.log('array: '.concat(this.dataToShow));
+  },
 };
 
 </script>
