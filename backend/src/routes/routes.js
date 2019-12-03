@@ -5,11 +5,10 @@ const keyController = require('../controllers/keyController');
 const authController = require('../controllers/authController');
 
 module.exports = function (app) {
-
-  app.route('api/publickey')
+  app.route('/api/publickey')
     .get(keyController.getPublicKey);
 
-  app.route('api/auth/:enc')
+  app.route('/api/auth/:enc')
     .post(authController.auth);
 
   app.route('/api/user')
