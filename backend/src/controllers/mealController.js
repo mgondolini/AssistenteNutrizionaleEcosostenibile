@@ -1,3 +1,4 @@
+/* eslint-disable no-param-reassign */
 const mongoose = require('mongoose');
 
 const Meal = mongoose.model('Meals');
@@ -115,16 +116,16 @@ exports.new_meal = async (req, res) => {
 
 /**
  * Given a value for 100 grams, computes value for a given quantity.
- * @param {*} value
- * @param {*} quantity
+ * @param {*} value for 100g of the product
+ * @param {*} quantity portion of the product in grams
  */
-const valuesPerQuantity = (value, quantity) => ((value / 100) * quantity);
+const valuePerPortion = (value, quantity) => ((value / 100) * quantity);
 
 
 /**
  * Computes meal's values given its components
- * @param {*} barcodes
- * @param {*} quantities
+ * @param {*} barcodes of the products that compose the meal
+ * @param {*} quantities in grams of the products eaten
  * @param {*} res
  */
 const computeValues = async (barcodes, quantities, res) => {
@@ -170,19 +171,19 @@ const computeValues = async (barcodes, quantities, res) => {
       docs.forEach((d) => {
         quantity = quantities[i];
 
-        energyTot += valuesPerQuantity(d.energy_100g, quantity);
-        carbsTot += valuesPerQuantity(d.carbohydrates_100g, quantity);
-        sugarsTot += valuesPerQuantity(d.sugars_100g, quantity);
-        fatTot += valuesPerQuantity(d.fat_100g, quantity);
-        saturatedFatTot += valuesPerQuantity(d.saturated_fat_100g, quantity);
-        proteinsTot += valuesPerQuantity(d.proteins_100g, quantity);
-        fiberTot += valuesPerQuantity(d.fiber_100g, quantity);
-        saltTot += valuesPerQuantity(d.salt_100g, quantity);
-        sodiumTot += valuesPerQuantity(d.sodium_100g, quantity);
-        alcoholTot += valuesPerQuantity(d.alcohol_100g, quantity);
-        calciumTot += valuesPerQuantity(d.calcium_100g, quantity);
-        carbonFootprintTot += valuesPerQuantity(d.carbon_footprint_100g, quantity);
-        waterFootprintTot += valuesPerQuantity(d.water_footprint_100g, quantity);
+        energyTot += valuePerPortion(d.energy_100g, quantity);
+        carbsTot += valuePerPortion(d.carbohydrates_100g, quantity);
+        sugarsTot += valuePerPortion(d.sugars_100g, quantity);
+        fatTot += valuePerPortion(d.fat_100g, quantity);
+        saturatedFatTot += valuePerPortion(d.saturated_fat_100g, quantity);
+        proteinsTot += valuePerPortion(d.proteins_100g, quantity);
+        fiberTot += valuePerPortion(d.fiber_100g, quantity);
+        saltTot += valuePerPortion(d.salt_100g, quantity);
+        sodiumTot += valuePerPortion(d.sodium_100g, quantity);
+        alcoholTot += valuePerPortion(d.alcohol_100g, quantity);
+        calciumTot += valuePerPortion(d.calcium_100g, quantity);
+        carbonFootprintTot += valuePerPortion(d.carbon_footprint_100g, quantity);
+        waterFootprintTot += valuePerPortion(d.water_footprint_100g, quantity);
 
         i += 1;
       });
@@ -204,7 +205,7 @@ const computeValues = async (barcodes, quantities, res) => {
     carbon_footprint_tot: carbonFootprintTot,
     water_footprint_tot: waterFootprintTot,
   };
-  // console.log(values);
+  // console.log(values); //DEBUG
 
   return values;
 };
@@ -218,12 +219,24 @@ const computeValues = async (barcodes, quantities, res) => {
 const updateValues = async (barcodes, quantities, req, doc, res) => {
   computeValues(barcodes, quantities, res)
     .then((values) => {
-      console.log(`update values json ${values}`); // DEBUG
       doc.meals.forEach((d) => {
         if (d.meal_name === req.body.mealName) {
-          console.log(`1-----d${d.meal_name}+${values.energy_tot}`); // DEBUG
-          // eslint-disable-next-line no-param-reassign
+          console.log(`-----d.meal_name${d.meal_name}+${values.energy_tot}`); // DEBUG
+
           d.energy_tot = values.energy_tot;
+          d.carbohidrates_tot = values.carbohidrates_tot;
+          d.sugars_tot = values.sugars_tot;
+          d.fat_tot = values.fat_tot;
+          d.saturated_fat_tot = values.saturated_fat_tot;
+          d.proteins_tot = values.proteins_tot;
+          d.salt_tot = values.salt_tot;
+          d.sodium_tot = values.sodium_tot;
+          d.calcium_tot = values.calcium_tot;
+          d.alcohol_tot = values.alcohol_tot;
+          d.fiber_tot = values.fiber_tot;
+          d.carbon_footprint_tot = values.carbon_footprint_tot;
+          d.water_footprint_tot = values.water_footprint_tot;
+
           console.log(`d.energy_tot${d.energy_tot}`); // DEBUG
         }
       });
