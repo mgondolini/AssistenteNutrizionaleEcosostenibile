@@ -113,24 +113,37 @@ exports.new_meal = async (req, res) => {
     .catch((err) => res.send(err));
 };
 
-/**
- *
- * @param {*} req
- * @param {*} energyTot
- */
-
-async function updateValues(req, doc, energyTot, res) {
-  doc.meals.forEach((d) => {
-    if (d.meal_name === req.body.mealName) {
-      // eslint-disable-next-line no-param-reassign
-      d.energy_tot = energyTot;
-    }
-  });
-  doc.save((err) => { if (err) res.send(err); });
+function valuesPerQuantity(value, quantity) {
+  return ((value / 100) * quantity);
 }
 
+// function createValuesJson(energyTot, carbsTot, sugarsTot, fatTot, saturatedFatTot,
+//   proteinsTot, fiberTot, saltTot, sodiumTot, alcoholTot,
+//   calciumTot,
+//   carbonFootprintTot,
+//   waterFootprintTot) {
+//   const values = {
+//     energy_tot: energyTot,
+//     carbohidrates_tot: carbsTot,
+//     sugars_tot: sugarsTot,
+//     fat_tot: fatTot,
+//     saturated_fat_tot: saturatedFatTot,
+//     proteins_tot: proteinsTot,
+//     salt_tot: saltTot,
+//     sodium_tot: sodiumTot,
+//     calcium_tot: calciumTot,
+//     alcohol_tot: alcoholTot,
+//     fiber_tot: fiberTot,
+//     carbon_footprint_tot: carbonFootprintTot,
+//     water_footprint_tot: waterFootprintTot,
+//   };
+
+//   return values;
+// }
+
+
 /**
- * Computes values to insert in each meal subdocument
+ * Computes meal's values given its components
  * @param {*} barcodes
  * @param {*} quantities
  * @param {*} res
@@ -178,19 +191,19 @@ async function computeValues(barcodes, quantities, doc, req, res) {
 
         console.log(`prodotto: ${d.product_name} - quantità ${quantity}`); // DEBUG
 
-        energyTot += ((d.energy_100g / 100) * quantity);
-        carbsTot += ((d.carbohydrates_100g / 100) * quantity);
-        sugarsTot += ((d.sugars_100g / 100) * quantity);
-        fatTot += ((d.fat_100g / 100) * quantity);
-        saturatedFatTot += ((d.saturated_fat_100g / 100) * quantity);
-        proteinsTot += ((d.proteins_100g / 100) * quantity);
-        fiberTot += ((d.fiber_100g / 100) * quantity);
-        saltTot += ((d.salt_100g / 100) * quantity);
-        sodiumTot += ((d.sodium_100g / 100) * quantity);
-        alcoholTot += ((d.alcohol_100g / 100) * quantity);
-        calciumTot += ((d.calcium_100g / 100) * quantity);
-        carbonFootprintTot += ((d.carbon_footprint_100g / 100) * quantity);
-        waterFootprintTot += ((d.water_footprint_100g / 100) * quantity);
+        energyTot += valuesPerQuantity(d.energy_100g, quantity);
+        carbsTot += valuesPerQuantity(d.carbohydrates_100g, quantity);
+        sugarsTot += valuesPerQuantity(d.sugars_100g, quantity);
+        fatTot += valuesPerQuantity(d.fat_100g, quantity);
+        saturatedFatTot += valuesPerQuantity(d.saturated_fat_100g, quantity);
+        proteinsTot += valuesPerQuantity(d.proteins_100g, quantity);
+        fiberTot += valuesPerQuantity(d.fiber_100g, quantity);
+        saltTot += valuesPerQuantity(d.salt_100g, quantity);
+        sodiumTot += valuesPerQuantity(d.sodium_100g, quantity);
+        alcoholTot += valuesPerQuantity(d.alcohol_100g, quantity);
+        calciumTot += valuesPerQuantity(d.calcium_100g, quantity);
+        carbonFootprintTot += valuesPerQuantity(d.carbon_footprint_100g, quantity);
+        waterFootprintTot += valuesPerQuantity(d.water_footprint_100g, quantity);
 
         i += 1;
       });
@@ -216,6 +229,25 @@ async function computeValues(barcodes, quantities, doc, req, res) {
 
   return values;
 }
+
+/**
+ * Update meals total values
+ * @param {*} req
+ * @param {*} energyTot
+ */
+
+async function updateValues(barcodes, quantities, doc, req, res) {
+  const values = computeValues(barcodes, quantities, doc, req, res);
+  doc.meals.forEach((d) => {
+    if (d.meal_name === req.body.mealName) {
+      // eslint-disable-next-line no-param-reassign
+      d.energy_tot = values.energy_tot;
+      console.log(`d.energy_tot${d.energy_tot}`);
+    }
+  });
+  doc.save((err) => { if (err) res.send(err); });
+}
+
 
 /**
  * Creates a component for an existing meal
@@ -245,10 +277,8 @@ exports.new_component = async (req, res) => {
         doc[0].save((err) => { if (err) res.send(err); });
         // res.status(201).json(doc);
         console.log(`barcodes ${barcodes}\n quantities ${quantities}`); // DEBUG
-        computeValues(barcodes, quantities, req, doc[0], res);
+        updateValues(barcodes, quantities, req, doc[0], res);
       }
     })
     .catch((err) => res.send(err));
-  // TODO: update e calcolo delle calorie tot e degli
-  // altri valori totali
 };
