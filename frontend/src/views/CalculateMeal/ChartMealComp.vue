@@ -1,31 +1,41 @@
 <template>
-  <RotatingPieChart class='piechart_meal' v-bind:data='dataToShow' />
+  <div>
+    <apexchart type=pie width=800 :options="chartOptions" :series="series" />
+  </div>
 </template>
 
 <script>
-import RotatingPieChart from 'vue-d3-rotating-piechart';
+import VueApexCharts from 'vue-apexcharts';
 
 export default {
   name: 'chartMealComp',
   components: {
-    RotatingPieChart,
+    apexchart: VueApexCharts,
   },
   props: {
-    mealComp: Array,
+    mealComp: {
+      type: Object,
+    },
   },
   data() {
     return {
-      dataToShow: this.mealComp,
+      series: this.mealComp.av,
+      chartOptions: {
+        labels: this.mealComp.al,
+        responsive: [{
+          breakpoint: 480,
+          options: {
+            chart: {
+              width: 350,
+            },
+            legend: {
+              position: 'bottom',
+            },
+          },
+        }],
+      },
     };
-  },
-  mounted() {
-    this.dataToShow = this.mealComp;
-    console.log('array: '.concat(this.dataToShow));
   },
 };
 
 </script>
-
-<style lang="scss">
-  @import './ChartMealComp.scss';
-</style>
