@@ -1,43 +1,36 @@
 <template>
-  <RotatingPieChart class='piechart_meal' :data='chart' />
+  <RotatingPieChart class='piechart_meal' :data='component' />
 </template>
 
 <script>
 import RotatingPieChart from 'vue-d3-rotating-piechart';
-
-// const axios = require('axios');
 
 export default {
   name: 'chartMealComp',
   components: {
     RotatingPieChart,
   },
-  data() {
-    return {
-      chart: [
-        {
-          label: 'aaaa',
-          value: 100,
-        },
-        {
-          label: 'bbb',
-          value: 200,
-        },
-        {
-          label: 'ccc',
-          value: 20,
-        },
-        {
-          label: 'ddd',
-          value: 15,
-        },
-        {
-          label: 'eee',
-          value: 50,
-        },
-      ],
-    };
+  props: {
+    component: Object,
   },
+  /* mounted() {
+    const usr = 'mrossi';
+    const param = { username: usr };
+
+    this.$http.get(`http://localhost:8081/api/${param.username}/meals`, { params: param })
+      .then((response) => {
+        const tmp = [];
+        response.data.meals[0].components.forEach((elem) => {
+          tmp.push({ label: elem.product_name, value: elem.quantity });
+          // console.log(elem);
+          console.log({ label: elem.product_name, value: elem.quantity });
+        });
+        this.chart = tmp;
+        this.$nextTick();
+        console.log('chart :'.concat(this.chart[0].label));
+      })
+      .catch(error => (console.log(error)));
+  }, */
 };
 
 </script>
