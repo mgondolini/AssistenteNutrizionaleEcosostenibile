@@ -57,7 +57,7 @@ exports.load_meal = async (req, res) => {
  * @param {*} req request received
  * @param {*} res response to send
  */
-function createFirstMeal(req, res) {
+const createFirstMeal = (req, res) => {
   const newMeal = new Meal(req.body);
   newMeal.save((err, meal) => {
     if (err) {
@@ -67,7 +67,7 @@ function createFirstMeal(req, res) {
     console.log(`Meal created${meal}`); // DEBUG
     res.status(201).json(meal);
   });
-}
+};
 
 /**
  * Adds meals to a user's meals list
@@ -75,7 +75,7 @@ function createFirstMeal(req, res) {
  * @param {*} doc document of the user
  * @param {*} res response to send
  */
-function addMeal(req, doc, res) {
+const addMeal = (req, doc, res) => {
   // TODO: GESTIONE RES, CONTROLLO SE ESISTE GIà UN update_meal
   //  CON LO STESSO NOME (OPPURE usare un id per evitarlo)
   const mealToAdd = req.body.meals;
@@ -91,7 +91,7 @@ function addMeal(req, doc, res) {
     console.log(`meal updated -> ${meal}`); // DEBUG
     res.status(201).json(meal);
   });
-}
+};
 
 /**
  * Inserts a new meal for a given user
@@ -113,33 +113,12 @@ exports.new_meal = async (req, res) => {
     .catch((err) => res.send(err));
 };
 
-function valuesPerQuantity(value, quantity) {
-  return ((value / 100) * quantity);
-}
-
-// function createValuesJson(energyTot, carbsTot, sugarsTot, fatTot, saturatedFatTot,
-//   proteinsTot, fiberTot, saltTot, sodiumTot, alcoholTot,
-//   calciumTot,
-//   carbonFootprintTot,
-//   waterFootprintTot) {
-//   const values = {
-//     energy_tot: energyTot,
-//     carbohidrates_tot: carbsTot,
-//     sugars_tot: sugarsTot,
-//     fat_tot: fatTot,
-//     saturated_fat_tot: saturatedFatTot,
-//     proteins_tot: proteinsTot,
-//     salt_tot: saltTot,
-//     sodium_tot: sodiumTot,
-//     calcium_tot: calciumTot,
-//     alcohol_tot: alcoholTot,
-//     fiber_tot: fiberTot,
-//     carbon_footprint_tot: carbonFootprintTot,
-//     water_footprint_tot: waterFootprintTot,
-//   };
-
-//   return values;
-// }
+/**
+ * Given a value for 100 grams, computes value for a given quantity.
+ * @param {*} value
+ * @param {*} quantity
+ */
+const valuesPerQuantity = (value, quantity) => ((value / 100) * quantity);
 
 
 /**
@@ -148,7 +127,7 @@ function valuesPerQuantity(value, quantity) {
  * @param {*} quantities
  * @param {*} res
  */
-async function computeValues(barcodes, quantities, doc, req, res) {
+const computeValues = async (barcodes, quantities, res) => {
   let energyTot;
   let quantity;
   let carbsTot;
@@ -185,11 +164,11 @@ async function computeValues(barcodes, quantities, doc, req, res) {
       carbonFootprintTot = 0;
       waterFootprintTot = 0;
       i = 0;
-      console.log(`documents found: ${docs}`); // DEBUG
+
+      // console.log(`documents found: ${docs}`); // DEBUG
+
       docs.forEach((d) => {
         quantity = quantities[i];
-
-        console.log(`prodotto: ${d.product_name} - quantità ${quantity}`); // DEBUG
 
         energyTot += valuesPerQuantity(d.energy_100g, quantity);
         carbsTot += valuesPerQuantity(d.carbohydrates_100g, quantity);
@@ -225,10 +204,10 @@ async function computeValues(barcodes, quantities, doc, req, res) {
     carbon_footprint_tot: carbonFootprintTot,
     water_footprint_tot: waterFootprintTot,
   };
-  console.log(values);
+  // console.log(values);
 
   return values;
-}
+};
 
 /**
  * Update meals total values
@@ -236,17 +215,21 @@ async function computeValues(barcodes, quantities, doc, req, res) {
  * @param {*} energyTot
  */
 
-async function updateValues(barcodes, quantities, doc, req, res) {
-  const values = computeValues(barcodes, quantities, doc, req, res);
-  doc.meals.forEach((d) => {
-    if (d.meal_name === req.body.mealName) {
-      // eslint-disable-next-line no-param-reassign
-      d.energy_tot = values.energy_tot;
-      console.log(`d.energy_tot${d.energy_tot}`);
-    }
-  });
-  doc.save((err) => { if (err) res.send(err); });
-}
+const updateValues = async (barcodes, quantities, req, doc, res) => {
+  computeValues(barcodes, quantities, res)
+    .then((values) => {
+      console.log(`update values json ${values}`); // DEBUG
+      doc.meals.forEach((d) => {
+        if (d.meal_name === req.body.mealName) {
+          console.log(`1-----d${d.meal_name}+${values.energy_tot}`); // DEBUG
+          // eslint-disable-next-line no-param-reassign
+          d.energy_tot = values.energy_tot;
+          console.log(`d.energy_tot${d.energy_tot}`); // DEBUG
+        }
+      });
+      doc.save((err) => { if (err) res.send(err); });
+    });
+};
 
 
 /**
@@ -263,7 +246,7 @@ exports.new_component = async (req, res) => {
       } else {
         const barcodes = [];
         const quantities = [];
-        console.log(`doc${doc}`);
+        console.log(`doc${doc}`); // DEBUG
         doc[0].meals.forEach((d) => {
           if (d.meal_name === req.body.mealName) {
             d.components.push(req.body.components);
@@ -274,7 +257,7 @@ exports.new_component = async (req, res) => {
             });
           }
         });
-        doc[0].save((err) => { if (err) res.send(err); });
+        // doc[0].save((err) => { if (err) res.send(err); });
         // res.status(201).json(doc);
         console.log(`barcodes ${barcodes}\n quantities ${quantities}`); // DEBUG
         updateValues(barcodes, quantities, req, doc[0], res);
