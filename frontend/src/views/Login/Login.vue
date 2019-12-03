@@ -56,7 +56,7 @@
 
 <script>
 const axios = require('axios');
-const crypto = require('crypto');
+// const crypto = require('crypto');
 const config = require('../../../config.json');
 
 export default {
@@ -72,33 +72,30 @@ export default {
   methods: {
     onSubmit(evt) {
       evt.preventDefault();
+      // const mail = this.form.email;
       const psw = this.form.password;
-      axios.get(config.server.concat('api/publickey'))
-        .then((publicKey)=>{
+      // http://localhost:8081/api/publickey
+      // config.server.concat('api/publickey')
+      axios.get('http://localhost:8081/api/publickey')
+        .then((publicKey) => {
           const buffer = Buffer.from(psw);
+          // TODO publicEncrypt non funziona
           const encrypted = crypto.publicEncrypt(publicKey, buffer);
-          const enc = encrypted.toString("base64");
-          axios.post(config.server.concat('api/auth/'.concat(enc)))
-            .then((authToken)=>{
+          console.log(encrypted);
+          // const enc = encrypted.toString('base64');
+          axios.post(config.server.concat('api/auth/'.concat('mail')), { key: 'enc' })
+            .then((response) => {
               // TODO test if token is visible globally
-              this.$token = authToken;
-            }).catch((error)=>{
+              this.$token = response.token;
+              alert(response.desc);
+            }).catch((error) => {
               // TODO manage error generating token
-            })
-        }).catch((error)=>{
-          // TODO manage error getting public key
-        });
-      /*
-      axios.get(config.server.concat(`api/user/${this.form.password}`))
-        .then((response) => {
-          alert(JSON.stringify(response));
-          console.log(response);
+              console.log('Error during login: '.concat(error));
+            });
         }).catch((error) => {
-          alert(JSON.stringify(error));
-          // console.log(error);
+          // TODO manage error getting public key
+          console.log('Error getting publicKey: '.concat(error));
         });
-      */
-      // alert(JSON.stringify(this.form));
     },
   },
 };
