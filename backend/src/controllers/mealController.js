@@ -18,7 +18,7 @@ const valuePerPortion = (value, quantity) => ((value / 100) * quantity);
  * @param {*} quantities in grams of the products eaten
  * @param {*} res
  */
-const computeValues = async (barcode, quantity, res) => {
+const computeMealValues = async (barcode, quantity, res) => {
   //
   let productName;
   let imageUrl;
@@ -44,7 +44,7 @@ const computeValues = async (barcode, quantity, res) => {
     .exec()
     .then((product) => {
       productName = product.product_name;
-      imageUrl = product.image_url;
+      imageUrl = product.img_url;
       energyTot = valuePerPortion(product.energy_100g, quantity);
       carbsTot = valuePerPortion(product.carbohydrates_100g, quantity);
       sugarsTot = valuePerPortion(product.sugars_100g, quantity);
@@ -78,7 +78,7 @@ const computeValues = async (barcode, quantity, res) => {
     carbon_footprint_tot: carbonFootprintTot,
     water_footprint_tot: waterFootprintTot,
   };
-  // console.log(values); //DEBUG
+  console.log(values); // DEBUG
 
   return values;
 };
@@ -88,33 +88,48 @@ const computeValues = async (barcode, quantity, res) => {
  * @param {*} req
  * @param {*} energyTot
  */
+const updateMealValues = async (components, mealName, userMeals, res) => {
+  console.log(`components${JSON.stringify(components)}`);
+  const { barcode } = components;
+  const { quantity } = components;
 
-const updateValues = async (barcodes, quantities, req, doc, res) => {
-  computeValues(barcodes, quantities, res)
+  console.log(`barcode ${JSON.stringify(barcode)} - quantity ${JSON.stringify(quantity)}`);
+
+  computeMealValues(barcode, quantity, res)
     .then((values) => {
-      doc.meals.forEach((d) => {
-        if (d.meal_name === req.body.mealName) {
-          console.log(`-----d.meal_name${d.meal_name}+${values.energy_tot}`); // DEBUG
+      userMeals.meals.forEach((meal) => {
+        if (meal.meal_name === mealName) {
+          console.log(`meal.energy_tot${JSON.stringify(meal.energy_tot)}`); // DEBUG
 
-          d.energy_tot = values.energy_tot;
-          d.carbohidrates_tot = values.carbohidrates_tot;
-          d.sugars_tot = values.sugars_tot;
-          d.fat_tot = values.fat_tot;
-          d.saturated_fat_tot = values.saturated_fat_tot;
-          d.proteins_tot = values.proteins_tot;
-          d.salt_tot = values.salt_tot;
-          d.sodium_tot = values.sodium_tot;
-          d.calcium_tot = values.calcium_tot;
-          d.alcohol_tot = values.alcohol_tot;
-          d.fiber_tot = values.fiber_tot;
-          d.carbon_footprint_tot = values.carbon_footprint_tot;
-          d.water_footprint_tot = values.water_footprint_tot;
+          meal.energy_tot += values.energy_tot;
+          meal.carbohidrates_tot += values.carbohidrates_tot;
+          meal.sugars_tot += values.sugars_tot;
+          meal.fat_tot += values.fat_tot;
+          meal.saturated_fat_tot += values.saturated_fat_tot;
+          meal.proteins_tot += values.proteins_tot;
+          meal.salt_tot += values.salt_tot;
+          meal.sodium_tot += values.sodium_tot;
+          meal.calcium_tot += values.calcium_tot;
+          meal.alcohol_tot += values.alcohol_tot;
+          meal.fiber_tot += values.fiber_tot;
+          meal.carbon_footprint_tot += values.carbon_footprint_tot;
+          meal.water_footprint_tot += values.water_footprint_tot;
 
-          console.log(`d.energy_tot${d.energy_tot}`); // DEBUG
+          meal.components.forEach((component) => {
+            if (component.barcode === barcode) {
+              component.product_name = values.product_name;
+              component.img_url = values.image_url;
+            }
+          });
+
+          meal.components.push(components);
+
+          console.log(`meal.energy_tot${JSON.stringify(meal.energy_tot)}`); // DEBUG
         }
       });
-      doc.save((err) => { if (err) res.send(err); });
     });
+  console.log(userMeals);
+  userMeals.save((err) => { if (err) res.send(err); });
 };
 
 
@@ -198,7 +213,7 @@ const createFirstMeal = (req, res) => {
   console.log(`components${newMeal.meals[0].components}`);
   console.log(`barcode${newMeal.meals[0].components[0].barcode}`);
 
-  updateValues(barcode, quantity, req, newMeal, res);
+  updateMealValues(barcode, quantity, req, newMeal, res);
 
   res.send(newMeal);
   // newMeal.save((err, meal) => {
@@ -261,7 +276,9 @@ exports.new_meal = async (req, res) => {
  */
 exports.new_component = async (req, res) => {
   const query = { username: req.body.username };
-
+  const { mealName } = req.body;
+  const { components } = req.body;
+  console.log(`NEW COMPONENT\nmealName${JSON.stringify(mealName)}\ncomponents${JSON.stringify(components)}`); // DEBUG
   // cerco il prodotto relativo al barcode inserito
   // salvo i valori
   // ricalcolo i prodotti sulla quantità
@@ -269,31 +286,12 @@ exports.new_component = async (req, res) => {
 
   await Meal.find(query)
     .exec()
-    .then((doc) => {
-      if (doc == null) {
+    .then((userMeals) => {
+      if (userMeals == null) {
         res.status(404).send({ description: `Meal not found for user ${req.query.username}` });
       } else {
-        const barcodes = [];
-        const quantities = [];
-        console.log(`doc${doc}`); // DEBUG
-        doc[0].meals.forEach((d) => {
-          if (d.meal_name === req.body.mealName) {
-            // aggiorno lo schema
-            // mealschema.energy_tot += valore calcolato
-            // nei componenti devo aggiungere url e product name
-            d.components.push(req.body.components);
-
-            // questi non mi servono
-            d.components.forEach((c) => {
-              barcodes.push(c.barcode);
-              quantities.push(c.quantity);
-            });
-          }
-        });
-        // doc[0].save((err) => { if (err) res.send(err); });
-        // res.status(201).json(doc);
-        console.log(`barcodes ${barcodes}\n quantities ${quantities}`); // DEBUG
-        updateValues(barcodes, quantities, req, doc[0], res);
+        console.log(`userMeals${userMeals[0]}+ components${JSON.stringify(components)}`); // DEBUG
+        updateMealValues(components, mealName, userMeals[0], res);
       }
     })
     .catch((err) => res.send(err));
