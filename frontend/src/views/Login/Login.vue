@@ -56,9 +56,10 @@
 
 <script>
 const axios = require('axios');
-// const crypto = require('crypto');
+const crypto = require('crypto');
 const config = require('../../../config.json');
 
+console.log(crypto);
 export default {
   name: 'login',
   data() {
@@ -72,22 +73,28 @@ export default {
   methods: {
     onSubmit(evt) {
       evt.preventDefault();
-      // const mail = this.form.email;
+      const mail = this.form.email;
       const psw = this.form.password;
       // http://localhost:8081/api/publickey
       // config.server.concat('api/publickey')
-      axios.get('http://localhost:8081/api/publickey')
-        .then((publicKey) => {
+      axios.get(config.server.concat('api/publickey'))
+        .then((response) => {
           const buffer = Buffer.from(psw);
           // TODO publicEncrypt non funziona
-          const encrypted = crypto.publicEncrypt(publicKey, buffer);
-          console.log(encrypted);
-          // const enc = encrypted.toString('base64');
-          axios.post(config.server.concat('api/auth/'.concat('mail')), { key: 'enc' })
-            .then((response) => {
+          console.log(response.data.publicKey);
+          const pk = crypto.createPublicKey({
+            key: response.data.publicKey,
+            format: 'pem',
+            type: 'spki',
+          });
+          console.log(pk);
+          const encrypted = crypto.publicEncrypt(pk, buffer);
+          const enc = encrypted.toString('base64');
+          axios.post(config.server.concat('api/auth/'.concat(mail)), { key: enc })
+            .then((res) => {
               // TODO test if token is visible globally
-              this.$token = response.token;
-              alert(response.desc);
+              this.$token = res.token;
+              alert(res.desc);
             }).catch((error) => {
               // TODO manage error generating token
               console.log('Error during login: '.concat(error));

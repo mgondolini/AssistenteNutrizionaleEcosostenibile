@@ -13,7 +13,8 @@ exports.getPrivateKey = function getPrivateKey() {
 };
 
 exports.getPublicKey = function getPublicKey(_req, res) {
-  res.json(fs.readFileSync(config.publicKeyFile, { encoding: 'utf8' }));
+  const pk = fs.readFileSync(config.publicKeyFile, { encoding: 'utf8' });
+  res.json({ publicKey: pk });
 };
 
 exports.genKeyPair = function genKeyPair() {
