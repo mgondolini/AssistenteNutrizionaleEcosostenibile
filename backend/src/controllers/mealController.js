@@ -5,116 +5,6 @@ const Meal = mongoose.model('Meals');
 const Products = mongoose.model('Product');
 
 /**
- * Loads all the meals for a given user
- */
-exports.load_meals_list = async (req, res) => {
-  console.log('looking for meal...'); // DEBUG
-
-  const { query } = req;
-
-  await Meal.findOne(query)
-    .exec()
-    .then((doc) => {
-      if (doc.length === 0) {
-        res.status(404).send({ description: `Meals not found for user ${req.query.username}` });
-        console.log(`Meals not found for user ${req.query.username}`); // DEBUG
-      } else {
-        res.status(200).json(doc);
-        console.log(`Meals list for user ${req.query.username}:\n${doc}`); // DEBUG
-      }
-    })
-    .catch((err) => res.send(err));
-};
-
-
-/**
- * Loads a specific meal for a given user
- */
-exports.load_meal = async (req, res) => {
-  console.log('looking for meal to load...'); // DEBUG
-
-  const query = { username: req.query.username };
-  const projection = {
-    username: req.query.username,
-    meals: { $elemMatch: { meal_name: req.query.mealName } },
-  };
-
-  await Meal.findOne(query, projection)
-    .exec()
-    .then((doc) => {
-      if (doc.length === 0) {
-        res.status(404).send({ description: `Meal not found for user ${req.query.username}` });
-        console.log(`Meal not found for user ${req.query.username}`); // DEBUG
-      } else {
-        res.status(200).json(doc);
-        console.log(`Meal found for user ${req.query.username}:\n${doc}`); // DEBUG
-      }
-    })
-    .catch((err) => res.send(err));
-};
-
-/**
- * Creates the first meal of a user
- * @param {*} req request received
- * @param {*} res response to send
- */
-const createFirstMeal = (req, res) => {
-  const newMeal = new Meal(req.body);
-  newMeal.save((err, meal) => {
-    if (err) {
-      console.log('Error while creating new meal'); // DEBUG
-      res.send(err);
-    }
-    console.log(`Meal created${meal}`); // DEBUG
-    res.status(201).json(meal);
-  });
-};
-
-/**
- * Adds meals to a user's meals list
- * @param {*} req request received
- * @param {*} doc document of the user
- * @param {*} res response to send
- */
-const addMeal = (req, doc, res) => {
-  // TODO: GESTIONE RES, CONTROLLO SE ESISTE GIà UN update_meal
-  //  CON LO STESSO NOME (OPPURE usare un id per evitarlo)
-  const mealToAdd = req.body.meals;
-
-  const updateMeal = new Meal(doc);
-  updateMeal.meals.push(mealToAdd);
-
-  updateMeal.save((err, meal) => {
-    if (err) {
-      console.log('error while updating new meal'); // DEBUG
-      res.send(err);
-    }
-    console.log(`meal updated -> ${meal}`); // DEBUG
-    res.status(201).json(meal);
-  });
-};
-
-/**
- * Inserts a new meal for a given user
- */
-exports.new_meal = async (req, res) => {
-  const query = { username: req.body.username };
-
-  await Meal.findOne(query)
-    .exec()
-    .then((doc) => {
-      if (doc == null) {
-        createFirstMeal(req, res);
-        console.log(`Meal not found for user ${req.query.username}\n Inserting...`); // DEBUG
-      } else {
-        addMeal(req, doc, res);
-        console.log(`Meal found for user ${req.query.username}:\n${doc}`); // DEBUG
-      }
-    })
-    .catch((err) => res.send(err));
-};
-
-/**
  * Given a value for 100 grams, computes value for a given quantity.
  * @param {*} value for 100g of the product
  * @param {*} quantity portion of the product in grams
@@ -128,9 +18,11 @@ const valuePerPortion = (value, quantity) => ((value / 100) * quantity);
  * @param {*} quantities in grams of the products eaten
  * @param {*} res
  */
-const computeValues = async (barcodes, quantities, res) => {
+const computeValues = async (barcode, quantity, res) => {
+  //
+  let productName;
+  let imageUrl;
   let energyTot;
-  let quantity;
   let carbsTot;
   let sugarsTot;
   let fatTot;
@@ -143,54 +35,35 @@ const computeValues = async (barcodes, quantities, res) => {
   let calciumTot;
   let carbonFootprintTot;
   let waterFootprintTot;
-  let i;
 
-  const query = { code: { $in: barcodes } };
+  const query = { code: barcode };
+
+  console.log(`query${JSON.stringify(query)}`);
 
   await Products.find(query)
     .exec()
-    .then((docs) => {
-      energyTot = 0;
-      quantity = 0;
-      carbsTot = 0;
-      sugarsTot = 0;
-      fatTot = 0;
-      saturatedFatTot = 0;
-      proteinsTot = 0;
-      fiberTot = 0;
-      saltTot = 0;
-      sodiumTot = 0;
-      alcoholTot = 0;
-      calciumTot = 0;
-      carbonFootprintTot = 0;
-      waterFootprintTot = 0;
-      i = 0;
-
-      // console.log(`documents found: ${docs}`); // DEBUG
-
-      docs.forEach((d) => {
-        quantity = quantities[i];
-
-        energyTot += valuePerPortion(d.energy_100g, quantity);
-        carbsTot += valuePerPortion(d.carbohydrates_100g, quantity);
-        sugarsTot += valuePerPortion(d.sugars_100g, quantity);
-        fatTot += valuePerPortion(d.fat_100g, quantity);
-        saturatedFatTot += valuePerPortion(d.saturated_fat_100g, quantity);
-        proteinsTot += valuePerPortion(d.proteins_100g, quantity);
-        fiberTot += valuePerPortion(d.fiber_100g, quantity);
-        saltTot += valuePerPortion(d.salt_100g, quantity);
-        sodiumTot += valuePerPortion(d.sodium_100g, quantity);
-        alcoholTot += valuePerPortion(d.alcohol_100g, quantity);
-        calciumTot += valuePerPortion(d.calcium_100g, quantity);
-        carbonFootprintTot += valuePerPortion(d.carbon_footprint_100g, quantity);
-        waterFootprintTot += valuePerPortion(d.water_footprint_100g, quantity);
-
-        i += 1;
-      });
+    .then((product) => {
+      productName = product.product_name;
+      imageUrl = product.image_url;
+      energyTot = valuePerPortion(product.energy_100g, quantity);
+      carbsTot = valuePerPortion(product.carbohydrates_100g, quantity);
+      sugarsTot = valuePerPortion(product.sugars_100g, quantity);
+      fatTot = valuePerPortion(product.fat_100g, quantity);
+      saturatedFatTot = valuePerPortion(product.saturated_fat_100g, quantity);
+      proteinsTot = valuePerPortion(product.proteins_100g, quantity);
+      fiberTot = valuePerPortion(product.fiber_100g, quantity);
+      saltTot = valuePerPortion(product.salt_100g, quantity);
+      sodiumTot = valuePerPortion(product.sodium_100g, quantity);
+      alcoholTot = valuePerPortion(product.alcohol_100g, quantity);
+      calciumTot = valuePerPortion(product.calcium_100g, quantity);
+      carbonFootprintTot = valuePerPortion(product.carbon_footprint_100g, quantity);
+      waterFootprintTot = valuePerPortion(product.water_footprint_100g, quantity);
     })
     .catch((err) => res.send(err));
 
   const values = {
+    product_name: productName,
+    image_url: imageUrl,
     energy_tot: energyTot,
     carbohidrates_tot: carbsTot,
     sugars_tot: sugarsTot,
@@ -246,10 +119,153 @@ const updateValues = async (barcodes, quantities, req, doc, res) => {
 
 
 /**
+ * Loads all the meals for a given user
+ */
+exports.load_meals_list = async (req, res) => {
+  console.log('looking for meal...'); // DEBUG
+
+  const { query } = req;
+
+  await Meal.findOne(query)
+    .exec()
+    .then((doc) => {
+      if (doc.length === 0) {
+        res.status(404).send({ description: `Meals not found for user ${req.query.username}` });
+        console.log(`Meals not found for user ${req.query.username}`); // DEBUG
+      } else {
+        res.status(200).json(doc);
+        console.log(`Meals list for user ${req.query.username}:\n${doc}`); // DEBUG
+      }
+    })
+    .catch((err) => res.send(err));
+};
+
+
+/**
+ * Loads a specific meal for a given user
+ */
+exports.load_meal = async (req, res) => {
+  console.log('looking for meal to load...'); // DEBUG
+
+  const query = { username: req.query.username };
+  const projection = {
+    username: req.query.username,
+    meals: { $elemMatch: { meal_name: req.query.mealName } },
+  };
+
+  await Meal.findOne(query, projection)
+    .exec()
+    .then((doc) => {
+      if (doc.length === 0) {
+        res.status(404).send({ description: `Meal not found for user ${req.query.username}` });
+        console.log(`Meal not found for user ${req.query.username}`); // DEBUG
+      } else {
+        res.status(200).json(doc);
+        console.log(`Meal found for user ${req.query.username}:\n${doc}`); // DEBUG
+      }
+    })
+    .catch((err) => res.send(err));
+};
+
+/**
+ * Creates the first meal of a user
+ * @param {*} req request received
+ * @param {*} res response to send
+ */
+const createFirstMeal = (req, res) => {
+  // creo un pasto vuoto con solo username e meal name
+  const newMeal = new Meal(req.body);
+
+  // energy_tot: 0,
+  // carbohydrates_tot: 0,
+  // sugars_tot: 0,
+  // fat_tot: 0,
+  // saturated_fat_tot: 0,
+  // proteins_tot: 0,
+  // fiber_tot: 0,
+  // salt_tot: 0,
+  // sodium_tot: 0,
+  // alcohol_tot: 0,
+  // calcium_tot: 0,
+  // carbon_footprint_tot: 0,
+  // water_footprint_tot: 0,
+
+  const { barcode } = newMeal.meals[0].components[0];
+  const { quantity } = newMeal.meals[0].components[0];
+
+  console.log(`new meal${newMeal}`);
+  console.log(`meals${newMeal.meals}`);
+  console.log(`components${newMeal.meals[0].components}`);
+  console.log(`barcode${newMeal.meals[0].components[0].barcode}`);
+
+  updateValues(barcode, quantity, req, newMeal, res);
+
+  res.send(newMeal);
+  // newMeal.save((err, meal) => {
+  //   if (err) {
+  //     console.log('Error while creating new meal'); // DEBUG
+  //     res.send(err);
+  //   }
+  //   console.log(`Meal created${meal}`); // DEBUG
+  //   res.status(201).json(meal);
+  // });
+};
+
+/**
+ * Adds meals to a user's meals list
+ * @param {*} req request received
+ * @param {*} doc document of the user
+ * @param {*} res response to send
+ */
+const addMeal = (req, doc, res) => {
+  // TODO: GESTIONE RES, CONTROLLO SE ESISTE GIà UN update_meal
+  //  CON LO STESSO NOME (OPPURE usare un id per evitarlo)
+  const mealToAdd = req.body.meals;
+
+  const updateMeal = new Meal(doc);
+  updateMeal.meals.push(mealToAdd);
+
+  updateMeal.save((err, meal) => {
+    if (err) {
+      console.log('error while updating new meal'); // DEBUG
+      res.send(err);
+    }
+    console.log(`meal updated -> ${meal}`); // DEBUG
+    res.status(201).json(meal);
+  });
+};
+
+/**
+ * Inserts a new meal for a given user
+ */
+exports.new_meal = async (req, res) => {
+  const query = { username: req.body.username };
+
+  await Meal.findOne(query)
+    .exec()
+    .then((doc) => {
+      if (doc == null) {
+        createFirstMeal(req, res);
+        console.log(`Meal not found for user ${req.query.username}\n Inserting...`); // DEBUG
+      } else {
+        addMeal(req, doc, res);
+        console.log(`Meal found for user ${req.query.username}:\n${doc}`); // DEBUG
+      }
+    })
+    .catch((err) => res.send(err));
+};
+
+
+/**
  * Creates a component for an existing meal
  */
 exports.new_component = async (req, res) => {
   const query = { username: req.body.username };
+
+  // cerco il prodotto relativo al barcode inserito
+  // salvo i valori
+  // ricalcolo i prodotti sulla quantità
+  // url e nome prodotto
 
   await Meal.find(query)
     .exec()
@@ -262,8 +278,12 @@ exports.new_component = async (req, res) => {
         console.log(`doc${doc}`); // DEBUG
         doc[0].meals.forEach((d) => {
           if (d.meal_name === req.body.mealName) {
+            // aggiorno lo schema
+            // mealschema.energy_tot += valore calcolato
+            // nei componenti devo aggiungere url e product name
             d.components.push(req.body.components);
 
+            // questi non mi servono
             d.components.forEach((c) => {
               barcodes.push(c.barcode);
               quantities.push(c.quantity);
