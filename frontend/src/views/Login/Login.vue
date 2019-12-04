@@ -82,14 +82,8 @@ export default {
           const buffer = Buffer.from(psw);
           // TODO publicEncrypt non funziona
           console.log(response.data.publicKey);
-          const pk = crypto.createPublicKey({
-            key: response.data.publicKey,
-            format: 'pem',
-            type: 'spki',
-          });
-          console.log(pk);
-          const encrypted = crypto.publicEncrypt(pk, buffer);
-          const enc = encrypted.toString('base64');
+          const encrypted = crypto.publicEncrypt(response.data.publicKey, buffer);
+          const enc = encrypted.toString();
           axios.post(config.server.concat('api/auth/'.concat(mail)), { key: enc })
             .then((res) => {
               // TODO test if token is visible globally

@@ -11,11 +11,14 @@ const digest = 'sha512';
 
 exports.auth = function auth(req, res) {
   const query = { email: req.params.email };
+  console.log('Psw enc length: '.concat(req.body.key.length));
   UserModel.findOne(query)
     .exec()
     .then((user) => {
+      console.log('User found!');
       const psw = crypto.privateDecrypt(keyController.getPrivateKey(),
         Buffer.from(req.body.key)).toString();
+      console.log('Decripted psw: '.concat(psw));
       const pswHash = crypto.pbkdf2Sync(psw, user.salt.toString('hex'), iterations, keyLen, digest);
       if (pswHash === user.password_hash_salt) {
         res.status(200);
@@ -26,7 +29,7 @@ exports.auth = function auth(req, res) {
         return res.send({ desc: 'nais giob', token: t });
       }
       return res.status(401).send('Wrong password');
-    }).catch((err) => res.status(401).send(err));
+    }).catch((err) => { console.log('Errore: '.concat(err)); res.status(401).send(err); });
   // teapot
   // res.status(418).send('Wrong password');
 };

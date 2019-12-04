@@ -21,7 +21,7 @@ exports.genKeyPair = function genKeyPair() {
   const keyPair = crypto.generateKeyPairSync('rsa', {
     modulusLength: 4096,
     publicKeyEncoding: {
-      type: 'spki',
+      type: 'pkcs1',
       format: 'pem',
     },
     privateKeyEncoding: {
@@ -32,11 +32,11 @@ exports.genKeyPair = function genKeyPair() {
     },
   });
   // use config file
-  fs.writeFile('publcKey.txt', keyPair.publicKey, (err) => {
+  fs.writeFile('publicKey.txt', keyPair.publicKey, (err) => {
     if (err) global.log(err);
     global.log('Saved publicKey!');
   });
-  fs.writeFile('privteKey.txt', keyPair.privateKey, (err) => {
+  fs.writeFile('privateKey.txt', keyPair.privateKey, (err) => {
     if (err) global.log(err);
     global.log('Saved privateKey!');
   });
