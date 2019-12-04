@@ -3,8 +3,9 @@ const mongoose = require('mongoose');
 const { Schema } = mongoose;
 
 const MealComponentSchema = new Schema({
-  barcode: String,
+  barcode: Number,
   product_name: String,
+  image_url: String,
   quantity: Number,
 }, { _id: false });
 

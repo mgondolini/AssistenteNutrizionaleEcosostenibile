@@ -9,7 +9,12 @@ const Products = mongoose.model('Product');
  * @param {*} value for 100g of the product
  * @param {*} quantity portion of the product in grams
  */
-const valuePerPortion = (value, quantity) => ((value / 100) * quantity);
+const computeValuePerPortion = (value, quantity) => ((value / 100) * quantity);
+
+const valuePerPortion = (value, quantity) => {
+  if (value != null) computeValuePerPortion(value, quantity);
+  else value = 0;
+};
 
 
 /**
@@ -19,7 +24,6 @@ const valuePerPortion = (value, quantity) => ((value / 100) * quantity);
  * @param {*} res
  */
 const computeMealValues = async (barcode, quantity, res) => {
-  //
   let productName;
   let imageUrl;
   let energyTot;
@@ -37,14 +41,16 @@ const computeMealValues = async (barcode, quantity, res) => {
   let waterFootprintTot;
 
   const query = { code: barcode };
+  console.log(JSON.stringify(query));
 
-  console.log(`query${JSON.stringify(query)}`);
-
-  await Products.find(query)
+  await Products.findOne(query)
     .exec()
     .then((product) => {
+      console.log(`product--${JSON.stringify(product)}`); // DEBUG
+
       productName = product.product_name;
-      imageUrl = product.img_url;
+      imageUrl = product.image_url;
+      // tutti questi li da nulli
       energyTot = valuePerPortion(product.energy_100g, quantity);
       carbsTot = valuePerPortion(product.carbohydrates_100g, quantity);
       sugarsTot = valuePerPortion(product.sugars_100g, quantity);
@@ -58,6 +64,8 @@ const computeMealValues = async (barcode, quantity, res) => {
       calciumTot = valuePerPortion(product.calcium_100g, quantity);
       carbonFootprintTot = valuePerPortion(product.carbon_footprint_100g, quantity);
       waterFootprintTot = valuePerPortion(product.water_footprint_100g, quantity);
+
+      console.log(`product name--${JSON.stringify(productName)}`); // DEBUG
     })
     .catch((err) => res.send(err));
 
@@ -78,7 +86,7 @@ const computeMealValues = async (barcode, quantity, res) => {
     carbon_footprint_tot: carbonFootprintTot,
     water_footprint_tot: waterFootprintTot,
   };
-  console.log(values); // DEBUG
+  console.log(`VALUES${JSON.stringify(values)}`); // DEBUG
 
   return values;
 };
@@ -100,6 +108,7 @@ const updateMealValues = async (components, mealName, userMeals, res) => {
       userMeals.meals.forEach((meal) => {
         if (meal.meal_name === mealName) {
           console.log(`meal.energy_tot${JSON.stringify(meal.energy_tot)}`); // DEBUG
+          console.log(values);
 
           meal.energy_tot += values.energy_tot;
           meal.carbohidrates_tot += values.carbohidrates_tot;
@@ -127,9 +136,10 @@ const updateMealValues = async (components, mealName, userMeals, res) => {
           console.log(`meal.energy_tot${JSON.stringify(meal.energy_tot)}`); // DEBUG
         }
       });
+
+      userMeals.save((err) => { if (err) res.send(err); });
     });
   console.log(userMeals);
-  userMeals.save((err) => { if (err) res.send(err); });
 };
 
 
@@ -290,7 +300,7 @@ exports.new_component = async (req, res) => {
       if (userMeals == null) {
         res.status(404).send({ description: `Meal not found for user ${req.query.username}` });
       } else {
-        console.log(`userMeals${userMeals[0]}+ components${JSON.stringify(components)}`); // DEBUG
+        console.log(`userMeals${userMeals[0]}`); // DEBUG
         updateMealValues(components, mealName, userMeals[0], res);
       }
     })
