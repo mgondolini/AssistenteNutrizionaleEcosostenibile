@@ -12,8 +12,12 @@ const Products = mongoose.model('Product');
 const computeValuePerPortion = (value, quantity) => ((value / 100) * quantity);
 
 const valuePerPortion = (value, quantity) => {
-  if (value != null) computeValuePerPortion(value, quantity);
-  else value = 0;
+  let valuePerQuantity;
+
+  if (value != null) valuePerQuantity = computeValuePerPortion(value, quantity);
+  else valuePerQuantity = 0;
+
+  return valuePerQuantity;
 };
 
 
@@ -46,11 +50,10 @@ const computeMealValues = async (barcode, quantity, res) => {
   await Products.findOne(query)
     .exec()
     .then((product) => {
-      console.log(`product--${JSON.stringify(product)}`); // DEBUG
+      console.log(`product--${JSON.stringify(product.energy_100g)}`); // DEBUG
 
       productName = product.product_name;
       imageUrl = product.image_url;
-      // tutti questi li da nulli
       energyTot = valuePerPortion(product.energy_100g, quantity);
       carbsTot = valuePerPortion(product.carbohydrates_100g, quantity);
       sugarsTot = valuePerPortion(product.sugars_100g, quantity);
@@ -65,7 +68,7 @@ const computeMealValues = async (barcode, quantity, res) => {
       carbonFootprintTot = valuePerPortion(product.carbon_footprint_100g, quantity);
       waterFootprintTot = valuePerPortion(product.water_footprint_100g, quantity);
 
-      console.log(`product name--${JSON.stringify(productName)}`); // DEBUG
+      console.log(`product energy--${JSON.stringify(energyTot)}`); // DEBUG
     })
     .catch((err) => res.send(err));
 
@@ -97,19 +100,14 @@ const computeMealValues = async (barcode, quantity, res) => {
  * @param {*} energyTot
  */
 const updateMealValues = async (components, mealName, userMeals, res) => {
-  console.log(`components${JSON.stringify(components)}`);
   const { barcode } = components;
   const { quantity } = components;
-
-  console.log(`barcode ${JSON.stringify(barcode)} - quantity ${JSON.stringify(quantity)}`);
 
   computeMealValues(barcode, quantity, res)
     .then((values) => {
       userMeals.meals.forEach((meal) => {
         if (meal.meal_name === mealName) {
-          console.log(`meal.energy_tot${JSON.stringify(meal.energy_tot)}`); // DEBUG
-          console.log(values);
-
+          // Meal schema field update
           meal.energy_tot += values.energy_tot;
           meal.carbohidrates_tot += values.carbohidrates_tot;
           meal.sugars_tot += values.sugars_tot;
@@ -124,22 +122,17 @@ const updateMealValues = async (components, mealName, userMeals, res) => {
           meal.carbon_footprint_tot += values.carbon_footprint_tot;
           meal.water_footprint_tot += values.water_footprint_tot;
 
-          meal.components.forEach((component) => {
-            if (component.barcode === barcode) {
-              component.product_name = values.product_name;
-              component.img_url = values.image_url;
-            }
-          });
+          // Components schema field update
+          components.product_name = values.product_name;
+          components.image_url = values.image_url;
+
+          console.log(`components: ${components}`); // DEBUG
 
           meal.components.push(components);
-
-          console.log(`meal.energy_tot${JSON.stringify(meal.energy_tot)}`); // DEBUG
         }
       });
-
       userMeals.save((err) => { if (err) res.send(err); });
     });
-  console.log(userMeals);
 };
 
 
