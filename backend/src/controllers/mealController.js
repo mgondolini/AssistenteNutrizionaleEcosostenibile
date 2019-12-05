@@ -186,23 +186,7 @@ exports.load_meal = async (req, res) => {
     .catch((err) => res.send(err));
 };
 
-/**
- * Creates the first meal of a user
- * @param {*} req request received
- * @param {*} res response to send
- */
-const createFirstMeal = (req, res) => {
-  // creo un pasto vuoto con solo username e meal name
-
-  const { username } = req.body;
-  const mealName = req.body.meals.meal_name;
-
-
-  const newMeal = new Meal();
-  newMeal.username = username;
-  console.log(`newMeal${JSON.stringify(newMeal)}`);
-
-  // provare con newMeal.meals[0].energyTot
+const initMealValues = (mealName) => {
   const mealToAdd = new SingleMeal();
   mealToAdd.meal_name = mealName;
   mealToAdd.components = [{}];
@@ -220,6 +204,25 @@ const createFirstMeal = (req, res) => {
   mealToAdd.carbon_footprint_tot = 0;
   mealToAdd.water_footprint_tot = 0;
   mealToAdd.timestamp = new Date();
+  return mealToAdd;
+};
+
+
+/**
+ * Creates the first meal of a user
+ * @param {*} req request received
+ * @param {*} res response to send
+ */
+const createFirstMeal = (req, res) => {
+  // creo un pasto vuoto con solo username e meal name
+
+  const { username } = req.body;
+  const mealName = req.body.meals.meal_name;
+
+  const newMeal = new Meal();
+  newMeal.username = username;
+
+  const mealToAdd = initMealValues(mealName);
 
   newMeal.meals.push(mealToAdd);
 
@@ -241,39 +244,24 @@ const createFirstMeal = (req, res) => {
  * @param {*} res response to send
  */
 const addMeal = (req, doc, res) => {
-  // TODO: GESTIONE RES, CONTROLLO SE ESISTE GIà UN update_meal
-  //  CON LO STESSO NOME (OPPURE usare un id per evitarlo)
   const mealName = req.body.meals.meal_name;
-  console.log(`mealName${mealName}`);
   let mealToAdd;
 
   const updateMeal = new Meal(doc);
 
+  let exists = false;
+
   doc.meals.forEach((m) => {
-    if (m.meal_name !== mealName) {
-      mealToAdd = new SingleMeal();
-      mealToAdd.meal_name = mealName;
-      mealToAdd.components = [{}];
-      mealToAdd.energy_tot = 0;
-      mealToAdd.carbohydrates_tot = 0;
-      mealToAdd.sugars_tot = 0;
-      mealToAdd.fat_tot = 0;
-      mealToAdd.saturated_fat_tot = 0;
-      mealToAdd.proteins_tot = 0;
-      mealToAdd.fiber_tot = 0;
-      mealToAdd.salt_tot = 0;
-      mealToAdd.sodium_tot = 0;
-      mealToAdd.alcohol_tot = 0;
-      mealToAdd.calcium_tot = 0;
-      mealToAdd.carbon_footprint_tot = 0;
-      mealToAdd.water_footprint_tot = 0;
-      mealToAdd.timestamp = new Date();
-    } else {
-      console.log('meal already exists');
-    }
+    console.log(m.meal_name === mealName);
+    if (m.meal_name === mealName) { exists = true; }
   });
 
-  console.log(`meal to add ${mealToAdd}`);
+  if (exists === true) {
+    console.log('meal already exists');
+  } else {
+    mealToAdd = initMealValues(mealName);
+    console.log(`meal to add ${mealToAdd}`); // DEBUG
+  }
 
 
   if (mealToAdd != null) {
