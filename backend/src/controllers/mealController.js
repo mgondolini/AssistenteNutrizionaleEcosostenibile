@@ -73,7 +73,31 @@ exports.new_meal = async (req, res) => {
 };
 
 exports.delete_meal = async (req, res) => {
+  const { mealName } = req.query;
+  const query = { username: req.query.username };
+  const projection = {
+    username: req.query.username,
+    meals: { $elemMatch: { meal_name: mealName } },
+  };
 
+  await Meals.findOne(query, projection)
+    .exec()
+    .then((meal) => {
+      if (meal.length === 0) {
+        res.status(404).send({ description: `Meal not found for user ${req.query.username}` });
+        console.log(`Meal not found for user ${req.query.username}`); // DEBUG
+      } else {
+        // FARE LA POP DEL PASTO DALL'ARRAY
+        meal.meals.forEach((m) => {
+          if (m.meal_name === mealName) {
+            meal.meals.pop(m);
+          }
+        });
+        res.status(200).json(meal);
+        console.log(`Meal found for user ${req.query.username}:\n${meal}`); // DEBUG
+      }
+    })
+    .catch((err) => res.send(err));
 };
 
 /**
@@ -95,5 +119,8 @@ exports.new_component = async (req, res) => {
 };
 
 exports.delete_component = async (req, res) => {
-
+  // const query = { username: req.query.username };
+  // const { mealName } = req.query;
+  // const { barcode } = req.query;
+  res.send();
 };
