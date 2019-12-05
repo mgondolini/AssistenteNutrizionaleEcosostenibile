@@ -34,3 +34,4 @@ const UserMealSchema = new Schema({
 });
 
 module.exports = mongoose.model('Meals', UserMealSchema, 'Meals');
+module.exports = mongoose.model('SingleMeal', MealSchema);

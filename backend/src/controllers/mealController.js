@@ -2,6 +2,7 @@
 const mongoose = require('mongoose');
 
 const Meal = mongoose.model('Meals');
+const SingleMeal = mongoose.model('SingleMeal');
 const Products = mongoose.model('Product');
 
 /**
@@ -193,31 +194,34 @@ exports.load_meal = async (req, res) => {
 const createFirstMeal = (req, res) => {
   // creo un pasto vuoto con solo username e meal name
 
-  console.log(JSON.stringify(req.body));
-  const newMeal = new Meal(req.body);
+  const { username } = req.body;
+  const mealName = req.body.meals.meal_name;
+
+
+  const newMeal = new Meal();
+  newMeal.username = username;
+  console.log(`newMeal${JSON.stringify(newMeal)}`);
 
   // provare con newMeal.meals[0].energyTot
-  newMeal.meals[0].components = [{}];
-  newMeal.meals[0].energy_tot = 0;
-  newMeal.meals[0].carbohydrates_tot = 0;
-  newMeal.meals[0].sugars_tot = 0;
-  newMeal.meals[0].fat_tot = 0;
-  newMeal.meals[0].saturated_fat_tot = 0;
-  newMeal.meals[0].proteins_tot = 0;
-  newMeal.meals[0].fiber_tot = 0;
-  newMeal.meals[0].salt_tot = 0;
-  newMeal.meals[0].sodium_tot = 0;
-  newMeal.meals[0].alcohol_tot = 0;
-  newMeal.meals[0].calcium_tot = 0;
-  newMeal.meals[0].carbon_footprint_tot = 0;
-  newMeal.meals[0].water_footprint_tot = 0;
-  newMeal.meals[0].timestamp = new Date();
+  const mealToAdd = new SingleMeal();
+  mealToAdd.meal_name = mealName;
+  mealToAdd.components = [{}];
+  mealToAdd.energy_tot = 0;
+  mealToAdd.carbohydrates_tot = 0;
+  mealToAdd.sugars_tot = 0;
+  mealToAdd.fat_tot = 0;
+  mealToAdd.saturated_fat_tot = 0;
+  mealToAdd.proteins_tot = 0;
+  mealToAdd.fiber_tot = 0;
+  mealToAdd.salt_tot = 0;
+  mealToAdd.sodium_tot = 0;
+  mealToAdd.alcohol_tot = 0;
+  mealToAdd.calcium_tot = 0;
+  mealToAdd.carbon_footprint_tot = 0;
+  mealToAdd.water_footprint_tot = 0;
+  mealToAdd.timestamp = new Date();
 
-  console.log(`new meal${newMeal}`);
-  console.log(`meals${newMeal.meals}`);
-  console.log(`meal 0 ${newMeal.meals[0]}`);
-  console.log(`meal 0 component ${newMeal.meals[0].components}`);
-  console.log(`meal 0 timestamp ${newMeal.meals[0].timestamp}`);
+  newMeal.meals.push(mealToAdd);
 
   newMeal.save()
     .then((meal) => {
@@ -239,20 +243,53 @@ const createFirstMeal = (req, res) => {
 const addMeal = (req, doc, res) => {
   // TODO: GESTIONE RES, CONTROLLO SE ESISTE GIà UN update_meal
   //  CON LO STESSO NOME (OPPURE usare un id per evitarlo)
-  const mealToAdd = req.body.meals;
+  const mealName = req.body.meals.meal_name;
+  console.log(`mealName${mealName}`);
+  let mealToAdd;
 
   const updateMeal = new Meal(doc);
-  updateMeal.meals.push(mealToAdd);
 
-  updateMeal.save()
-    .then((meal) => {
-      console.log(`meal updated -> ${meal}`); // DEBUG
-      res.status(201).json(meal);
-    })
-    .catch((err) => {
-      console.log('error while updating new meal'); // DEBUG
-      res.send(err);
-    });
+  doc.meals.forEach((m) => {
+    if (m.meal_name !== mealName) {
+      mealToAdd = new SingleMeal();
+      mealToAdd.meal_name = mealName;
+      mealToAdd.components = [{}];
+      mealToAdd.energy_tot = 0;
+      mealToAdd.carbohydrates_tot = 0;
+      mealToAdd.sugars_tot = 0;
+      mealToAdd.fat_tot = 0;
+      mealToAdd.saturated_fat_tot = 0;
+      mealToAdd.proteins_tot = 0;
+      mealToAdd.fiber_tot = 0;
+      mealToAdd.salt_tot = 0;
+      mealToAdd.sodium_tot = 0;
+      mealToAdd.alcohol_tot = 0;
+      mealToAdd.calcium_tot = 0;
+      mealToAdd.carbon_footprint_tot = 0;
+      mealToAdd.water_footprint_tot = 0;
+      mealToAdd.timestamp = new Date();
+    } else {
+      console.log('meal already exists');
+    }
+  });
+
+  console.log(`meal to add ${mealToAdd}`);
+
+
+  if (mealToAdd != null) {
+    updateMeal.meals.push(mealToAdd);
+    updateMeal.save()
+      .then((meal) => {
+        console.log(`meal updated -> ${meal}`); // DEBUG
+        res.status(201).json(meal);
+      })
+      .catch((err) => {
+        console.log('error while updating new meal'); // DEBUG
+        res.send(err);
+      });
+  } else {
+    res.status(404).send({ description: 'Meal name already in use.' });
+  }
 };
 
 /**
