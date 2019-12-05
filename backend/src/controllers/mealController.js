@@ -1,15 +1,11 @@
 /* eslint-disable no-param-reassign */
 const mongoose = require('mongoose');
 
-const Meal = mongoose.model('Meals');
+const Meals = mongoose.model('Meals');
 const SingleMeal = mongoose.model('SingleMeal');
 const Products = mongoose.model('Product');
 
-/**
- * Given a value for 100 grams, computes value for a given quantity.
- * @param {*} value for 100g of the product
- * @param {*} quantity portion of the product in grams
- */
+
 const computeValuePerPortion = (value, quantity) => ((value / 100) * quantity);
 
 const valuePerPortion = (value, quantity) => {
@@ -22,12 +18,6 @@ const valuePerPortion = (value, quantity) => {
 };
 
 
-/**
- * Computes meal's values given its components
- * @param {*} barcodes of the products that compose the meal
- * @param {*} quantities in grams of the products eaten
- * @param {*} res
- */
 const computeMealValues = async (barcode, quantity, res) => {
   let productName;
   let imageUrl;
@@ -46,13 +36,10 @@ const computeMealValues = async (barcode, quantity, res) => {
   let waterFootprintTot;
 
   const query = { code: barcode };
-  console.log(JSON.stringify(query));
 
   await Products.findOne(query)
     .exec()
     .then((product) => {
-      console.log(`product--${JSON.stringify(product.energy_100g)}`); // DEBUG
-
       productName = product.product_name;
       imageUrl = product.image_url;
       energyTot = valuePerPortion(product.energy_100g, quantity);
@@ -68,8 +55,6 @@ const computeMealValues = async (barcode, quantity, res) => {
       calciumTot = valuePerPortion(product.calcium_100g, quantity);
       carbonFootprintTot = valuePerPortion(product.carbon_footprint_100g, quantity);
       waterFootprintTot = valuePerPortion(product.water_footprint_100g, quantity);
-
-      console.log(`product energy--${JSON.stringify(energyTot)}`); // DEBUG
     })
     .catch((err) => res.send(err));
 
@@ -90,16 +75,12 @@ const computeMealValues = async (barcode, quantity, res) => {
     carbon_footprint_tot: carbonFootprintTot,
     water_footprint_tot: waterFootprintTot,
   };
-  console.log(`VALUES${JSON.stringify(values)}`); // DEBUG
+  console.log(`VALUES -> ${JSON.stringify(values)}`); // DEBUG
 
   return values;
 };
 
-/**
- * Update meals total values
- * @param {*} req
- * @param {*} energyTot
- */
+
 const updateMealValues = async (components, mealName, userMeals, res) => {
   const { barcode } = components;
   const { quantity } = components;
@@ -128,11 +109,12 @@ const updateMealValues = async (components, mealName, userMeals, res) => {
           components.image_url = values.image_url;
 
           console.log(`components: ${components}`); // DEBUG
-
           meal.components.push(components);
         }
       });
-      userMeals.save((err) => { if (err) res.send(err); });
+      userMeals.save()
+        .then((meals) => res.status(201).json(meals))
+        .catch((err) => res.send(err));
     });
 };
 
@@ -145,15 +127,15 @@ exports.load_meals_list = async (req, res) => {
 
   const { query } = req;
 
-  await Meal.findOne(query)
+  await Meals.findOne(query)
     .exec()
-    .then((doc) => {
-      if (doc.length === 0) {
+    .then((meals) => {
+      if (meals.length === 0) {
         res.status(404).send({ description: `Meals not found for user ${req.query.username}` });
         console.log(`Meals not found for user ${req.query.username}`); // DEBUG
       } else {
-        res.status(200).json(doc);
-        console.log(`Meals list for user ${req.query.username}:\n${doc}`); // DEBUG
+        res.status(200).json(meals);
+        console.log(`Meals list for user ${req.query.username}:\n${meals}`); // DEBUG
       }
     })
     .catch((err) => res.send(err));
@@ -172,15 +154,15 @@ exports.load_meal = async (req, res) => {
     meals: { $elemMatch: { meal_name: req.query.mealName } },
   };
 
-  await Meal.findOne(query, projection)
+  await Meals.findOne(query, projection)
     .exec()
-    .then((doc) => {
-      if (doc.length === 0) {
+    .then((meal) => {
+      if (meal.length === 0) {
         res.status(404).send({ description: `Meal not found for user ${req.query.username}` });
         console.log(`Meal not found for user ${req.query.username}`); // DEBUG
       } else {
-        res.status(200).json(doc);
-        console.log(`Meal found for user ${req.query.username}:\n${doc}`); // DEBUG
+        res.status(200).json(meal);
+        console.log(`Meal found for user ${req.query.username}:\n${meal}`); // DEBUG
       }
     })
     .catch((err) => res.send(err));
@@ -208,22 +190,14 @@ const initMealValues = (mealName) => {
 };
 
 
-/**
- * Creates the first meal of a user
- * @param {*} req request received
- * @param {*} res response to send
- */
 const createFirstMeal = (req, res) => {
-  // creo un pasto vuoto con solo username e meal name
-
   const { username } = req.body;
-  const mealName = req.body.meals.meal_name;
+  const { mealName } = req.body.meals;
 
-  const newMeal = new Meal();
+  const newMeal = new Meals();
   newMeal.username = username;
 
   const mealToAdd = initMealValues(mealName);
-
   newMeal.meals.push(mealToAdd);
 
   newMeal.save()
@@ -237,33 +211,27 @@ const createFirstMeal = (req, res) => {
     });
 };
 
-/**
- * Adds meals to a user's meals list
- * @param {*} req request received
- * @param {*} doc document of the user
- * @param {*} res response to send
- */
-const addMeal = (req, doc, res) => {
-  const mealName = req.body.meals.meal_name;
+
+const addMeal = (req, userMeals, res) => {
   let mealToAdd;
-
-  const updateMeal = new Meal(doc);
-
   let exists = false;
+  const { mealName } = req.body.meals;
+  const updateMeal = new Meals(userMeals);
 
-  doc.meals.forEach((m) => {
-    console.log(m.meal_name === mealName);
-    if (m.meal_name === mealName) { exists = true; }
+  // controllo se ci sono pasti per lo stesso utente con lo stesso nome che voglio inserire
+  userMeals.meals.forEach((m) => {
+    console.log(m.meal_name === mealName); // DEBUG
+    if (m.meal_name === mealName) exists = true;
   });
 
-  if (exists === true) {
-    console.log('meal already exists');
-  } else {
+  // se non ci sono pasti con lo stesso nome inizializzo il pasto da inserire
+  if (exists === false) {
     mealToAdd = initMealValues(mealName);
-    console.log(`meal to add ${mealToAdd}`); // DEBUG
+    console.log(`Meal to add ${mealToAdd}`); // DEBUG
   }
 
-
+  // se mealToAdd è nullo vuol dire che c'era già un pasto con il nome inserito
+  // quindi invio un messaggio di errore 400 BAD REQUEST
   if (mealToAdd != null) {
     updateMeal.meals.push(mealToAdd);
     updateMeal.save()
@@ -276,7 +244,7 @@ const addMeal = (req, doc, res) => {
         res.send(err);
       });
   } else {
-    res.status(404).send({ description: 'Meal name already in use.' });
+    res.status(400).json({ description: 'Meal name already in use.' });
   }
 };
 
@@ -286,15 +254,15 @@ const addMeal = (req, doc, res) => {
 exports.new_meal = async (req, res) => {
   const query = { username: req.body.username };
 
-  await Meal.findOne(query)
+  await Meals.findOne(query)
     .exec()
-    .then((doc) => {
-      if (doc == null) {
+    .then((userMeals) => {
+      if (userMeals == null) {
         createFirstMeal(req, res);
         console.log(`Meal not found for user ${req.query.username}\n Inserting...`); // DEBUG
       } else {
-        addMeal(req, doc, res);
-        console.log(`Meal found for user ${req.query.username}:\n${doc}`); // DEBUG
+        addMeal(req, userMeals, res);
+        console.log(`Meal found for user ${req.query.username}:\n${userMeals}`); // DEBUG
       }
     })
     .catch((err) => res.send(err));
@@ -310,15 +278,11 @@ exports.new_component = async (req, res) => {
   const { components } = req.body;
   console.log(`NEW COMPONENT\nmealName${JSON.stringify(mealName)}\ncomponents${JSON.stringify(components)}`); // DEBUG
 
-  await Meal.find(query)
+  await Meals.find(query)
     .exec()
     .then((userMeals) => {
-      if (userMeals == null) {
-        res.status(404).send({ description: `Meal not found for user ${req.query.username}` });
-      } else {
-        console.log(`userMeals${userMeals[0]}`); // DEBUG
-        updateMealValues(components, mealName, userMeals[0], res);
-      }
+      if (userMeals == null) res.status(404).send({ description: `Meal not found for user ${req.query.username}` });
+      else updateMealValues(components, mealName, userMeals[0], res);
     })
     .catch((err) => res.send(err));
 };
