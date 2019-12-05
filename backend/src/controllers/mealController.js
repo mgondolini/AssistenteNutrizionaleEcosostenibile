@@ -72,6 +72,10 @@ exports.new_meal = async (req, res) => {
     .catch((err) => res.send(err));
 };
 
+exports.delete_meal = async (req, res) => {
+
+};
+
 /**
  * Creates a component for an existing meal
  */
@@ -88,4 +92,8 @@ exports.new_component = async (req, res) => {
       else mealControllerUtils.updateMealValues(components, mealName, userMeals[0], res);
     })
     .catch((err) => res.send(err));
+};
+
+exports.delete_component = async (req, res) => {
+
 };

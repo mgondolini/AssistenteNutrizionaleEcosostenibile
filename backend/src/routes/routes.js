@@ -19,8 +19,10 @@ module.exports = function (app) {
     .post(mealController.new_meal);
 
   app.route('/api/:user/meals/:mealName')
-    .get(mealController.load_meal);
+    .get(mealController.load_meal)
+    .delete(mealController.delete_meal);
 
   app.route('/api/:user/meals/:mealName/components')
-    .put(mealController.new_component);
+    .put(mealController.new_component)
+    .delete(mealController.delete_component);
 };
