@@ -7,7 +7,7 @@ const Products = mongoose.model('Product');
 
 
 module.exports = {
-  // Inits meal values to 0
+  /* Inits meal values to 0 */
   initMealValues: (mealName) => {
     const mealToAdd = new SingleMeal();
     mealToAdd.meal_name = mealName;
@@ -28,7 +28,7 @@ module.exports = {
     mealToAdd.timestamp = new Date();
     return mealToAdd;
   },
-  // Creates the first meal of a user
+  /* Creates the first meal of a user */
   createFirstMeal: (req, res) => {
     const { username } = req.body;
     const { mealName } = req.body.meals;
@@ -49,27 +49,27 @@ module.exports = {
         res.send(err);
       });
   },
-  // Add meal to meals array of a user
+  /* Add meal to meals array of a user */
   addMeal: (req, userMeals, res) => {
     let mealToAdd;
     let exists = false;
     const { mealName } = req.body.meals;
     const updateMeal = new Meals(userMeals);
 
-    /* controllo se ci sono pasti per lo stesso utente con lo stesso nome che voglio inserire */
+    // controllo se ci sono pasti per lo stesso utente con lo stesso nome che voglio inserire
     userMeals.meals.forEach((m) => {
       console.log(m.meal_name === mealName); // DEBUG
       if (m.meal_name === mealName) exists = true;
     });
 
-    /* se non ci sono pasti con lo stesso nome inizializzo il pasto da inserire */
+    // se non ci sono pasti con lo stesso nome inizializzo il pasto da inserire
     if (exists === false) {
       mealToAdd = this.initMealValues(mealName);
       console.log(`Meal to add ${mealToAdd}`); // DEBUG
     }
 
-    /* se mealToAdd è nullo vuol dire che c'era già un pasto con il nome inserito
-    quindi invio un messaggio di errore 400 BAD REQUEST */
+    // se mealToAdd è nullo vuol dire che c'era già un pasto con il nome inserito
+    // quindi invio un messaggio di errore 400 BAD REQUEST
     if (mealToAdd != null) {
       updateMeal.meals.push(mealToAdd);
       updateMeal.save()
@@ -85,9 +85,9 @@ module.exports = {
       res.status(400).json({ description: 'Meal name already in use.' });
     }
   },
-  // Computes value in grams for a portion of a given quantity
+  /* Computes value in grams for a portion of a given quantity */
   computeValuePerPortion: (value, quantity) => ((value / 100) * quantity),
-  // Checks the value before compute the expression
+  /* Checks the value before compute the expression */
   valuePerPortion: (value, quantity) => {
     let valuePerQuantity;
 
@@ -96,7 +96,7 @@ module.exports = {
 
     return valuePerQuantity;
   },
-  // Computes values for a meal
+  /* Computes values for a meal */
   computeMealValues: async (barcode, quantity, res) => {
     let productName;
     let imageUrl;
@@ -158,7 +158,7 @@ module.exports = {
 
     return values;
   },
-  // Update meal values after inserting a new component
+  /* Update meal values after inserting a new component */
   updateMealValues: async (components, mealName, userMeals, res) => {
     const { barcode } = components;
     const { quantity } = components;
