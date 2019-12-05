@@ -192,41 +192,42 @@ exports.load_meal = async (req, res) => {
  */
 const createFirstMeal = (req, res) => {
   // creo un pasto vuoto con solo username e meal name
+
+  console.log(JSON.stringify(req.body));
   const newMeal = new Meal(req.body);
 
-  // energy_tot: 0,
-  // carbohydrates_tot: 0,
-  // sugars_tot: 0,
-  // fat_tot: 0,
-  // saturated_fat_tot: 0,
-  // proteins_tot: 0,
-  // fiber_tot: 0,
-  // salt_tot: 0,
-  // sodium_tot: 0,
-  // alcohol_tot: 0,
-  // calcium_tot: 0,
-  // carbon_footprint_tot: 0,
-  // water_footprint_tot: 0,
-
-  const { barcode } = newMeal.meals[0].components[0];
-  const { quantity } = newMeal.meals[0].components[0];
+  // provare con newMeal.meals[0].energyTot
+  newMeal.meals[0].components = [{}];
+  newMeal.meals[0].energy_tot = 0;
+  newMeal.meals[0].carbohydrates_tot = 0;
+  newMeal.meals[0].sugars_tot = 0;
+  newMeal.meals[0].fat_tot = 0;
+  newMeal.meals[0].saturated_fat_tot = 0;
+  newMeal.meals[0].proteins_tot = 0;
+  newMeal.meals[0].fiber_tot = 0;
+  newMeal.meals[0].salt_tot = 0;
+  newMeal.meals[0].sodium_tot = 0;
+  newMeal.meals[0].alcohol_tot = 0;
+  newMeal.meals[0].calcium_tot = 0;
+  newMeal.meals[0].carbon_footprint_tot = 0;
+  newMeal.meals[0].water_footprint_tot = 0;
+  newMeal.meals[0].timestamp = new Date();
 
   console.log(`new meal${newMeal}`);
   console.log(`meals${newMeal.meals}`);
-  console.log(`components${newMeal.meals[0].components}`);
-  console.log(`barcode${newMeal.meals[0].components[0].barcode}`);
+  console.log(`meal 0 ${newMeal.meals[0]}`);
+  console.log(`meal 0 component ${newMeal.meals[0].components}`);
+  console.log(`meal 0 timestamp ${newMeal.meals[0].timestamp}`);
 
-  updateMealValues(barcode, quantity, req, newMeal, res);
-
-  res.send(newMeal);
-  // newMeal.save((err, meal) => {
-  //   if (err) {
-  //     console.log('Error while creating new meal'); // DEBUG
-  //     res.send(err);
-  //   }
-  //   console.log(`Meal created${meal}`); // DEBUG
-  //   res.status(201).json(meal);
-  // });
+  newMeal.save()
+    .then((meal) => {
+      console.log(`meal created -> ${meal}`); // DEBUG
+      res.status(201).json(meal);
+    })
+    .catch((err) => {
+      console.log('error while creating new meal'); // DEBUG
+      res.send(err);
+    });
 };
 
 /**
@@ -243,14 +244,15 @@ const addMeal = (req, doc, res) => {
   const updateMeal = new Meal(doc);
   updateMeal.meals.push(mealToAdd);
 
-  updateMeal.save((err, meal) => {
-    if (err) {
+  updateMeal.save()
+    .then((meal) => {
+      console.log(`meal updated -> ${meal}`); // DEBUG
+      res.status(201).json(meal);
+    })
+    .catch((err) => {
       console.log('error while updating new meal'); // DEBUG
       res.send(err);
-    }
-    console.log(`meal updated -> ${meal}`); // DEBUG
-    res.status(201).json(meal);
-  });
+    });
 };
 
 /**
@@ -282,10 +284,6 @@ exports.new_component = async (req, res) => {
   const { mealName } = req.body;
   const { components } = req.body;
   console.log(`NEW COMPONENT\nmealName${JSON.stringify(mealName)}\ncomponents${JSON.stringify(components)}`); // DEBUG
-  // cerco il prodotto relativo al barcode inserito
-  // salvo i valori
-  // ricalcolo i prodotti sulla quantità
-  // url e nome prodotto
 
   await Meal.find(query)
     .exec()

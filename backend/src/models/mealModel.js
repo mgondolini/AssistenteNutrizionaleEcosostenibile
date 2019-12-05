@@ -25,7 +25,7 @@ const MealSchema = new Schema({
   calcium_tot: Number,
   carbon_footprint_tot: Number,
   water_footprint_tot: Number,
-  timestamp: String,
+  timestamp: Date,
 }, { _id: false });
 
 const UserMealSchema = new Schema({
