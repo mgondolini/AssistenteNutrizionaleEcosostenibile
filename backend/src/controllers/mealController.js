@@ -73,7 +73,7 @@ exports.new_meal = async (req, res) => {
 };
 
 /**
- *
+ * Deletes a meal
  */
 exports.delete_meal = async (req, res) => {
   const { mealName } = req.query;
@@ -112,6 +112,9 @@ exports.new_component = async (req, res) => {
     .catch((err) => res.send(err));
 };
 
+/**
+ * Deletes a component in a meal
+ */
 exports.delete_component = async (req, res) => {
   const query = { username: req.query.username };
   const { mealName } = req.query;
