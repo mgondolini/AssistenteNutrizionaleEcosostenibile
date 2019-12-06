@@ -25,6 +25,16 @@ exports.load_product = async (req, res) => {
 };
 
 
-exports.insertProduct = async (req, res) => {
-  console.log(`${req}-${res}`); // JUST TO AVOID ESLINT ERROR
+exports.insert_product = async (req, res) => {
+  const newProduct = new Product(req.body);
+
+  newProduct.save()
+    .then((product) => {
+      console.log(`product created -> ${product}`); // DEBUG
+      res.status(201).json(product);
+    })
+    .catch((err) => {
+      console.log('error while creating new product'); // DEBUG
+      res.send(err);
+    });
 };

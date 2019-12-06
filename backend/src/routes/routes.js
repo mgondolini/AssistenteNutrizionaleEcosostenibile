@@ -12,7 +12,8 @@ module.exports = function (app) {
     .delete(userController.delete_user);
 
   app.route('/api/product/:barcode')
-    .get(productController.load_product);
+    .get(productController.load_product)
+    .post(productController.insert_product);
 
   app.route('/api/:user/meals/')
     .get(mealController.load_meals_list)
