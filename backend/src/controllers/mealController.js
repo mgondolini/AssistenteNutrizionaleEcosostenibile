@@ -65,8 +65,8 @@ exports.new_meal = async (req, res) => {
         mealControllerUtils.createFirstMeal(req, res);
         console.log(`Meal not found for user ${req.query.username}\n Inserting...`); // DEBUG
       } else {
-        mealControllerUtils.addMeal(req, userMeals, res);
         console.log(`Meal found for user ${req.query.username}:\n${userMeals}`); // DEBUG
+        mealControllerUtils.addMeal(req, userMeals, res);
       }
     })
     .catch((err) => res.send(err));
@@ -75,26 +75,22 @@ exports.new_meal = async (req, res) => {
 exports.delete_meal = async (req, res) => {
   const { mealName } = req.query;
   const query = { username: req.query.username };
-  const projection = {
-    username: req.query.username,
-    meals: { $elemMatch: { meal_name: mealName } },
-  };
+  // const projection = {
+  //   username: req.query.username,
+  //   meals: { $elemMatch: { meal_name: mealName } },
+  // };
+  const update = { $pull: { meals: { meal_name: mealName } } };
 
-  await Meals.findOne(query, projection)
+  await Meals.updateOne(query, update)
     .exec()
     .then((meal) => {
       if (meal.length === 0) {
         res.status(404).send({ description: `Meal not found for user ${req.query.username}` });
         console.log(`Meal not found for user ${req.query.username}`); // DEBUG
       } else {
+        console.log(`Meal updated for user ${req.query.username}:\n${meal}`); // DEBUG
         // FARE LA POP DEL PASTO DALL'ARRAY
-        meal.meals.forEach((m) => {
-          if (m.meal_name === mealName) {
-            meal.meals.pop(m);
-          }
-        });
-        res.status(200).json(meal);
-        console.log(`Meal found for user ${req.query.username}:\n${meal}`); // DEBUG
+        res.status(201).json(meal);
       }
     })
     .catch((err) => res.send(err));
