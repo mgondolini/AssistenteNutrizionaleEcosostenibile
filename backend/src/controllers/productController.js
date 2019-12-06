@@ -23,3 +23,8 @@ exports.load_product = async (req, res) => {
     })
     .catch((err) => res.send(err));
 };
+
+
+exports.insertProduct = async (req, res) => {
+  console.log(`${req}-${res}`); // JUST TO AVOID ESLINT ERROR
+};
