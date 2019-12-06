@@ -29,6 +29,7 @@ exports.initMealValues = (mealName) => {
   return mealToAdd;
 };
 
+
 /* Add meal to meals array of a user */
 exports.addMeal = (req, userMeals, res) => {
   let mealToAdd;
@@ -205,4 +206,21 @@ exports.updateMealValues = async (components, mealName, userMeals, res) => {
         .then((meals) => res.status(201).json(meals))
         .catch((err) => res.send(err));
     });
+};
+
+exports.pullComponent = async (userMeals, mealName, barcode, res) => {
+  userMeals.meals.forEach((meal) => {
+    if (meal.meal_name === mealName) {
+      meal.components.forEach((component) => {
+        // eslint-disable-next-line eqeqeq
+        if (component.barcode == barcode) {
+          meal.components = meal.components.pull(component);
+        }
+      });
+    }
+  });
+
+  userMeals.save()
+    .then((meals) => res.status(201).json(meals))
+    .catch((err) => res.send(err));
 };

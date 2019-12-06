@@ -72,13 +72,12 @@ exports.new_meal = async (req, res) => {
     .catch((err) => res.send(err));
 };
 
+/**
+ *
+ */
 exports.delete_meal = async (req, res) => {
   const { mealName } = req.query;
   const query = { username: req.query.username };
-  // const projection = {
-  //   username: req.query.username,
-  //   meals: { $elemMatch: { meal_name: mealName } },
-  // };
   const update = { $pull: { meals: { meal_name: mealName } } };
 
   await Meals.updateOne(query, update)
@@ -89,7 +88,6 @@ exports.delete_meal = async (req, res) => {
         console.log(`Meal not found for user ${req.query.username}`); // DEBUG
       } else {
         console.log(`Meal updated for user ${req.query.username}:\n${meal}`); // DEBUG
-        // FARE LA POP DEL PASTO DALL'ARRAY
         res.status(201).json(meal);
       }
     })
@@ -115,8 +113,20 @@ exports.new_component = async (req, res) => {
 };
 
 exports.delete_component = async (req, res) => {
-  // const query = { username: req.query.username };
-  // const { mealName } = req.query;
-  // const { barcode } = req.query;
-  res.send();
+  const query = { username: req.query.username };
+  const { mealName } = req.query;
+  const { barcode } = req.query;
+
+  await Meals.findOne(query)
+    .exec()
+    .then((userMeals) => {
+      if (userMeals.length === 0) {
+        res.status(404).send({ description: `Meal not found for user ${req.query.username}` });
+        console.log(`Meal not found for user ${req.query.username}`); // DEBUG
+      } else {
+        console.log(`Meal updated for user ${req.query.username}:\n${userMeals}`); // DEBUG
+        mealControllerUtils.pullComponent(userMeals, mealName, barcode, res);
+      }
+    })
+    .catch((err) => res.send(err));
 };
