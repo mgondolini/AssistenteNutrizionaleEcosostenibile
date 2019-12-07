@@ -11,7 +11,7 @@ module.exports = function (app) {
     .put(userController.update_user)
     .delete(userController.delete_user);
 
-  app.route('/api/product/:barcode')
+  app.route('/api/product')
     .get(productController.load_product)
     .post(productController.insert_product);
 
