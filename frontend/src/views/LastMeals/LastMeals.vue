@@ -21,8 +21,15 @@
                 <div v-if = "meal.components!=null">
                   <span> Components: </span>
                   <div v-for="component in meal.components" v-bind:key="component.product_name">
-                    <li> {{ component.product_name }} g -
-                         quantità: {{ component.quantity }} g</li>
+                    <ul>
+                      <li>
+                        <img class="componentImage" :src="component.image_url" />
+                        <div class="componentParagraph">
+                          <p>{{ component.product_name }} </p>
+                          <p>quantità: {{ component.quantity }} g </p>
+                        </div>
+                      </li>
+                    </ul>
                   </div>
                 </div>
               </b-card-text>
