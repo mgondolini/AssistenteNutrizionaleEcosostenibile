@@ -4,9 +4,7 @@ const mealControllerUtils = require('./utils/mealControllerUtils.js');
 
 const Meals = mongoose.model('Meals');
 
-/**
- * Loads all the meals for a given user
- */
+/** Loads all the meals for a given user */
 exports.load_meals_list = async (req, res) => {
   console.log('looking for meal...'); // DEBUG
 
@@ -26,9 +24,7 @@ exports.load_meals_list = async (req, res) => {
     .catch((err) => res.send(err));
 };
 
-/**
- * Loads a specific meal for a given user
- */
+/** Loads a specific meal for a given user */
 exports.load_meal = async (req, res) => {
   console.log('looking for meal to load...'); // DEBUG
 
@@ -52,9 +48,7 @@ exports.load_meal = async (req, res) => {
     .catch((err) => res.send(err));
 };
 
-/**
- * Inserts a new meal for a given user
- */
+/** Inserts a new meal for a given user */
 exports.new_meal = async (req, res) => {
   const query = { username: req.body.username };
 
@@ -72,9 +66,7 @@ exports.new_meal = async (req, res) => {
     .catch((err) => res.send(err));
 };
 
-/**
- * Deletes a meal
- */
+/** Deletes a meal */
 exports.delete_meal = async (req, res) => {
   const { mealName } = req.query;
   const query = { username: req.query.username };
@@ -94,9 +86,7 @@ exports.delete_meal = async (req, res) => {
     .catch((err) => res.send(err));
 };
 
-/**
- * Creates a component for an existing meal
- */
+/** Creates a component for an existing meal */
 exports.new_component = async (req, res) => {
   const query = { username: req.body.username };
   const { mealName } = req.body;
@@ -112,14 +102,13 @@ exports.new_component = async (req, res) => {
     .catch((err) => res.send(err));
 };
 
-/**
- * Deletes a component in a meal
- */
+/** Deletes a component in a meal given the barcode */
 exports.delete_component = async (req, res) => {
   const query = { username: req.query.username };
   const { mealName } = req.query;
   const { barcode } = req.query;
 
+  // Controllo se esistono pasti per l'utente
   await Meals.findOne(query)
     .exec()
     .then((userMeals) => {
@@ -128,6 +117,8 @@ exports.delete_component = async (req, res) => {
         console.log(`Meal not found for user ${req.query.username}`); // DEBUG
       } else {
         console.log(`Meal updated for user ${req.query.username}:\n${userMeals}`); // DEBUG
+        // Se esistono pasti chiamo questa funzione che: cerca il pasto corrispondente al nome dato,
+        // cerca il componente e lo elimina
         mealControllerUtils.pullComponent(userMeals, mealName, barcode, res);
       }
     })
