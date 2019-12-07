@@ -3,8 +3,9 @@ const mongoose = require('mongoose');
 const { Schema } = mongoose;
 
 const MealComponentSchema = new Schema({
-  barcode: String,
+  barcode: Number,
   product_name: String,
+  image_url: String,
   quantity: Number,
 }, { _id: false });
 
@@ -24,7 +25,7 @@ const MealSchema = new Schema({
   calcium_tot: Number,
   carbon_footprint_tot: Number,
   water_footprint_tot: Number,
-  timestamp: String,
+  timestamp: Date,
 }, { _id: false });
 
 const UserMealSchema = new Schema({
@@ -33,3 +34,4 @@ const UserMealSchema = new Schema({
 });
 
 module.exports = mongoose.model('Meals', UserMealSchema, 'Meals');
+module.exports = mongoose.model('SingleMeal', MealSchema);
