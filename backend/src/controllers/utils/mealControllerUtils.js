@@ -11,7 +11,7 @@ exports.initMealValues = (mealName) => {
   console.log('init meal values');
   const meal = new SingleMeal(); // SingleMeal compone l'array meals di UserMealSchema
   meal.meal_name = mealName;
-  meal.components = [{}];
+  meal.components = [];
   meal.energy_tot = 0;
   meal.carbohydrates_tot = 0;
   meal.sugars_tot = 0;
