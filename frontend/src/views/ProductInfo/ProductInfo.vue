@@ -18,20 +18,15 @@
     </div>
     <div v-if=productShowing id="productData">
       <b-card no-body class="productCard">
-        <b-row no-gutters>
-          <b-col md="6">
-            <b-card-img v-bind:src="imgPath" class="rounded-0"></b-card-img>
-          </b-col>
-          <b-col md="6">
-            <b-card-body title="Horizontal Card">
-              <b-card-text>
-                This is a wider card with supporting text as
-                a natural lead-in to additional content.
-                This content is a little bit longer.
-              </b-card-text>
-            </b-card-body>
-          </b-col>
-        </b-row>
+        <b-media>
+          <template v-slot:aside>
+            <!-- localize the alt -->
+            <img v-bind:src="imgPath" alt="Product Image">
+          </template>
+          <h2>Media Body</h2>
+          <p>Some text</p>
+          <!-- b-[Optional: add media children here for nesting] -->
+        </b-media>
       </b-card>
     </div>
   </div>
@@ -51,8 +46,11 @@ export default {
       ean: productIDTest,
       productShowing: false,
       status: 0,
-      // OFF API values
+      // OFF API values (factorize!)
       imgPath: '',
+      productName: '',
+      productVendor: '',
+      productPortion: '',
     };
   },
   methods: {

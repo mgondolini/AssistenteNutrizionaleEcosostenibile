@@ -1,17 +1,13 @@
 .productInfo{
 
   .productCard{
-    // the card is split in half vertically
-    // the image is on the left, its width is fixed by the card column
-    // the card expands horizontally filling the page minus 5% margin
-    // the height of the card is determined by the proporions of the image height
 
     margin: 5%;
 
-    .img{
-      // TODO set image max-heigh but mantaining proportions
-      max-height:50px;
-      width:auto;
+    img{
+      // TODO set image max-heigh proportional to the height of the page
+      // height: 20% won't do the trick 
+      height: 250px;
     }
 
   }
@@ -20,3 +16,4 @@
     margin: 10px;
   }
 }
+
