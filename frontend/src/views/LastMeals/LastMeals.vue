@@ -1,6 +1,6 @@
 <template>
   <div class="last_meals">
-    <h1>Your last Meals</h1>
+    <h1> {{ $t('last_meals') }} </h1>
     <div class="cardLastMeals" role="tablist">
         <b-card
           no-body class="mb-1"
@@ -15,18 +15,27 @@
           <b-collapse :id="'accordion-' + index" visible accordion="my-accordion" role="tabpanel">
             <b-card-body>
               <b-card-text>
-                <li> Calorie totali: {{ meal.energy_tot }} </li>
-                <li> Emissioni CO2: {{ meal.carbon_footprint_tot }} </li>
-                <li> Acqua utilizzata: {{ meal.water_footprint_tot }} </li>
+                <li> {{ $t('energy_tot') }}: {{ meal.energy_tot }} </li>
+                <li> {{ $t('carbohydrates_tot') }}: {{ meal.carbohydrates_tot }} </li>
+                <li> {{ $t('sugars_tot') }}: {{ meal.sugars_tot }} </li>
+                <li> {{ $t('fat_tot') }}: {{ meal.fat_tot }} </li>
+                <li> {{ $t('saturated_fat_tot') }}: {{ meal.saturated_fat_tot }} </li>
+                <li> {{ $t('proteins_tot') }}: {{ meal.proteins_tot }} </li>
+                <li> {{ $t('fiber_tot') }}: {{ meal.fiber_tot }} </li>
+                <li> {{ $t('salt_tot') }}: {{ meal.salt_tot }} </li>
+                <li> {{ $t('sodium_tot') }}: {{ meal.sodium_tot }} </li>
+                <li> {{ $t('alcohol_tot') }}: {{ meal.alcohol_tot }} </li>
+                <li> {{ $t('calcium_tot') }}: {{ meal.calcium_tot }} </li>
+                <li> {{ $t('carbon_footprint_tot') }}: {{ meal.carbon_footprint_tot }} </li>
+                <li> {{ $t('water_footprint_tot') }}: {{ meal.water_footprint_tot }} </li>
                 <div v-if = "meal.components!=null">
-                  <span> Components: </span>
                   <div v-for="component in meal.components" v-bind:key="component.product_name">
                     <ul>
                       <li>
                         <img class="componentImage" :src="component.image_url" />
                         <div class="componentParagraph">
-                          <p>{{ component.product_name }} </p>
-                          <p>quantità: {{ component.quantity }} g </p>
+                          <p> {{ component.product_name }} </p>
+                          <p> {{ $t('quantity') }}: {{ component.quantity }} g </p>
                         </div>
                       </li>
                     </ul>
@@ -68,8 +77,47 @@ export default {
     this.init();
   },
 };
-
 </script>
+
+
+<i18n>
+{
+  "en": {
+    "last_meals": "Your last meals",
+    "energy_tot": "Energy",
+    "carbohydrates_tot": "Carbohydrates",
+    "sugars_tot": "Sugars",
+    "fat_tot": "Fats",
+    "saturated_fat_tot": "Saturated fats",
+    "proteins_tot": "Proteins",
+    "fiber_tot": "Fibers",
+    "salt_tot": "Salt",
+    "sodium_tot": "Sodium",
+    "alcohol_tot": "Alcohol",
+    "calcium_tot": "Calcium",
+    "carbon_footprint_tot": "Carbon footprint",
+    "water_footprint_tot": "Water footprint",
+    "quantity": "Quantity"
+  },
+  "it": {
+    "last_meals": "I tuoi ultimi pasti",
+    "energy_tot": "Calorie",
+    "carbohydrates_tot": "Carboidrati",
+    "sugars_tot": "Zuccheri",
+    "fat_tot": "Grassi",
+    "saturated_fat_tot": "Grassi saturi",
+    "proteins_tot": "Proteine",
+    "fiber_tot": "Fibre",
+    "salt_tot": "Sale",
+    "sodium_tot": "Sodio",
+    "alcohol_tot": "Alcool",
+    "calcium_tot": "Calcio",
+    "carbon_footprint_tot": "Impronta ambientale CO2",
+    "water_footprint_tot": "Consumo d'Acqua",
+    "quantity": "quantità"
+  }
+}
+</i18n>
 
 <style lang="scss">
   @import './last_meals.scss';
