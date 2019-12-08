@@ -1,0 +1,24 @@
+h1 {
+    margin: 3% !important;
+    color: #17a2b8;
+}
+
+.p {
+    padding: 0% !important;
+}
+
+@media only screen and (min-width: 600px) {
+  .cardLastMeals{
+      max-width: 95%;
+      margin-top: 5%;
+  } 
+}
+  
+@media only screen and (min-width: 768px) {
+  .cardLastMeals{
+      max-width: 70%;
+      margin: 0 auto;
+  }
+}
+
+  

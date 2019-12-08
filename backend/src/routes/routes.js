@@ -3,9 +3,6 @@ const productController = require('../controllers/productController');
 const mealController = require('../controllers/mealController');
 
 module.exports = function (app) {
-  // app.route('/')
-  //     .get(userController.show_index); //mostrare la home
-
   app.route('/api/user')
     .post(userController.create_user);
 
@@ -14,16 +11,19 @@ module.exports = function (app) {
     .put(userController.update_user)
     .delete(userController.delete_user);
 
-  app.route('/api/product/:barcode')
-    .get(productController.load_product);
+  app.route('/api/product')
+    .get(productController.load_product)
+    .post(productController.insert_product);
 
-
-  // TODO: meals routes da aggiornare eventualmente
-  app.route('/api/user/meals')
+  app.route('/api/:user/meals/')
     .get(mealController.load_meals_list)
-    .post(mealController.create_meal);
+    .post(mealController.new_meal);
 
-  app.route('/api/user/meals/:name')
+  app.route('/api/:user/meals/:mealName')
     .get(mealController.load_meal)
-    .put(mealController.update_meal);
+    .delete(mealController.delete_meal);
+
+  app.route('/api/:user/meals/:mealName/components')
+    .put(mealController.new_component)
+    .delete(mealController.delete_component);
 };
