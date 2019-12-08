@@ -23,8 +23,9 @@
             <!-- localize the alt -->
             <img v-bind:src="imgPath" alt="Product Image">
           </template>
-          <h2>Media Body</h2>
-          <p>Some text</p>
+          <h2>{{ productName }}</h2>
+          <p>{{ productVendor }}</p>
+          <p>{{ productPortion }}</p>
           <!-- b-[Optional: add media children here for nesting] -->
         </b-media>
       </b-card>
@@ -63,6 +64,11 @@ export default {
           this.status = (response.data.status === 1) && (response.data.code !== '');
           this.productShowing = this.status;
           this.imgPath = response.data.product.image_thumb_url.replace('100.jpg', 'full.jpg');
+          this.productName = response.data.product.product_name;
+          // Alternatively in response.data.brands
+          // Absurd way to access brands_tags[0]
+          [this.productVendor] = response.data.product.brands_tags;
+          this.productPortion = response.data.product.quantity;
           console.log(`Status ${this.status}`);
           console.log(`img ${this.imgPath}`);
         }).catch((error) => {
