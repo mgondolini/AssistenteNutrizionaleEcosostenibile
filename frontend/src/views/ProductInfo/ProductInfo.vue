@@ -1,6 +1,6 @@
 <template>
   <div class="productInfo">
-    <div id="insertEAN">
+    <div v-if=!productShowing id="insertEAN">
       <p>
         <label for="ean">EAN code</label>
         <input
@@ -16,7 +16,24 @@
       </div>
       <p v-if=!status > Product not found </p>
     </div>
-
+    <div v-if=productShowing id="productData">
+      <b-card no-body class="productCard">
+        <b-row no-gutters>
+          <b-col md="6">
+            <b-card-img v-bind:src="imgPath" class="rounded-0"></b-card-img>
+          </b-col>
+          <b-col md="6">
+            <b-card-body title="Horizontal Card">
+              <b-card-text>
+                This is a wider card with supporting text as
+                a natural lead-in to additional content.
+                This content is a little bit longer.
+              </b-card-text>
+            </b-card-body>
+          </b-col>
+        </b-row>
+      </b-card>
+    </div>
   </div>
 </template>
 
@@ -46,6 +63,7 @@ export default {
         .then((response) => {
           console.log(response);
           this.status = (response.data.status === 1) && (response.data.code !== '');
+          this.productShowing = this.status;
           this.imgPath = response.data.product.image_thumb_url.replace('100.jpg', 'full.jpg');
           console.log(`Status ${this.status}`);
           console.log(`img ${this.imgPath}`);
