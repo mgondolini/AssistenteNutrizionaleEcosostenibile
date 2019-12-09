@@ -5,6 +5,7 @@ import About from '../views/About.vue';
 import Login from '../views/Login/Login.vue';
 import LastMeals from '../views/LastMeals/LastMeals.vue';
 import CalculateMeal from '../views/CalculateMeal/CalculateMeal.vue';
+import Profile from '../views/Profile/Profile.vue';
 
 
 Vue.use(VueRouter);
@@ -28,7 +29,7 @@ const routes = [
   {
     path: '/profile',
     name: 'profile',
-    component: About,
+    component: Profile,
   },
   {
     path: '/last_meals',
