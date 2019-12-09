@@ -1,6 +1,6 @@
 <template>
   <div class="container">
-    <h3>Composizione del tuo pasto</h3>
+    <h3>{{ $t('intro') }}</h3>
     <ChartMealComp class="piechart_meal" v-bind:mealComp="chart" />
     <hr>
     <!-- <h3>OMS Tabelle</h3>
@@ -27,7 +27,7 @@ export default {
     const usr = 'mrossi';
     const param = { username: usr };
 
-    this.$http.get(`http://localhost:8081/api/${param.username}/meals`, { params: param })
+    this.$http.get(global.config.server.concat(`api/${param.username}/meals`), { params: param })
       .then((response) => {
         response.data.meals[0].components.forEach((elem) => {
           this.chart.al.push(elem.product_name.concat(' - ').concat(elem.quantity).concat(' g'));
@@ -39,6 +39,16 @@ export default {
 };
 </script>
 
+<i18n>
+{
+  "en": {
+    "intro": "Composition of your meal"
+  },
+  "it": {
+    "intro": "Coposizione del tuo pasto"
+  }
+}
+</i18n>
 <style lang="scss">
   @import './ChartMealComp.scss';
 </style>

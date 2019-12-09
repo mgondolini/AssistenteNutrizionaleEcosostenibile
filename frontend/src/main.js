@@ -16,6 +16,8 @@ Vue.prototype.$http = Axios;
 
 Vue.prototype.$isLogged = false;
 
+global.config = require('../config.json');
+
 
 new Vue({
   router,
