@@ -30,7 +30,7 @@
                 <li> {{ $t('water_footprint_tot') }}: {{ meal.water_footprint_tot }} </li>
                 <div v-if = "meal.components!=null">
                   <div v-for="component in meal.components" v-bind:key="component.product_name">
-                    <ul>
+                    <!-- <ul>
                       <li>
                         <img class="componentImage" :src="component.image_url" />
                         <div class="componentParagraph">
@@ -38,7 +38,16 @@
                           <p> {{ $t('quantity') }}: {{ component.quantity }} g </p>
                         </div>
                       </li>
-                    </ul>
+                    </ul> -->
+                    <b-card
+                      :img-src="component.image_url"
+                      img-alt="Card image" img-left
+                      class="mb-3"
+                    >
+                      <b-card-text>
+                        Some quick example
+                      </b-card-text>
+                    </b-card>
                   </div>
                 </div>
               </b-card-text>
@@ -65,7 +74,7 @@ export default {
       const usr = 'mrossi';
       const param = { username: usr };
 
-      this.$http.get(`${config.server}/api/${param.username}/meals`, { params: param })
+      this.$http.get(`${config.server}api/${param.username}/meals`, { params: param })
         .then((response) => {
           this.mealsList.push(response.data.meals);
         })
