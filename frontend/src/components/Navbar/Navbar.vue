@@ -26,14 +26,14 @@
                 <b-dropdown-item href="new_meal">{{ $t('new_meal') }}</b-dropdown-item>
                 <b-dropdown-item @click.prevent="signout">{{ $t('signout') }}</b-dropdown-item>
             </b-nav-item-dropdown>
-            <b-nav-item-dropdown v-bind:text="$root.$i18n.locale" right>
+            <b-nav-item-dropdown class="localeID" v-bind:text="$root.$i18n.locale" right>
               <b-dropdown-item-button
                 v-for="(lang, i) in langs"
                 :key="`Lang${i}`"
                 :value="lang"
                 @click="$root.$i18n.locale = lang">
-                <img class="locale_flag" :src="getLocaleFlagPath(lang)">
-                {{ lang }}
+                <img class="localeFlag" :src="getLocaleFlagPath(lang)">
+                <span class="localeID"> {{ lang }} </span>
               </b-dropdown-item-button>
             </b-nav-item-dropdown>
           </b-navbar-nav>
