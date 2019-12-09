@@ -19,12 +19,12 @@
             <b-nav-item-dropdown right v-if="isLogged === true">
               <!-- Using 'button-content' slot -->
               <template v-slot:button-content>
-                <em>User</em>
+                <em>{{ $t('user') }}</em>
               </template>
-                <b-dropdown-item href="profile">Il mio profilo</b-dropdown-item>
-                <b-dropdown-item href="last_meals">I miei ultimi pasti</b-dropdown-item>
-                <b-dropdown-item href="new_meal">Inserisci nuovo pasto</b-dropdown-item>
-                <b-dropdown-item @click.prevent="signout">Esci</b-dropdown-item>
+                <b-dropdown-item href="profile">{{ $t('profile') }}</b-dropdown-item>
+                <b-dropdown-item href="last_meals">{{ $t('last_meals') }}</b-dropdown-item>
+                <b-dropdown-item href="new_meal">{{ $t('new_meal') }}</b-dropdown-item>
+                <b-dropdown-item @click.prevent="signout">{{ $t('signout') }}</b-dropdown-item>
             </b-nav-item-dropdown>
             <b-nav-item-dropdown v-bind:text="$root.$i18n.locale" right>
               <b-dropdown-item-button
@@ -71,10 +71,20 @@ export default {
 <i18n>
 {
   "en": {
-    "prod_info": "Product informations"
+    "prod_info": "Product informations",
+    "user": "User",
+    "profile": "My profile",
+    "last_meals": "My last meals",
+    "new_meal": "Insert new meal",
+    "signout": "Signout"
   },
   "it": {
-    "prod_info": "Informazioni prodotto"
+    "prod_info": "Informazioni prodotto",
+    "user": "Utente",
+    "profile": "Il mio profilo",
+    "last_meals": "I miei ultimi pasti",
+    "new_meal": "Inserisci nuovo pasto",
+    "signout": "Esci"
   }
 }
 </i18n>
