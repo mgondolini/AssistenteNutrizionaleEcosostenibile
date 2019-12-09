@@ -23,10 +23,9 @@
             <!-- localize the alt -->
             <img v-bind:src="imgPath" alt="Product Image">
           </template>
-          <h2>{{ productName }}</h2>
+          <p>{{ productName }}</p>
           <p>{{ productVendor }}</p>
           <p>{{ productPortion }}</p>
-          <!-- b-[Optional: add media children here for nesting] -->
         </b-media>
       </b-card>
     </div>
@@ -79,6 +78,6 @@ export default {
   },
 };
 </script>
-<style lang="scss">
-  @import './ProductInfo.scss';
+<style lang="sass">
+  @import './ProductInfo.sass';
 </style>
