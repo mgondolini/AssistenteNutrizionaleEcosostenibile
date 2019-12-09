@@ -25,9 +25,10 @@ export default {
   },
   mounted() {
     const usr = 'mrossi';
-    const param = { username: usr };
+    const mealName = 'Cena';
+    const param = { username: usr, mealName };
 
-    this.$http.get(global.config.server.concat(`api/${param.username}/meals`), { params: param })
+    this.$http.get(global.config.server.concat(`api/${param.username}/meals/${param.mealName}`), { params: param })
       .then((response) => {
         response.data.meals[0].components.forEach((elem) => {
           this.chart.al.push(elem.product_name.concat(' - ').concat(elem.quantity).concat(' g'));
