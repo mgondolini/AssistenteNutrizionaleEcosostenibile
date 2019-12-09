@@ -7,7 +7,7 @@
           v-for="(meal, index) in mealsList[0]"
           v-bind:key="index"
         >
-          <b-card-header header-tag="header" class="p" role="tab">
+          <b-card-header header-tag="header" class="p-0" role="tab">
             <b-button block href="#" v-b-toggle="'accordion-' + index" variant="info">
               {{ meal.meal_name }}
             </b-button>
@@ -44,7 +44,7 @@
                       img-alt="Card image" img-left
                       class="mb-3"
                     >
-                      <b-card-text>
+                      <b-card-text align="center">
                         <p> {{ component.product_name }} </p>
                         <p> {{ $t('quantity') }}: {{ component.quantity }} g </p>
                       </b-card-text>
