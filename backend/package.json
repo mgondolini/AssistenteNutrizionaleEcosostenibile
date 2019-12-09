@@ -6,7 +6,7 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "prestart": "eslint --ignore-path ../.gitignore .",
-    "start": "node app.js",
+    "start": "nodemon app.js",
     "lint": "./node_modules/.bin/eslint --fix --ignore-path .gitignore ."
   },
   "author": "",
