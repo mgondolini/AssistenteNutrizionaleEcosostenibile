@@ -56,10 +56,8 @@
 
 <script>
 const axios = require('axios');
-const crypto = require('crypto');
 const config = require('../../../config.json');
 
-console.log(crypto);
 export default {
   name: 'login',
   data() {
@@ -75,28 +73,30 @@ export default {
       evt.preventDefault();
       const mail = this.form.email;
       const psw = this.form.password;
-      // http://localhost:8081/api/publickey
-      // config.server.concat('api/publickey')
-      axios.get(config.server.concat('api/publickey'))
+
+      axios.post(config.server.concat('api/auth'), { email: mail, key: psw })
         .then((response) => {
-          const buffer = Buffer.from(psw);
-          // TODO publicEncrypt non funziona
-          console.log(response.data.publicKey);
-          const encrypted = crypto.publicEncrypt(response.data.publicKey, buffer);
-          const enc = encrypted.toString();
-          axios.post(config.server.concat('api/auth/'.concat(mail)), { key: enc })
-            .then((res) => {
-              // TODO test if token is visible globally
-              this.$token = res.token;
-              alert(res.desc);
-            }).catch((error) => {
-              // TODO manage error generating token
-              console.log('Error during login: '.concat(error));
-            });
+          this.$token = response.data.token;
+          this.$server = axios.create({
+            baseURL: 'http://localhost:8081/',
+            timeout: 2000,
+            headers: { token: this.$token },
+          });
+
+          this.$router.go('/last_meals');
         }).catch((error) => {
           // TODO manage error getting public key
-          console.log('Error getting publicKey: '.concat(error));
+          console.log('Error during authentication: '.concat(error));
         });
+      /*
+      ESEMPIO chiamata get con token
+      this.$server.get('api/publickey')
+        .then((resp) => {
+          console.log('Ok!');
+        }).catch((er) => {
+          console.log('Error');
+        });
+      */
     },
   },
 };

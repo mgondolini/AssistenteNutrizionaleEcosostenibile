@@ -1,7 +1,6 @@
 const crypto = require('crypto');
 const mongoose = require('mongoose');
 const jwt = require('jsonwebtoken');
-const keyController = require('./keyController.js');
 const config = require('../../config.json');
 
 const UserModel = mongoose.model('User');
@@ -10,26 +9,34 @@ const keyLen = 512;
 const digest = 'sha512';
 
 exports.auth = function auth(req, res) {
-  const query = { email: req.params.email };
-  console.log('Psw enc length: '.concat(req.body.key.length));
+  const query = { email: req.body.email };
   UserModel.findOne(query)
     .exec()
     .then((user) => {
-      console.log('User found!');
-      const psw = crypto.privateDecrypt(keyController.getPrivateKey(),
-        Buffer.from(req.body.key)).toString();
-      console.log('Decripted psw: '.concat(psw));
-      const pswHash = crypto.pbkdf2Sync(psw, user.salt.toString('hex'), iterations, keyLen, digest);
+      // User found
+      const psw = req.body.key;
+      const salt = user.salt.toString();
+      const pswHash = crypto.pbkdf2Sync(psw,
+        salt,
+        iterations,
+        keyLen,
+        digest).toString();
       if (pswHash === user.password_hash_salt) {
+        // Correct password
         res.status(200);
         const t = jwt.sign({
           email: user.email,
-          salt: user.salt,
         }, config.tokenKey, { expiresIn: '8h' });
-        return res.send({ desc: 'nais giob', token: t });
+        // token generated
+        return res.send({ token: t });
       }
-      return res.status(401).send('Wrong password');
-    }).catch((err) => { console.log('Errore: '.concat(err)); res.status(401).send(err); });
+      // wrong password
+      return res.status(401).send('Wrong Password');
+    }).catch((err) => {
+      // User not found
+      console.log('Errore: '.concat(err));
+      res.status(401).send('User Not Found');
+    });
   // teapot
   // res.status(418).send('Wrong password');
 };
@@ -38,8 +45,12 @@ exports.createUser = function createUser() {
   const salt = crypto.randomBytes(512);
   const tmp = new UserModel();
   tmp.username = 'TestUser';
-  tmp.salt = salt.toString('hex');
-  tmp.password_hash_salt = crypto.pbkdf2Sync('test1234', salt.toString('hex'), iterations, keyLen, digest);
+  tmp.salt = salt.toString();
+  tmp.password_hash_salt = crypto.pbkdf2Sync('test',
+    salt.toString(),
+    iterations,
+    keyLen,
+    digest).toString();
   tmp.name = 'TestName';
   tmp.surname = 'TestSurname';
   tmp.email = 'test@test.it';
@@ -50,7 +61,7 @@ exports.createUser = function createUser() {
       global.log(err);
       // res.send(err);
     } else {
-      global.log(`User created${user}`); // DEBUG
+      global.log(`User created: ${user}`); // DEBUG
     }
     // res.status(201).json(meal);
   });

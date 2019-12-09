@@ -6,6 +6,7 @@ const cors = require('cors');
 const morgan = require('morgan');
 
 const path = require('path');
+const jwt = require('jsonwebtoken');
 const config = require('./config.json');
 
 const app = express();
@@ -39,12 +40,25 @@ require('./src/models/mealModel');
 
 global.appRoot = path.resolve(__dirname);
 
+const publicRoutes = require('./src/routes/publicRoutes');
+
+publicRoutes(app);
+
+app.use((req, res, next) => {
+  try {
+    // check token validity
+    jwt.verify(req.headers.token, config.tokenKey);
+    // valid token
+    next();
+  } catch (err) {
+    // invavild token
+    res.status(401).send('Invalid token');
+  }
+});
+
 const routes = require('./src/routes/routes');
 
 routes(app);
-
-// NON ESEGUIRE! Riscrive coppia di chiavi
-// require('./src/controllers/keyController').genKeyPair();
 
 app.use((req, res) => {
   res.status(404).send({ url: `${req.originalUrl} not found` });
