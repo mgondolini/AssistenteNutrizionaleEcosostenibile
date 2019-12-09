@@ -1,7 +1,7 @@
 <template>
-  <div class="last_meals">
+  <div class="last-meals">
     <h1> {{ $t('last_meals') }} </h1>
-    <div class="cardLastMeals" role="tablist">
+    <div class="card-last-meals" role="tablist">
         <b-card
           no-body class="mb-1"
           v-for="(meal, index) in mealsList[0]"
@@ -45,7 +45,8 @@
                       class="mb-3"
                     >
                       <b-card-text>
-                        Some quick example
+                        <p> {{ component.product_name }} </p>
+                        <p> {{ $t('quantity') }}: {{ component.quantity }} g </p>
                       </b-card-text>
                     </b-card>
                   </div>
@@ -125,11 +126,11 @@ export default {
     "calcium_tot": "Calcio",
     "carbon_footprint_tot": "Impronta ambientale CO2",
     "water_footprint_tot": "Consumo d'Acqua",
-    "quantity": "quantità"
+    "quantity": "Quantità"
   }
 }
 </i18n>
 
-<style lang="scss">
-  @import './last_meals.scss';
+<style lang="sass">
+  @import './last_meals.sass';
 </style>
