@@ -29,9 +29,10 @@
         </b-media>
       </b-card>
       <b-tabs content-class="mt-3" justified>
-        <b-tab :title="$t('tab_nutrition_title')" active><p>I'm the first tab</p>
+        <b-tab :title="$t('tab_nutrition_title')" active>
+          <b-img center :src="nutriScoreImgPath" alt="Center image"></b-img>
         </b-tab>
-        <b-tab :title="$t('tab_ingredients_title')"><p>I'm the second tab</p>
+        <b-tab :title="$t('tab_ingredients_title')">
         </b-tab>
       </b-tabs>
     </div>
@@ -45,6 +46,9 @@ const offApiPath = 'https://world.openfoodfacts.org/api/v0/product/';
 const offApiSuffix = '.json';
 const productIDTest = '737628064502';
 
+const imagesExt = '.svg';
+const imagesContext = require.context('@/assets/productInfo/', false);
+
 export default {
   name: 'productInfo',
   data() {
@@ -57,6 +61,7 @@ export default {
       productName: '',
       productVendor: '',
       productPortion: '',
+      nutriScoreImgPath: '',
     };
   },
   methods: {
@@ -66,14 +71,24 @@ export default {
       axios.get(offApiPath + this.ean + offApiSuffix)
         .then((response) => {
           console.log(response);
+
+          // Status === 1 means the product has been found
+          // some random EANs can also return a status 1 so we check the code not do be empty
           this.status = (response.data.status === 1) && (response.data.code !== '');
           this.productShowing = this.status;
+
+          // PRODUCT CARD
           this.imgPath = response.data.product.image_thumb_url.replace('100.jpg', 'full.jpg');
           this.productName = response.data.product.product_name;
           // Alternatively in response.data.brands
           // Absurd way to access brands_tags[0]
           [this.productVendor] = response.data.product.brands_tags;
           this.productPortion = response.data.product.quantity;
+
+          // NUTRITION TAB
+          const nutriScore = response.data.product.nutriscore_grade;
+          this.nutriScoreImgPath = imagesContext(`./${nutriScore}${imagesExt}`);
+
           console.log(`Status ${this.status}`);
           console.log(`img ${this.imgPath}`);
         }).catch((error) => {
