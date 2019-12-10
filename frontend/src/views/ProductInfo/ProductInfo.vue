@@ -28,6 +28,12 @@
           <p>{{ productPortion }}</p>
         </b-media>
       </b-card>
+      <b-tabs content-class="mt-3" justified>
+        <b-tab :title="$t('tab_nutrition_title')" active><p>I'm the first tab</p>
+        </b-tab>
+        <b-tab :title="$t('tab_ingredients_title')"><p>I'm the second tab</p>
+        </b-tab>
+      </b-tabs>
     </div>
   </div>
 </template>
@@ -78,6 +84,20 @@ export default {
   },
 };
 </script>
+
+<i18n>
+{
+  "en": {
+    "tab_nutrition_title" : "Nutrition",
+    "tab_ingredients_title" : "Ingredients"
+  },
+  "it": {
+    "tab_nutrition_title" : "Valori nutrizionali",
+    "tab_ingredients_title" : "Ingredienti"
+  }
+}
+</i18n>
+
 <style lang="sass">
   @import './ProductInfo.sass';
 </style>
