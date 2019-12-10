@@ -14,8 +14,7 @@
 
           <!-- Right aligned nav items -->
           <b-navbar-nav class="ml-auto">
-            <b-nav-item to="login" right v-if="isLogged === false"
-              @click.prevent="gotoLogin">Login</b-nav-item>
+            <b-nav-item to="login" right v-if="isLogged === false">Login</b-nav-item>
             <b-nav-item-dropdown right v-if="isLogged === true">
               <!-- Using 'button-content' slot -->
               <template v-slot:button-content>
@@ -58,9 +57,6 @@ export default {
     };
   },
   methods: {
-    gotoLogin() {
-      this.$router.go('/login');
-    },
     getLocaleFlagPath(lang) {
       return localeFlagsContext(`./${lang}${localeFlagsExt}`);
     },
@@ -88,40 +84,3 @@ export default {
   }
 }
 </i18n>
-
-<!--
-<script>
-export default {
-  name: 'navbar',
-
-  data () {
-    return {
-      navhome: 'Eco-assistant',
-      isLogged:true
-    }
-      /*isLogged: this.checkIfIsLogged()
-    }
-  },
-  created () {
-    this.$bus.$on('logged', () => {
-      this.isLogged = this.checkIfIsLogged()
-    })
-  },
-  methods: {
-    singout () {
-      this.$localStorage.remove('access_token')
-      this.isLogged = this.checkIfIsLogged()
-      this.$router.push('/')
-    },
-    checkIfIsLogged () {
-      let token = this.$localStorage.get('access_token')
-      if (token) {
-        return true
-      } else {
-        return false
-      }*/
-  }
-}
-</script>
-
--->
