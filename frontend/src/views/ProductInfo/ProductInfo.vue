@@ -31,6 +31,13 @@
       <b-tabs content-class="mt-3" justified>
         <b-tab :title="$t('tab_nutrition_title')" active>
           <b-img center :src="nutriScoreImgPath" alt="Nutri score image"></b-img>
+          <!-- use vue slots to dynamically generate the table with img path inside the rows -->
+          <div id="nutrientLevels">
+            <b-img center :src="fatLvlImgPath" alt="Fat level indicator"></b-img>
+            <span> 8.97 g Fat in moderate quantity </span>
+            <b-img center :src="fatLvlImgPath" alt="Fat level indicator"></b-img>
+            <span> 8.97 g Fat in moderate quantity </span>
+          </div>
         </b-tab>
         <b-tab :title="$t('tab_ingredients_title')">
           <b-img center :src="novaGroupImgPath" alt="Nova group image"></b-img>
@@ -64,6 +71,16 @@ export default {
       productPortion: '',
       nutriScoreImgPath: '',
       novaGroupImgPath: '',
+
+      fatLvl: '',
+      satFatLvl: '',
+      sugarsLvl: '',
+      saltLvl: '',
+
+      fatLvlImgPath: '',
+      satFatLvlImgPath: '',
+      sugarsLvlImgPath: '',
+      saltLvlImgPath: '',
     };
   },
   methods: {
@@ -90,6 +107,27 @@ export default {
           // NUTRITION TAB
           const nutriScore = response.data.product.nutriscore_grade;
           this.nutriScoreImgPath = imagesContext(`./nutriScore/${nutriScore}${imagesExt}`);
+
+          this.fatLvl = response.data.product.nutrient_levels.fat;
+          this.satFatLvl = response.data.product.nutrient_levels['saturated-fat'];
+          this.sugarsLvl = response.data.product.nutrient_levels.sugars;
+          this.saltLvl = response.data.product.nutrient_levels.salt;
+
+          console.log(this.fatLvl);
+          console.log(this.satFatLvl);
+          console.log(this.sugarsLvl);
+          console.log(this.saltLvl);
+
+          this.fatLvlImgPath = imagesContext(`./nutrientLevels/${this.fatLvl}${imagesExt}`);
+          this.satFatLvlImgPath = imagesContext(`./nutrientLevels/${this.satFatLvl}${imagesExt}`);
+          this.sugarsLvlImgPath = imagesContext(`./nutrientLevels/${this.sugarsLvl}${imagesExt}`);
+          this.saltLvlImgPath = imagesContext(`./nutrientLevels/${this.saltLvl}${imagesExt}`);
+
+
+          console.log(this.fatLvlImgPath);
+          console.log(this.satFatLvlImgPath);
+          console.log(this.sugarsLvlImgPath);
+          console.log(this.saltLvlImgPath);
 
           // INGREDIENTS TAB
           const novaGroup = response.data.product.nova_group;
