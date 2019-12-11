@@ -44,9 +44,13 @@
                       img-alt="Card image" img-left
                       class="mb-3"
                     >
-                      <b-card-text align="center">
-                        <p> {{ component.product_name }} </p>
-                        <p> {{ $t('quantity') }}: {{ component.quantity }} g </p>
+                      <b-card-text align="center" class="m-0">
+                        <p class="component-p">
+                          <b> {{ component.product_name }} </b>
+                        </p>
+                        <p class="component-p">
+                          {{ component.quantity }} g
+                        </p>
                       </b-card-text>
                     </b-card>
                   </div>

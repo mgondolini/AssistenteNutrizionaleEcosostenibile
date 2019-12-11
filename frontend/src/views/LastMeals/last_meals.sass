@@ -11,43 +11,45 @@ $border-color: #d3d3d3
     list-style-type: none
     padding: 5%
 
-  .component-paragraph
-    float: right
-    padding: 2%
-    text-align: center
-    width: 80%
+  @media only screen and (min-width: 380px)
+    .card-img-left
+      align-self: center
+      height: 20vh
 
-  .card-img-left
-    align-self: center
-    height: 30vw
-    // width: 15vw
+    .component-p
+      font-size: small
 
+  @media only screen and (max-width: 480px)
+    .card-img-left
+      align-self: center
+      height: 20vh
 
-  // @media only screen and (min-width: 600px)
-  //   .card-last-meals
-  //     margin-top: 5%
-  //     max-width: 95%
-
-  //   .component-img // rimuovere (?)
-  //     height: 15%
-  //     width: 15%
-
-  //   .card-img-left
-  //     align-self: center
-  //     height: 30vw
-  //     // width: 15vw
+    .component-p
+      font-size: small
 
 
-  // @media only screen and (min-width: 768px)
-  //   .card-last-meals
-  //     margin: 0 auto
-  //     max-width: 70%
+  @media only screen and (min-width: 600px)
+    .card-last-meals
+      margin: 0 auto
+      max-width: 90%
 
-  //   .component-img
-  //     height: 10%
-  //     width: 10%
+    .card-img-left
+      align-self: center
+      height: 15vh
 
-  //   .card-img-left
-  //     align-self: center
-  //     height: 30vw
-  //     // width: 15vw
+    .component-p
+      font-size: medium
+
+
+  @media only screen and (min-width: 768px)
+    .card-last-meals
+      margin: 0 auto
+      max-width: 70%
+
+    .card-img-left
+      align-self: center
+      height: 20vh
+      
+    .component-p
+      font-size: medium
+
