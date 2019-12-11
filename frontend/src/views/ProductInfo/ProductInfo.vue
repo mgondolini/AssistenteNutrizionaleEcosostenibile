@@ -30,9 +30,10 @@
       </b-card>
       <b-tabs content-class="mt-3" justified>
         <b-tab :title="$t('tab_nutrition_title')" active>
-          <b-img center :src="nutriScoreImgPath" alt="Center image"></b-img>
+          <b-img center :src="nutriScoreImgPath" alt="Nutri score image"></b-img>
         </b-tab>
         <b-tab :title="$t('tab_ingredients_title')">
+          <b-img center :src="novaGroupImgPath" alt="Nova group image"></b-img>
         </b-tab>
       </b-tabs>
     </div>
@@ -47,7 +48,7 @@ const offApiSuffix = '.json';
 const productIDTest = '737628064502';
 
 const imagesExt = '.svg';
-const imagesContext = require.context('@/assets/productInfo/', false);
+const imagesContext = require.context('@/assets/productInfo/', true, /\.svg$/);
 
 export default {
   name: 'productInfo',
@@ -62,6 +63,7 @@ export default {
       productVendor: '',
       productPortion: '',
       nutriScoreImgPath: '',
+      novaGroupImgPath: '',
     };
   },
   methods: {
@@ -87,10 +89,11 @@ export default {
 
           // NUTRITION TAB
           const nutriScore = response.data.product.nutriscore_grade;
-          this.nutriScoreImgPath = imagesContext(`./${nutriScore}${imagesExt}`);
+          this.nutriScoreImgPath = imagesContext(`./nutriScore/${nutriScore}${imagesExt}`);
 
-          console.log(`Status ${this.status}`);
-          console.log(`img ${this.imgPath}`);
+          // INGREDIENTS TAB
+          const novaGroup = response.data.product.nova_group;
+          this.novaGroupImgPath = imagesContext(`./novaGroup/${novaGroup}${imagesExt}`);
         }).catch((error) => {
           alert(JSON.stringify(error));
           // console.log(error);
