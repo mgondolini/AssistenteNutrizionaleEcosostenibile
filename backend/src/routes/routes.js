@@ -4,7 +4,7 @@ const mealController = require('../controllers/mealController');
 
 module.exports = function (app) {
   app.route('/api/user')
-    .post(userController.create_user);
+    .post(userController.insert_user);
 
   app.route('/api/user/:username')
     .get(userController.load_user)
