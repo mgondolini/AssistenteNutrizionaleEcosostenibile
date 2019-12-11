@@ -1,8 +1,12 @@
 const userController = require('../controllers/userController');
 const productController = require('../controllers/productController');
 const mealController = require('../controllers/mealController');
+const keyController = require('../controllers/keyController');
 
 module.exports = function (app) {
+  app.route('/api/publickey')
+    .get(keyController.getPublicKey);
+
   app.route('/api/user')
     .post(userController.insert_user);
 
