@@ -30,15 +30,6 @@
                 <li> {{ $t('water_footprint_tot') }}: {{ meal.water_footprint_tot }} </li>
                 <div v-if = "meal.components!=null">
                   <div v-for="component in meal.components" v-bind:key="component.product_name">
-                    <!-- <ul>
-                      <li>
-                        <img class="componentImage" :src="component.image_url" />
-                        <div class="componentParagraph">
-                          <p> {{ component.product_name }} </p>
-                          <p> {{ $t('quantity') }}: {{ component.quantity }} g </p>
-                        </div>
-                      </li>
-                    </ul> -->
                     <b-card
                       :img-src="component.image_url"
                       img-alt="Card image" img-left
