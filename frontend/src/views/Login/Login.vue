@@ -76,14 +76,9 @@ export default {
 
       axios.post(config.server.concat('api/auth'), { email: mail, key: psw })
         .then((response) => {
-          this.$token = response.data.token;
-          this.$server = axios.create({
-            baseURL: 'http://localhost:8081/',
-            timeout: 2000,
-            headers: { token: this.$token },
-          });
-
-          this.$router.go('/last_meals');
+          localStorage.ecoAssToken = response.data.token.toString();
+          global.login(response.data.token.toString(), true);
+          this.$router.push('/last_meals');
         }).catch((error) => {
           // TODO manage error getting public key
           console.log('Error during authentication: '.concat(error));
