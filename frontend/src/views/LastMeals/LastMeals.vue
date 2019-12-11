@@ -15,19 +15,72 @@
           <b-collapse :id="'accordion-' + index" visible accordion="my-accordion" role="tabpanel">
             <b-card-body>
               <b-card-text>
-                <li> {{ $t('energy_tot') }}: {{ meal.energy_tot }} </li>
-                <li> {{ $t('carbohydrates_tot') }}: {{ meal.carbohydrates_tot }} </li>
-                <li> {{ $t('sugars_tot') }}: {{ meal.sugars_tot }} </li>
-                <li> {{ $t('fat_tot') }}: {{ meal.fat_tot }} </li>
-                <li> {{ $t('saturated_fat_tot') }}: {{ meal.saturated_fat_tot }} </li>
-                <li> {{ $t('proteins_tot') }}: {{ meal.proteins_tot }} </li>
-                <li> {{ $t('fiber_tot') }}: {{ meal.fiber_tot }} </li>
-                <li> {{ $t('salt_tot') }}: {{ meal.salt_tot }} </li>
-                <li> {{ $t('sodium_tot') }}: {{ meal.sodium_tot }} </li>
-                <li> {{ $t('alcohol_tot') }}: {{ meal.alcohol_tot }} </li>
-                <li> {{ $t('calcium_tot') }}: {{ meal.calcium_tot }} </li>
-                <li> {{ $t('carbon_footprint_tot') }}: {{ meal.carbon_footprint_tot }} </li>
-                <li> {{ $t('water_footprint_tot') }}: {{ meal.water_footprint_tot }} </li>
+                <hr />
+                <b-row>
+                  <b-col class="sm-3 col-5"> {{ $t('energy_tot') }} </b-col>
+                  <b-col class="md-8 col-6"> {{ meal.energy_tot }} </b-col>
+                </b-row>
+                <hr />
+                <b-row>
+                  <b-col class="sm-3 md-2 col-5">  {{ $t('carbohydrates_tot') }} </b-col>
+                  <b-col class="md-8 col-6"> {{ meal.carbohydrates_tot }} </b-col>
+                </b-row>
+                <hr />
+                <b-row>
+                  <b-col class="sm-3 md-2 col-5"> {{ $t('sugars_tot') }} </b-col>
+                  <b-col class="md-8 col-6"> {{ meal.sugars_tot }} </b-col>
+                </b-row>
+                <hr />
+                <b-row>
+                  <b-col class="sm-3 md-2 col-5"> {{ $t('fat_tot') }}</b-col>
+                  <b-col class="md-8 col-6"> {{ meal.fat_tot }} </b-col>
+                </b-row>
+                <hr />
+                <b-row>
+                  <b-col class="sm-3 md-2 col-5"> {{ $t('saturated_fat_tot') }}</b-col>
+                  <b-col class="md-8 col-6"> {{ meal.saturated_fat_tot }} </b-col>
+                </b-row>
+                <hr />
+                <b-row>
+                  <b-col class="sm-3 md-2 col-5"> {{ $t('proteins_tot') }} </b-col>
+                  <b-col class="md-8 col-6"> {{ meal.proteins_tot }} </b-col>
+                </b-row>
+                <hr />
+                <b-row>
+                  <b-col class="sm-3 md-2 col-5"> {{ $t('fiber_tot') }} </b-col>
+                  <b-col class="md-8 col-6"> {{ meal.fiber_tot }} </b-col>
+                </b-row>
+                <hr />
+                <b-row>
+                  <b-col class="sm-3 md-2 col-5"> {{ $t('salt_tot') }} </b-col>
+                  <b-col class="md-8 col-6"> {{ meal.salt_tot }} </b-col>
+                </b-row>
+                <hr />
+                <b-row>
+                  <b-col class="sm-3 md-2 col-5"> {{ $t('sodium_tot') }} </b-col>
+                  <b-col class="md-8 col-6"> {{ meal.sodium_tot }} </b-col>
+                </b-row>
+                <hr />
+                <b-row>
+                  <b-col class="sm-3 md-2 col-5"> {{ $t('alcohol_tot') }} </b-col>
+                  <b-col class="md-8 col-6"> {{ meal.alcohol_tot }} </b-col>
+                </b-row>
+                <hr />
+                <b-row>
+                  <b-col class="sm-3 md-2 col-5"> {{ $t('calcium_tot') }} </b-col>
+                  <b-col class="md-8 col-6"> {{ meal.calcium_tot }} </b-col>
+                </b-row>
+                <hr />
+                <b-row>
+                  <b-col class="sm-3 md-2 col-5"> {{ $t('carbon_footprint_tot') }} </b-col>
+                  <b-col class="md-8 col-6"> {{ meal.carbon_footprint_tot }} </b-col>
+                </b-row>
+                <hr />
+                <b-row>
+                  <b-col class="sm-3 md-2 col-5"> {{ $t('water_footprint_tot') }} </b-col>
+                  <b-col class="md-8 col-6"> {{ meal.water_footprint_tot }} </b-col>
+                </b-row>
+                <hr />
                 <div v-if = "meal.components!=null">
                   <div v-for="component in meal.components" v-bind:key="component.product_name">
                     <b-card
