@@ -6,18 +6,27 @@ import router from './router';
 import './custom.scss';
 import i18n from './i18n';
 
-
 Vue.use(BootstrapVue);
 
 /* Set this to false to prevent the production tip on Vue startup */
 Vue.config.productionTip = false;
 
-Vue.prototype.$http = Axios;
+global.login = function login(t, l) {
+  Vue.prototype.$isLogged = l;
+  Vue.prototype.$http = Axios.create({
+    baseURL: 'http://localhost:8081/',
+    timeout: 2000,
+    headers: { token: t },
+  });
+};
 
-Vue.prototype.$isLogged = false;
+if (localStorage.ecoAssToken) {
+  global.login(localStorage.ecoAssToken, true);
+} else {
+  global.login('InvalidToken', false);
+}
 
 global.config = require('../config.json');
-
 
 new Vue({
   router,
