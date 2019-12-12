@@ -14,44 +14,96 @@
           </b-card-header>
           <b-collapse :id="'accordion-' + index" visible accordion="my-accordion" role="tabpanel">
             <b-card-body>
-              <b-card-text>
-                <li> {{ $t('energy_tot') }}: {{ meal.energy_tot }} </li>
-                <li> {{ $t('carbohydrates_tot') }}: {{ meal.carbohydrates_tot }} </li>
-                <li> {{ $t('sugars_tot') }}: {{ meal.sugars_tot }} </li>
-                <li> {{ $t('fat_tot') }}: {{ meal.fat_tot }} </li>
-                <li> {{ $t('saturated_fat_tot') }}: {{ meal.saturated_fat_tot }} </li>
-                <li> {{ $t('proteins_tot') }}: {{ meal.proteins_tot }} </li>
-                <li> {{ $t('fiber_tot') }}: {{ meal.fiber_tot }} </li>
-                <li> {{ $t('salt_tot') }}: {{ meal.salt_tot }} </li>
-                <li> {{ $t('sodium_tot') }}: {{ meal.sodium_tot }} </li>
-                <li> {{ $t('alcohol_tot') }}: {{ meal.alcohol_tot }} </li>
-                <li> {{ $t('calcium_tot') }}: {{ meal.calcium_tot }} </li>
-                <li> {{ $t('carbon_footprint_tot') }}: {{ meal.carbon_footprint_tot }} </li>
-                <li> {{ $t('water_footprint_tot') }}: {{ meal.water_footprint_tot }} </li>
+              <b-container class="pb-5">
+                <b-card-text class="nutri-title m-0">{{ $t('nutrition_facts') }}</b-card-text>
+                <b-row class="p-2 b-thick">
+                  <b-col class="col-3"></b-col>
+                  <b-col class="col-3"></b-col>
+                  <b-col class="col-5 small"> {{ $t('daily_value') }}</b-col>
+                </b-row>
+                <b-row class="border-bottom p-2">
+                  <b-col class="col-3"> {{ $t('energy_tot') }} </b-col>
+                  <b-col class="col-3"> {{ meal.energy_tot }} </b-col>
+                  <b-col class="col-5"> fabbisogno giornaliero </b-col>
+                </b-row>
+                <b-row class="border-bottom p-2">
+                  <b-col class="col-3">  {{ $t('carbohydrates_tot') }} </b-col>
+                  <b-col class="col-3"> {{ meal.carbohydrates_tot }} </b-col>
+                  <b-col class="col-5"> fabbisogno giornaliero </b-col>
+                </b-row>
+                 <b-row class="border-bottom p-2">
+                  <b-col class="col-3"> {{ $t('sugars_tot') }} </b-col>
+                  <b-col class="col-3"> {{ meal.sugars_tot }} </b-col>
+                  <b-col class="col-5"> fabbisogno giornaliero </b-col>
+                </b-row>
+                 <b-row class="border-bottom p-2">
+                  <b-col class="col-3"> {{ $t('fat_tot') }}</b-col>
+                  <b-col class="col-3"> {{ meal.fat_tot }} </b-col>
+                  <b-col class="col-5"> fabbisogno giornaliero </b-col>
+                </b-row>
+                 <b-row class="border-bottom p-2">
+                  <b-col class="col-3"> {{ $t('saturated_fat_tot') }}</b-col>
+                  <b-col class="col-3"> {{ meal.saturated_fat_tot }} </b-col>
+                  <b-col class="col-5"> fabbisogno giornaliero </b-col>
+                </b-row>
+                 <b-row class="border-bottom p-2">
+                  <b-col class="col-3"> {{ $t('proteins_tot') }} </b-col>
+                  <b-col class="col-3"> {{ meal.proteins_tot }} </b-col>
+                  <b-col class="col-5"> fabbisogno giornaliero </b-col>
+                </b-row>
+                 <b-row class="border-bottom p-2">
+                  <b-col class="col-3"> {{ $t('fiber_tot') }} </b-col>
+                  <b-col class="col-3"> {{ meal.fiber_tot }} </b-col>
+                  <b-col class="col-5"> fabbisogno giornaliero </b-col>
+                </b-row>
+                 <b-row class="border-bottom p-2">
+                  <b-col class="col-3"> {{ $t('salt_tot') }} </b-col>
+                  <b-col class="col-3"> {{ meal.salt_tot }} </b-col>
+                  <b-col class="col-5"> fabbisogno giornaliero </b-col>
+                </b-row>
+                 <b-row class="border-bottom p-2">
+                  <b-col class="col-3"> {{ $t('sodium_tot') }} </b-col>
+                  <b-col class="col-3"> {{ meal.sodium_tot }} </b-col>
+                  <b-col class="col-5"> fabbisogno giornaliero </b-col>
+                </b-row>
+                 <b-row class="border-bottom p-2">
+                  <b-col class="col-3"> {{ $t('alcohol_tot') }} </b-col>
+                  <b-col class="col-3"> {{ meal.alcohol_tot }} </b-col>
+                  <b-col class="col-5"> fabbisogno giornaliero </b-col>
+                </b-row>
+                  <b-row class="b-thick p-2">
+                  <b-col class="col-3"> {{ $t('calcium_tot') }} </b-col>
+                  <b-col class="col-3"> {{ meal.calcium_tot }} </b-col>
+                </b-row>
+                 <b-row class="border-bottom p-2">
+                  <b-col class="col-3"> {{ $t('carbon_footprint_tot') }} </b-col>
+                  <b-col class="col-3"> {{ meal.carbon_footprint_tot }} </b-col>
+                  <b-col class="col-5"> fabbisogno giornaliero </b-col>
+               </b-row>
+                 <b-row class="b-thick p-2 mb-5">
+                  <b-col class="col-3"> {{ $t('water_footprint_tot') }} </b-col>
+                  <b-col class="col-3"> {{ meal.water_footprint_tot }} </b-col>
+                  <b-col class="col-5"> fabbisogno giornaliero </b-col>
+                </b-row>
                 <div v-if = "meal.components!=null">
                   <div v-for="component in meal.components" v-bind:key="component.product_name">
-                    <!-- <ul>
-                      <li>
-                        <img class="componentImage" :src="component.image_url" />
-                        <div class="componentParagraph">
-                          <p> {{ component.product_name }} </p>
-                          <p> {{ $t('quantity') }}: {{ component.quantity }} g </p>
-                        </div>
-                      </li>
-                    </ul> -->
                     <b-card
                       :img-src="component.image_url"
                       img-alt="Card image" img-left
                       class="mb-3"
                     >
-                      <b-card-text align="center">
-                        <p> {{ component.product_name }} </p>
-                        <p> {{ $t('quantity') }}: {{ component.quantity }} g </p>
+                      <b-card-text align="center" class="m-0">
+                        <p class="component-p">
+                          <b> {{ component.product_name }} </b>
+                        </p>
+                        <p class="component-p">
+                          {{ component.quantity }} g
+                        </p>
                       </b-card-text>
                     </b-card>
                   </div>
                 </div>
-              </b-card-text>
+              </b-container>
             </b-card-body>
           </b-collapse>
         </b-card>
@@ -60,8 +112,6 @@
 </template>
 
 <script>
-const config = require('../../../config.json');
-
 export default {
   name: 'last_meals',
   data() {
@@ -75,7 +125,7 @@ export default {
       const usr = 'mrossi';
       const param = { username: usr };
 
-      this.$http.get(`${config.server}api/${param.username}/meals`, { params: param })
+      this.$http.get(`api/${param.username}/meals`, { params: param })
         .then((response) => {
           this.mealsList.push(response.data.meals);
         })
@@ -95,6 +145,8 @@ export default {
 <i18n>
 {
   "en": {
+    "nutrition_facts": "Nutrition Facts",
+    "daily_value": "% Daily Value",
     "last_meals": "Your last meals",
     "energy_tot": "Energy",
     "carbohydrates_tot": "Carbohydrates",
@@ -112,6 +164,8 @@ export default {
     "quantity": "Quantity"
   },
   "it": {
+    "nutrition_facts": "Valori nutrizionali",
+    "daily_value": "% Valore giornaliero",
     "last_meals": "I tuoi ultimi pasti",
     "energy_tot": "Calorie",
     "carbohydrates_tot": "Carboidrati",
@@ -132,5 +186,5 @@ export default {
 </i18n>
 
 <style lang="sass">
-  @import './last_meals.sass';
+  @import './last_meals.sass'
 </style>

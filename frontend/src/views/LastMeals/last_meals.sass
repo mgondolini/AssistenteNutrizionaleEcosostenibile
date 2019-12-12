@@ -1,53 +1,70 @@
 $header-color: #17a2b8
 $border-color: #d3d3d3
+$black: #000
 
 .last-meals
   h1
     color: $header-color
     margin: 3%
 
-  ul
-    border: solid $border-color 1px
-    list-style-type: none
-    padding: 5%
+  .nutri-title
+    font-size: x-large
+    font-weight: bold
 
-  .component-paragraph
-    float: right
-    padding: 2%
-    text-align: center
-    width: 80%
+  .b-thick
+    border-bottom: 2px solid $black
+    // border-width: thick
 
-  .card-img-left
-    align-self: center
-    height: 30vw
-    // width: 15vw
+  @media only screen and (min-width: 380px)
+    .card-img-left
+      align-self: center
+      height: 15vh
 
-
-  // @media only screen and (min-width: 600px)
-  //   .card-last-meals
-  //     margin-top: 5%
-  //     max-width: 95%
-
-  //   .component-img // rimuovere (?)
-  //     height: 15%
-  //     width: 15%
-
-  //   .card-img-left
-  //     align-self: center
-  //     height: 30vw
-  //     // width: 15vw
+    .component-p
+      font-size: small
 
 
-  // @media only screen and (min-width: 768px)
-  //   .card-last-meals
-  //     margin: 0 auto
-  //     max-width: 70%
+  @media only screen and (max-width: 480px)
+    .card-img-left
+      align-self: center
+      height: 15vh
 
-  //   .component-img
-  //     height: 10%
-  //     width: 10%
+    .component-p
+      font-size: small
 
-  //   .card-img-left
-  //     align-self: center
-  //     height: 30vw
-  //     // width: 15vw
+    .col-3
+      font-size: small
+      max-width: 30%
+
+    .col-5
+      font-size: small
+
+    .nutri-title
+      font-size: large
+      font-weight: bold
+
+
+  @media only screen and (min-width: 600px)
+    .card-last-meals
+      margin: 0 auto
+      max-width: 90%
+
+    .card-img-left
+      align-self: center
+      height: 15vh
+
+    .component-p
+      font-size: medium
+
+
+  @media only screen and (min-width: 768px)
+    .card-last-meals
+      margin: 0 auto
+      max-width: 70%
+
+    .card-img-left
+      align-self: center
+      height: 18vh
+
+    .component-p
+      font-size: medium
