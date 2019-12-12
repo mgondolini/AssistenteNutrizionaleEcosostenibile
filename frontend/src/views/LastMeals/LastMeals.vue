@@ -108,8 +108,6 @@
 </template>
 
 <script>
-const config = require('../../../config.json');
-
 export default {
   name: 'last_meals',
   data() {
@@ -123,7 +121,7 @@ export default {
       const usr = 'mrossi';
       const param = { username: usr };
 
-      this.$http.get(`${config.server}api/${param.username}/meals`, { params: param })
+      this.$http.get(`api/${param.username}/meals`, { params: param })
         .then((response) => {
           this.mealsList.push(response.data.meals);
         })
