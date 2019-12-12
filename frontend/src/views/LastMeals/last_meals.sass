@@ -1,10 +1,19 @@
 $header-color: #17a2b8
 $border-color: #d3d3d3
+$black: #000
 
 .last-meals
   h1
     color: $header-color
     margin: 3%
+
+  .nutri-title
+    font-size: x-large
+    font-weight: bold
+
+  .b-thick
+    border-bottom: 2px solid $black
+    // border-width: thick
 
   @media only screen and (min-width: 380px)
     .card-img-left
@@ -14,6 +23,7 @@ $border-color: #d3d3d3
     .component-p
       font-size: small
 
+
   @media only screen and (max-width: 480px)
     .card-img-left
       align-self: center
@@ -21,6 +31,17 @@ $border-color: #d3d3d3
 
     .component-p
       font-size: small
+
+    .col-3
+      font-size: small
+      max-width: 30%
+
+    .col-5
+      font-size: small
+
+    .nutri-title
+      font-size: large
+      font-weight: bold
 
 
   @media only screen and (min-width: 600px)
@@ -43,7 +64,7 @@ $border-color: #d3d3d3
 
     .card-img-left
       align-self: center
-      height: 20vh
+      height: 18vh
 
     .component-p
       font-size: medium
