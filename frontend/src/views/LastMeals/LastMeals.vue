@@ -21,69 +21,70 @@
                   <b-col class="col-3"></b-col>
                   <b-col class="col-5 small"> {{ $t('daily_value') }}</b-col>
                 </b-row>
-                <b-row class="border-bottom p-2">
+                <b-row class="border-bottom p-1">
                   <b-col class="col-3"> {{ $t('energy_tot') }} </b-col>
                   <b-col class="col-3"> {{ meal.energy_tot }} </b-col>
-                  <b-col class="col-5"> fabbisogno giornaliero </b-col>
+                  <b-col class="col-5"> val% </b-col>
                 </b-row>
-                <b-row class="border-bottom p-2">
+                <b-row class="border-bottom p-1">
                   <b-col class="col-3">  {{ $t('carbohydrates_tot') }} </b-col>
                   <b-col class="col-3"> {{ meal.carbohydrates_tot }} </b-col>
-                  <b-col class="col-5"> fabbisogno giornaliero </b-col>
+                  <b-col class="col-5"> val% </b-col>
                 </b-row>
-                 <b-row class="border-bottom p-2">
+                 <b-row class="border-bottom p-1">
                   <b-col class="col-3"> {{ $t('sugars_tot') }} </b-col>
                   <b-col class="col-3"> {{ meal.sugars_tot }} </b-col>
-                  <b-col class="col-5"> fabbisogno giornaliero </b-col>
+                  <b-col class="col-5"> val% </b-col>
                 </b-row>
-                 <b-row class="border-bottom p-2">
+                 <b-row class="border-bottom p-1">
                   <b-col class="col-3"> {{ $t('fat_tot') }}</b-col>
                   <b-col class="col-3"> {{ meal.fat_tot }} </b-col>
-                  <b-col class="col-5"> fabbisogno giornaliero </b-col>
+                  <b-col class="col-5"> val% </b-col>
                 </b-row>
-                 <b-row class="border-bottom p-2">
+                 <b-row class="border-bottom p-1">
                   <b-col class="col-3"> {{ $t('saturated_fat_tot') }}</b-col>
                   <b-col class="col-3"> {{ meal.saturated_fat_tot }} </b-col>
-                  <b-col class="col-5"> fabbisogno giornaliero </b-col>
+                  <b-col class="col-5"> val% </b-col>
                 </b-row>
-                 <b-row class="border-bottom p-2">
+                 <b-row class="border-bottom p-1">
                   <b-col class="col-3"> {{ $t('proteins_tot') }} </b-col>
                   <b-col class="col-3"> {{ meal.proteins_tot }} </b-col>
-                  <b-col class="col-5"> fabbisogno giornaliero </b-col>
+                  <b-col class="col-5"> val% </b-col>
                 </b-row>
-                 <b-row class="border-bottom p-2">
+                 <b-row class="border-bottom p-1">
                   <b-col class="col-3"> {{ $t('fiber_tot') }} </b-col>
                   <b-col class="col-3"> {{ meal.fiber_tot }} </b-col>
-                  <b-col class="col-5"> fabbisogno giornaliero </b-col>
+                  <b-col class="col-5"> val% </b-col>
                 </b-row>
-                 <b-row class="border-bottom p-2">
+                 <b-row class="border-bottom p-1">
                   <b-col class="col-3"> {{ $t('salt_tot') }} </b-col>
                   <b-col class="col-3"> {{ meal.salt_tot }} </b-col>
-                  <b-col class="col-5"> fabbisogno giornaliero </b-col>
+                  <b-col class="col-5"> val% </b-col>
                 </b-row>
-                 <b-row class="border-bottom p-2">
+                 <b-row class="border-bottom p-1">
                   <b-col class="col-3"> {{ $t('sodium_tot') }} </b-col>
                   <b-col class="col-3"> {{ meal.sodium_tot }} </b-col>
-                  <b-col class="col-5"> fabbisogno giornaliero </b-col>
+                  <b-col class="col-5"> val% </b-col>
                 </b-row>
-                 <b-row class="border-bottom p-2">
+                 <b-row class="border-bottom p-1">
                   <b-col class="col-3"> {{ $t('alcohol_tot') }} </b-col>
                   <b-col class="col-3"> {{ meal.alcohol_tot }} </b-col>
-                  <b-col class="col-5"> fabbisogno giornaliero </b-col>
+                  <b-col class="col-5"> val% </b-col>
                 </b-row>
-                  <b-row class="b-thick p-2">
+                  <b-row class="b-thick p-1">
                   <b-col class="col-3"> {{ $t('calcium_tot') }} </b-col>
                   <b-col class="col-3"> {{ meal.calcium_tot }} </b-col>
+                  <b-col class="col-5"> val% </b-col>
                 </b-row>
-                 <b-row class="border-bottom p-2">
+                 <b-row class="border-bottom p-1">
                   <b-col class="col-3"> {{ $t('carbon_footprint_tot') }} </b-col>
                   <b-col class="col-3"> {{ meal.carbon_footprint_tot }} </b-col>
-                  <b-col class="col-5"> fabbisogno giornaliero </b-col>
+                  <b-col class="col-5"> val% </b-col>
                </b-row>
-                 <b-row class="b-thick p-2 mb-5">
+                 <b-row class="b-thick p-1 mb-5">
                   <b-col class="col-3"> {{ $t('water_footprint_tot') }} </b-col>
                   <b-col class="col-3"> {{ meal.water_footprint_tot }} </b-col>
-                  <b-col class="col-5"> fabbisogno giornaliero </b-col>
+                  <b-col class="col-5"> val% </b-col>
                 </b-row>
                 <div v-if = "meal.components!=null">
                   <div v-for="component in meal.components" v-bind:key="component.product_name">
