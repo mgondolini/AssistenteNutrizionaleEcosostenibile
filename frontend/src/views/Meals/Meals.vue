@@ -73,41 +73,11 @@ export default {
 <i18n>
 {
   "en": {
-    "nutrition_facts": "Nutrition Facts",
-    "daily_value": "% Daily Value",
     "last_meals": "Your last meals",
-    "energy_tot": "Energy",
-    "carbohydrates_tot": "Carbohydrates",
-    "sugars_tot": "Sugars",
-    "fat_tot": "Fats",
-    "saturated_fat_tot": "Saturated fats",
-    "proteins_tot": "Proteins",
-    "fiber_tot": "Fibers",
-    "salt_tot": "Salt",
-    "sodium_tot": "Sodium",
-    "alcohol_tot": "Alcohol",
-    "calcium_tot": "Calcium",
-    "carbon_footprint_tot": "Carbon footprint",
-    "water_footprint_tot": "Water footprint",
     "quantity": "Quantity"
   },
   "it": {
-    "nutrition_facts": "Valori nutrizionali",
-    "daily_value": "% Valore giornaliero",
     "last_meals": "I tuoi ultimi pasti",
-    "energy_tot": "Calorie",
-    "carbohydrates_tot": "Carboidrati",
-    "sugars_tot": "Zuccheri",
-    "fat_tot": "Grassi",
-    "saturated_fat_tot": "Grassi saturi",
-    "proteins_tot": "Proteine",
-    "fiber_tot": "Fibre",
-    "salt_tot": "Sale",
-    "sodium_tot": "Sodio",
-    "alcohol_tot": "Alcool",
-    "calcium_tot": "Calcio",
-    "carbon_footprint_tot": "Impronta ambientale CO2",
-    "water_footprint_tot": "Consumo d'Acqua",
     "quantity": "Quantità"
   }
 }

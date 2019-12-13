@@ -121,7 +121,6 @@ export default {
   "en": {
     "nutrition_facts": "Nutrition Facts",
     "daily_value": "% Daily Value",
-    "last_meals": "Your last meals",
     "energy_tot": "Energy",
     "carbohydrates_tot": "Carbohydrates",
     "sugars_tot": "Sugars",
@@ -139,7 +138,6 @@ export default {
   "it": {
     "nutrition_facts": "Valori nutrizionali",
     "daily_value": "% Valore giornaliero",
-    "last_meals": "I tuoi ultimi pasti",
     "energy_tot": "Calorie",
     "carbohydrates_tot": "Carboidrati",
     "sugars_tot": "Zuccheri",
