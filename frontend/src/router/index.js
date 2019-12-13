@@ -6,6 +6,7 @@ import Login from '../views/Login/Login.vue';
 import LastMeals from '../views/LastMeals/LastMeals.vue';
 import CalculateMeal from '../views/CalculateMeal/CalculateMeal.vue';
 import Profile from '../views/Profile/Profile.vue';
+import NutritionFacts from '../views/LastMeals/NutritionFacts.vue'; // CAMBIARE
 
 
 Vue.use(VueRouter);
@@ -35,6 +36,11 @@ const routes = [
     path: '/last_meals',
     name: 'last_meals',
     component: LastMeals,
+  },
+  {
+    path: '/nutrition_facts',
+    name: 'nutrition_facts',
+    component: NutritionFacts,
   },
   {
     path: '/new_meal',
