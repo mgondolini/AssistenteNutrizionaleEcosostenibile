@@ -1,5 +1,5 @@
 <template>
-  <div class="last-meals">
+  <div class="meals">
     <h1> {{ $t('last_meals') }} </h1>
     <div class="card-last-meals" role="tablist">
         <b-card
@@ -41,7 +41,7 @@
 
 <script>
 export default {
-  name: 'last_meals',
+  name: 'meals',
   data() {
     return {
       mealsList: [],
@@ -114,5 +114,5 @@ export default {
 </i18n>
 
 <style lang="sass">
-  @import './last_meals.sass'
+  @import './meals.sass'
 </style>
