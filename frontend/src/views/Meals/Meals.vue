@@ -14,6 +14,15 @@
           </b-card-header>
           <b-collapse :id="'accordion-' + index" visible accordion="my-accordion" role="tabpanel">
             <b-card-body>
+              <b-button
+                    pill
+                    variant="link"
+                    class="p-0"
+                    @click="addComponent"
+                  >
+                    <img class="add" src="../../assets/buttons/plus.svg">
+                    Add component
+              </b-button>
               <div v-if = "meal.components!=null">
                 <div v-for="component in meal.components" v-bind:key="component.product_name">
                   <b-card
@@ -29,6 +38,14 @@
                         {{ component.quantity }} g
                       </p>
                     </b-card-text>
+                    <b-button
+                      pill
+                      variant="link"
+                      class="p-0"
+                      @click="removeComponent(component.barcode, meal.meal_name)"
+                    >
+                      <img class="remove" src="../../assets/buttons/remove.svg">
+                    </b-button>
                   </b-card>
                 </div>
               </div>
@@ -50,12 +67,32 @@ export default {
   methods: {
     loadMealsList() {
       // TODO: prendere username da sessione
-      const usr = 'mrossi';
+      const usr = 'andreaneri';
       const param = { username: usr };
 
       this.$http.get(`api/${param.username}/meals`, { params: param })
         .then((response) => {
           this.mealsList.push(response.data.meals);
+        })
+        .catch(error => (console.log(error)));
+    },
+    addComponent() {
+      this.$router.push('/info_prod');
+      // come passare mealname??
+    },
+    removeComponent(barcode, mealName) {
+      const usr = 'andreaneri';
+      const param = {
+        username: usr,
+        barcode,
+        mealName,
+      };
+      console.log(param); // DEBUG
+      this.$http.delete(`api/${param.username}/meals/${param.mealName}/components`, { params: param })
+        .then((response) => {
+          this.mealsList = [];
+          this.mealsList.push(response.data.meals);
+          console.log(this.mealsList);
         })
         .catch(error => (console.log(error)));
     },
