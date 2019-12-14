@@ -67,7 +67,7 @@ export default {
   methods: {
     loadMealsList() {
       // TODO: prendere username da sessione
-      const usr = 'andreaneri';
+      const usr = 'mrossi';
       const param = { username: usr };
 
       this.$http.get(`api/${param.username}/meals`, { params: param })
@@ -81,7 +81,7 @@ export default {
       // come passare mealname??
     },
     removeComponent(barcode, mealName) {
-      const usr = 'andreaneri';
+      const usr = 'mrossi';
       const param = {
         username: usr,
         barcode,
