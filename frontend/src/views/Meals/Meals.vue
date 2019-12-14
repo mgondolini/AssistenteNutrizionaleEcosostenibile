@@ -18,7 +18,7 @@
                     pill
                     variant="link"
                     class="p-0"
-                    @click="addComponent"
+                    @click="addComponent(meal.meal_name)"
                   >
                     <img class="add" src="../../assets/buttons/plus.svg">
                     Add component
@@ -76,9 +76,10 @@ export default {
         })
         .catch(error => (console.log(error)));
     },
-    addComponent() {
-      this.$router.push('/info_prod');
-      // come passare mealname??
+    addComponent(mealName) {
+      // Passo meal name, per accedere alla query dalla pagina info prodotto
+      // devo fare: this.$route.query.mealName
+      this.$router.push({ path: '/info_prod', query: { mealName } });
     },
     removeComponent(barcode, mealName) {
       const usr = 'mrossi';
