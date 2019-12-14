@@ -53,6 +53,37 @@
           </b-collapse>
         </b-card>
     </div>
+    <b-button
+      pill
+      variant="link"
+      class="p-0"
+      v-b-modal.modal-prevent-closing
+    ><img class="add-meal" src="../../assets/buttons/add.svg">
+    </b-button>
+    <b-modal
+      id="modal-prevent-closing"
+      ref="newMealModal"
+      title="Enter New Meal name"
+      @show="resetModal"
+      @hidden="resetModal"
+      @ok="handleOk"
+    >
+      <form ref="form" @submit.stop.prevent="handleSubmit">
+        <b-form-group
+          :state="mealNameState"
+          label="MealName"
+          label-for="meal-name-input"
+          invalid-feedback="Meal name is required"
+        >
+          <b-form-input
+            id="meal-name-input"
+            v-model="mealName"
+            :state="mealNameState"
+            required
+          ></b-form-input>
+        </b-form-group>
+      </form>
+    </b-modal>
   </div>
 </template>
 
@@ -62,6 +93,8 @@ export default {
   data() {
     return {
       mealsList: [],
+      mealName: '', // da cambiare in meals.mealName
+      mealNameState: null,
     };
   },
   methods: {
@@ -96,6 +129,46 @@ export default {
           console.log(this.mealsList);
         })
         .catch(error => (console.log(error)));
+    },
+    checkFormValidity() {
+      const valid = this.$refs.form.checkValidity();
+      this.mealNameState = valid ? 'valid' : 'invalid';
+      return valid;
+    },
+    resetModal() {
+      this.mealName = '';
+      this.mealNameState = null;
+    },
+    handleOk(bvModalEvt) {
+      // Prevent modal from closing
+      bvModalEvt.preventDefault();
+      // Trigger submit handler
+      this.handleSubmit();
+    },
+    handleSubmit() {
+      // Exit when the form isn't valid
+      if (!this.checkFormValidity()) {
+        return;
+      }
+
+      // POST DELLA RICHIESTA
+      const usr = 'andreaneri';
+      const body = {
+        username: usr,
+        meals: {
+          mealName: this.mealName,
+        },
+      };
+
+      this.$http.post(`api/${body.username}/meals`, body)
+        .then((response) => {
+          this.mealsList.push(response.data.meals);
+        })
+        .catch(error => (console.log(error)));
+
+      this.$nextTick(() => {
+        this.$refs.newMealModalf.hide();
+      });
     },
     init() {
       this.loadMealsList();
