@@ -35,31 +35,28 @@
                   <img class="add" src="../../assets/buttons/plus.svg">
                   Add component
             </b-button>
-            <div v-if = "meal.components!=null">
-              <div v-for="component in meal.components" v-bind:key="component.product_name">
-                <b-card
-                  :img-src="component.image_url"
-                  img-alt="Card image" img-left
-                  class="mb-3"
-                >
-                  <b-card-text align="center" class="m-0">
-                    <p class="component-p">
-                      <b> {{ component.product_name }} </b>
-                    </p>
-                    <p class="component-p">
-                      {{ component.quantity }} g
-                    </p>
-                  </b-card-text>
-                  <b-button
-                    pill
-                    variant="link"
-                    class="p-0"
-                    @click="removeComponent(component.barcode, meal.meal_name)"
-                  >
-                    <img class="remove" src="../../assets/buttons/remove.svg">
-                  </b-button>
-                </b-card>
-              </div>
+            <div v-for="component in meal.components" v-bind:key="component.product_name">
+              <b-card
+                :img-src="component.image_url"
+                img-alt="Card image" img-left
+                class="mb-3"
+              >
+                <b-card-text align="center" class="m-0">
+                  <p class="component-p">
+                    <b> {{ component.product_name }} </b>
+                  </p>
+                  <p class="component-p">
+                    {{ component.quantity }} g
+                  </p>
+                </b-card-text>
+                <b-button
+                  pill
+                  variant="link"
+                  class="p-0"
+                  @click="removeComponent(component.barcode, meal.meal_name)"
+                ><img class="remove" src="../../assets/buttons/remove.svg">
+                </b-button>
+              </b-card>
             </div>
           </b-card-body>
         </b-collapse>
