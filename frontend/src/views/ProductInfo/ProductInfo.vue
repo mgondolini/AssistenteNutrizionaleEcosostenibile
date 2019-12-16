@@ -32,11 +32,50 @@
         <b-tab :title="$t('tab_nutrition_title')" active>
           <b-img center :src="nutriScoreImgPath" alt="Nutri score image"></b-img>
           <!-- use vue slots to dynamically generate the table with img path inside the rows -->
+          <!--
           <div id="nutrientLevels">
             <b-img center :src="fatLvlImgPath" alt="Fat level indicator"></b-img>
             <span> 8.97 g Fat in moderate quantity </span>
             <b-img center :src="fatLvlImgPath" alt="Fat level indicator"></b-img>
             <span> 8.97 g Fat in moderate quantity </span>
+          </div>
+          -->
+          <table>
+            <tr>
+              <td>
+                <b-img center :src="fatLvlImgPath" alt="Fat level indicator"></b-img>
+              </td>
+              <td>
+                {{ fat_100g }} g Fat in {{ fatLvl }} quantity
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <b-img center :src="satFatLvlImgPath" alt="Fat level indicator"></b-img>
+              </td>
+              <td>
+                {{ saturatedFat_100g }} g Saturated fat in {{ satFatLvl }} quantity
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <b-img center :src="sugarsLvlImgPath" alt="Fat level indicator"></b-img>
+              </td>
+              <td>
+                {{ sugars_100g }} g Sugar in {{ sugarsLvl }} quantity
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <b-img center :src="saltLvlImgPath" alt="Fat level indicator"></b-img>
+              </td>
+              <td>
+                {{ salt_100g }} g Salt in {{ saltLvl }} quantity
+              </td>
+            </tr>
+
+          </table>
+          <div id="nutrientLevels">
           </div>
         </b-tab>
         <b-tab :title="$t('tab_ingredients_title')">
@@ -77,6 +116,11 @@ export default {
       sugarsLvl: '',
       saltLvl: '',
 
+      fat_100g: '',
+      saturatedFat_100g: '',
+      sugars_100g: '',
+      salt_100g: '',
+
       fatLvlImgPath: '',
       satFatLvlImgPath: '',
       sugarsLvlImgPath: '',
@@ -113,10 +157,10 @@ export default {
           this.sugarsLvl = response.data.product.nutrient_levels.sugars;
           this.saltLvl = response.data.product.nutrient_levels.salt;
 
-          console.log(this.fatLvl);
-          console.log(this.satFatLvl);
-          console.log(this.sugarsLvl);
-          console.log(this.saltLvl);
+          this.fat_100g = response.data.product.nutriments.fat_100g;
+          this.saturatedFat_100g = response.data.product.nutriments['saturated-fat_100g'];
+          this.sugars_100g = response.data.product.nutriments.sugars_100g;
+          this.salt_100g = response.data.product.nutriments.salt_100g;
 
           this.fatLvlImgPath = imagesContext(`./nutrientLevels/${this.fatLvl}${imagesExt}`);
           this.satFatLvlImgPath = imagesContext(`./nutrientLevels/${this.satFatLvl}${imagesExt}`);
