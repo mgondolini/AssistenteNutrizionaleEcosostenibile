@@ -1,89 +1,70 @@
 <template>
   <div class="meals">
     <h1> {{ $t('last_meals') }} </h1>
-    <div class="card-last-meals" role="tablist">
-        <b-card
-          no-body class="mb-1"
-          v-for="(meal, index) in mealsList[0]"
-          v-bind:key="index"
-        >
-          <b-card-header header-tag="header" class="p-0" role="tab">
-            <b-button block href="#" v-b-toggle="'accordion-' + index" variant="info">
-              {{ meal.meal_name }}
-            </b-button>
-          </b-card-header>
-          <b-collapse :id="'accordion-' + index" visible accordion="my-accordion" role="tabpanel">
-            <b-card-body>
-              <b-button
-                    pill
-                    variant="link"
-                    class="p-0"
-                    @click="addComponent(meal.meal_name)"
-                  >
-                    <img class="add" src="../../assets/buttons/plus.svg">
-                    Add component
-              </b-button>
-              <div v-if = "meal.components!=null">
-                <div v-for="component in meal.components" v-bind:key="component.product_name">
-                  <b-card
-                    :img-src="component.image_url"
-                    img-alt="Card image" img-left
-                    class="mb-3"
-                  >
-                    <b-card-text align="center" class="m-0">
-                      <p class="component-p">
-                        <b> {{ component.product_name }} </b>
-                      </p>
-                      <p class="component-p">
-                        {{ component.quantity }} g
-                      </p>
-                    </b-card-text>
-                    <b-button
-                      pill
-                      variant="link"
-                      class="p-0"
-                      @click="removeComponent(component.barcode, meal.meal_name)"
-                    >
-                      <img class="remove" src="../../assets/buttons/remove.svg">
-                    </b-button>
-                  </b-card>
-                </div>
-              </div>
-            </b-card-body>
-          </b-collapse>
-        </b-card>
-    </div>
+    <b-form-input v-model="mealName" placeholder="Enter meal name"></b-form-input>
     <b-button
       pill
       variant="link"
       class="p-0"
-      v-b-modal.modal-prevent-closing
+      @click="addMeal(mealName)"
     ><img class="add-meal" src="../../assets/buttons/add.svg">
     </b-button>
-    <b-modal
-      id="modal-prevent-closing"
-      ref="newMealModal"
-      title="Enter New Meal name"
-      @show="resetModal"
-      @hidden="resetModal"
-      @ok="handleOk"
-    >
-      <form ref="form" @submit.stop.prevent="handleSubmit">
-        <b-form-group
-          :state="mealNameState"
-          label="MealName"
-          label-for="meal-name-input"
-          invalid-feedback="Meal name is required"
-        >
-          <b-form-input
-            id="meal-name-input"
-            v-model="mealName"
-            :state="mealNameState"
-            required
-          ></b-form-input>
-        </b-form-group>
-      </form>
-    </b-modal>
+    <b-button
+      class="p-0"
+      @click="removeMeal(mealName)"
+    >REMOVE</b-button>
+    <div class="card-last-meals" role="tablist">
+      <b-card
+        no-body class="mb-1"
+        v-for="(meal, index) in mealsList.slice().reverse()"
+        v-bind:key="index"
+      >
+        <b-card-header header-tag="header" class="p-0" role="tab">
+          <b-button block href="#" v-b-toggle="'accordion-' + index" variant="info">
+            {{ meal.meal_name }}
+          </b-button>
+        </b-card-header>
+        <b-collapse :id="'accordion-' + index" visible accordion="my-accordion" role="tabpanel">
+          <b-card-body>
+            <b-button
+                  pill
+                  variant="link"
+                  class="p-0"
+                  @click="addComponent(meal.meal_name)"
+                >
+                  <img class="add" src="../../assets/buttons/plus.svg">
+                  Add component
+            </b-button>
+            <div v-if = "meal.components!=null">
+              <div v-for="component in meal.components" v-bind:key="component.product_name">
+                <b-card
+                  :img-src="component.image_url"
+                  img-alt="Card image" img-left
+                  class="mb-3"
+                >
+                  <b-card-text align="center" class="m-0">
+                    <p class="component-p">
+                      <b> {{ component.product_name }} </b>
+                    </p>
+                    <p class="component-p">
+                      {{ component.quantity }} g
+                    </p>
+                  </b-card-text>
+                  <b-button
+                    pill
+                    variant="link"
+                    class="p-0"
+                    @click="removeComponent(component.barcode, meal.meal_name)"
+                  >
+                    <img class="remove" src="../../assets/buttons/remove.svg">
+                  </b-button>
+                </b-card>
+              </div>
+            </div>
+          </b-card-body>
+        </b-collapse>
+      </b-card>
+    </div>
   </div>
 </template>
 
@@ -93,8 +74,7 @@ export default {
   data() {
     return {
       mealsList: [],
-      mealName: '', // da cambiare in meals.mealName
-      mealNameState: null,
+      mealName: '',
     };
   },
   methods: {
@@ -105,8 +85,33 @@ export default {
 
       this.$http.get(`api/${param.username}/meals`, { params: param })
         .then((response) => {
-          this.mealsList.push(response.data.meals);
+          this.mealsList = response.data.meals;
         })
+        .catch(error => (console.log(error)));
+    },
+    addMeal(mealName) {
+      const body = {
+        username: 'mrossi',
+        meals: {
+          mealName,
+        },
+      };
+      console.log(body);
+      this.$http.post(`api/${body.username}/meals`, body)
+        .then((response) => {
+          this.mealsList = [];
+          this.mealsList = response.data.meals;
+        })
+        .catch(error => (console.log(error))); // mostrare su una label
+    },
+    removeMeal(mealName) {
+      const params = {
+        username: 'mrossi',
+        mealName,
+      };
+      console.log(`remove${params}`);
+      this.$http.delete(`api/${params.username}/meals/${params.mealName}`, { params })
+        .then(() => this.loadMealsList())
         .catch(error => (console.log(error)));
     },
     addComponent(mealName) {
@@ -116,59 +121,19 @@ export default {
     },
     removeComponent(barcode, mealName) {
       const usr = 'mrossi';
-      const param = {
+      const params = {
         username: usr,
         barcode,
         mealName,
       };
-      console.log(param); // DEBUG
-      this.$http.delete(`api/${param.username}/meals/${param.mealName}/components`, { params: param })
+      console.log(params); // DEBUG
+      this.$http.delete(`api/${params.username}/meals/${params.mealName}/components`, { params })
         .then((response) => {
           this.mealsList = [];
-          this.mealsList.push(response.data.meals);
-          console.log(this.mealsList);
+          this.mealsList = response.data.meals;
+          console.log(`component removed ${this.mealsList}`); // DEBUG
         })
         .catch(error => (console.log(error)));
-    },
-    checkFormValidity() {
-      const valid = this.$refs.form.checkValidity();
-      this.mealNameState = valid ? 'valid' : 'invalid';
-      return valid;
-    },
-    resetModal() {
-      this.mealName = '';
-      this.mealNameState = null;
-    },
-    handleOk(bvModalEvt) {
-      // Prevent modal from closing
-      bvModalEvt.preventDefault();
-      // Trigger submit handler
-      this.handleSubmit();
-    },
-    handleSubmit() {
-      // Exit when the form isn't valid
-      if (!this.checkFormValidity()) {
-        return;
-      }
-
-      // POST DELLA RICHIESTA
-      const usr = 'andreaneri';
-      const body = {
-        username: usr,
-        meals: {
-          mealName: this.mealName,
-        },
-      };
-
-      this.$http.post(`api/${body.username}/meals`, body)
-        .then((response) => {
-          this.mealsList.push(response.data.meals);
-        })
-        .catch(error => (console.log(error)));
-
-      this.$nextTick(() => {
-        this.$refs.newMealModalf.hide();
-      });
     },
     init() {
       this.loadMealsList();
