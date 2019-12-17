@@ -1,18 +1,20 @@
 <template>
   <div class="meals">
     <h1> {{ $t('last_meals') }} </h1>
-    <b-form-input v-model="mealName" :placeholder="$t('meal_name_enter')"></b-form-input>
-    <b-button
-      pill
-      variant="link"
-      class="p-0"
-      @click="addMeal(mealName)"
-    ><img class="add-meal" src="../../assets/buttons/add.svg">
-    </b-button>
-    <b-button
-      class="p-0"
-      @click="removeMeal(mealName)"
-    >REMOVE</b-button>
+    <b-card class="m-3 p-1">
+      <b-form-input v-model="mealName" :placeholder="$t('meal_name_enter')"></b-form-input>
+      <b-button
+        pill
+        variant="link"
+        class="p-0"
+        @click="addMeal(mealName)"
+      ><img class="add-meal" src="../../assets/buttons/add.svg">
+      </b-button>
+      <b-button
+        class="p-0"
+        @click="removeMeal(mealName)"
+      >REMOVE</b-button>
+    </b-card>
     <div class="card-last-meals" role="tablist">
       <b-card
         no-body class="mb-1"
@@ -41,7 +43,7 @@
                 img-alt="Card image" img-left
                 class="mb-3"
               >
-                <b-card-text align="center" class="m-0">
+                <b-card-text align="center" class="m-0 p-0">
                   <p class="component-p">
                     <b> {{ component.product_name }} </b>
                   </p>
@@ -86,7 +88,7 @@ export default {
           this.mealsList = response.data.meals;
           this.getHistory();
         })
-        .catch(error => console.log(error));
+        .catch(error => console.log(error.response.data.description));
     },
     addMeal(mealName) {
       const body = {
@@ -96,12 +98,17 @@ export default {
         },
       };
       console.log(body);
-      this.$http.post(`api/${body.username}/meals`, body)
-        .then((response) => {
-          this.mealsList = [];
-          this.mealsList = response.data.meals;
-        })
-        .catch(error => console.log(error)); // mostrare su una label
+      if (mealName.lenght === 0) {
+        this.$http.post(`api/${body.username}/meals`, body)
+          .then((response) => {
+            this.mealsList = [];
+            this.mealsList = response.data.meals;
+          })
+          .catch(error => console.log(error.response.data.description)); // mostrare su una label
+      } else {
+        // mettere una label
+        console.log('Il nome non può essere nullo');
+      }
     },
     removeMeal(mealName) {
       const params = {
@@ -111,7 +118,7 @@ export default {
       console.log(`remove${params}`);
       this.$http.delete(`api/${params.username}/meals/${params.mealName}`, { params })
         .then(() => this.loadMealsList())
-        .catch(error => console.log(error));
+        .catch(error => console.log(error.response.data.description));
     },
     addComponent(mealName) {
       // Passo meal name, per accedere alla query dalla pagina info prodotto
@@ -132,7 +139,7 @@ export default {
           this.mealsList = response.data.meals;
           console.log(`component removed ${this.mealsList}`); // DEBUG
         })
-        .catch(error => console.log(error));
+        .catch(error => console.log(error.response.data.description));
     },
     getHistory() {
       let d;
