@@ -1,7 +1,7 @@
 <template>
   <div class="meals">
     <h1> {{ $t('last_meals') }} </h1>
-    <b-form-input v-model="mealName" placeholder="Enter meal name"></b-form-input>
+    <b-form-input v-model="mealName" :placeholder="$t('meal_name_enter')"></b-form-input>
     <b-button
       pill
       variant="link"
@@ -33,7 +33,7 @@
                   @click="addComponent(meal.meal_name)"
                 >
                   <img class="add" src="../../assets/buttons/plus.svg">
-                  Add component
+                  {{ $t('add_component') }}
             </b-button>
             <div v-for="component in meal.components" v-bind:key="component.product_name">
               <b-card
@@ -71,6 +71,7 @@ export default {
   data() {
     return {
       mealsList: [],
+      mealsDates: [],
       mealName: '',
     };
   },
@@ -83,8 +84,9 @@ export default {
       this.$http.get(`api/${param.username}/meals`, { params: param })
         .then((response) => {
           this.mealsList = response.data.meals;
+          this.getHistory();
         })
-        .catch(error => (console.log(error)));
+        .catch(error => console.log(error));
     },
     addMeal(mealName) {
       const body = {
@@ -99,7 +101,7 @@ export default {
           this.mealsList = [];
           this.mealsList = response.data.meals;
         })
-        .catch(error => (console.log(error))); // mostrare su una label
+        .catch(error => console.log(error)); // mostrare su una label
     },
     removeMeal(mealName) {
       const params = {
@@ -109,7 +111,7 @@ export default {
       console.log(`remove${params}`);
       this.$http.delete(`api/${params.username}/meals/${params.mealName}`, { params })
         .then(() => this.loadMealsList())
-        .catch(error => (console.log(error)));
+        .catch(error => console.log(error));
     },
     addComponent(mealName) {
       // Passo meal name, per accedere alla query dalla pagina info prodotto
@@ -130,7 +132,17 @@ export default {
           this.mealsList = response.data.meals;
           console.log(`component removed ${this.mealsList}`); // DEBUG
         })
-        .catch(error => (console.log(error)));
+        .catch(error => console.log(error));
+    },
+    getHistory() {
+      let d;
+      // const months = ['January', 'February', 'March', 'April',
+      // 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+      this.mealsList.forEach((meal) => {
+        d = new Date(meal.timestamp);
+        console.log(d);
+        console.log(`${d.getDate()}-${d.getMonth() + 1}`);
+      });
     },
     init() {
       this.loadMealsList();
@@ -147,10 +159,14 @@ export default {
 {
   "en": {
     "last_meals": "Your last meals",
+    "add_component": "Add component",
+    "meal_name_enter": "Enter meal name",
     "quantity": "Quantity"
   },
   "it": {
     "last_meals": "I tuoi ultimi pasti",
+    "meal_name_enter": "Inserire nome pasto",
+    "add_component": "Aggiungi componente",
     "quantity": "Quantità"
   }
 }
