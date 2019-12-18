@@ -4,11 +4,13 @@
     <div class="col-12">
       <div class="card">
         <div class="card-body">
+          <!--save/create BUTTONS-->
           <button v-on:click="editContent" class="card-button card-edit">
-          <i v-show="!isEditing" class="material-icons" aria-hidden="true">create</i>
-          <i v-show="isEditing" class="material-icons" aria-hidden="true"
-          v-on:click="update">save</i>
+            <i v-show="!isEditing" class="material-icons" aria-hidden="true">create</i>
+            <i v-show="isEditing" class="material-icons" aria-hidden="true"
+            v-on:click="update">save</i>
           </button>
+          <!--IMAGE PROFILE-->
           <div class="card-title mb-4">
             <div class="d-flex justify-content-start">
               <div class="image-container">
@@ -43,129 +45,50 @@
               <div class="tab-content ml-1" id="myTabContent">
                 <div class="tab-pane fade show active" id="basicInfo"
                   role="tabpanel" aria-labelledby="basicInfo-tab">
-                  <!--NAME-->
-                  <div class="row">
-                    <div class="col-sm-3 col-md-2 col-5">
-                        <label class="labelText">
-                          {{ $t('name') }}</label>
-                    </div>
-                    <div v-show="!isEditing" class="col-md-8 col-6">
-                        {{name}}
-                    </div>
-                    <div v-show="isEditing" class="col-md-8 col-6">
-                        <b-input size="sm" v-model="name"
-                        type="text" class="card-input"
-                        placeholder="Enter your name..."></b-input>
-                    </div>
 
+                  <div v-for="tmp in campi"
+                    v-bind:key="tmp.key" >
+                    <div class="row">
+                      <div class="col-sm-3 col-md-2 col-5">
+                        <label class="labelText">{{ $t(`${tmp.key}`) }}</label>
+                      </div>
+                      <div v-show="!isEditing" class="col-md-8 col-6">
+                        <span v-if="tmp.key == 'gender'"> {{`${tmp.value.toUpperCase()}`}}</span>
+                        <span v-else> {{`${tmp.value}`}}</span>
+                      </div>
+
+                      <div v-show="isEditing" class="col-md-8 col-6">
+                        <div v-if="tmp.key == 'weight' || tmp.key == 'height'">
+                          <b-input size="sm" v-model="tmp.value"
+                            type="number"
+                            class="card-input"
+                            :placeholder= "tmp.placeholder" ></b-input>
+                        </div>
+                        <div v-else-if="tmp.key == 'dateOfBirth'">
+                          <date-picker name="date" v-model="tmp.value"
+                            :config="options"
+                            value="dateOfBirth"></date-picker>
+                        </div>
+                        <div v-else-if="tmp.key == 'gender'">
+                          <!--check che sia selezionato-->
+                          <b-select size="sm" v-model="tmp.value">
+                            <option disabled value=""> {{ $t(`${tmp.key}`) }}</option>
+                            <option v-for="opt in tmp.ar"
+                            v-bind:key="opt" v-bind:value="opt">
+                              {{ opt.toUpperCase() }}
+                            </option>
+                          </b-select>
+                        </div>
+                        <div v-else>
+                          <b-input size="sm" v-model="tmp.value"
+                            type="text"
+                            class="card-input"
+                            :placeholder= "tmp.placeholder" ></b-input>
+                        </div>
+                      </div>
+                    </div>
+                    <hr />
                   </div>
-                  <hr />
-                  <!--SURNAME-->
-                  <div class="row">
-                    <div class="col-sm-3 col-md-2 col-5">
-                        <label class="labelText">
-                          {{ $t('surname') }}</label>
-                    </div>
-                    <div v-show="!isEditing" class="col-md-8 col-6">
-                        {{ surname}}
-                    </div>
-                    <div v-show="isEditing" class="col-md-8 col-6">
-                        <b-input size="sm" v-model="surname"
-                        type="text" class="card-input"
-                        placeholder="Enter your surname..."></b-input>
-                    </div>
-                  </div>
-                  <hr />
-                  <!--MAIL-->
-                  <div class="row">
-                    <div class="col-sm-3 col-md-2 col-5">
-                      <label class="labelText">
-                        {{ $t('email') }}
-                      </label>
-                    </div>
-                    <div v-show="!isEditing" class="col-md-8 col-6">
-                        {{email}}
-                    </div>
-                    <div v-show="isEditing" class="col-md-8 col-6">
-                      <b-input size="sm" v-model="email"
-                      type="text" class="card-input"
-                      placeholder="Enter your mail..."></b-input>
-                    </div>
-                  </div>
-                  <hr />
-                  <!--todo: DATA DA FAR VISUALIZZARE CON UN CALENDARIO-->
-                  <div class="row">
-                    <div class="col-sm-3 col-md-2 col-5">
-                      <label class="labelText">
-                        {{ $t('dateOfBirth') }}
-                      </label>
-                    </div>
-                    <div v-show="!isEditing" class="col-md-8 col-6">
-                        {{dateOfBirth}}
-                    </div>
-                    <div v-show="isEditing" class="col-md-8 col-6">
-                        DatePicker da inserire
-                    </div>
-                  </div>
-                  <hr />
-                  <!--GENDER-->
-                  <div class="row">
-                    <div class="col-sm-3 col-md-2 col-5">
-                      <label class="labelText"> {{ $t('gender') }}</label>
-                    </div>
-                    <div v-show="!isEditing" class="col-md-8 col-6">{{sex.toUpperCase()}}</div>
-                    <div v-show="isEditing" class="col-md-8 col-6">
-                      <b-select size="sm" v-model="genderSelected">
-                        <option disabled value=""> {{ $t('gender') }}</option>
-                        <option v-for="opt in gender" v-bind:key="opt" v-bind:value="opt">
-                          {{ opt.toUpperCase() }}
-                        </option>
-                      </b-select>
-                    </div>
-                  </div>
-                  <hr />
-                  <!--WEIGHT-->
-                  <div class="row">
-                    <div class="col-sm-3 col-md-2 col-5">
-                      <label class="labelText">{{ $t('weight') }}</label>
-                    </div>
-                    <div v-show="!isEditing" class="col-md-8 col-6">{{weight}} kg</div>
-                    <div v-show="isEditing" class="col-md-8 col-6">
-                      <b-input size="sm" v-model="weight"
-                      type="number" number
-                      class="card-input"
-                      placeholder="Enter your weight..."></b-input>
-                    </div>
-                  </div>
-                  <hr />
-                  <!--HEIGHT-->
-                  <div class="row">
-                    <div class="col-sm-3 col-md-2 col-5">
-                      <label class="labelText">{{ $t('height') }}</label>
-                    </div>
-                    <div v-show="!isEditing" class="col-md-8 col-6">{{height}} cm</div>
-                    <div v-show="isEditing" class="col-md-8 col-6">
-                      <b-input size="sm" v-model="height"
-                      type="number" number
-                      class="card-input"
-                      placeholder="Enter your height..."></b-input>
-                    </div>
-                  </div>
-                  <hr />
-                  <!--ALLERGENS-->
-                  <div class="row">
-                    <div class="col-sm-3 col-md-2 col-5">
-                      <label class="labelText">{{ $t('allergen') }}</label>
-                    </div>
-                    <div v-show="!isEditing" class="col-md-8 col-6">{{allergens}}</div>
-                    <div v-show="isEditing" class="col-md-8 col-6">
-                      <b-input size="sm" v-model="allergens"
-                      type="text"
-                      class="card-input"
-                      placeholder="Enter your allergens..."></b-input>
-                    </div>
-                  </div>
-                  <hr />
                 </div>
               </div>
             </div>
@@ -177,122 +100,10 @@
 </div>
 </template>
 
-<script>
-
-export default {
-  data() {
-    return {
-      username: '',
-      name: '',
-      surname: '',
-      dateOfBirth: '',
-      email: '',
-      avatar: '',
-      sex: '',
-      genderSelected: '',
-      weight: '',
-      height: '',
-      allergens: '',
-      isEditing: false,
-      gender: ['m', 'f'],
-    };
-  },
-  computed: {
-    cardStates() {
-      return {
-        'card--is-edit': this.isEditing,
-      };
-    },
-  },
-  methods: {
-    editContent() {
-      if (!this.isEditing) {
-        this.isEditing = !this.isEditing;
-      } else {
-        this.isEditing = !this.isEditing;
-      }
-    },
-    update() {
-      const dataNew = {
-        name: this.name,
-        surname: this.surname,
-        email: this.email,
-        sex: this.genderSelected,
-        avatar: this.avatar,
-        weight: this.weight,
-        height: this.height,
-        allergens: this.allergens,
-      };
-      // Questo log è da togliere --> dataNew va passato
-      // alla richiesta PUT per aggiornare le informazioni dell'utente
-      console.log('hello from update method with DATA', dataNew);
-    },
-    activateBtn() {
-      document.getElementById('profilePicture').click();
-    },
-    uploadImgNew(e) {
-      const image = e.target.files[0];
-      const reader = new FileReader();
-      reader.readAsDataURL(image);
-      reader.onload = (ex) => {
-        this.avatar = ex.target.result;
-      };
-    },
-  },
-  mounted() {
-    const usr = 'mrossi';
-    const param = { username: usr };
-
-    this.$http.get(global.config.server.concat(`api/user/${param.username}`), { params: param })
-      .then((response) => {
-        this.username = response.data.username;
-        this.name = response.data.name;
-        this.surname = response.data.surname;
-        this.dateOfBirth = response.data.birth_date;
-        this.email = response.data.email;
-        this.avatar = response.data.user_img_url;
-        this.sex = response.data.sex;
-        this.weight = response.data.weight;
-        this.height = response.data.height;
-        this.allergens = response.data.allergens;
-
-        this.dateOfBirth = this.dateOfBirth.slice(0, 10);
-        this.weight = this.weight.toString();
-      })
-      .catch(error => (console.log(error)));
-  },
-};
+<script src="./Profile.js">
 </script>
 
-<i18n>
-{
-  "en": {
-    "info": "Your info",
-    "name": "Name",
-    "surname": "Surname",
-    "dateOfBirth": "Birth Date",
-    "email": "Your email",
-    "gender": "Gender",
-    "weight": "Weight",
-    "height": "Height",
-    "allergen": "Allergens",
-    "profile": "Profile of "
-
-  },
-  "it": {
-    "info": "Le tue informazioni",
-    "name": "Nome",
-    "surname": "Cognome",
-    "dateOfBirth": "Data di nascita",
-    "email": "La tua email",
-    "gender": "Genere",
-    "weight": "Peso",
-    "height": "Altezza",
-    "allergen": "Allergeni",
-    "profile": "Profilo di "
-  }
-}
-</i18n>
+<i18n src="./languageText.json"></i18n>
 
 <style>
   @import './Profile.scss';
