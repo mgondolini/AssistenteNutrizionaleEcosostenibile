@@ -75,7 +75,7 @@ export default {
         .then((response) => {
           localStorage.ecoAssToken = response.data.token.toString();
           global.login(response.data.token.toString(), true);
-          this.$router.push('/last_meals');
+          this.$router.push('/meals');
         }).catch((error) => {
           // TODO manage error getting public key
           console.log('Error during authentication: '.concat(error));
