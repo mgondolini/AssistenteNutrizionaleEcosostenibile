@@ -14,8 +14,10 @@
 
           <!-- Right aligned nav items -->
           <b-navbar-nav class="ml-auto">
-            <b-nav-item to="login" right v-if="isLogged === false">Login</b-nav-item>
-            <b-nav-item-dropdown right v-if="isLogged === true">
+            <b-nav-item to="login" right v-if="this.$store.state.isLogged === false">
+              Login
+            </b-nav-item>
+            <b-nav-item-dropdown right v-if="this.$store.state.isLogged === true">
               <!-- Using 'button-content' slot -->
               <template v-slot:button-content>
                 <em>{{ $t('user') }}</em>
@@ -52,13 +54,19 @@ export default {
   data() {
     return {
       navhome: 'Eco-assistant',
-      isLogged: this.$isLogged,
       langs: ['en', 'it'],
     };
   },
   methods: {
     getLocaleFlagPath(lang) {
       return localeFlagsContext(`./${lang}${localeFlagsExt}`);
+    },
+    signout() {
+      localStorage.ecoAssToken = 'InvalidToken';
+      this.$store.commit('logout');
+      if (this.$route.path !== '/') {
+        this.$router.push('/');
+      }
     },
   },
 };
