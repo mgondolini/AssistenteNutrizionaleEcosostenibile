@@ -97,10 +97,11 @@ export default {
         || !dataNew.allergens) {
         this.errors.push('Field must not be null');
       } else {
-        /* this.$http.put(global.config.server.concat(`api/user/${param.username}`),
-          { params: param, data: dataNew }); */
-
-        this.$http.put(global.config.server.concat(`api/user/${param.username}`), { params: param, data: dataNew });
+        this.$http.put(`api/user/${param.username}`, dataNew /* { params: param, data:  } */)
+          .then(() => {
+            // console.log('tutto ok!'.concat(response));
+          })
+          .catch(error => (error.toString()));
       }
     },
     activateBtn() {
