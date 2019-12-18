@@ -2,17 +2,31 @@ const mongoose = require('mongoose');
 
 const User = mongoose.model('User');
 
+/** Inserts a new user if not found in the database */
+exports.insert_user = async (req, res) => {
+  const query = { username: req.body.username };
+  await User.findOne(query)
+    .exec()
+    .then((user) => {
+      if (user == null) {
+        console.log('Creating new user...'); // DEBUG
+        this.create_new_user(req, res);
+      } else {
+        res.status(404).json({ description: 'Username already in use!' });
+      }
+    })
+    .catch((err) => res.send(err));
+};
+
 /** Creates a new user */
-exports.create_user = (req, res) => {
+exports.create_new_user = async (req, res) => {
   const newUser = new User(req.body);
-  newUser.save((err, user) => {
-    if (err) {
-      console.log('Error while creating new user'); // DEBUG
-      res.send(err);
-    }
-    console.log(`User crated ->${user}`); // DEBUG
-    res.status(201).json(user);
-  });
+  newUser.save()
+    .then((user) => {
+      console.log(`User crated ->${user}`); // DEBUG
+      res.status(201).json(user);
+    })
+    .catch((err) => res.send(err));
 };
 
 

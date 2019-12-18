@@ -22,9 +22,15 @@ global.login = function login(t, l) {
 
 if (localStorage.ecoAssToken) {
   global.login(localStorage.ecoAssToken, true);
+  Vue.prototype.$http.get('api/checkToken')
+    .then().catch(() => {
+      global.login('InvalidToken', false);
+    });
 } else {
   global.login('InvalidToken', false);
 }
+
+global.config = require('../config.json');
 
 new Vue({
   router,

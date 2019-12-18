@@ -55,9 +55,6 @@
 </template>
 
 <script>
-const axios = require('axios');
-const config = require('../../../config.json');
-
 export default {
   name: 'login',
   data() {
@@ -74,11 +71,11 @@ export default {
       const mail = this.form.email;
       const psw = this.form.password;
 
-      axios.post(config.server.concat('api/auth'), { email: mail, key: psw })
+      this.$http.post('api/auth', { email: mail, key: psw })
         .then((response) => {
           localStorage.ecoAssToken = response.data.token.toString();
           global.login(response.data.token.toString(), true);
-          this.$router.push('/last_meals');
+          this.$router.push('/meals');
         }).catch((error) => {
           // TODO manage error getting public key
           console.log('Error during authentication: '.concat(error));

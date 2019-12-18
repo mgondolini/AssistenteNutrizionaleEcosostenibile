@@ -57,9 +57,9 @@ exports.new_meal = async (req, res) => {
     .then((userMeals) => {
       if (userMeals == null) {
         mealControllerUtils.createFirstMeal(req, res);
-        console.log(`Meal not found for user ${req.query.username}\n Inserting...`); // DEBUG
+        console.log(`Meal not found for user ${req.body.username}\n Inserting...`); // DEBUG
       } else {
-        console.log(`Meal found for user ${req.query.username}:\n${userMeals}`); // DEBUG
+        console.log(`Meal found for user ${req.body.username}:\n${userMeals}`); // DEBUG
         mealControllerUtils.addMeal(req, userMeals, res);
       }
     })
