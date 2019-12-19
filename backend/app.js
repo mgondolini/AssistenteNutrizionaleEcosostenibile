@@ -6,6 +6,7 @@ const cors = require('cors');
 const morgan = require('morgan');
 
 const path = require('path');
+const jwt = require('jsonwebtoken');
 const config = require('./config.json');
 
 const app = express();
@@ -21,6 +22,10 @@ global.log = function log(msg) {
 };
 
 mongoose.connect('mongodb://admin:teamASW1920@ds241688.mlab.com:41688/eco-assistant', { useNewUrlParser: true, useUnifiedTopology: true });
+mongoose.set('useFindAndModify', false);
+
+// 'mongodb://admin:teamASW1920@ds241688.mlab.com:41688/eco-assistant'
+// 'mongodb://localhost:27017/eco-assistant'
 
 // Get the default connection
 const db = mongoose.connection;
@@ -34,6 +39,22 @@ require('./src/models/productModel');
 require('./src/models/mealModel');
 
 global.appRoot = path.resolve(__dirname);
+
+const publicRoutes = require('./src/routes/publicRoutes');
+
+publicRoutes(app);
+
+app.use((req, res, next) => {
+  try {
+    // check token validity
+    jwt.verify(req.headers.token, config.tokenKey);
+    // valid token
+    next();
+  } catch (err) {
+    // invavild token
+    res.status(401).send('Invalid token: '.concat(err));
+  }
+});
 
 const routes = require('./src/routes/routes');
 

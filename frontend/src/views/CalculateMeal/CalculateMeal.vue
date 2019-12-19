@@ -1,14 +1,55 @@
 <template>
   <div class="container">
-    <h1>{{ msg }}</h1>
-    <h3>Composizione del tuo pasto</h3>
-
-    <router-link to='login' class="wrapper-inner-tab-backgrounds-first"
-      v-if='this.$isLogged === false'
-      style="text-decoration:none">
-      <div class="sim-button button1" >
-        <span>Login</span>
-      </div>
-    </router-link>
+    <h3>{{ $t('intro') }}</h3>
+    <ChartMealComp class="piechart_meal" v-bind:mealComp="chart" />
+    <hr>
+    <!-- <h3>OMS Tabelle</h3>
+    <Apex :mealComp="chart" />-->
   </div>
 </template>
+
+<script>
+import ChartMealComp from './ChartMealComp.vue';
+// import Apex from './Apex-chart.vue';
+
+export default {
+  name: 'calculateMealComposition',
+  components: {
+    ChartMealComp,
+    // Apex,
+  },
+  data() {
+    return {
+      chart: { al: [], av: [] },
+    };
+  },
+  mounted() {
+    const usr = 'mrossi';
+    const mealName = 'Cena';
+    const param = { username: usr, mealName };
+
+    this.$http.get(global.config.server.concat(`api/${param.username}/meals/${param.mealName}`), { params: param })
+      .then((response) => {
+        response.data.meals[0].components.forEach((elem) => {
+          this.chart.al.push(elem.product_name.concat(' - ').concat(elem.quantity).concat(' g'));
+          this.chart.av.push(elem.quantity);
+        });
+      })
+      .catch(error => (console.log(error)));
+  },
+};
+</script>
+
+<i18n>
+{
+  "en": {
+    "intro": "Composition of your meal"
+  },
+  "it": {
+    "intro": "Coposizione del tuo pasto"
+  }
+}
+</i18n>
+<style lang="scss">
+  @import './ChartMealComp.scss';
+</style>

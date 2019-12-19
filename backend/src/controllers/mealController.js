@@ -1,80 +1,126 @@
+/* eslint-disable no-param-reassign */
 const mongoose = require('mongoose');
+const mealControllerUtils = require('./utils/mealControllerUtils.js');
 
-const Meal = mongoose.model('Meals');
+const Meals = mongoose.model('Meals');
 
-// TODO
-exports.load_meals_list = function (req, res) {
-  console.log('Looking for meals: '); // DEBUG
-  const query = { username: req.params.username };
+/** Loads all the meals for a given user */
+exports.load_meals_list = async (req, res) => {
+  console.log('looking for meal...'); // DEBUG
 
-  Meal.find(query, (err, meals) => {
-    if (!err) {
-      // TODO: migliorare gestione errori
-      if (meals == null) {
-        res.status(404).send({ description: 'meals list not found' });
-        console.log('meals list not found'); // DEBUG
+  const { query } = req;
+
+  await Meals.findOne(query)
+    .exec()
+    .then((meals) => {
+      if (meals.length === 0) {
+        res.status(404).send({ description: `Meals not found for user ${req.query.username}` });
+        console.log(`Meals not found for user ${req.query.username}`); // DEBUG
       } else {
-        res.json(meals);
-        console.log(`meals list found ->${meals.meals}`); // DEBUG
+        res.status(200).json(meals);
+        console.log(`Meals list for user ${req.query.username}:\n${meals}`); // DEBUG
       }
-    } else {
-      console.log('error while loading meals list'); // DEBUG
-      res.send(err);
-    }
-  });
+    })
+    .catch((err) => res.send(err));
 };
 
-// TODO
-exports.create_meal = function (req, res) {
-  console.log(`nuovo pasto:${req.body}`);
-  const newMeal = new Meal(req.body);
-  newMeal.save((err, meal) => {
-    if (err) {
-      console.log('error while creating new meal'); // DEBUG
-      res.send(err);
-    }
-    console.log(`meal created${meal}`); // DEBUG
-    res.status(201).json(meal);
-  });
+/** Loads a specific meal for a given user */
+exports.load_meal = async (req, res) => {
+  console.log('looking for meal to load...'); // DEBUG
+
+  const query = { username: req.query.username };
+  const projection = {
+    username: req.query.username,
+    meals: { $elemMatch: { meal_name: req.query.mealName } },
+  };
+
+  await Meals.findOne(query, projection)
+    .exec()
+    .then((meal) => {
+      if (meal.length === 0) {
+        res.status(404).send({ description: `Meal not found for user ${req.query.username}` });
+        console.log(`Meal not found for user ${req.query.username}`); // DEBUG
+      } else {
+        res.status(200).json(meal);
+        console.log(`Meal found for user ${req.query.username}:\n${meal}`); // DEBUG
+      }
+    })
+    .catch((err) => res.send(err));
 };
 
-// TODO
-exports.load_meal = function (req, res) {
-  console.log(`looking for meal: ${req.params.meal_num}`); // DEBUG
-  const query = { username: req.params.username };
-  const projection = { meals: { $elemMatch: { meal_name: req.params.meal_name } } };
+/** Inserts a new meal for a given user */
+exports.new_meal = async (req, res) => {
+  const query = { username: req.body.username };
 
-  Meal.findOne(query, projection, (err, meal) => {
-    if (err) {
-      console.log('error while loading meal'); // DEBUG
-      res.send(err);
-    } else if (meal == null) {
-      res.status(404).send({ description: 'meal not found' });
-      console.log('meal not found'); // DEBUG
-    } else {
-      res.json(meal);
-      console.log(`found meal ->${meal.meal_num}`); // DEBUG
-    }
-  });
+  await Meals.findOne(query)
+    .exec()
+    .then((userMeals) => {
+      if (userMeals == null) {
+        mealControllerUtils.createFirstMeal(req, res);
+        console.log(`Meal not found for user ${req.body.username}\n Inserting...`); // DEBUG
+      } else {
+        console.log(`Meal found for user ${req.body.username}:\n${userMeals}`); // DEBUG
+        mealControllerUtils.addMeal(req, userMeals, res);
+      }
+    })
+    .catch((err) => res.send(err));
 };
 
-// TODO
-exports.update_meal = function (req, res) {
-  console.log(`update user: ${req.params.username}`);
-  const query = { username: req.params.username };
-  const update = req.body; // passare il json di un componenente del pasto da appendere
-  // quando ha successo faccio l'update dei valori totali calcolati
+/** Deletes a meal */
+exports.delete_meal = async (req, res) => {
+  const { mealName } = req.query;
+  const query = { username: req.query.username };
+  const update = { $pull: { meals: { meal_name: mealName } } };
 
-  Meal.findOneAndUpdate(query, update, { new: true }, (err, meal) => {
-    if (err) {
-      res.send(err);
-      console.log('error while updating meal'); // DEBUG
-    } else if (meal == null) {
-      res.status(404).send({ description: 'meal not found' });
-      console.log('meal not found'); // DEBUG
-    } else {
-      res.json(meal);
-      console.log('meal updated'); // DEBUG
-    }
-  });
+  await Meals.updateOne(query, update)
+    .exec()
+    .then((meal) => {
+      if (meal.length === 0) {
+        res.status(404).send({ description: `Meal not found for user ${req.query.username}` });
+        console.log(`Meal not found for user ${req.query.username}`); // DEBUG
+      } else {
+        console.log(`Meal updated for user ${req.query.username}:\n${meal}`); // DEBUG
+        res.status(201).json(meal);
+      }
+    })
+    .catch((err) => res.send(err));
+};
+
+/** Creates a component for an existing meal */
+exports.new_component = async (req, res) => {
+  const query = { username: req.body.username };
+  const { mealName } = req.body;
+  const { components } = req.body;
+  console.log(`NEW COMPONENT\nmealName${JSON.stringify(mealName)}\ncomponents${JSON.stringify(components)}`); // DEBUG
+
+  await Meals.find(query)
+    .exec()
+    .then((userMeals) => {
+      if (userMeals == null) res.status(404).send({ description: `Meal not found for user ${req.query.username}` });
+      else mealControllerUtils.updateMealValues(components, mealName, userMeals[0], res);
+    })
+    .catch((err) => res.send(err));
+};
+
+/** Deletes a component in a meal given the barcode */
+exports.delete_component = async (req, res) => {
+  const query = { username: req.query.username };
+  const { mealName } = req.query;
+  const { barcode } = req.query;
+
+  // Controllo se esistono pasti per l'utente
+  await Meals.findOne(query)
+    .exec()
+    .then((userMeals) => {
+      if (userMeals.length === 0) {
+        res.status(404).send({ description: `Meal not found for user ${req.query.username}` });
+        console.log(`Meal not found for user ${req.query.username}`); // DEBUG
+      } else {
+        console.log(`Meal updated for user ${req.query.username}:\n${userMeals}`); // DEBUG
+        // Se esistono pasti chiamo questa funzione che: cerca il pasto corrispondente al nome dato,
+        // cerca il componente e lo elimina
+        mealControllerUtils.pullComponent(userMeals, mealName, barcode, res);
+      }
+    })
+    .catch((err) => res.send(err));
 };

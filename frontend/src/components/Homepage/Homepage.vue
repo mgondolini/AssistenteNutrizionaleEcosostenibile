@@ -1,6 +1,6 @@
 <template>
   <div class="hello">
-    <img class="eco" center src="../../assets/ecology.png" />
+    <img class="loginImg" center src="../../assets/ecology.png" />
     <h1>{{ msg }}</h1>
     <p>
       Ma la volpe col suo balzo ha raggiunto il quieto Fido.
@@ -24,8 +24,8 @@
       quieto Fido. Quel vituperabile xenofobo
     </p>
 
-    <router-link to='calculate_meal_composition' class="wrapper-inner-tab-backgrounds-first"
-      v-if='this.$isLogged === false'
+    <router-link to='login' class="wrapper-inner-tab-backgrounds-first"
+      v-if='this.$store.state.isLogged === false'
       style="text-decoration:none">
       <div class="sim-button button1" >
         <span>Login</span>
