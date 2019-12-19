@@ -97,7 +97,7 @@ export default {
         || !dataNew.allergens) {
         this.errors.push('Field must not be null');
       } else {
-        this.$http.put(`api/user/${param.username}`, dataNew /* { params: param, data:  } */)
+        this.$store.state.http.put(`api/user/${param.username}`, dataNew /* { params: param, data:  } */)
           .then(() => {
             // console.log('tutto ok!'.concat(response));
           })
@@ -120,7 +120,7 @@ export default {
     const usr = 'mrossi';
     const param = { username: usr };
 
-    this.$http.get(global.config.server.concat(`api/user/${param.username}`), { params: param })
+    this.$store.state.http.get(`api/user/${param.username}`, { params: param })
     // this.$server.get(`api/user/${param.username}`, { params: param })
       .then((response) => {
         this.username = response.data.username;
