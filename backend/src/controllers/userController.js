@@ -52,9 +52,7 @@ exports.load_user = async (req, res) => {
 
 /** Updates a user */
 exports.update_user = async (req, res) => {
-  console.log(`Update user: ${req.body.username}`); // DEBUG
-
-  const query = { username: req.body.username };
+  const query = { username: req.params.username };
   const update = req.body; // passare il json utente con tutti i campi (aggiornati e non)
 
   await User.findOneAndUpdate(query, update, { new: true })
