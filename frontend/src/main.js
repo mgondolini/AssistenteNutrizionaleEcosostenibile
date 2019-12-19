@@ -1,6 +1,7 @@
 import Vue from 'vue';
 import BootstrapVue from 'bootstrap-vue';
 import Axios from 'axios';
+import Vuex from 'vuex';
 import App from './App.vue';
 import router from './router';
 import './custom.scss';
@@ -8,26 +9,48 @@ import i18n from './i18n';
 
 Vue.use(BootstrapVue);
 
+Vue.use(Vuex);
+
 /* Set this to false to prevent the production tip on Vue startup */
 Vue.config.productionTip = false;
 
-global.login = function login(t, l) {
-  Vue.prototype.$isLogged = l;
-  Vue.prototype.$http = Axios.create({
-    baseURL: 'http://localhost:8081/',
-    timeout: 2000,
-    headers: { token: t },
-  });
-};
+const store = new Vuex.Store({
+  state: {
+    isLogged: false,
+    http: Axios.create({
+      baseURL: 'http://localhost:8081/',
+      timeout: 5000,
+      headers: { token: 'InvalidToken' },
+    }),
+  },
+  mutations: {
+    login(state, t) {
+      state.isLogged = true;
+      state.http = Axios.create({
+        baseURL: 'http://localhost:8081/',
+        timeout: 5000,
+        headers: { token: t },
+      });
+    },
+    logout(state) {
+      state.isLogged = false;
+      state.http = Axios.create({
+        baseURL: 'http://localhost:8081/',
+        timeout: 5000,
+        headers: { token: 'InvalidToken' },
+      });
+    },
+  },
+});
 
 if (localStorage.ecoAssToken) {
-  global.login(localStorage.ecoAssToken, true);
-  Vue.prototype.$http.get('api/checkToken')
+  store.commit('login', localStorage.ecoAssToken);
+  store.state.http.get('api/checkToken')
     .then().catch(() => {
-      global.login('InvalidToken', false);
+      store.commit('logout');
     });
 } else {
-  global.login('InvalidToken', false);
+  store.commit('logout');
 }
 
 global.config = require('../config.json');
@@ -35,5 +58,6 @@ global.config = require('../config.json');
 new Vue({
   router,
   i18n,
+  store,
   render(h) { return h(App); },
 }).$mount('#app');

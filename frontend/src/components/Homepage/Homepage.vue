@@ -25,7 +25,7 @@
     </p>
 
     <router-link to='login' class="wrapper-inner-tab-backgrounds-first"
-      v-if='this.$isLogged === false'
+      v-if='this.$store.state.isLogged === false'
       style="text-decoration:none">
       <div class="sim-button button1" >
         <span>Login</span>
