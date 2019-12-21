@@ -2,10 +2,13 @@ import Vue from 'vue';
 import BootstrapVue from 'bootstrap-vue';
 import Axios from 'axios';
 import Vuex from 'vuex';
+import VueCarousel from 'vue-carousel';
 import App from './App.vue';
 import router from './router';
 import './custom.scss';
 import i18n from './i18n';
+
+Vue.use(VueCarousel);
 
 Vue.use(BootstrapVue);
 
