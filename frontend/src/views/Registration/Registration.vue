@@ -9,10 +9,15 @@
         >
           <b-form-input
             id="input-username"
-            v-model="form.username.value"
+            v-model="form.username"
             required
+            :blur="onBlurUser"
             placeholder="Inserisci username"
+            aria-describedby="user-help-block"
           ></b-form-input>
+          <b-form-text id="user-help-block">
+            Scegli un username univoco!
+          </b-form-text>
         </b-form-group>
         <b-form-group
           id="input-group-email"
@@ -41,6 +46,7 @@
             v-model="form.password"
             type="password"
             required
+            :blur="onBlurPsw"
             placeholder="Inserisci password"
             aria-describedby="password-help-block"
           ></b-form-input>
@@ -53,6 +59,7 @@
             v-model="form.repassword"
             type="password"
             required
+            :blur="onBlurRePsw"
             placeholder="Ripeti password"
           ></b-form-input>
         </b-form-group>
@@ -61,53 +68,55 @@
           label="Dati personali:"
           label-for="input-name"
         >
+          <label for="input-name">Name:</label>
           <b-form-input
             id="input-name"
-            v-model="form.name.value"
+            v-model="form.name"
             required
             placeholder="Inserisci nome"
           ></b-form-input>
+          <label for="input-surname">Surame:</label>
           <b-form-input
             id="input-surname"
-            v-model="form.surname.value"
+            v-model="form.surname"
             required
             placeholder="Inserisci cognome"
           ></b-form-input>
+          <label for="input-height">Height:</label>
           <b-form-input
             id="input-height"
-            v-model="form.height.value"
+            v-model="form.height"
             required
             placeholder="Inserisci altezza"
           ></b-form-input>
+          <label for="input-weight">Weight:</label>
           <b-form-input
             id="input-weight"
-            v-model="form.weight.value"
+            v-model="form.weight"
             required
             placeholder="Inserisci peso"
           ></b-form-input>
+          <label for="input-allergens">Allergens:</label>
           <b-form-input
             id="input-allergens"
-            v-model="form.allergens.value"
-            required
+            v-model="form.allergens"
             placeholder="Inserisci allergeni"
             aria-describedby="allergens-help-block"
           ></b-form-input>
           <b-form-text id="allergens-help-block">
             Gli allergeni devono essere separati da spazio.
           </b-form-text>
-          <!--<b-form-input
-            id="input-sex"
-            v-model="form.sex"
-            required
-            placeholder="Inserisci sesso"
-          ></b-form-input>-->
-          <b-form-select v-model="form.sex">
+          <label>Sex:</label>
+          <b-form-select required v-model="form.sex">
             <option disabled value=""> {{ $t(`${form.sex.key}`) }}</option>
             <option v-for="opt in form.sex.ar"
-            v-bind:key="opt" v-bind:value="opt">
+              v-bind:key="opt" v-bind:value="opt">
               {{ opt.toUpperCase() }}
             </option>
           </b-form-select>
+          <label>Date of Birth:</label>
+          <date-picker name="date" v-model="form.dateOfBirth"
+            :config="options"></date-picker>
         </b-form-group>
         <div class="text-center">
           <b-button type="submit" variant="primary">Registrami</b-button>
@@ -118,6 +127,8 @@
 </template>
 
 <script>
+import datePicker from 'vue-bootstrap-datetimepicker';
+
 export default {
   name: 'registration',
   data() {
@@ -126,31 +137,11 @@ export default {
         email: '',
         password: '',
         repassword: '',
-        username: {
-          key: 'username',
-          value: '',
-          placeholder: 'Enter your username',
-        },
-        name: {
-          key: 'name',
-          value: '',
-          placeholder: 'Enter your name',
-        },
-        surname: {
-          key: 'surname',
-          value: '',
-          placeholder: 'Enter your surname',
-        },
-        height: {
-          key: 'height',
-          value: '',
-          placeholder: 'Enter your height',
-        },
-        weight: {
-          key: 'weight',
-          value: '',
-          placeholder: 'Enter your weight',
-        },
+        username: '',
+        name: '',
+        surname: '',
+        height: '',
+        weight: '',
         dateOfBirth: '',
         sex: {
           key: 'gender',
@@ -158,17 +149,31 @@ export default {
           ar: ['m', 'f'],
         },
         img: '',
-        allergens: {
-          key: 'allergens',
-          value: '',
-          placeholder: 'Enter your allergens',
-        },
+        allergens: '',
+      },
+      options: {
+        format: 'YYYY-MM-DD',
+        useCurrent: false,
+        showClear: false,
+        showClose: true,
       },
     };
+  },
+  components: {
+    datePicker,
   },
   methods: {
     onSubmit(evt) {
       evt.preventDefault();
+    },
+    onBlurUser() {
+      // check in User already exist
+    },
+    onBlurPsw() {
+      // check psw
+    },
+    onBlurRePsw() {
+      // check repsw
     },
   },
 };
