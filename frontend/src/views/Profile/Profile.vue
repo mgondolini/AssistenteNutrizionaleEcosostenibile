@@ -17,7 +17,7 @@
                   <img v-bind:src= "avatar" id="imgProfile"
                   class="card-avatar card-avatar--circle" />
                   <div class="middle">
-                    <input type="button" class="btn btn-secondary"
+                    <input v-show="isEditing" type="button" class="btn btn-secondary"
                     id="btnChangePicture" value="Change" v-on:click="activateBtn"/>
                     <input type="file" id="profilePicture" @change="uploadImgNew" name="file" />
                   </div>

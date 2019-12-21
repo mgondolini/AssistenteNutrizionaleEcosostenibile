@@ -1,8 +1,7 @@
 <template>
-  <div class="homepage">
-    <div class="bg-img"></div>
+  <div class="homepage bg-img">
     <div class="page">
-      <Homepage msg="Assistente Nutrizionale Ecosostenibile"/>
+      <Homepage style="opacity:1 !important" msg="Assistente Nutrizionale Ecosostenibile"/>
     </div>
   </div>
 </template>
