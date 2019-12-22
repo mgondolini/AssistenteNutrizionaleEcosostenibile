@@ -83,7 +83,7 @@ export default {
       const usr = 'mrossi';
       const param = { username: usr };
 
-      this.$http.get(`api/${param.username}/meals`, { params: param })
+      this.$store.state.http.get(`api/${param.username}/meals`, { params: param })
         .then((response) => {
           this.mealsList = response.data.meals;
           this.getHistory();
@@ -99,7 +99,7 @@ export default {
       };
       console.log(body);
       if (mealName.lenght === 0) {
-        this.$http.post(`api/${body.username}/meals`, body)
+      this.$store.state.http.post(`api/${body.username}/meals`, body)
           .then((response) => {
             this.mealsList = [];
             this.mealsList = response.data.meals;
@@ -116,7 +116,7 @@ export default {
         mealName,
       };
       console.log(`remove${params}`);
-      this.$http.delete(`api/${params.username}/meals/${params.mealName}`, { params })
+      this.$store.state.http.delete(`api/${params.username}/meals/${params.mealName}`, { params })
         .then(() => this.loadMealsList())
         .catch(error => console.log(error.response.data.description));
     },
@@ -133,7 +133,7 @@ export default {
         mealName,
       };
       console.log(params); // DEBUG
-      this.$http.delete(`api/${params.username}/meals/${params.mealName}/components`, { params })
+      this.$store.state.http.delete(`api/${params.username}/meals/${params.mealName}/components`, { params })
         .then((response) => {
           this.mealsList = [];
           this.mealsList = response.data.meals;

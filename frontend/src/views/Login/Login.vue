@@ -71,10 +71,10 @@ export default {
       const mail = this.form.email;
       const psw = this.form.password;
 
-      this.$http.post('api/auth', { email: mail, key: psw })
+      this.$store.state.http.post('api/auth', { email: mail, key: psw })
         .then((response) => {
           localStorage.ecoAssToken = response.data.token.toString();
-          global.login(response.data.token.toString(), true);
+          this.$store.commit('login', response.data.token.toString());
           this.$router.push('/meals');
         }).catch((error) => {
           // TODO manage error getting public key
@@ -82,7 +82,7 @@ export default {
         });
       /*
       ESEMPIO chiamata get con token
-      this.$server.get('api/publickey')
+      this.$store.state.http.get('api/publickey')
         .then((resp) => {
           console.log('Ok!');
         }).catch((er) => {

@@ -13,7 +13,7 @@ const app = express();
 app.use(morgan('combined'));
 app.use(cors());
 app.use(bodyParser.urlencoded({ extended: true }));
-app.use(bodyParser.json());
+app.use(bodyParser.json({ limit: '50MB' }));
 
 global.log = function log(msg) {
   if (config.debugmode) {
