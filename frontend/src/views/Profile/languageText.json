@@ -1,0 +1,27 @@
+{
+  "en": {
+    "info": "Your info",
+    "name": "Name",
+    "surname": "Surname",
+    "dateOfBirth": "Birth Date",
+    "email": "Your email",
+    "gender": "Gender",
+    "weight": "Weight",
+    "height": "Height",
+    "allergen": "Allergens",
+    "profile": "Profile of "
+
+  },
+  "it": {
+    "info": "Le tue informazioni",
+    "name": "Nome",
+    "surname": "Cognome",
+    "dateOfBirth": "Data di nascita",
+    "email": "La tua email",
+    "gender": "Genere",
+    "weight": "Peso",
+    "height": "Altezza",
+    "allergen": "Allergeni",
+    "profile": "Profilo di "
+  }
+}

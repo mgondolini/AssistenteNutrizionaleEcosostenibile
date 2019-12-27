@@ -3,9 +3,10 @@ import VueRouter from 'vue-router';
 import Home from '../views/Home/Home.vue';
 import About from '../views/About.vue';
 import Login from '../views/Login/Login.vue';
-import LastMeals from '../views/LastMeals/LastMeals.vue';
+import Meals from '../views/Meals/Meals.vue';
 import CalculateMeal from '../views/CalculateMeal/CalculateMeal.vue';
 import Profile from '../views/Profile/Profile.vue';
+import NutritionFacts from '../views/Meals/NutritionFacts.vue'; // CAMBIARE
 
 
 Vue.use(VueRouter);
@@ -32,9 +33,14 @@ const routes = [
     component: Profile,
   },
   {
-    path: '/last_meals',
-    name: 'last_meals',
-    component: LastMeals,
+    path: '/meals',
+    name: 'meals',
+    component: Meals,
+  },
+  {
+    path: '/nutrition_facts',
+    name: 'nutrition_facts',
+    component: NutritionFacts,
   },
   {
     path: '/new_meal',

@@ -2,6 +2,12 @@ const mongoose = require('mongoose');
 
 const { Schema } = mongoose;
 
+// TODO: aggiungere i seguenti campi una volta che frontend/info_prod è pronta
+// origin: String,
+// packaging: String,
+// nutri_score: String,
+// nova_score: Number,
+
 const ProductSchema = new Schema({
   code: Number,
   product_name: String,
