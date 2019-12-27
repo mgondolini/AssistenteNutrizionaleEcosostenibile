@@ -22,7 +22,7 @@ const store = new Vuex.Store({
     isLogged: false,
     http: Axios.create({
       baseURL: 'http://localhost:8081/',
-      timeout: 5000,
+      timeout: 10000,
       headers: { token: 'InvalidToken' },
     }),
   },
@@ -31,7 +31,7 @@ const store = new Vuex.Store({
       state.isLogged = true;
       state.http = Axios.create({
         baseURL: 'http://localhost:8081/',
-        timeout: 5000,
+        timeout: 10000,
         headers: { token: t },
       });
     },
@@ -39,7 +39,7 @@ const store = new Vuex.Store({
       state.isLogged = false;
       state.http = Axios.create({
         baseURL: 'http://localhost:8081/',
-        timeout: 5000,
+        timeout: 10000,
         headers: { token: 'InvalidToken' },
       });
     },
