@@ -1,19 +1,19 @@
 <template>
   <div class="meals">
     <h1> {{ $t('last_meals') }} </h1>
-    <b-card class="m-3 p-1">
+    <b-card class="new-meal p-1">
       <b-form-input v-model="mealName" :placeholder="$t('meal_name_enter')"></b-form-input>
+      <date-picker v-model="date.value"
+        :config="options"
+        :placeholder="$t('date')"
+        value="date"></date-picker>
       <b-button
         pill
         variant="link"
         class="p-0"
-        @click="addMeal(mealName)"
+        @click="addMeal(mealName, date.value)"
       ><img class="add-meal" src="../../assets/buttons/add.svg">
       </b-button>
-      <b-button
-        class="p-0"
-        @click="removeMeal(mealName)"
-      >REMOVE</b-button>
     </b-card>
     <div class="card-last-meals" role="tablist">
       <b-card
@@ -24,18 +24,22 @@
         <b-card-header header-tag="header" class="p-0" role="tab">
           <b-button block href="#" v-b-toggle="'accordion-' + index" variant="info">
             {{ meal.meal_name }}
+            <b-button
+              class="p-0"
+              @click="removeMeal(mealName)"
+            >REMOVE</b-button> <!--TODO icona bidoncino a dx-->
           </b-button>
         </b-card-header>
         <b-collapse :id="'accordion-' + index" visible accordion="my-accordion" role="tabpanel">
           <b-card-body>
             <b-button
-                  pill
-                  variant="link"
-                  class="p-0"
-                  @click="addComponent(meal.meal_name)"
-                >
-                  <img class="add" src="../../assets/buttons/plus.svg">
-                  {{ $t('add_component') }}
+              pill
+              variant="link"
+              class="p-0"
+              @click="addComponent(meal.meal_name)"
+            >
+              <img class="add" src="../../assets/buttons/plus.svg">
+              {{ $t('add_component') }}
             </b-button>
             <div v-for="component in meal.components" v-bind:key="component.product_name">
               <b-card
@@ -68,6 +72,8 @@
 </template>
 
 <script>
+import datePicker from 'vue-bootstrap-datetimepicker';
+
 export default {
   name: 'meals',
   data() {
@@ -75,7 +81,20 @@ export default {
       mealsList: [],
       mealsDates: [],
       mealName: '',
+      date: {
+        key: 'date',
+        value: '',
+      },
+      options: {
+        format: 'YYYY-MM-DD',
+        useCurrent: false,
+        showClear: false,
+        showClose: true,
+      },
     };
+  },
+  components: {
+    datePicker,
   },
   methods: {
     loadMealsList() {
@@ -90,16 +109,18 @@ export default {
         })
         .catch(error => console.log(error.response.data.description));
     },
-    addMeal(mealName) {
+    addMeal(mealName, date) {
       const body = {
         username: 'mrossi',
         meals: {
           mealName,
+          timestamp: date,
         },
       };
-      console.log(body);
-      if (mealName.lenght === 0) {
-      this.$store.state.http.post(`api/${body.username}/meals`, body)
+      console.log(body); // DEBUG
+      if (mealName.length !== 0) {
+        console.log('asdsaasd');
+        this.$store.state.http.post(`api/${body.username}/meals`, body)
           .then((response) => {
             this.mealsList = [];
             this.mealsList = response.data.meals;
@@ -168,13 +189,13 @@ export default {
     "last_meals": "Your last meals",
     "add_component": "Add component",
     "meal_name_enter": "Enter meal name",
-    "quantity": "Quantity"
+    "date": "Date"
   },
   "it": {
     "last_meals": "I tuoi ultimi pasti",
     "meal_name_enter": "Inserire nome pasto",
     "add_component": "Aggiungi componente",
-    "quantity": "Quantità"
+    "date": "Data"
   }
 }
 </i18n>

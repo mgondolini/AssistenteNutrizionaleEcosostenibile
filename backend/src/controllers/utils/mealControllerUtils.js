@@ -7,7 +7,7 @@ const Products = mongoose.model('Product');
 
 
 /** Inits meal values to 0 */
-exports.initMealValues = (mealName) => {
+exports.initMealValues = (mealName, timestamp) => {
   console.log('init meal values');
   const meal = new SingleMeal(); // SingleMeal compone l'array meals di UserMealSchema
   meal.meal_name = mealName;
@@ -25,7 +25,7 @@ exports.initMealValues = (mealName) => {
   meal.calcium_tot = 0;
   meal.carbon_footprint_tot = 0;
   meal.water_footprint_tot = 0;
-  meal.timestamp = new Date();
+  meal.timestamp = timestamp;
   return meal;
 };
 
@@ -35,6 +35,7 @@ exports.addMeal = (req, userMeals, res) => {
   let mealToAdd;
   let exists = false;
   const { mealName } = req.body.meals;
+  const { timestamp } = req.body.meals;
   const updateMeal = new Meals(userMeals);
 
   // controllo se ci sono pasti per lo stesso utente con lo stesso nome che voglio inserire
@@ -45,7 +46,7 @@ exports.addMeal = (req, userMeals, res) => {
 
   // se non ci sono pasti con lo stesso nome inizializzo il pasto da inserire
   if (exists === false) {
-    mealToAdd = this.initMealValues(mealName);
+    mealToAdd = this.initMealValues(mealName, timestamp);
     console.log(`Meal to add ${mealToAdd}`); // DEBUG
   }
 
@@ -72,12 +73,13 @@ exports.addMeal = (req, userMeals, res) => {
 exports.createFirstMeal = (req, res) => {
   const { username } = req.body;
   const { mealName } = req.body.meals;
+  const { timestamp } = req.body.meals;
 
   const newMeal = new Meals();
   newMeal.username = username;
 
   // Inizializzo i campi e lo aggiungo all'array dei pasti
-  const mealToAdd = this.initMealValues(mealName);
+  const mealToAdd = this.initMealValues(mealName, timestamp);
   newMeal.meals.push(mealToAdd);
 
   newMeal.save()
