@@ -2,18 +2,31 @@
   <div class="meals">
     <h1> {{ $t('last_meals') }} </h1>
     <b-card class="card-new-meal p-1">
-      <b-form-input v-model="mealName" :placeholder="$t('meal_name_enter')"></b-form-input>
-      <date-picker v-model="date.value"
+      <b-form-input
+        v-model="mealName"
+        :placeholder="$t('meal_name_enter')"
+        class="input-new-meal" ></b-form-input>
+      <date-picker
+        v-model="date.value"
         :config="options"
         :placeholder="$t('date')"
-        value="date"></date-picker>
+        value="date"
+        class="date-new-meal"></date-picker>
       <b-button
         pill
         variant="link"
-        class="p-0"
+        class="button-add p-0"
         @click="addMeal(mealName, date.value)"
-      ><img class="add-meal" src="../../assets/buttons/add.svg">
+      ><img class="add-meal" src="../../assets/buttons/plus.svg">
       </b-button>
+    </b-card>
+    <b-card class="card-new-meal">
+      <date-picker v-model="date.value"
+        :config="options"
+        :placeholder="$t('date')"
+        value="date"
+        @dp-change="setCurrentDateAndShow(date.value)"></date-picker>
+        {{ currentDate }}
     </b-card>
     <div class="card-last-meals" role="tablist">
       <b-card
@@ -38,7 +51,7 @@
               class="p-0"
               @click="addComponent(meal.meal_name)"
             >
-              <img class="add" src="../../assets/buttons/plus.svg">
+              <img class="add" src="../../assets/buttons/add.svg">
               {{ $t('add_component') }}
             </b-button>
             <div v-for="component in meal.components" v-bind:key="component.product_name">
@@ -80,7 +93,7 @@ export default {
     return {
       mealsList: [],
       mealsListByDate: [],
-      currentDate: '',
+      currentDate: new Date(),
       mealsDates: [],
       mealName: '',
       date: {
@@ -103,12 +116,12 @@ export default {
       // TODO: prendere username da sessione
       const usr = 'mrossi';
       const param = { username: usr };
-      const today = new Date();
 
       this.$store.state.http.get(`api/${param.username}/meals`, { params: param })
         .then((response) => {
           this.mealsList = response.data.meals;
-          this.showMealsByDate(today);
+          console.log('qadsqde');
+          this.showMealsByDate(this.currentDate);
         })
         .catch(error => console.log(error.response.data.description));
     },
@@ -127,8 +140,7 @@ export default {
           .then((response) => {
             this.mealsList = [];
             this.mealsList = response.data.meals;
-            this.currentDate = new Date(date);
-            this.showMealsByDate(this.currentDate);
+            this.setCurrentDateAndShow(date);
           })
           .catch(error => console.log(error.response.data.description)); // mostrare su una label
       } else {
@@ -188,12 +200,15 @@ export default {
         if (mealDate.getDate() === date.getDate()
             && mealDate.getMonth() === date.getMonth()
             && mealDate.getFullYear() === date.getFullYear()) {
-          console.log(`${mealDate.getDate()}-${mealDate.getMonth() + 1}-${mealDate.getFullYear()}`);
           this.mealsListByDate.push(meal);
         } else {
           console.log('No meals yet for today');
         }
       });
+    },
+    setCurrentDateAndShow(date) {
+      this.currentDate = new Date(date);
+      this.showMealsByDate(this.currentDate);
     },
     init() {
       this.loadMealsList();
