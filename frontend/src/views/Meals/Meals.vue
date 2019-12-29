@@ -1,7 +1,7 @@
 <template>
   <div class="meals">
     <h1> {{ $t('last_meals') }} </h1>
-    <b-card class="new-meal p-1">
+    <b-card class="card-new-meal p-1">
       <b-form-input v-model="mealName" :placeholder="$t('meal_name_enter')"></b-form-input>
       <date-picker v-model="date.value"
         :config="options"
@@ -18,7 +18,7 @@
     <div class="card-last-meals" role="tablist">
       <b-card
         no-body class="mb-1"
-        v-for="(meal, index) in mealsList.slice().reverse()"
+        v-for="(meal, index) in mealsListByDate.slice().reverse()"
         v-bind:key="index"
       >
         <b-card-header header-tag="header" class="p-0" role="tab">
@@ -26,7 +26,7 @@
             {{ meal.meal_name }}
             <b-button
               class="p-0"
-              @click="removeMeal(mealName)"
+              @click="removeMeal(meal.meal_name)"
             >REMOVE</b-button> <!--TODO icona bidoncino a dx-->
           </b-button>
         </b-card-header>
@@ -79,6 +79,8 @@ export default {
   data() {
     return {
       mealsList: [],
+      mealsListByDate: [],
+      currentDate: '',
       mealsDates: [],
       mealName: '',
       date: {
@@ -101,11 +103,12 @@ export default {
       // TODO: prendere username da sessione
       const usr = 'mrossi';
       const param = { username: usr };
+      const today = new Date();
 
       this.$store.state.http.get(`api/${param.username}/meals`, { params: param })
         .then((response) => {
           this.mealsList = response.data.meals;
-          this.getHistory();
+          this.showMealsByDate(today);
         })
         .catch(error => console.log(error.response.data.description));
     },
@@ -124,6 +127,8 @@ export default {
           .then((response) => {
             this.mealsList = [];
             this.mealsList = response.data.meals;
+            this.currentDate = new Date(date);
+            this.showMealsByDate(this.currentDate);
           })
           .catch(error => console.log(error.response.data.description)); // mostrare su una label
       } else {
@@ -158,6 +163,7 @@ export default {
         .then((response) => {
           this.mealsList = [];
           this.mealsList = response.data.meals;
+          this.showMealsByDate(this.currentDate);
           console.log(`component removed ${this.mealsList}`); // DEBUG
         })
         .catch(error => console.log(error.response.data.description));
@@ -169,7 +175,24 @@ export default {
       this.mealsList.forEach((meal) => {
         d = new Date(meal.timestamp);
         console.log(d);
-        console.log(`${d.getDate()}-${d.getMonth() + 1}`);
+        console.log(`${d.getDate()}-${d.getMonth() + 1}-${d.getFullYear()}`);
+      });
+    },
+    showMealsByDate(date) {
+      let mealDate;
+      this.mealsListByDate = [];
+      this.mealsList.forEach((meal) => {
+        mealDate = new Date(meal.timestamp);
+        console.log(`mealDate${mealDate}`);
+        console.log(`date${date}`);
+        if (mealDate.getDate() === date.getDate()
+            && mealDate.getMonth() === date.getMonth()
+            && mealDate.getFullYear() === date.getFullYear()) {
+          console.log(`${mealDate.getDate()}-${mealDate.getMonth() + 1}-${mealDate.getFullYear()}`);
+          this.mealsListByDate.push(meal);
+        } else {
+          console.log('No meals yet for today');
+        }
       });
     },
     init() {
