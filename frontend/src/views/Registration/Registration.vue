@@ -11,7 +11,7 @@
             id="input-username"
             v-model="form.username"
             required
-            :blur="onBlurUser"
+            @focusout="onBlurUser"
             placeholder="Inserisci username"
             aria-describedby="user-help-block"
           ></b-form-input>
@@ -29,6 +29,7 @@
             v-model="form.email"
             type="email"
             required
+            @focusout="onBlurEmail"
             placeholder="Inserisci email"
             aria-describedby="email-help-block"
           ></b-form-input>
@@ -46,20 +47,20 @@
             v-model="form.password"
             type="password"
             required
-            :blur="onBlurPsw"
+            @focusout="onBlurPsw"
             placeholder="Inserisci password"
             aria-describedby="password-help-block"
           ></b-form-input>
           <b-form-text id="password-help-block">
             La password deve avere lunghezza compresa tra 8 e 20 caratteri, può contenere
-            lettere e numeri ma non può contenere spazi bianchi, caratteri speciali o emoji.
+            caratteri speciali, tranne spazi bianchi.
           </b-form-text>
           <b-form-input
             id="re-input-password"
             v-model="form.repassword"
             type="password"
             required
-            :blur="onBlurRePsw"
+            @focusout="onBlurRePsw"
             placeholder="Ripeti password"
           ></b-form-input>
         </b-form-group>
@@ -85,6 +86,7 @@
           <label for="input-height">Height:</label>
           <b-form-input
             id="input-height"
+            type="number"
             v-model="form.height"
             required
             placeholder="Inserisci altezza"
@@ -92,6 +94,7 @@
           <label for="input-weight">Weight:</label>
           <b-form-input
             id="input-weight"
+            type="number"
             v-model="form.weight"
             required
             placeholder="Inserisci peso"
@@ -107,15 +110,15 @@
             Gli allergeni devono essere separati da spazio.
           </b-form-text>
           <label>Sex:</label>
-          <b-form-select required v-model="form.sex">
-            <option disabled value=""> {{ $t(`${form.sex.key}`) }}</option>
+          <b-form-select id="input-sex" required v-model="form.sex.value">
+            <option disabled value=""> {{ form.sex.key }}</option>
             <option v-for="opt in form.sex.ar"
-              v-bind:key="opt" v-bind:value="opt">
+              :key="opt" :value="opt">
               {{ opt.toUpperCase() }}
             </option>
           </b-form-select>
           <label>Date of Birth:</label>
-          <date-picker name="date" v-model="form.dateOfBirth"
+          <date-picker name="date" required v-model="form.dateOfBirth"
             :config="options"></date-picker>
         </b-form-group>
         <div class="text-center">
@@ -140,8 +143,8 @@ export default {
         username: '',
         name: '',
         surname: '',
-        height: '',
-        weight: '',
+        height: 170,
+        weight: 70,
         dateOfBirth: '',
         sex: {
           key: 'gender',
@@ -157,6 +160,10 @@ export default {
         showClear: false,
         showClose: true,
       },
+      correctUser: false,
+      correctEmail: false,
+      correctPsw: false,
+      correctRePsw: false,
     };
   },
   components: {
@@ -165,15 +172,79 @@ export default {
   methods: {
     onSubmit(evt) {
       evt.preventDefault();
+      if (this.correctEmail && this.correctPsw && this.correctRePsw && this.correctUser) {
+        // TODO ok, create user
+        this.$store.state.http.post().then().catch();
+      }
     },
     onBlurUser() {
-      // check in User already exist
+      console.log('BLURBLURBLUR!');
+      // check if User already exist
+      const u = this.form.username;
+      if (/[^a-z|\u002D|0-9]/i.test(u)) {
+        // invalid username
+        this.correctUser = false;
+        document.getElementById('input-username').className = 'regUserError';
+      } else {
+        this.$store.state.http.get(`api/checkUser/${u}`).then((response) => {
+          if (!response.data.status.match('ok')) {
+            this.correctUser = false;
+            // invalid user
+            document.getElementById('input-username').className = 'regUserError';
+          } else {
+            this.correctUser = true;
+            document.getElementById('input-username').className = '';
+          }
+        }).catch((error) => {
+          // something wrong
+          console.log(error);
+        });
+      }
+    },
+    onBlurEmail() {
+      // check if Email already exist
+      const e = this.form.email.trim();
+      if (e.length !== 0) {
+        this.$store.state.http.get(`api/checkEmail/${e}`).then((resp) => {
+          if (!resp.data.status.match('ok')) {
+            // invalid email
+            this.correctEmail = false;
+            document.getElementById('input-email').className = 'regEmailError';
+          } else {
+            this.correctEmail = true;
+            document.getElementById('input-email').className = '';
+          }
+        }).catch((error) => {
+          // something wrong
+          console.log(error);
+        });
+      } else {
+        this.correctEmail = false;
+        document.getElementById('input-email').className = 'regEmailError';
+      }
     },
     onBlurPsw() {
-      // check psw
+      const p = this.form.password;
+      this.correctPsw = true;
+      document.getElementById('input-password').className = '';
+      // check psw: length 8--20, no-space
+      if (p.length < 8 || p.length > 20 || /\s/.test(p)) {
+        // invalid psw
+        this.correctPsw = false;
+        document.getElementById('input-password').className = 'regPswError';
+      }
     },
     onBlurRePsw() {
       // check repsw
+      const p = this.form.password;
+      const rp = this.form.repassword;
+      this.correctRePsw = true;
+      document.getElementById('re-input-password').className = '';
+      if (!p.match(rp)) {
+        // repsw no match
+        this.correctRePsw = false;
+        document.getElementById('re-input-password').className = 'regRePswError';
+      }
     },
   },
 };
