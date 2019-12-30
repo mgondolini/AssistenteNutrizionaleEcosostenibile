@@ -2,7 +2,7 @@
   <div class="meals">
     <h1> {{ $t('meals') }} </h1>
     <b-card class="card-calendar p-0">
-      {{ $d(currentDate, 'short') }}
+      {{ $d(currentDate, 'short') }} <!-- TODO LABEL -->
       <b-button
         variant="outline-info p-0"
         @click="$refs.calendar.dp.show()">
@@ -12,20 +12,20 @@
         ref="calendar"
         :config="options"
         value="calendar"
-        style="width:0px; height:0px; padding:0px;"
+        class="meals-datepicker"
         @dp-change="setDateAndShow(calendar.value)"> </date-picker>
     </b-card>
     <b-card class="card-new-meal">
-      <b-form-input
-        v-model="mealName"
-        :placeholder="$t('meal_name_enter')"
-        class="input-new-meal" ></b-form-input>
       <date-picker
         v-model="date.value"
         :config="options"
         :placeholder="$t('date')"
         value="date"
         class="date-new-meal"></date-picker>
+      <b-form-input
+        v-model="mealName"
+        :placeholder="$t('meal_name_enter')"
+        class="input-new-meal" ></b-form-input>
       <b-button
         pill
         variant="link"
@@ -65,9 +65,9 @@
               <b-card
                 :img-src="component.image_url"
                 img-alt="Card image" img-left
-                class="mb-3"
+                class="card-components mb-3"
               >
-                <b-card-text align="center" class="m-0 p-0">
+                <b-card-text align="center" class="card-components-text m-0 p-0">
                   <p class="component-p">
                     <b> {{ component.product_name }} </b>
                   </p>
