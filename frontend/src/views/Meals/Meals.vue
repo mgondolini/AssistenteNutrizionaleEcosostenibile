@@ -13,7 +13,7 @@
         value="calendar"
         style="width:0px; height:0px; padding:0px;"
         @dp-change="setDateAndShow(calendar.value)"> </date-picker>
-      {{ currentDate }}
+      {{ $d(currentDate, 'short') }}
     </b-card>
     <b-card class="card-new-meal p-1">
       <b-form-input
@@ -218,7 +218,6 @@ export default {
     },
     setDateAndShow(date) {
       this.currentDate = new Date(date);
-
       this.showMealsByDate(this.currentDate);
     },
     init() {
