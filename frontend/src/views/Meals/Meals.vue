@@ -99,9 +99,7 @@ export default {
     return {
       mealsList: [],
       mealsListByDate: [],
-      calendarDate: '',
       currentDate: new Date(),
-      mealsDates: [],
       mealName: '',
       date: {
         key: 'date',
@@ -190,16 +188,6 @@ export default {
           console.log(`component removed ${this.mealsList}`); // DEBUG
         })
         .catch(error => console.log(error.response.data.description));
-    },
-    getHistory() {
-      let d;
-      // const months = ['January', 'February', 'March', 'April',
-      // 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
-      this.mealsList.forEach((meal) => {
-        d = new Date(meal.timestamp);
-        console.log(d);
-        console.log(`${d.getDate()}-${d.getMonth() + 1}-${d.getFullYear()}`);
-      });
     },
     showMealsByDate(date) {
       let mealDate;
