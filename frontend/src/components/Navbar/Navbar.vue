@@ -14,15 +14,16 @@
 
           <!-- Right aligned nav items -->
           <b-navbar-nav class="ml-auto">
-            <b-nav-item to="login" right v-if="isLogged === false"
-              @click.prevent="gotoLogin">Login</b-nav-item>
-            <b-nav-item-dropdown right v-if="isLogged === true">
+            <b-nav-item to="login" right v-if="this.$store.state.isLogged === false">
+              Login
+            </b-nav-item>
+            <b-nav-item-dropdown right v-if="this.$store.state.isLogged === true">
               <!-- Using 'button-content' slot -->
               <template v-slot:button-content>
                 <em>{{ $t('user') }}</em>
               </template>
                 <b-dropdown-item href="profile">{{ $t('profile') }}</b-dropdown-item>
-                <b-dropdown-item href="last_meals">{{ $t('last_meals') }}</b-dropdown-item>
+                <b-dropdown-item href="meals">{{ $t('meals') }}</b-dropdown-item>
                 <b-dropdown-item href="new_meal">{{ $t('new_meal') }}</b-dropdown-item>
                 <b-dropdown-item @click.prevent="signout">{{ $t('signout') }}</b-dropdown-item>
             </b-nav-item-dropdown>
@@ -53,16 +54,19 @@ export default {
   data() {
     return {
       navhome: 'Eco-assistant',
-      isLogged: this.$isLogged,
       langs: ['en', 'it'],
     };
   },
   methods: {
-    gotoLogin() {
-      this.$router.go('/login');
-    },
     getLocaleFlagPath(lang) {
       return localeFlagsContext(`./${lang}${localeFlagsExt}`);
+    },
+    signout() {
+      localStorage.ecoAssToken = 'InvalidToken';
+      this.$store.commit('logout');
+      if (this.$route.path !== '/') {
+        this.$router.push('/');
+      }
     },
   },
 };
@@ -74,7 +78,7 @@ export default {
     "prod_info": "Product informations",
     "user": "User",
     "profile": "My profile",
-    "last_meals": "My last meals",
+    "meals": "My last meals",
     "new_meal": "Insert new meal",
     "signout": "Signout"
   },
@@ -82,46 +86,9 @@ export default {
     "prod_info": "Informazioni prodotto",
     "user": "Utente",
     "profile": "Il mio profilo",
-    "last_meals": "I miei ultimi pasti",
+    "meals": "I miei ultimi pasti",
     "new_meal": "Inserisci nuovo pasto",
     "signout": "Esci"
   }
 }
 </i18n>
-
-<!--
-<script>
-export default {
-  name: 'navbar',
-
-  data () {
-    return {
-      navhome: 'Eco-assistant',
-      isLogged:true
-    }
-      /*isLogged: this.checkIfIsLogged()
-    }
-  },
-  created () {
-    this.$bus.$on('logged', () => {
-      this.isLogged = this.checkIfIsLogged()
-    })
-  },
-  methods: {
-    singout () {
-      this.$localStorage.remove('access_token')
-      this.isLogged = this.checkIfIsLogged()
-      this.$router.push('/')
-    },
-    checkIfIsLogged () {
-      let token = this.$localStorage.get('access_token')
-      if (token) {
-        return true
-      } else {
-        return false
-      }*/
-  }
-}
-</script>
-
--->

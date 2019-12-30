@@ -55,9 +55,6 @@
 </template>
 
 <script>
-const axios = require('axios');
-const config = require('../../../config.json');
-
 export default {
   name: 'login',
   data() {
@@ -71,15 +68,27 @@ export default {
   methods: {
     onSubmit(evt) {
       evt.preventDefault();
-      axios.get(config.server.concat(`api/user/${this.form.password}`))
+      const mail = this.form.email;
+      const psw = this.form.password;
+
+      this.$store.state.http.post('api/auth', { email: mail, key: psw })
         .then((response) => {
-          alert(JSON.stringify(response));
-          console.log(response);
+          localStorage.ecoAssToken = response.data.token.toString();
+          this.$store.commit('login', response.data.token.toString());
+          this.$router.push('/meals');
         }).catch((error) => {
-          alert(JSON.stringify(error));
-          // console.log(error);
+          // TODO manage error getting public key
+          console.log('Error during authentication: '.concat(error));
         });
-      // alert(JSON.stringify(this.form));
+      /*
+      ESEMPIO chiamata get con token
+      this.$store.state.http.get('api/publickey')
+        .then((resp) => {
+          console.log('Ok!');
+        }).catch((er) => {
+          console.log('Error');
+        });
+      */
     },
   },
 };
