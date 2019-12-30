@@ -1,7 +1,8 @@
 <template>
   <div class="meals">
-    <h1> {{ $t('last_meals') }} </h1>
-    <b-card>
+    <h1> {{ $t('meals') }} </h1>
+    <b-card class="card-calendar p-0">
+      {{ $d(currentDate, 'short') }}
       <b-button
         variant="outline-info p-0"
         @click="$refs.calendar.dp.show()">
@@ -13,9 +14,8 @@
         value="calendar"
         style="width:0px; height:0px; padding:0px;"
         @dp-change="setDateAndShow(calendar.value)"> </date-picker>
-      {{ $d(currentDate, 'short') }}
     </b-card>
-    <b-card class="card-new-meal p-1">
+    <b-card class="card-new-meal">
       <b-form-input
         v-model="mealName"
         :placeholder="$t('meal_name_enter')"
@@ -31,7 +31,7 @@
         variant="link"
         class="button-add p-0"
         @click="addMeal(mealName, date.value)"
-      ><img class="add-meal" src="../../assets/buttons/plus.svg">
+      ><img class="add-meal" src="../../assets/buttons/add.svg">
       </b-button>
     </b-card>
     <div class="card-last-meals" role="tablist">
@@ -45,8 +45,9 @@
             {{ meal.meal_name }}
             <b-button
               class="p-0"
+              variant="outline-light p-0"
               @click="removeMeal(meal.meal_name)"
-            >REMOVE</b-button> <!--TODO icona bidoncino a dx-->
+            ><img class="trashcan" src="../../assets/buttons/trashcan.svg"></b-button>
           </b-button>
         </b-card-header>
         <b-collapse :id="'accordion-' + index" visible accordion="my-accordion" role="tabpanel">
@@ -57,7 +58,7 @@
               class="p-0"
               @click="addComponent(meal.meal_name)"
             >
-              <img class="add" src="../../assets/buttons/add.svg">
+              <img class="add" src="../../assets/buttons/plus.svg">
               {{ $t('add_component') }}
             </b-button>
             <div v-for="component in meal.components" v-bind:key="component.product_name">
@@ -222,13 +223,13 @@ export default {
 <i18n>
 {
   "en": {
-    "last_meals": "Your last meals",
+    "meals": "Your meals",
     "add_component": "Add component",
     "meal_name_enter": "Enter meal name",
     "date": "Date"
   },
   "it": {
-    "last_meals": "I tuoi ultimi pasti",
+    "meals": "I tuoi pasti",
     "meal_name_enter": "Inserire nome pasto",
     "add_component": "Aggiungi componente",
     "date": "Data"
