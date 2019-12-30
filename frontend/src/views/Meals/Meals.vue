@@ -1,6 +1,20 @@
 <template>
   <div class="meals">
     <h1> {{ $t('last_meals') }} </h1>
+    <b-card>
+      <b-button
+        variant="outline-info p-0"
+        @click="$refs.calendar.dp.show()">
+          <img class="calendar" src="../../assets/buttons/calendar.svg">
+      </b-button>
+      <date-picker v-model="calendar.value"
+        ref="calendar"
+        :config="options"
+        value="calendar"
+        style="width:0px; height:0px; padding:0px;"
+        @dp-change="setDateAndShow(calendar.value)"> </date-picker>
+      {{ currentDate }}
+    </b-card>
     <b-card class="card-new-meal p-1">
       <b-form-input
         v-model="mealName"
@@ -19,14 +33,6 @@
         @click="addMeal(mealName, date.value)"
       ><img class="add-meal" src="../../assets/buttons/plus.svg">
       </b-button>
-    </b-card>
-    <b-card class="card-new-meal">
-      <date-picker v-model="date.value"
-        :config="options"
-        :placeholder="$t('date')"
-        value="date"
-        @dp-change="setCurrentDateAndShow(date.value)"></date-picker>
-        {{ currentDate }}
     </b-card>
     <div class="card-last-meals" role="tablist">
       <b-card
@@ -93,11 +99,16 @@ export default {
     return {
       mealsList: [],
       mealsListByDate: [],
+      calendarDate: '',
       currentDate: new Date(),
       mealsDates: [],
       mealName: '',
       date: {
         key: 'date',
+        value: '',
+      },
+      calendar: {
+        key: 'calendar',
         value: '',
       },
       options: {
@@ -140,7 +151,7 @@ export default {
           .then((response) => {
             this.mealsList = [];
             this.mealsList = response.data.meals;
-            this.setCurrentDateAndShow(date);
+            this.setDateAndShow(date);
           })
           .catch(error => console.log(error.response.data.description)); // mostrare su una label
       } else {
@@ -195,19 +206,19 @@ export default {
       this.mealsListByDate = [];
       this.mealsList.forEach((meal) => {
         mealDate = new Date(meal.timestamp);
-        console.log(`mealDate${mealDate}`);
-        console.log(`date${date}`);
+
         if (mealDate.getDate() === date.getDate()
             && mealDate.getMonth() === date.getMonth()
             && mealDate.getFullYear() === date.getFullYear()) {
           this.mealsListByDate.push(meal);
         } else {
-          console.log('No meals yet for today');
+          console.log('No meals yet for today'); // LABEL
         }
       });
     },
-    setCurrentDateAndShow(date) {
+    setDateAndShow(date) {
       this.currentDate = new Date(date);
+
       this.showMealsByDate(this.currentDate);
     },
     init() {
