@@ -99,6 +99,8 @@ const productIDTest = '737628064502';
 const imagesExt = '.svg';
 const imagesContext = require.context('@/assets/productInfo/', true, /\.svg$/);
 
+// TODO add function to format numbers (trim decimals and add dots for thousands)
+
 export default {
   name: 'productInfo',
   data() {
@@ -137,7 +139,7 @@ export default {
       saltLvlImgPath: '',
 
       nutritionTableItems: [
-        { nutrition_fact: 'stonks', for_100g: 0 },
+        // { nutrition_fact: 'stonks', for_100g: 0 },
       ],
       /*
       nutritionTableItems: [
@@ -158,45 +160,44 @@ export default {
           console.log(response);
 
           // Status === 1 means the product has been found
-          // some random EANs can also return a status 1 so we check the code not do be empty
-          this.status = (response.data.status === 1) && (response.data.code !== '');
+          // some random EANs can also return a status 1 so we check the code not to be empty
+          this.status = (response.data.status === 1)
+                        && (response.data.code !== '')
+                        && (Object.prototype.hasOwnProperty.call(response.data, 'product'));
           this.productShowing = this.status;
+          // Copying response.data.product
+          const { product } = response.data;
 
           // PRODUCT CARD
-          this.imgPath = response.data.product.image_thumb_url.replace('100.jpg', 'full.jpg');
-          this.productName = response.data.product.product_name;
+          this.imgPath = product.image_thumb_url.replace('100.jpg', 'full.jpg');
+          this.productName = product.product_name;
           // Alternatively in response.data.brands
           // Absurd way to access brands_tags[0]
-          [this.productVendor] = response.data.product.brands_tags;
-          this.productPortion = response.data.product.quantity;
+          [this.productVendor] = product.brands_tags;
+          this.productPortion = product.quantity;
 
           // NUTRITION TAB
           const nutriScore = response.data.product.nutriscore_grade;
           this.nutriScoreImgPath = imagesContext(`./nutriScore/${nutriScore}${imagesExt}`);
 
           // nutritional levels
-          this.fatLvl = response.data.product.nutrient_levels.fat;
-          this.satFatLvl = response.data.product.nutrient_levels['saturated-fat'];
-          this.sugarLvl = response.data.product.nutrient_levels.sugars;
-          this.saltLvl = response.data.product.nutrient_levels.salt;
+          this.fatLvl = product.nutrient_levels.fat;
+          this.satFatLvl = product.nutrient_levels['saturated-fat'];
+          this.sugarLvl = product.nutrient_levels.sugars;
+          this.saltLvl = product.nutrient_levels.salt;
 
           // nutritional values
-          this.fat = response.data.product.nutriments.fat_100g;
-          this.saturatedFat = response.data.product.nutriments['saturated-fat_100g'];
-          this.sugar = response.data.product.nutriments.sugars_100g;
-          this.salt = response.data.product.nutriments.salt_100g;
+          this.fat = product.nutriments.fat_100g || 0;
+          this.saturatedFat = product.nutriments['saturated-fat_100g'] || 0;
+          this.sugar = product.nutriments.sugars_100g || 0;
+          this.salt = product.nutriments.salt_100g || 0;
 
-          this.fat = response.data.product.nutriments.fat_100g;
-          this.saturatedFat = response.data.product.nutriments['saturated-fat_100g'];
-          this.sugar = response.data.product.nutriments.sugars_100g;
-          this.salt = response.data.product.nutriments.salt_100g;
-
-          this.energyKj = response.product.nutriments['energy-kj_100g'];
-          this.energyKcal = response.product.nutriments['energy-kcal_100g'];
-          this.carbohydrates = response.product.nutriments.carbohydrates_100g;
-          this.proteins = response.product.nutriments.proteins_100g;
-          this.sodium = response.product.nutriments.sodium_100g;
-          this.fiber = response.product.nutriments.fiber_100g;
+          this.energyKj = product.nutriments['energy-kj_100g'] || 0;
+          this.energyKcal = product.nutriments['energy-kcal_100g'] || 0;
+          this.carbohydrates = product.nutriments.carbohydrates_100g || 0;
+          this.proteins = product.nutriments.proteins_100g || 0;
+          this.sodium = product.nutriments.sodium_100g || 0;
+          this.fiber = product.nutriments.fiber_100g || 0;
 
           this.nutritionTableItems.push({ nutrition_fact: 'fat', for_100g: this.fat });
           this.nutritionTableItems.push({ nutrition_fact: 'saturatedFat', for_100g: this.saturatedFat });
@@ -209,6 +210,7 @@ export default {
           this.nutritionTableItems.push({ nutrition_fact: 'sodium', for_100g: this.sodium });
           // this.nutritionTableItems.push({ nutrition_fact: 'fiber', for_100g: this.fiber });
 
+          console.log(this.nutritionTableItems);
 
           this.fatLvlImgPath = imagesContext(`./nutrientLevels/${this.fatLvl}${imagesExt}`);
           this.satFatLvlImgPath = imagesContext(`./nutrientLevels/${this.satFatLvl}${imagesExt}`);
@@ -216,11 +218,11 @@ export default {
           this.saltLvlImgPath = imagesContext(`./nutrientLevels/${this.saltLvl}${imagesExt}`);
 
           // INGREDIENTS TAB
-          const novaGroup = response.data.product.nova_group;
+          const novaGroup = product.nova_group;
           this.novaGroupImgPath = imagesContext(`./novaGroup/${novaGroup}${imagesExt}`);
         }).catch((error) => {
           alert(JSON.stringify(error));
-          // console.log(error);
+          console.log(error);
         });
     },
   },
