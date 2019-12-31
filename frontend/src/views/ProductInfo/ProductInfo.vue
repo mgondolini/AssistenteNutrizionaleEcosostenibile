@@ -1,6 +1,6 @@
 <template>
   <div class="productInfo">
-    <div v-if=!productShowing id="insertEAN">
+    <div v-if=!productShowing class="insertEAN">
       <p>
         <label for="ean">EAN code</label>
         <input
@@ -16,7 +16,7 @@
       </div>
       <p v-if=!status > Product not found </p>
     </div>
-    <div v-if=productShowing id="productData">
+    <div v-if=productShowing class="productData">
       <b-card no-body class="productCard">
         <b-media>
           <template v-slot:aside>
