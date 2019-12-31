@@ -46,7 +46,7 @@
                 <b-img center :src="fatLvlImgPath" alt="Fat level indicator"></b-img>
               </td>
               <td>
-                {{ fat_100g }} g Fat in {{ fatLvl }} quantity
+                {{ fat }} g Fat in {{ fatLvl }} quantity
               </td>
             </tr>
             <tr>
@@ -54,15 +54,15 @@
                 <b-img center :src="satFatLvlImgPath" alt="Fat level indicator"></b-img>
               </td>
               <td>
-                {{ saturatedFat_100g }} g Saturated fat in {{ satFatLvl }} quantity
+                {{ saturatedFat }} g Saturated fat in {{ satFatLvl }} quantity
               </td>
             </tr>
             <tr>
               <td>
-                <b-img center :src="sugarsLvlImgPath" alt="Fat level indicator"></b-img>
+                <b-img center :src="sugarLvlImgPath" alt="Fat level indicator"></b-img>
               </td>
               <td>
-                {{ sugars_100g }} g Sugar in {{ sugarsLvl }} quantity
+                {{ sugar }} g Sugar in {{ sugarLvl }} quantity
               </td>
             </tr>
             <tr>
@@ -70,7 +70,7 @@
                 <b-img center :src="saltLvlImgPath" alt="Fat level indicator"></b-img>
               </td>
               <td>
-                {{ salt_100g }} g Salt in {{ saltLvl }} quantity
+                {{ salt }} g Salt in {{ saltLvl }} quantity
               </td>
             </tr>
 
@@ -113,17 +113,17 @@ export default {
 
       fatLvl: '',
       satFatLvl: '',
-      sugarsLvl: '',
+      sugarLvl: '',
       saltLvl: '',
 
-      fat_100g: '',
-      saturatedFat_100g: '',
-      sugars_100g: '',
-      salt_100g: '',
+      fat: '',
+      saturatedFat: '',
+      sugar: '',
+      salt: '',
 
       fatLvlImgPath: '',
       satFatLvlImgPath: '',
-      sugarsLvlImgPath: '',
+      sugarLvlImgPath: '',
       saltLvlImgPath: '',
     };
   },
@@ -154,24 +154,18 @@ export default {
 
           this.fatLvl = response.data.product.nutrient_levels.fat;
           this.satFatLvl = response.data.product.nutrient_levels['saturated-fat'];
-          this.sugarsLvl = response.data.product.nutrient_levels.sugars;
+          this.sugarLvl = response.data.product.nutrient_levels.sugars;
           this.saltLvl = response.data.product.nutrient_levels.salt;
 
-          this.fat_100g = response.data.product.nutriments.fat_100g;
-          this.saturatedFat_100g = response.data.product.nutriments['saturated-fat_100g'];
-          this.sugars_100g = response.data.product.nutriments.sugars_100g;
-          this.salt_100g = response.data.product.nutriments.salt_100g;
+          this.fat = response.data.product.nutriments.fat_100g;
+          this.saturatedFat = response.data.product.nutriments['saturated-fat_100g'];
+          this.sugar = response.data.product.nutriments.sugars_100g;
+          this.salt = response.data.product.nutriments.salt_100g;
 
           this.fatLvlImgPath = imagesContext(`./nutrientLevels/${this.fatLvl}${imagesExt}`);
           this.satFatLvlImgPath = imagesContext(`./nutrientLevels/${this.satFatLvl}${imagesExt}`);
-          this.sugarsLvlImgPath = imagesContext(`./nutrientLevels/${this.sugarsLvl}${imagesExt}`);
+          this.sugarLvlImgPath = imagesContext(`./nutrientLevels/${this.sugarLvl}${imagesExt}`);
           this.saltLvlImgPath = imagesContext(`./nutrientLevels/${this.saltLvl}${imagesExt}`);
-
-
-          console.log(this.fatLvlImgPath);
-          console.log(this.satFatLvlImgPath);
-          console.log(this.sugarsLvlImgPath);
-          console.log(this.saltLvlImgPath);
 
           // INGREDIENTS TAB
           const novaGroup = response.data.product.nova_group;
