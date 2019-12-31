@@ -199,18 +199,16 @@ export default {
           this.sodium = product.nutriments.sodium_100g || 0;
           this.fiber = product.nutriments.fiber_100g || 0;
 
-          this.nutritionTableItems.push({ nutrition_fact: 'fat', for_100g: this.fat });
-          this.nutritionTableItems.push({ nutrition_fact: 'saturatedFat', for_100g: this.saturatedFat });
-          this.nutritionTableItems.push({ nutrition_fact: 'sugar', for_100g: this.sugar });
-          this.nutritionTableItems.push({ nutrition_fact: 'salt', for_100g: this.salt });
           this.nutritionTableItems.push({ nutrition_fact: 'energyKj', for_100g: this.energyKj });
           this.nutritionTableItems.push({ nutrition_fact: 'energyKcal', for_100g: this.energyKcal });
+          this.nutritionTableItems.push({ nutrition_fact: 'fat', for_100g: this.fat });
+          this.nutritionTableItems.push({ nutrition_fact: 'saturatedFat', for_100g: this.saturatedFat });
           this.nutritionTableItems.push({ nutrition_fact: 'carbohydrates', for_100g: this.carbohydrates });
-          this.nutritionTableItems.push({ nutrition_fact: 'proteins', for_100g: this.proteins });
+          this.nutritionTableItems.push({ nutrition_fact: 'sugar', for_100g: this.sugar });
+          this.nutritionTableItems.push({ nutrition_fact: 'salt', for_100g: this.salt });
           this.nutritionTableItems.push({ nutrition_fact: 'sodium', for_100g: this.sodium });
-          // this.nutritionTableItems.push({ nutrition_fact: 'fiber', for_100g: this.fiber });
-
-          console.log(this.nutritionTableItems);
+          this.nutritionTableItems.push({ nutrition_fact: 'proteins', for_100g: this.proteins });
+          this.nutritionTableItems.push({ nutrition_fact: 'fiber', for_100g: this.fiber });
 
           this.fatLvlImgPath = imagesContext(`./nutrientLevels/${this.fatLvl}${imagesExt}`);
           this.satFatLvlImgPath = imagesContext(`./nutrientLevels/${this.satFatLvl}${imagesExt}`);
@@ -233,11 +231,29 @@ export default {
 {
   "en": {
     "tab_nutrition_title" : "Nutrition",
-    "tab_ingredients_title" : "Ingredients"
+    "tab_ingredients_title" : "Ingredients",
+    "energy" : "Energy",
+    "fat" : "Fat",
+    "saturatedFat" : "Saturated fats",
+    "carbohydrates" : "Carbohydrates",
+    "sugar" : "Sugar",
+    "salt" : "Salt",
+    "sodium" : "Sodium",
+    "proteins" : "Proteins",
+    "fiber" : "Fiber"
   },
   "it": {
     "tab_nutrition_title" : "Valori nutrizionali",
-    "tab_ingredients_title" : "Ingredienti"
+    "tab_ingredients_title" : "Ingredienti",
+    "energy" : "Energia",
+    "fat" : "Grassi",
+    "saturatedFat" : "Grassi saturi",
+    "carbohydrates" : "Carboidrati",
+    "sugar" : "Zuccheri",
+    "salt" : "Sale",
+    "sodium" : "Sodio",
+    "proteins" : "Proteine",
+    "fiber" : "Fibre"
   }
 }
 </i18n>
