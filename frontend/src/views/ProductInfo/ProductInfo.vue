@@ -40,42 +40,45 @@
             <span> 8.97 g Fat in moderate quantity </span>
           </div>
           -->
-          <table>
-            <tr>
-              <td>
-                <b-img center :src="fatLvlImgPath" alt="Fat level indicator"></b-img>
-              </td>
-              <td>
-                {{ fat }} g Fat in {{ fatLvl }} quantity
-              </td>
-            </tr>
-            <tr>
-              <td>
-                <b-img center :src="satFatLvlImgPath" alt="Fat level indicator"></b-img>
-              </td>
-              <td>
-                {{ saturatedFat }} g Saturated fat in {{ satFatLvl }} quantity
-              </td>
-            </tr>
-            <tr>
-              <td>
-                <b-img center :src="sugarLvlImgPath" alt="Fat level indicator"></b-img>
-              </td>
-              <td>
-                {{ sugar }} g Sugar in {{ sugarLvl }} quantity
-              </td>
-            </tr>
-            <tr>
-              <td>
-                <b-img center :src="saltLvlImgPath" alt="Fat level indicator"></b-img>
-              </td>
-              <td>
-                {{ salt }} g Salt in {{ saltLvl }} quantity
-              </td>
-            </tr>
+          <div class="nutritionIndicators">
+            <table>
+              <tr>
+                <td>
+                  <b-img center :src="fatLvlImgPath" alt="Fat level indicator"></b-img>
+                </td>
+                <td>
+                  {{ fat }} g Fat in {{ fatLvl }} quantity
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  <b-img center :src="satFatLvlImgPath" alt="Fat level indicator"></b-img>
+                </td>
+                <td>
+                  {{ saturatedFat }} g Saturated fat in {{ satFatLvl }} quantity
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  <b-img center :src="sugarLvlImgPath" alt="Fat level indicator"></b-img>
+                </td>
+                <td>
+                  {{ sugar }} g Sugar in {{ sugarLvl }} quantity
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  <b-img center :src="saltLvlImgPath" alt="Fat level indicator"></b-img>
+                </td>
+                <td>
+                  {{ salt }} g Salt in {{ saltLvl }} quantity
+                </td>
+              </tr>
 
-          </table>
-          <div id="nutrientLevels">
+            </table>
+          </div>
+          <div class="nutritionTable">
+            <b-table striped hover :items="nutritionTableItems"></b-table>
           </div>
         </b-tab>
         <b-tab :title="$t('tab_ingredients_title')">
@@ -121,10 +124,29 @@ export default {
       sugar: '',
       salt: '',
 
+      energyKj: '',
+      energyKcal: '',
+      carbohydrates: '',
+      proteins: '',
+      sodium: '',
+      fiber: '',
+
       fatLvlImgPath: '',
       satFatLvlImgPath: '',
       sugarLvlImgPath: '',
       saltLvlImgPath: '',
+
+      nutritionTableItems: [
+        { nutrition_fact: 'stonks', for_100g: 0 },
+      ],
+      /*
+      nutritionTableItems: [
+        { age: 40, first_name: 'Dickerson', last_name: 'Macdonald' },
+        { age: 21, first_name: 'Larsen', last_name: 'Shaw' },
+        { age: 89, first_name: 'Geneva', last_name: 'Wilson' },
+        { age: 38, first_name: 'Jami', last_name: 'Carney' },
+      ],
+*/
     };
   },
   methods: {
@@ -152,15 +174,41 @@ export default {
           const nutriScore = response.data.product.nutriscore_grade;
           this.nutriScoreImgPath = imagesContext(`./nutriScore/${nutriScore}${imagesExt}`);
 
+          // nutritional levels
           this.fatLvl = response.data.product.nutrient_levels.fat;
           this.satFatLvl = response.data.product.nutrient_levels['saturated-fat'];
           this.sugarLvl = response.data.product.nutrient_levels.sugars;
           this.saltLvl = response.data.product.nutrient_levels.salt;
 
+          // nutritional values
           this.fat = response.data.product.nutriments.fat_100g;
           this.saturatedFat = response.data.product.nutriments['saturated-fat_100g'];
           this.sugar = response.data.product.nutriments.sugars_100g;
           this.salt = response.data.product.nutriments.salt_100g;
+
+          this.fat = response.data.product.nutriments.fat_100g;
+          this.saturatedFat = response.data.product.nutriments['saturated-fat_100g'];
+          this.sugar = response.data.product.nutriments.sugars_100g;
+          this.salt = response.data.product.nutriments.salt_100g;
+
+          this.energyKj = response.product.nutriments['energy-kj_100g'];
+          this.energyKcal = response.product.nutriments['energy-kcal_100g'];
+          this.carbohydrates = response.product.nutriments.carbohydrates_100g;
+          this.proteins = response.product.nutriments.proteins_100g;
+          this.sodium = response.product.nutriments.sodium_100g;
+          this.fiber = response.product.nutriments.fiber_100g;
+
+          this.nutritionTableItems.push({ nutrition_fact: 'fat', for_100g: this.fat });
+          this.nutritionTableItems.push({ nutrition_fact: 'saturatedFat', for_100g: this.saturatedFat });
+          this.nutritionTableItems.push({ nutrition_fact: 'sugar', for_100g: this.sugar });
+          this.nutritionTableItems.push({ nutrition_fact: 'salt', for_100g: this.salt });
+          this.nutritionTableItems.push({ nutrition_fact: 'energyKj', for_100g: this.energyKj });
+          this.nutritionTableItems.push({ nutrition_fact: 'energyKcal', for_100g: this.energyKcal });
+          this.nutritionTableItems.push({ nutrition_fact: 'carbohydrates', for_100g: this.carbohydrates });
+          this.nutritionTableItems.push({ nutrition_fact: 'proteins', for_100g: this.proteins });
+          this.nutritionTableItems.push({ nutrition_fact: 'sodium', for_100g: this.sodium });
+          // this.nutritionTableItems.push({ nutrition_fact: 'fiber', for_100g: this.fiber });
+
 
           this.fatLvlImgPath = imagesContext(`./nutrientLevels/${this.fatLvl}${imagesExt}`);
           this.satFatLvlImgPath = imagesContext(`./nutrientLevels/${this.satFatLvl}${imagesExt}`);
