@@ -40,8 +40,11 @@ exports.addMeal = (req, userMeals, res) => {
 
   // controllo se ci sono pasti per lo stesso utente con lo stesso nome che voglio inserire
   userMeals.meals.forEach((m) => {
-    console.log(m.meal_name === mealName); // DEBUG
-    if (m.meal_name === mealName) exists = true;
+    if (m.timestamp.getDate() === new Date(timestamp).getDate()
+      && m.timestamp.getMonth() === new Date(timestamp).getMonth()
+      && m.timestamp.getFullYear() === new Date(timestamp).getFullYear()) {
+      if (m.meal_name === mealName) exists = true;
+    }
   });
 
   // se non ci sono pasti con lo stesso nome inizializzo il pasto da inserire
