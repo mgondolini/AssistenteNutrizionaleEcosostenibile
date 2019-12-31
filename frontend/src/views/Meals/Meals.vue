@@ -162,8 +162,9 @@ export default {
       const params = {
         username: 'mrossi',
         mealName,
+        timestamp: `${this.currentDate.getFullYear()}-${this.currentDate.getMonth() + 1}-${this.currentDate.getDate()}`,
       };
-      console.log(`remove${params}`);
+      console.log(`remove${JSON.stringify(params)}`);
       this.$store.state.http.delete(`api/${params.username}/meals/${params.mealName}`, { params })
         .then(() => this.loadMealsList())
         .catch(error => console.log(error.response.data.description));
