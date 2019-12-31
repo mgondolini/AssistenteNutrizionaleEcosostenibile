@@ -12,6 +12,7 @@ $white: #fff
     margin-top: 3%
     padding-bottom: 0
 
+
   .trashcan
     float: right
     height: 1.5rem
@@ -25,23 +26,6 @@ $white: #fff
   .add
     width: 10%
 
-  .input-new-meal
-    float: left
-    margin-right: 5px
-    width: 40%
-
-  .date-new-meal
-    float: left
-    margin-right: 5px
-    width: 20%
-
-  .button-add
-    float: left
-
-  .add-meal
-    float: right
-    height: 2rem
-    width: 2rem
 
   .card-calendar
     border: 0
@@ -50,9 +34,20 @@ $white: #fff
       font-size: small
       padding: 0
 
+    .date-p
+      display: inline-block
+      width: 75%
+
     .calendar
+      float: left
       height: 1.5rem
       width: 1.5rem
+
+    .meals-datepicker
+      height: 0
+      padding: 0
+      width: 0
+
 
   .card-new-meal
     border: 0
@@ -60,14 +55,26 @@ $white: #fff
     .card-body
       padding-left: 0
 
-  .card-components-text
-    float: left
-    width: 90%
+    .input-new-meal
+      float: left
+      margin-right: 5px
+      width: 40%
 
-  .meals-datepicker
-    height: 0
-    padding: 0
-    width: 0
+    .date-new-meal
+      float: left
+      margin-right: 5px
+      width: 20%
+
+    .button-add
+      float: left
+
+    .add-meal
+      float: right
+      height: 2rem
+      width: 2rem
+
+  .add-component
+    display: flex
 
 
   @media only screen and (min-width: 380px)
@@ -96,7 +103,11 @@ $white: #fff
 
     .card-components-text
       float: left
-      width: 70%
+      width: 80%
+
+    .meal-name-p
+      display: inline-block
+      width: 80%
 
 
   @media only screen and (max-width: 480px)
@@ -125,7 +136,12 @@ $white: #fff
 
     .card-components-text
       float: left
-      width: 70%
+      width: 80%
+
+    .meal-name-p
+      display: inline-block
+      width: 80%
+
 
   @media only screen and (min-width: 600px)
     .card-last-meals
@@ -147,6 +163,13 @@ $white: #fff
     .card-text
       padding: 1.25em
 
+    .card-components-text
+      width: 90%
+
+    .meal-name-p
+      display: inline-block
+      width: 95%
+
 
   @media only screen and (min-width: 768px)
     .card-last-meals
@@ -167,4 +190,12 @@ $white: #fff
 
     .card-text
       padding: 1.25em
+
+    .card-components-text
+      width: 90%
+
+    .meal-name-p
+      display: inline-block
+      width: 95%
+
 

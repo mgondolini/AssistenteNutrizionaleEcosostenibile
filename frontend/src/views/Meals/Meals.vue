@@ -2,7 +2,7 @@
   <div class="meals">
     <h1> {{ $t('meals') }} </h1>
     <b-card class="card-calendar p-0">
-      {{ $d(currentDate, 'short') }} <!-- TODO LABEL -->
+      <p class="date-p text-center">{{ $d(currentDate, 'short') }}</p>
       <b-button
         variant="outline-info p-0"
         @click="$refs.calendar.dp.show()">
@@ -42,7 +42,7 @@
       >
         <b-card-header header-tag="header" class="p-0" role="tab">
           <b-button block href="#" v-b-toggle="'accordion-' + index" variant="info">
-            {{ meal.meal_name }}
+            <p class="meal-name-p text-center m-0">{{ meal.meal_name }}</p>
             <b-button
               class="p-0"
               variant="outline-light p-0"
@@ -55,10 +55,10 @@
             <b-button
               pill
               variant="link"
-              class="p-0"
+              class="add-component p-0"
               @click="addComponent(meal.meal_name)"
             >
-              <img class="add" src="../../assets/buttons/plus.svg">
+              <img class="add mr-2" src="../../assets/buttons/plus.svg">
               {{ $t('add_component') }}
             </b-button>
             <div v-for="component in meal.components" v-bind:key="component.product_name">
