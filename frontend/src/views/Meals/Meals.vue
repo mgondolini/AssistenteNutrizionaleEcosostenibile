@@ -16,12 +16,6 @@
         @dp-change="setDateAndShow(calendar.value)"> </date-picker>
     </b-card>
     <b-card class="card-new-meal">
-      <date-picker
-        v-model="date.value"
-        :config="options"
-        :placeholder="$t('date')"
-        value="date"
-        class="date-new-meal"></date-picker>
       <b-form-input
         v-model="mealName"
         :placeholder="$t('meal_name_enter')"
@@ -30,7 +24,7 @@
         pill
         variant="link"
         class="button-add p-0"
-        @click="addMeal(mealName, date.value)"
+        @click="addMeal(mealName)"
       ><img class="add-meal" src="../../assets/buttons/add.svg">
       </b-button>
     </b-card>
@@ -130,27 +124,30 @@ export default {
       this.$store.state.http.get(`api/${param.username}/meals`, { params: param })
         .then((response) => {
           this.mealsList = response.data.meals;
-          console.log('qadsqde');
           this.showMealsByDate(this.currentDate);
         })
         .catch(error => console.log(error.response.data.description));
     },
-    addMeal(mealName, date) {
+    addMeal(mealName) {
+      const UTCDate = Date.UTC(this.currentDate.getFullYear(),
+        this.currentDate.getMonth(), this.currentDate.getDate());
+
       const body = {
-        username: 'mrossi',
+        username: 'mrossi', // username da sessione
         meals: {
           mealName,
-          timestamp: date,
+          timestamp: new Date(UTCDate),
         },
       };
+
       console.log(body); // DEBUG
+
       if (mealName.length !== 0) {
-        console.log('asdsaasd');
         this.$store.state.http.post(`api/${body.username}/meals`, body)
           .then((response) => {
             this.mealsList = [];
             this.mealsList = response.data.meals;
-            this.setDateAndShow(date);
+            this.showMealsByDate(this.currentDate);
           })
           .catch(error => console.log(error.response.data.description)); // mostrare su una label
       } else {
