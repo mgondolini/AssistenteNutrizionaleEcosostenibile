@@ -78,10 +78,24 @@
             </table>
           </div>
           <div class="nutritionTable">
+                  <p>
+                    <label for="qty">qty</label>
+                    <input
+                      id="qty"
+                      v-model="qty"
+                      value="100"
+                    >
+                  </p>
+                  <p>qty is: {{ qty }}</p>
             <b-table striped hover :fields="nutritionTableFields" :items="nutritionTableItems">
-              <!-- A virtual column -->
+              <!-- A virtual column for computing the localization of the word -->
               <template v-slot:cell(NutriFactLocalized)="data">
                 {{ $t(data.item.nutrition_fact) }}
+              </template>
+              <!-- A virtual column for computing the quantity
+              according to the portion inserted by the user -->
+              <template v-slot:cell(ForPortion)="data">
+                {{ (data.item.for_100g * qty) || 0 }}
               </template>
             </b-table>
           </div>
@@ -147,18 +161,14 @@ export default {
         'NutriFactLocalized',
         'nutrition_fact',
         'for_100g',
+        'ForPortion',
       ],
       nutritionTableItems: [
-        { nutrition_fact: 'stonks', for_100g: 0 },
+        // { nutrition_fact: 'stonks', for_100g: 0 },
       ],
-      /*
-      nutritionTableItems: [
-        { age: 40, first_name: 'Dickerson', last_name: 'Macdonald' },
-        { age: 21, first_name: 'Larsen', last_name: 'Shaw' },
-        { age: 89, first_name: 'Geneva', last_name: 'Wilson' },
-        { age: 38, first_name: 'Jami', last_name: 'Carney' },
-      ],
-*/
+
+      qty: '',
+
     };
   },
   methods: {
@@ -208,9 +218,6 @@ export default {
           this.proteins = product.nutriments.proteins_100g || 0;
           this.sodium = product.nutriments.sodium_100g || 0;
           this.fiber = product.nutriments.fiber_100g || 0;
-
-          console.log('i18n');
-          console.log(this.$i18n.t('tab_nutrition_title'));
 
           this.nutritionTableItems.push({ nutrition_fact: 'energyKj', for_100g: this.energyKj });
           this.nutritionTableItems.push({ nutrition_fact: 'energyKcal', for_100g: this.energyKcal });
