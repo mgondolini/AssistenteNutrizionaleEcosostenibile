@@ -78,24 +78,34 @@
             </table>
           </div>
           <div class="nutritionTable">
-                  <p>
-                    <label for="qty">qty</label>
-                    <input
-                      id="qty"
-                      v-model="qty"
-                      value="100"
-                    >
-                  </p>
-                  <p>qty is: {{ qty }}</p>
+            <div>
+              <p>
+                <label for="qty"> {{ $t('portion') }} </label>
+                <input
+                  id="qty"
+                  v-model="qty"
+                >
+              </p>
+            </div>
             <b-table striped hover :fields="nutritionTableFields" :items="nutritionTableItems">
+              <!-- A custom formatted header cell for field 'nutriFactLocalized' -->
+              <template v-slot:head(nutriFactLocalized)="data">
+                {{ $t('nutriFacts') }}
+              </template>
               <!-- A virtual column for computing the localization of the word -->
-              <template v-slot:cell(NutriFactLocalized)="data">
-                {{ $t(data.item.nutrition_fact) }}
+              <template v-slot:cell(nutriFactLocalized)="data">
+                {{ $t(data.item.nutriFact) }}
+              </template>
+              <!-- A custom formatted header cell for field 'value'
+              TODO PARSE INT AND TRIM
+               -->
+              <template v-slot:head(value)="data">
+                Per {{ qty }} g
               </template>
               <!-- A virtual column for computing the quantity
               according to the portion inserted by the user -->
-              <template v-slot:cell(ForPortion)="data">
-                {{ (data.item.for_100g * qty) || 0 }}
+              <template v-slot:cell(value)="data">
+                {{ ((data.item.for100g * qty / 100) || 0).toFixed(2) + ' ' + data.item.unit }}
               </template>
             </b-table>
           </div>
@@ -140,6 +150,11 @@ export default {
       sugarLvl: '',
       saltLvl: '',
 
+      fatLvlImgPath: '',
+      satFatLvlImgPath: '',
+      sugarLvlImgPath: '',
+      saltLvlImgPath: '',
+
       fat: '',
       saturatedFat: '',
       sugar: '',
@@ -152,22 +167,15 @@ export default {
       sodium: '',
       fiber: '',
 
-      fatLvlImgPath: '',
-      satFatLvlImgPath: '',
-      sugarLvlImgPath: '',
-      saltLvlImgPath: '',
-
       nutritionTableFields: [
-        'NutriFactLocalized',
-        'nutrition_fact',
-        'for_100g',
-        'ForPortion',
+        { key: 'nutriFactLocalized', label: 'Nutritional fact' },
+        { key: 'value', label: 'For 100 g' },
       ],
       nutritionTableItems: [
         // { nutrition_fact: 'stonks', for_100g: 0 },
       ],
 
-      qty: '',
+      qty: 100,
 
     };
   },
@@ -219,16 +227,27 @@ export default {
           this.sodium = product.nutriments.sodium_100g || 0;
           this.fiber = product.nutriments.fiber_100g || 0;
 
-          this.nutritionTableItems.push({ nutrition_fact: 'energyKj', for_100g: this.energyKj });
-          this.nutritionTableItems.push({ nutrition_fact: 'energyKcal', for_100g: this.energyKcal });
-          this.nutritionTableItems.push({ nutrition_fact: 'fat', for_100g: this.fat });
-          this.nutritionTableItems.push({ nutrition_fact: 'saturatedFat', for_100g: this.saturatedFat });
-          this.nutritionTableItems.push({ nutrition_fact: 'carbohydrates', for_100g: this.carbohydrates });
-          this.nutritionTableItems.push({ nutrition_fact: 'sugar', for_100g: this.sugar });
-          this.nutritionTableItems.push({ nutrition_fact: 'salt', for_100g: this.salt });
-          this.nutritionTableItems.push({ nutrition_fact: 'sodium', for_100g: this.sodium });
-          this.nutritionTableItems.push({ nutrition_fact: 'proteins', for_100g: this.proteins });
-          this.nutritionTableItems.push({ nutrition_fact: 'fiber', for_100g: this.fiber });
+          const fatUnit = product.nutriments.fat_unit || '';
+          const saturatedFatUnit = product.nutriments['saturated-fat_unit'] || '';
+          const sugarUnit = product.nutriments.sugars_unit || '';
+          const saltUnit = product.nutriments.salt_unit || '';
+          const energyKjUnit = product.nutriments['energy-kj_unit'] || '';
+          const energyKcalUnit = product.nutriments['energy-kcal_unit'] || '';
+          const carbohydratesUnit = product.nutriments.carbohydrates_unit || '';
+          const proteinsUnit = product.nutriments.proteins_unit || '';
+          const sodiumUnit = product.nutriments.sodium_unit || '';
+          const fiberUnit = product.nutriments.fiber_unit || '';
+
+          this.nutritionTableItems.push({ nutriFact: 'energyKj', for100g: this.energyKj, unit: energyKjUnit });
+          this.nutritionTableItems.push({ nutriFact: 'energyKcal', for100g: this.energyKcal, unit: energyKcalUnit });
+          this.nutritionTableItems.push({ nutriFact: 'fat', for100g: this.fat, unit: fatUnit });
+          this.nutritionTableItems.push({ nutriFact: 'saturatedFat', for100g: this.saturatedFat, unit: saturatedFatUnit });
+          this.nutritionTableItems.push({ nutriFact: 'carbohydrates', for100g: this.carbohydrates, unit: carbohydratesUnit });
+          this.nutritionTableItems.push({ nutriFact: 'sugar', for100g: this.sugar, unit: sugarUnit });
+          this.nutritionTableItems.push({ nutriFact: 'salt', for100g: this.salt, unit: saltUnit });
+          this.nutritionTableItems.push({ nutriFact: 'sodium', for100g: this.sodium, unit: sodiumUnit });
+          this.nutritionTableItems.push({ nutriFact: 'proteins', for100g: this.proteins, unit: proteinsUnit });
+          this.nutritionTableItems.push({ nutriFact: 'fiber', for100g: this.fiber, unit: fiberUnit });
 
           this.fatLvlImgPath = imagesContext(`./nutrientLevels/${this.fatLvl}${imagesExt}`);
           this.satFatLvlImgPath = imagesContext(`./nutrientLevels/${this.satFatLvl}${imagesExt}`);
@@ -252,7 +271,8 @@ export default {
   "en": {
     "tab_nutrition_title" : "Nutrition",
     "tab_ingredients_title" : "Ingredients",
-    "energy" : "Energy",
+    "energyKj" : "Energy (Kj)",
+    "energyKcal" : "Energy (Kcal)",
     "fat" : "Fat",
     "saturatedFat" : "Saturated fats",
     "carbohydrates" : "Carbohydrates",
@@ -260,12 +280,15 @@ export default {
     "salt" : "Salt",
     "sodium" : "Sodium",
     "proteins" : "Proteins",
-    "fiber" : "Fiber"
+    "fiber" : "Fiber",
+    "nutriFacts": "Nutritional facts",
+    "portion": "Portion"
   },
   "it": {
     "tab_nutrition_title" : "Valori nutrizionali",
     "tab_ingredients_title" : "Ingredienti",
-    "energy" : "Energia",
+    "energyKj" : "Energia (Kj)",
+    "energyKcal" : "Energia (Kcal)",
     "fat" : "Grassi",
     "saturatedFat" : "Grassi saturi",
     "carbohydrates" : "Carboidrati",
@@ -273,7 +296,9 @@ export default {
     "salt" : "Sale",
     "sodium" : "Sodio",
     "proteins" : "Proteine",
-    "fiber" : "Fibre"
+    "fiber" : "Fibre",
+    "nutriFacts": "Composizione",
+    "portion": "Porzione"
   }
 }
 </i18n>
