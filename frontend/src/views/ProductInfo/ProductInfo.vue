@@ -78,7 +78,12 @@
             </table>
           </div>
           <div class="nutritionTable">
-            <b-table striped hover :items="nutritionTableItems"></b-table>
+            <b-table striped hover :fields="nutritionTableFields" :items="nutritionTableItems">
+              <!-- A virtual column -->
+              <template v-slot:cell(NutriFactLocalized)="data">
+                {{ $t(data.item.nutrition_fact) }}
+              </template>
+            </b-table>
           </div>
         </b-tab>
         <b-tab :title="$t('tab_ingredients_title')">
@@ -138,8 +143,13 @@ export default {
       sugarLvlImgPath: '',
       saltLvlImgPath: '',
 
+      nutritionTableFields: [
+        'NutriFactLocalized',
+        'nutrition_fact',
+        'for_100g',
+      ],
       nutritionTableItems: [
-        // { nutrition_fact: 'stonks', for_100g: 0 },
+        { nutrition_fact: 'stonks', for_100g: 0 },
       ],
       /*
       nutritionTableItems: [
@@ -198,6 +208,9 @@ export default {
           this.proteins = product.nutriments.proteins_100g || 0;
           this.sodium = product.nutriments.sodium_100g || 0;
           this.fiber = product.nutriments.fiber_100g || 0;
+
+          console.log('i18n');
+          console.log(this.$i18n.t('tab_nutrition_title'));
 
           this.nutritionTableItems.push({ nutrition_fact: 'energyKj', for_100g: this.energyKj });
           this.nutritionTableItems.push({ nutrition_fact: 'energyKcal', for_100g: this.energyKcal });
