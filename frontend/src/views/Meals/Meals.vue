@@ -159,12 +159,17 @@ export default {
       }
     },
     removeMeal(mealName) {
+      const UTCDate = Date.UTC(this.currentDate.getFullYear(),
+        this.currentDate.getMonth(), this.currentDate.getDate());
+
       const params = {
         username: 'mrossi',
         mealName,
-        timestamp: `${this.currentDate.getFullYear()}-${this.currentDate.getMonth() + 1}-${this.currentDate.getDate()}`,
+        date: new Date(UTCDate),
       };
-      console.log(`remove${JSON.stringify(params)}`);
+
+      console.log(`remove${JSON.stringify(params)}`); // DEBUG
+
       this.$store.state.http.delete(`api/${params.username}/meals/${params.mealName}`, { params })
         .then(() => this.loadMealsList())
         .catch(error => console.log(error.response.data.description));

@@ -69,9 +69,21 @@ exports.new_meal = async (req, res) => {
 /** Deletes a meal */
 exports.delete_meal = async (req, res) => {
   const { mealName } = req.query;
-  const query = { username: req.query.username };
-  const update = { $pull: { meals: { meal_name: mealName } } };
+  const { date } = req.query;
 
+  console.log(`date----- ${date}`); // DEBUG
+
+  const query = { username: req.query.username };
+  const update = {
+    $pull: {
+      meals: {
+        meal_name: mealName,
+        timestamp: date,
+      },
+    },
+  };
+
+  console.log(`UPDATE QUERY -> ${JSON.stringify(update)}`); // DEBUG
   await Meals.updateOne(query, update)
     .exec()
     .then((meal) => {
@@ -79,8 +91,8 @@ exports.delete_meal = async (req, res) => {
         res.status(404).send({ description: `Meal not found for user ${req.query.username}` });
         console.log(`Meal not found for user ${req.query.username}`); // DEBUG
       } else {
-        console.log(`Meal updated for user ${req.query.username}:\n${meal}`); // DEBUG
-        res.status(201).json(meal);
+        console.log(`Meal updated for user ${req.query.username}:\n${JSON.stringify(meal)}`); // DEBUG
+        res.status(200).json(meal);
       }
     })
     .catch((err) => res.send(err));
