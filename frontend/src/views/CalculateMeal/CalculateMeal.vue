@@ -35,18 +35,13 @@ export default {
       composition: { al: [], av: [] },
       arr: [],
       waterFootprint: [],
-      carbonFootprint: [],
       series: [{
         name: '',
         data: [],
       }],
       series2: [{
-        name: 'Bubble2',
-        data: [[10, 20, 30], [18, 60, 80]],
-      },
-      {
-        name: 'Bubbles',
-        data: [[10, 40, 30], [18, 80, 80]],
+        name: '',
+        data: [],
       }],
     };
   },
@@ -79,7 +74,7 @@ export default {
     chartBubbleCO2Options() {
       return {
         dataLabels: {
-          enabled: true,
+          enabled: false,
         },
         fill: {
           opacity: 0.8,
@@ -135,7 +130,7 @@ export default {
     chartBubbleWaterOptions() {
       return {
         dataLabels: {
-          enabled: true,
+          enabled: false,
         },
         fill: {
           opacity: 0.8,
@@ -144,15 +139,14 @@ export default {
           text: 'Water Footprint',
         },
         xaxis: {
-          tickAmount: 30,
+          tickAmount: 10,
           min: 0,
-          max: 30,
+          max: 50,
           labels: {
             showDuplicates: false,
             rotate: -45,
             rotateAlways: true,
           },
-          type: 'category',
           axisBorder: {
             show: true,
             color: 'red',
@@ -169,12 +163,14 @@ export default {
             offsetX: 0,
             offsetY: 0,
           },
+          title: { text: 'Acqua per grammo' },
         },
         yaxis: {
-          max: 200,
+          max: 600,
           labels: {
             showDuplicates: false,
           },
+          title: { text: 'grammi consumati' },
         },
         responsive: [{
           breakpoint: 480,
@@ -203,6 +199,12 @@ export default {
             name: elem.product_name,
             qnt: elem.quantity,
             carbon: elem.carbon_footprint,
+          });
+
+          this.waterFootprint.push({
+            name: elem.product_name,
+            qnt: elem.quantity,
+            water: elem.water_footprint,
           });
         });
         this.chart.al = this.composition.al;
@@ -233,10 +235,18 @@ export default {
     },
     calculate() {
       const tmp = [];
+      const tmp2 = [];
       this.arr.forEach((elem) => {
         tmp.push({ name: elem.name, data: [[elem.carbon, elem.qnt, elem.carbon * elem.qnt]] });
       });
       this.series = tmp;
+      console.log(this.series);
+
+      this.waterFootprint.forEach((elem) => {
+        tmp2.push({ name: elem.name, data: [[elem.water, elem.qnt, elem.water * elem.qnt]] });
+      });
+      this.series2 = tmp2;
+      console.log(this.series2);
     },
   },
 };
