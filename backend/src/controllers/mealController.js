@@ -28,10 +28,17 @@ exports.load_meals_list = async (req, res) => {
 exports.load_meal = async (req, res) => {
   console.log('looking for meal to load...'); // DEBUG
 
+  // Lato client passare la data del pasto in formato UTC
+
   const query = { username: req.query.username };
   const projection = {
     username: req.query.username,
-    meals: { $elemMatch: { meal_name: req.query.mealName } },
+    meals: {
+      $elemMatch: {
+        meal_name: req.query.mealName,
+        timestamp: req.query.date,
+      },
+    },
   };
 
   await Meals.findOne(query, projection)
