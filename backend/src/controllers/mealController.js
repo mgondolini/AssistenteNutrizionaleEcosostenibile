@@ -1,6 +1,6 @@
 /* eslint-disable no-param-reassign */
 const mongoose = require('mongoose');
-const authController = require('../controllers/authController');
+// const authController = require('../controllers/authController');
 const mealControllerUtils = require('./utils/mealControllerUtils.js');
 
 const Meals = mongoose.model('Meals');
@@ -9,7 +9,7 @@ const Meals = mongoose.model('Meals');
 exports.load_meals_list = async (req, res) => {
   console.log('looking for meal...'); // DEBUG
 
-  const query = authController.getUsername(req.headers.token);
+  const { query } = req;
 
   await Meals.findOne(query)
     .exec()
@@ -78,10 +78,11 @@ exports.new_meal = async (req, res) => {
 exports.delete_meal = async (req, res) => {
   const { mealName } = req.query;
   const { date } = req.query;
+  const { username } = req.query;
 
   console.log(`date----- ${date}`); // DEBUG
 
-  const query = { username: req.query.username };
+  const query = { username };
   const update = {
     $pull: {
       meals: {
@@ -108,9 +109,11 @@ exports.delete_meal = async (req, res) => {
 
 /** Creates a component for an existing meal */
 exports.new_component = async (req, res) => {
-  const query = { username: req.body.username };
   const { mealName } = req.body;
   const { components } = req.body;
+  const { username } = req.body;
+
+  const query = { username };
   console.log(`NEW COMPONENT\nmealName${JSON.stringify(mealName)}\ncomponents${JSON.stringify(components)}`); // DEBUG
 
   await Meals.find(query)
@@ -124,9 +127,10 @@ exports.new_component = async (req, res) => {
 
 /** Deletes a component in a meal given the barcode */
 exports.delete_component = async (req, res) => {
-  const query = { username: req.query.username };
+  const { username } = req.query;
   const { mealName } = req.query;
   const { barcode } = req.query;
+  const query = { username };
 
   // Controllo se esistono pasti per l'utente
   await Meals.findOne(query)
