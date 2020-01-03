@@ -3,6 +3,7 @@ import VueRouter from 'vue-router';
 import Home from '../views/Home/Home.vue';
 import About from '../views/About.vue';
 import Login from '../views/Login/Login.vue';
+import Registration from '../views/Registration/Registration.vue';
 import ProductInfo from '../views/ProductInfo/ProductInfo.vue';
 import Meals from '../views/Meals/Meals.vue';
 import CalculateMeal from '../views/CalculateMeal/CalculateMeal.vue';
@@ -22,6 +23,11 @@ const routes = [
     path: '/login',
     name: 'login',
     component: Login,
+  },
+  {
+    path: '/registration',
+    name: 'registration',
+    component: Registration,
   },
   {
     path: '/info_prod',
