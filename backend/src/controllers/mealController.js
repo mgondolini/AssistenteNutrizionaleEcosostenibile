@@ -1,5 +1,6 @@
 /* eslint-disable no-param-reassign */
 const mongoose = require('mongoose');
+const authController = require('../controllers/authController');
 const mealControllerUtils = require('./utils/mealControllerUtils.js');
 
 const Meals = mongoose.model('Meals');
@@ -8,7 +9,7 @@ const Meals = mongoose.model('Meals');
 exports.load_meals_list = async (req, res) => {
   console.log('looking for meal...'); // DEBUG
 
-  const { query } = req;
+  const query = authController.getUsername(req.headers.token);
 
   await Meals.findOne(query)
     .exec()

@@ -51,7 +51,7 @@
               variant="link"
               class="add-component p-0"
               @click="addComponent(meal.meal_name)"
-            >
+            > <!--TODO aggiungere bottone CalculateMeal -->
               <img class="add mr-2" src="../../assets/buttons/plus.svg">
               {{ $t('add_component') }}
             </b-button>
@@ -118,10 +118,10 @@ export default {
   methods: {
     loadMealsList() {
       // TODO: prendere username da sessione
-      const usr = 'mrossi';
-      const param = { username: usr };
+      const username = 'mrossi';
+      const params = { username };
 
-      this.$store.state.http.get(`api/${param.username}/meals`, { params: param })
+      this.$store.state.http.get(`api/${params.username}/meals`, { params })
         .then((response) => {
           this.mealsList = response.data.meals;
           this.showMealsByDate(this.currentDate);
@@ -132,8 +132,9 @@ export default {
       const UTCDate = Date.UTC(this.currentDate.getFullYear(),
         this.currentDate.getMonth(), this.currentDate.getDate());
 
+      const username = 'mrossi';
       const body = {
-        username: 'mrossi', // username da sessione
+        username, // username da sessione
         meals: {
           mealName,
           timestamp: new Date(UTCDate),
@@ -159,8 +160,9 @@ export default {
       const UTCDate = Date.UTC(this.currentDate.getFullYear(),
         this.currentDate.getMonth(), this.currentDate.getDate());
 
+      const username = 'mrossi';
       const params = {
-        username: 'mrossi',
+        username,
         mealName,
         date: new Date(UTCDate),
       };
@@ -177,9 +179,9 @@ export default {
       this.$router.push({ path: '/info_prod', query: { mealName } });
     },
     removeComponent(barcode, mealName) {
-      const usr = 'mrossi';
+      const username = 'mrossi';
       const params = {
-        username: usr,
+        username,
         barcode,
         mealName,
       };
