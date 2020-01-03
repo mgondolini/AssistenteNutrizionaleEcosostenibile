@@ -3,29 +3,13 @@ const crypto = require('crypto');
 
 const User = mongoose.model('User');
 
-/** Inserts a new user if not found in the database */
-exports.insert_user = async (req, res) => {
-  const query = { username: req.body.username };
-  await User.findOne(query)
-    .exec()
-    .then((user) => {
-      if (user == null) {
-        console.log('Creating new user...'); // DEBUG
-        this.createNewUser(req, res);
-      } else {
-        res.status(404).json({ description: 'Username already in use!' });
-      }
-    })
-    .catch((err) => res.send(err));
-};
-
 /** Creates a new user */
 exports.createNewUser = function createNewUser(req, res) {
   const b = req.body;
   const iterations = 420;
   const keyLen = 512;
   const digest = 'sha512';
-  const sale = crypto.randomBytes(512);
+  const sale = crypto.randomBytes(512).toString();
   const pswHashSalt = crypto.pbkdf2Sync(b.password,
     sale,
     iterations,
@@ -51,7 +35,10 @@ exports.createNewUser = function createNewUser(req, res) {
       console.log(`User created ->${user}`); // DEBUG
       res.status(201).json(user);
     })
-    .catch((err) => res.send(err));
+    .catch((err) => {
+      // check existing user
+      res.send(err);
+    });
 };
 
 exports.checkUser = function checkUser(req, res) {
