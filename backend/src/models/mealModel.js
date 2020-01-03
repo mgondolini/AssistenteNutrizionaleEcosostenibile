@@ -7,6 +7,8 @@ const MealComponentSchema = new Schema({
   product_name: String,
   image_url: String,
   quantity: Number,
+  carbon_footprint: Number,
+  water_footprint: Number,
 }, { _id: false });
 
 const MealSchema = new Schema({
