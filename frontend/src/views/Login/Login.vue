@@ -50,6 +50,9 @@
           <b-button type="submit" variant="primary">Login</b-button>
         </div>
       </b-form>
+      <hr />
+      <label style="margin-right: 10px">Non sei ancora registrato?</label>
+      <b-button>Registrati</b-button>
     </b-card>
   </div>
 </template>
