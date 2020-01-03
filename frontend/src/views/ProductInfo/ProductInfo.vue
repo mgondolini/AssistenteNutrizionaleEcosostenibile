@@ -112,6 +112,8 @@
         </b-tab>
         <b-tab :title="$t('tab_ingredients_title')">
           <b-img center :src="novaGroupImgPath" alt="Nova group image"></b-img>
+          <span> Ingredients: {{ ingredientsText }}
+          </span>
         </b-tab>
       </b-tabs>
     </div>
@@ -176,6 +178,7 @@ export default {
       ],
 
       qty: 100,
+      ingredientsText: '',
 
     };
   },
@@ -257,6 +260,19 @@ export default {
           // INGREDIENTS TAB
           const novaGroup = product.nova_group;
           this.novaGroupImgPath = imagesContext(`./novaGroup/${novaGroup}${imagesExt}`);
+
+          const { ingredients } = product;
+          const ingredientsTexts = [];
+          console.log(ingredients);
+
+          Object.values(ingredients).forEach((i) => {
+            if (!Object.prototype.hasOwnProperty.call(i, 'has_sub_ingredients')) {
+              console.log(i.text.toLowerCase());
+              ingredientsTexts.push(i.text.toLowerCase());
+            }
+          });
+          this.ingredientsText = ingredientsTexts.join(', ');
+          console.log(this.ingredientsText);
         }).catch((error) => {
           alert(JSON.stringify(error));
           console.log(error);
