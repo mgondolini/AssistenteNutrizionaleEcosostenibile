@@ -42,9 +42,9 @@ exports.addMeal = (req, userMeals, res) => {
 
   // controllo se ci sono pasti per lo stesso utente con lo stesso nome che voglio inserire
   userMeals.meals.forEach((m) => {
-    if (m.timestamp.getDate() === new Date(timestamp).getUTCDate()
-      && m.timestamp.getMonth() === new Date(timestamp).getUTCMonth()
-      && m.timestamp.getFullYear() === new Date(timestamp).getUTCFullYear()) {
+    if (m.timestamp.getUTCDate() === new Date(timestamp).getUTCDate()
+      && m.timestamp.getUTCMonth() === new Date(timestamp).getUTCMonth()
+      && m.timestamp.getUTCFullYear() === new Date(timestamp).getUTCFullYear()) {
       if (m.meal_name === mealName) exists = true;
     }
   });
@@ -194,9 +194,9 @@ exports.updateMealValues = async (components, timestamp, mealName, userMeals, re
   this.computeMealValues(barcode, quantity, res)
     .then((values) => {
       userMeals.meals.forEach((meal) => {
-        if (meal.timestamp.getDate() === new Date(timestamp).getUTCDate()
-          && meal.timestamp.getMonth() === new Date(timestamp).getUTCMonth()
-          && meal.timestamp.getFullYear() === new Date(timestamp).getUTCFullYear()) {
+        if (meal.timestamp.getUTCDate() === new Date(timestamp).getUTCDate()
+          && meal.timestamp.getUTCMonth() === new Date(timestamp).getUTCMonth()
+          && meal.timestamp.getUTCFullYear() === new Date(timestamp).getUTCFullYear()) {
           if (meal.meal_name === mealName) {
           // Meal schema field update -> increment values by the found product values
             meal.energy_tot += values.energy_tot;
@@ -236,18 +236,21 @@ exports.updateMealValues = async (components, timestamp, mealName, userMeals, re
 };
 
 /** Pulls a component from components array of a meal */
-exports.pullComponent = async (userMeals, mealName, barcode, res) => {
+exports.pullComponent = async (userMeals, timestamp, mealName, barcode, res) => {
   // Controllo se esiste un pasto con il nome passato
   // e tolgo il componente corrispondente la barcode
-
   userMeals.meals.forEach((meal) => {
-    if (meal.meal_name === mealName) {
-      meal.components.forEach((component) => {
-        // eslint-disable-next-line eqeqeq
-        if (component.barcode == barcode) {
-          meal.components = meal.components.pull(component);
-        }
-      });
+    if (meal.timestamp.getUTCDate() === new Date(timestamp).getUTCDate()
+      && meal.timestamp.getUTCMonth() === new Date(timestamp).getUTCMonth()
+      && meal.timestamp.getUTCFullYear() === new Date(timestamp).getUTCFullYear()) {
+      if (meal.meal_name === mealName) {
+        meal.components.forEach((component) => {
+          // eslint-disable-next-line eqeqeq
+          if (component.barcode == barcode) {
+            meal.components = meal.components.pull(component);
+          }
+        });
+      }
     }
   });
 

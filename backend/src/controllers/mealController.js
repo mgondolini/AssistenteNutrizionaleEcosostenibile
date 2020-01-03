@@ -130,6 +130,7 @@ exports.new_component = async (req, res) => {
 exports.delete_component = async (req, res) => {
   const { username } = req.query;
   const { mealName } = req.query;
+  const { date } = req.query;
   const { barcode } = req.query;
   const query = { username };
 
@@ -144,7 +145,7 @@ exports.delete_component = async (req, res) => {
         console.log(`Meal updated for user ${req.query.username}:\n${userMeals}`); // DEBUG
         // Se esistono pasti chiamo questa funzione che: cerca il pasto corrispondente al nome dato,
         // cerca il componente e lo elimina
-        mealControllerUtils.pullComponent(userMeals, mealName, barcode, res);
+        mealControllerUtils.pullComponent(userMeals, date, mealName, barcode, res);
       }
     })
     .catch((err) => res.send(err));

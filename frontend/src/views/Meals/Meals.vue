@@ -179,12 +179,17 @@ export default {
       this.$router.push({ path: '/info_prod', query: { mealName } });
     },
     removeComponent(barcode, mealName) {
+      const UTCDate = Date.UTC(this.currentDate.getFullYear(),
+        this.currentDate.getMonth(), this.currentDate.getDate());
+
       const username = 'mrossi';
       const params = {
         username,
         barcode,
         mealName,
+        date: new Date(UTCDate),
       };
+
       console.log(params); // DEBUG
       this.$store.state.http.delete(`api/${params.username}/meals/${params.mealName}/components`, { params })
         .then((response) => {
