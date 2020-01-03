@@ -187,10 +187,11 @@ export default {
     apexchart: VueApexCharts,
   },
   mounted() {
-    const usr = 'mrossi';
+    const username = 'mrossi';
     const mealName = 'Cena';
-    const param = { username: usr, mealName };
-    this.$store.state.http.get(`api/${param.username}/meals/${param.mealName}`, { params: param })
+    const date = '2019-12-29T00:00:00.000Z';
+    const params = { username, mealName, date };
+    this.$store.state.http.get(`api/${params.username}/meals/${params.mealName}`, { params })
       .then((response) => {
         response.data.meals[0].components.forEach((elem) => {
           this.composition.al.push(elem.product_name.concat(' - ').concat(elem.quantity).concat(' g'));
