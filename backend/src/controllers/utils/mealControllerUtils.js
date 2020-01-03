@@ -37,15 +37,14 @@ exports.addMeal = (req, userMeals, res) => {
   const { mealName } = req.body.meals;
   const { timestamp } = req.body.meals;
   const updateMeal = new Meals(userMeals);
-  console.log(timestamp);
 
-  console.log(timestamp.getUTCDate);
+  console.log(timestamp); // DEBUG
 
   // controllo se ci sono pasti per lo stesso utente con lo stesso nome che voglio inserire
   userMeals.meals.forEach((m) => {
-    if (m.timestamp.getDate() === new Date(timestamp).getDate()
-      && m.timestamp.getMonth() === new Date(timestamp).getMonth()
-      && m.timestamp.getFullYear() === new Date(timestamp).getFullYear()) {
+    if (m.timestamp.getDate() === new Date(timestamp).getUTCDate()
+      && m.timestamp.getMonth() === new Date(timestamp).getUTCMonth()
+      && m.timestamp.getFullYear() === new Date(timestamp).getUTCFullYear()) {
       if (m.meal_name === mealName) exists = true;
     }
   });
@@ -182,7 +181,7 @@ exports.computeMealValues = async (barcode, quantity, res) => {
 
 
 /** Update meal values after inserting a new component */
-exports.updateMealValues = async (components, mealName, userMeals, res) => {
+exports.updateMealValues = async (components, timestamp, mealName, userMeals, res) => {
   const { barcode } = components;
   const { quantity } = components;
 
@@ -195,33 +194,39 @@ exports.updateMealValues = async (components, mealName, userMeals, res) => {
   this.computeMealValues(barcode, quantity, res)
     .then((values) => {
       userMeals.meals.forEach((meal) => {
-        if (meal.meal_name === mealName) {
+        if (meal.timestamp.getDate() === new Date(timestamp).getUTCDate()
+          && meal.timestamp.getMonth() === new Date(timestamp).getUTCMonth()
+          && meal.timestamp.getFullYear() === new Date(timestamp).getUTCFullYear()) {
+          if (meal.meal_name === mealName) {
           // Meal schema field update -> increment values by the found product values
-          meal.energy_tot += values.energy_tot;
-          meal.carbohidrates_tot += values.carbohidrates_tot;
-          meal.sugars_tot += values.sugars_tot;
-          meal.fat_tot += values.fat_tot;
-          meal.saturated_fat_tot += values.saturated_fat_tot;
-          meal.proteins_tot += values.proteins_tot;
-          meal.salt_tot += values.salt_tot;
-          meal.sodium_tot += values.sodium_tot;
-          meal.calcium_tot += values.calcium_tot;
-          meal.alcohol_tot += values.alcohol_tot;
-          meal.fiber_tot += values.fiber_tot;
-          meal.carbon_footprint_tot += values.carbon_footprint_tot;
-          meal.water_footprint_tot += values.water_footprint_tot;
+            meal.energy_tot += values.energy_tot;
+            meal.carbohidrates_tot += values.carbohidrates_tot;
+            meal.sugars_tot += values.sugars_tot;
+            meal.fat_tot += values.fat_tot;
+            meal.saturated_fat_tot += values.saturated_fat_tot;
+            meal.proteins_tot += values.proteins_tot;
+            meal.salt_tot += values.salt_tot;
+            meal.sodium_tot += values.sodium_tot;
+            meal.calcium_tot += values.calcium_tot;
+            meal.alcohol_tot += values.alcohol_tot;
+            meal.fiber_tot += values.fiber_tot;
+            meal.carbon_footprint_tot += values.carbon_footprint_tot;
+            meal.water_footprint_tot += values.water_footprint_tot;
 
-          // Quando inserisco un componente questi due campi vengono passati vuoti
-          // quindi li riempio ora con i valori del prodotto trovati
+            // Quando inserisco un componente questi due campi vengono passati vuoti
+            // quindi li riempio ora con i valori del prodotto trovati
 
-          // Components schema field update
-          components.product_name = values.product_name;
-          components.image_url = values.image_url;
+            // Components schema field update
+            components.product_name = values.product_name;
+            components.image_url = values.image_url;
+            components.carbon_footprint = 0;
+            components.water_footprint = 0;
 
-          console.log(`components: ${components}`); // DEBUG
+            console.log(`components: ${components}`); // DEBUG
 
-          // Add passed components to meal's components array
-          meal.components.push(components);
+            // Add passed components to meal's components array
+            meal.components.push(components);
+          }
         }
       });
       userMeals.save()

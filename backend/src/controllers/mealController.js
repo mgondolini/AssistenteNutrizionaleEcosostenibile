@@ -109,9 +109,10 @@ exports.delete_meal = async (req, res) => {
 
 /** Creates a component for an existing meal */
 exports.new_component = async (req, res) => {
-  const { mealName } = req.body;
-  const { components } = req.body;
   const { username } = req.body;
+  const { mealName } = req.body;
+  const { timestamp } = req.body;
+  const { components } = req.body;
 
   const query = { username };
   console.log(`NEW COMPONENT\nmealName${JSON.stringify(mealName)}\ncomponents${JSON.stringify(components)}`); // DEBUG
@@ -120,7 +121,7 @@ exports.new_component = async (req, res) => {
     .exec()
     .then((userMeals) => {
       if (userMeals == null) res.status(404).send({ description: `Meal not found for user ${req.query.username}` });
-      else mealControllerUtils.updateMealValues(components, mealName, userMeals[0], res);
+      else mealControllerUtils.updateMealValues(components, timestamp, mealName, userMeals[0], res);
     })
     .catch((err) => res.send(err));
 };
