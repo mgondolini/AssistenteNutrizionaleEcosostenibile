@@ -22,16 +22,16 @@ exports.load_meals_list = async (req, res) => {
         console.log(`Meals list for user ${req.query.username}:\n${meals}`); // DEBUG
       }
     })
-    .catch((err) => res.send(err));
+    .catch((err) => res.status(500).send(err));
 };
 
 /** Loads a specific meal for a given user */
 exports.load_meal = async (req, res) => {
   console.log('looking for meal to load...'); // DEBUG
+  const { username } = req.query;
 
   // Lato client passare la data del pasto in formato UTC
-
-  const query = { username: req.query.username };
+  const query = { username };
   const projection = {
     username: req.query.username,
     meals: {
@@ -53,12 +53,13 @@ exports.load_meal = async (req, res) => {
         console.log(`Meal found for user ${req.query.username}:\n${meal}`); // DEBUG
       }
     })
-    .catch((err) => res.send(err));
+    .catch((err) => res.status(500).send(err));
 };
 
 /** Inserts a new meal for a given user */
 exports.new_meal = async (req, res) => {
-  const query = { username: req.body.username };
+  const { username } = req.body;
+  const query = { username };
 
   await Meals.findOne(query)
     .exec()
@@ -71,7 +72,7 @@ exports.new_meal = async (req, res) => {
         mealControllerUtils.addMeal(req, userMeals, res);
       }
     })
-    .catch((err) => res.send(err));
+    .catch((err) => res.status(500).send(err));
 };
 
 /** Deletes a meal */
@@ -93,6 +94,7 @@ exports.delete_meal = async (req, res) => {
   };
 
   console.log(`UPDATE QUERY -> ${JSON.stringify(update)}`); // DEBUG
+
   await Meals.updateOne(query, update)
     .exec()
     .then((meal) => {
@@ -104,7 +106,7 @@ exports.delete_meal = async (req, res) => {
         res.status(200).json(meal);
       }
     })
-    .catch((err) => res.send(err));
+    .catch((err) => res.status(500).send(err));
 };
 
 /** Creates a component for an existing meal */
@@ -123,7 +125,7 @@ exports.new_component = async (req, res) => {
       if (userMeals == null) res.status(404).send({ description: `Meal not found for user ${req.query.username}` });
       else mealControllerUtils.updateMealValues(components, timestamp, mealName, userMeals[0], res);
     })
-    .catch((err) => res.send(err));
+    .catch((err) => res.status(500).send(err));
 };
 
 /** Deletes a component in a meal given the barcode */
@@ -148,5 +150,5 @@ exports.delete_component = async (req, res) => {
         mealControllerUtils.pullComponent(userMeals, date, mealName, barcode, res);
       }
     })
-    .catch((err) => res.send(err));
+    .catch((err) => res.status(500).send(err));
 };
