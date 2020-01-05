@@ -5,8 +5,8 @@
       <p class="date-p text-center">{{ $d(currentDate, 'short') }}</p>
       <b-button
         variant="outline-info p-0"
-        @click="$refs.calendar.dp.show()">
-          <img class="calendar" src="../../assets/buttons/calendar.svg">
+        @click="$refs.calendar.dp.show()"
+      ><img class="calendar" src="../../assets/buttons/calendar.svg">
       </b-button>
       <date-picker v-model="calendar.value"
         ref="calendar"
@@ -17,9 +17,17 @@
     </b-card>
     <b-card class="card-new-meal">
       <b-form-input
+        id="input-new-meal"
         v-model="mealName"
+        :state="mealNameState"
+        aria-describedby="input-live-feedback"
         :placeholder="$t('meal_name_enter')"
-        class="input-new-meal" ></b-form-input>
+        class="input-new-meal"
+        trim
+      ></b-form-input>
+      <b-form-invalid-feedback id="input-live-feedback">
+        {{ inputCheckMessage }}
+      </b-form-invalid-feedback>
       <b-button
         pill
         variant="link"
@@ -94,9 +102,11 @@ export default {
     return {
       mealsList: [],
       mealsListByDate: [],
+      mealNameState: Boolean,
       currentDate: new Date(),
       UTCDate: Number,
       mealName: '',
+      inputCheckMessage: 'Enter at least 3 letters',
       date: {
         key: 'date',
         value: '',
@@ -138,9 +148,7 @@ export default {
           timestamp: new Date(this.UTCDate),
         },
       };
-
       console.log(body); // DEBUG
-
       if (mealName.length !== 0) {
         this.$store.state.http.post(`api/${body.username}/meals`, body)
           .then((response) => {
@@ -148,10 +156,13 @@ export default {
             this.mealsList = response.data.meals;
             this.showMealsByDate(this.currentDate);
           })
-          .catch(error => console.log(error.response.data.description)); // mostrare su una label
+          .catch((error) => {
+            this.mealNameState = false;
+            this.inputCheckMessage = error.response.data.description;
+          }); // mostrare su una label
       } else {
-        // mettere una label
-        console.log('Il nome non può essere nullo');
+        this.mealNameState = false;
+        this.inputCheckMessage = 'Meal name cannot be null';
       }
     },
     removeMeal(mealName) {
@@ -237,13 +248,15 @@ export default {
     "meals": "Your meals",
     "add_component": "Add component",
     "meal_name_enter": "Enter meal name",
-    "date": "Date"
+    "date": "Date",
+    "meal_name_null": "Meal name cannot be null"
   },
   "it": {
     "meals": "I tuoi pasti",
     "meal_name_enter": "Inserire nome pasto",
     "add_component": "Aggiungi componente",
-    "date": "Data"
+    "date": "Data",
+    "meal_name_null": "Il nome del pasto non può essere nullo"
   }
 }
 </i18n>
