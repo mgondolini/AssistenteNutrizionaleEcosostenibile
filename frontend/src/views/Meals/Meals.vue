@@ -95,6 +95,7 @@ export default {
       mealsList: [],
       mealsListByDate: [],
       currentDate: new Date(),
+      UTCDate: Number,
       mealName: '',
       date: {
         key: 'date',
@@ -129,15 +130,12 @@ export default {
         .catch(error => console.log(error.response.data.description));
     },
     addMeal(mealName) {
-      const UTCDate = Date.UTC(this.currentDate.getFullYear(),
-        this.currentDate.getMonth(), this.currentDate.getDate());
-
       const username = 'mrossi';
       const body = {
         username, // username da sessione
         meals: {
           mealName,
-          timestamp: new Date(UTCDate),
+          timestamp: new Date(this.UTCDate),
         },
       };
 
@@ -157,14 +155,11 @@ export default {
       }
     },
     removeMeal(mealName) {
-      const UTCDate = Date.UTC(this.currentDate.getFullYear(),
-        this.currentDate.getMonth(), this.currentDate.getDate());
-
       const username = 'mrossi';
       const params = {
         username,
         mealName,
-        date: new Date(UTCDate),
+        date: new Date(this.UTCDate),
       };
 
       console.log(`remove${JSON.stringify(params)}`); // DEBUG
@@ -179,15 +174,12 @@ export default {
       this.$router.push({ path: '/info_prod', query: { mealName } });
     },
     removeComponent(barcode, mealName) {
-      const UTCDate = Date.UTC(this.currentDate.getFullYear(),
-        this.currentDate.getMonth(), this.currentDate.getDate());
-
       const username = 'mrossi';
       const params = {
         username,
         barcode,
         mealName,
-        date: new Date(UTCDate),
+        date: new Date(this.UTCDate),
       };
 
       console.log(params); // DEBUG
@@ -202,7 +194,14 @@ export default {
     },
     showMealsByDate(date) {
       let mealDate;
+      let found = false;
       this.mealsListByDate = [];
+      this.UTCDate = Date.UTC(
+        this.currentDate.getFullYear(),
+        this.currentDate.getMonth(),
+        this.currentDate.getDate(),
+      );
+
       this.mealsList.forEach((meal) => {
         mealDate = new Date(meal.timestamp);
 
@@ -210,21 +209,23 @@ export default {
             && mealDate.getMonth() === date.getMonth()
             && mealDate.getFullYear() === date.getFullYear()) {
           this.mealsListByDate.push(meal);
+          found = true;
         } else {
-          console.log('No meals yet for today'); // LABEL
+          found = false;
         }
       });
+
+      if (found === false) {
+        console.log('No meals yet for today'); // LABEL
+      }
     },
     setDateAndShow(date) {
       this.currentDate = new Date(date);
       this.showMealsByDate(this.currentDate);
     },
-    init() {
-      this.loadMealsList();
-    },
   },
   mounted() {
-    this.init();
+    this.loadMealsList();
   },
 };
 </script>
