@@ -65,11 +65,11 @@ exports.addMeal = (req, userMeals, res) => {
         res.status(200).json(meal);
       })
       .catch((err) => {
-        console.log('error while updating new meal'); // DEBUG
-        res.status(500).send(err);
+        console.log(`error while updating new meal${err}`); // DEBUG
+        res.status(500).send({ description: 'internal_server_error' });
       });
   } else {
-    res.status(400).json({ description: 'Meal name already in use.' });
+    res.status(400).send({ description: 'meal_name_exists' });
   }
 };
 

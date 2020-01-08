@@ -15,7 +15,7 @@ exports.load_meals_list = async (req, res) => {
     .exec()
     .then((meals) => {
       if (meals.length === 0) {
-        res.status(404).send({ description: `Meals not found for user ${req.query.username}` });
+        res.status(404).send({ description: 'meal_not_found' });
         console.log(`Meals not found for user ${req.query.username}`); // DEBUG
       } else {
         res.status(200).json(meals);
@@ -46,7 +46,7 @@ exports.load_meal = async (req, res) => {
     .exec()
     .then((meal) => {
       if (meal.length === 0) {
-        res.status(404).send({ description: `Meal not found for user ${req.query.username}` });
+        res.status(404).send({ description: 'meal_not_found' });
         console.log(`Meal not found for user ${req.query.username}`); // DEBUG
       } else {
         res.status(200).json(meal);
@@ -99,7 +99,7 @@ exports.delete_meal = async (req, res) => {
     .exec()
     .then((meal) => {
       if (meal.length === 0) {
-        res.status(404).send({ description: `Meal not found for user ${req.query.username}` });
+        res.status(404).send({ description: 'meal_not_found' });
         console.log(`Meal not found for user ${req.query.username}`); // DEBUG
       } else {
         console.log(`Meal updated for user ${req.query.username}:\n${JSON.stringify(meal)}`); // DEBUG
@@ -122,7 +122,7 @@ exports.new_component = async (req, res) => {
   await Meals.find(query)
     .exec()
     .then((userMeals) => {
-      if (userMeals == null) res.status(404).send({ description: `Meal not found for user ${req.query.username}` });
+      if (userMeals == null) res.status(404).send({ description: 'meal_not_found' });
       else mealControllerUtils.updateMealValues(components, timestamp, mealName, userMeals[0], res);
     })
     .catch((err) => res.status(500).send(err));
@@ -141,7 +141,7 @@ exports.delete_component = async (req, res) => {
     .exec()
     .then((userMeals) => {
       if (userMeals.length === 0) {
-        res.status(404).send({ description: `Meal not found for user ${req.query.username}` });
+        res.status(404).send({ description: 'meal_not_found' });
         console.log(`Meal not found for user ${req.query.username}`); // DEBUG
       } else {
         console.log(`Meal updated for user ${req.query.username}:\n${userMeals}`); // DEBUG

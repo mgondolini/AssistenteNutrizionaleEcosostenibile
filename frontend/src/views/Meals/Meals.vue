@@ -26,7 +26,7 @@
         trim
       ></b-form-input>
       <b-form-invalid-feedback id="input-live-feedback">
-        {{ inputCheckMessage }}
+        {{ $t(inputCheckMessage) }}
       </b-form-invalid-feedback>
       <b-button
         pill
@@ -149,7 +149,7 @@ export default {
         },
       };
       console.log(body); // DEBUG
-      if (mealName.length !== 0) {
+      if (mealName.length > 0) {
         this.$store.state.http.post(`api/${body.username}/meals`, body)
           .then((response) => {
             this.mealsList = [];
@@ -162,7 +162,7 @@ export default {
           }); // mostrare su una label
       } else {
         this.mealNameState = false;
-        this.inputCheckMessage = 'Meal name cannot be null';
+        this.inputCheckMessage = 'meal_name_null';
       }
     },
     removeMeal(mealName) {
@@ -249,14 +249,20 @@ export default {
     "add_component": "Add component",
     "meal_name_enter": "Enter meal name",
     "date": "Date",
-    "meal_name_null": "Meal name cannot be null"
+    "meal_name_null": "Meal name cannot be null",
+    "meal_name_exists": "Meal name already in use.",
+    "meal_not_found": "Meal not found.",
+    "internal_server_error": "500 Internal Server Error"
   },
   "it": {
     "meals": "I tuoi pasti",
     "meal_name_enter": "Inserire nome pasto",
     "add_component": "Aggiungi componente",
     "date": "Data",
-    "meal_name_null": "Il nome del pasto non può essere nullo"
+    "meal_name_null": "Il nome del pasto non può essere nullo",
+    "meal_name_exists": "Nome pasto già esistente.",
+    "meal_not_found": "Pasto non trovato.",
+    "internal_server_error": "500 Errore interno al Server"
   }
 }
 </i18n>
