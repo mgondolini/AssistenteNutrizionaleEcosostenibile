@@ -36,7 +36,11 @@
       ><img class="add-meal" src="../../assets/buttons/add.svg">
       </b-button>
     </b-card>
-    <div class="card-last-meals" role="tablist">
+    <div
+      v-if="mealsListByDate.length > 0"
+      class="card-last-meals"
+      role="tablist"
+    >
       <b-card
         no-body class="mb-1"
         v-for="(meal, index) in mealsListByDate.slice().reverse()"
@@ -90,6 +94,9 @@
         </b-collapse>
       </b-card>
     </div>
+    <div v-else>
+      <p>{{ $t(this.noMeals) }}</p>
+    </div>
   </div>
 </template>
 
@@ -102,6 +109,7 @@ export default {
     return {
       mealsList: [],
       mealsListByDate: [],
+      noMeals: '',
       mealNameState: Boolean,
       currentDate: new Date(),
       UTCDate: Number,
@@ -227,7 +235,7 @@ export default {
       });
 
       if (found === false) {
-        console.log('No meals yet for today'); // LABEL
+        this.noMeals = 'no_meals';
       }
     },
     setDateAndShow(date) {
@@ -252,6 +260,7 @@ export default {
     "meal_name_null": "Meal name cannot be null",
     "meal_name_exists": "Meal name already in use.",
     "meal_not_found": "Meal not found.",
+    "no_meals": "No meals inserted on this date yet",
     "internal_server_error": "500 Internal Server Error"
   },
   "it": {
@@ -262,6 +271,7 @@ export default {
     "meal_name_null": "Il nome del pasto non può essere nullo",
     "meal_name_exists": "Nome pasto già esistente.",
     "meal_not_found": "Pasto non trovato.",
+    "no_meals": "Non sono ancora stati inseriti pasti in questa data",
     "internal_server_error": "500 Errore interno al Server"
   }
 }
