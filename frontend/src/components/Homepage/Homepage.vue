@@ -98,19 +98,22 @@
       </div>
     </div>
 
-    <router-link to='login' class="wrapper-inner-tab-backgrounds-first"
-      v-if='this.$store.state.isLogged === false'
-      style="text-decoration:none">
-      <div class="sim-button button1" >
-        <span>Login</span>
-      </div>
-    </router-link>
-    <router-link to='registration' class="wrapper-inner-tab-backgrounds-first"
-      style="text-decoration:none; margin-bottom:30px;">
-      <div class="sim-button button1" >
-        <span>Registrati</span>
-      </div>
-    </router-link>
+    <div class="buttonsDiv">
+      <router-link to='login' class="wrapper-inner-tab-backgrounds-first"
+        v-if='this.$store.state.isLogged === false'
+        style="text-decoration:none">
+        <div class="sim-button button1" >
+          <span>Login</span>
+        </div>
+      </router-link>
+      <router-link to='registration' class="wrapper-inner-tab-backgrounds-first"
+        v-if='this.$store.state.isLogged === false'
+        style="text-decoration:none; margin-bottom:30px;">
+        <div class="sim-button button1" >
+          <span>Registrati</span>
+        </div>
+      </router-link>
+    </div>
   </div>
 </template>
 
