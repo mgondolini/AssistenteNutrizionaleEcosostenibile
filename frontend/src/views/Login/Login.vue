@@ -46,12 +46,14 @@
           </b-form-group>
         </div>
         <div class="text-center">
-          <b-button class="sum-button button1" type="submit">Login</b-button>
+          <b-button class="sim-button button1" type="submit">Login</b-button>
         </div>
       </b-form>
       <hr />
       <label style="margin-right: 10px">{{ $t('not-reg') }}</label>
-      <b-button class="sum-button button1">{{ $t('reg') }}</b-button>
+      <router-link to='registration' style="text-decoration:none; margin-bottom:30px;">
+        <b-button class="sim-button button1">{{ $t('reg') }}</b-button>
+      </router-link>
     </b-card>
   </div>
 </template>
