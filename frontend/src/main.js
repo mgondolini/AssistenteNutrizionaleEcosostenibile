@@ -46,7 +46,7 @@ const store = new Vuex.Store({
   },
 });
 
-if (localStorage.ecoAssToken) {
+if (localStorage.ecoAssToken !== 'InvalidToken') {
   store.commit('login', localStorage.ecoAssToken);
   store.state.http.get('api/checkToken')
     .then().catch(() => {
