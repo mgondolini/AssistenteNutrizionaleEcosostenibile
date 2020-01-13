@@ -1,5 +1,6 @@
 {
   "en": {
+    "title": "Eco-sustainable Nutritional Assistant",
     "mission": "OUR MISSION",
     "text1" : "EVERY YEAR IN THE WORLD",
     "text2": "1,3 BILLIONS",
@@ -14,6 +15,7 @@
     "reg": "Sign in!"
   },
   "it": {
+    "title": "Assistente Nutrizionale Ecosostenibile",
     "mission": "LA NOSTRA MISSIONE",
     "text1": "OGNI ANNO NEL MONDO",
     "text2": "1,3 MILIARDI",

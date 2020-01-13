@@ -16,6 +16,6 @@ export default {
 };
 </script>
 
-<style lang="scss">
-  @import './components/Navbar/navbar.scss';
+<style lang="sass">
+  @import './components/Navbar/navbar.sass'
 </style>

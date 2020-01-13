@@ -25,10 +25,6 @@
               <div class="userData ml-3">
                 <h2 class="d-block"> {{ $t('profile') }} <br/><i>{{username}}</i></h2>
               </div>
-              <div class="ml-auto">
-                <input type="button" class="btn btn-primary d-none"
-                id="btnDiscard" value="Discard Changes" />
-              </div>
             </div>
           </div>
 
@@ -105,6 +101,6 @@
 
 <i18n src="./languageText.json"></i18n>
 
-<style>
-  @import './Profile.scss';
+<style lang="sass">
+@import './Profile.sass'
 </style>

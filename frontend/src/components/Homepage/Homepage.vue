@@ -1,7 +1,7 @@
 <template>
   <div class="hello">
     <!--<img class="loginImg" center src="../../assets/ecology.png" />-->
-    <h1 class="msgTitle">{{ msg }}</h1>
+    <h1 class="msgTitle">{{ $t('title') }}</h1>
     <SliderImage/>
     <br/>
     <div class="our_mission">
@@ -122,9 +122,6 @@ import SliderImage from './SliderImage.vue';
 
 export default {
   name: 'Homepage',
-  props: {
-    msg: String,
-  },
   components: {
     SliderImage,
   },
@@ -133,6 +130,6 @@ export default {
 
 <i18n src="./homeText.json"></i18n>
 
-<style lang="scss">
-  @import './homepage.scss';
+<style lang="sass">
+  @import './homepage.sass'
 </style>
