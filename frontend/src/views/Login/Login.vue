@@ -45,13 +45,14 @@
             </b-form-text>
           </b-form-group>
         </div>
-        <div class="text-center">
+        <div class="text-center buttonsDiv">
           <b-button class="sim-button button1" type="submit">Login</b-button>
         </div>
       </b-form>
       <hr />
       <label style="margin-right: 10px">{{ $t('not-reg') }}</label>
-      <router-link to='registration' style="text-decoration:none; margin-bottom:30px;">
+      <router-link to='registration'
+        class="text-center buttonsDiv" style="text-decoration:none; margin-bottom:30px;">
         <b-button class="sim-button button1">{{ $t('reg') }}</b-button>
       </router-link>
     </b-card>
@@ -114,6 +115,6 @@ export default {
   }
 }
 </i18n>
-<style lang="scss">
-  @import './login.scss';
+<style lang="sass">
+  @import './login.sass'
 </style>

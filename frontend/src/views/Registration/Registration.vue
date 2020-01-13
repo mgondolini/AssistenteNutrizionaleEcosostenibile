@@ -6,7 +6,7 @@
         <div class="card">
           <div class="card-body">
             <div class="card-title mb-4">
-              <h3>{{ $t('reg') }}</h3>
+              <h3 class="titleReg">{{ $t('reg') }}</h3>
             </div>
 
             <div class="row">
@@ -191,8 +191,9 @@
                         </div>
                       </div>
                       <hr/>
-                      <div class="text-center">
-                        <b-button class="sim-button button1" type="submit">Registrami</b-button>
+                      <div class="text-center buttonsDiv">
+                        <b-button class="sim-button button1" type="submit">
+                          {{ $t('reg-me') }}</b-button>
                       </div>
                   </div>
                 </div>
