@@ -192,7 +192,7 @@
                       </div>
                       <hr/>
                       <div class="text-center">
-                        <b-button type="submit" variant="primary">Registrami</b-button>
+                        <b-button class="sim-button button1" type="submit">Registrami</b-button>
                       </div>
                   </div>
                 </div>

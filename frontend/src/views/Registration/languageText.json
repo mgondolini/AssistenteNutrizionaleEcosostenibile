@@ -18,7 +18,7 @@
     "DOB": "Date of Birth",
     "username": "Select a username!",
     "mail": "We won't share your email with third party",
-    "pwd": "The password must be between 8 and 20 characters long"
+    "pwd": "The password must be between 8 and 20 characters long, it can contains special characters but not white spaces."
   },
   "it": {
     "reg": "Registrazione",
@@ -36,9 +36,9 @@
     "allergens": "Allergeni",
     "allergens-info": "Gli allergeni devono essere separati da spazio",
     "sex": "Genere",
-    "DOB": "Dateìa di Nascita",
+    "DOB": "Data di Nascita",
     "username": "Scegli un username univoco!",
     "mail": "Non condivideremo mai la tu email con terze parti",
-    "pwd": "La password deve avere lunghezza compresa tra 8 e 20 caratteri"
+    "pwd": "La password deve avere lunghezza compresa tra 8 e 20 caratteri, può contenere caratteri speciali escluso gli spazi."
   }
 }
