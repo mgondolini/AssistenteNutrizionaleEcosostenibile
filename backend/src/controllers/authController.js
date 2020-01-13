@@ -59,6 +59,14 @@ exports.auth = function auth(req, res) {
   // res.status(418).send('Wrong password');
 };
 
+function getUs(token) {
+  try {
+    return jwt.verify(token, config.tokenKey).user;
+  } catch (err) {
+    return '';
+  }
+}
+
 exports.checkToken = function checkToken(req, res) {
   try {
     // check token validity
@@ -71,11 +79,7 @@ exports.checkToken = function checkToken(req, res) {
 };
 
 exports.getUsername = function getUsername(token) {
-  try {
-    return jwt.verify(token, config.tokenKey).username;
-  } catch (err) {
-    return '';
-  }
+  return getUs(token);
 };
 
 exports.createUser = function createUser() {
