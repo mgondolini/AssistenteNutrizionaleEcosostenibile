@@ -12,7 +12,13 @@
       <p>EAN is: {{ ean }}</p>
       <div>
         <b-button v-on:click="submitEan()">Submit EAN</b-button>
-        <b-button>Upload photo</b-button>
+        <b-button >Upload photo</b-button>
+        <v-quagga
+          :onDetected="logIt"
+          :readerSize="readerSize"
+          :readerType="'ean_reader'"
+          :aspectRatio="aspectRatio"
+        ></v-quagga>
       </div>
       <p v-if=!status > Product not found </p>
     </div>
@@ -121,6 +127,8 @@
 </template>
 
 <script>
+import Quagga from 'quagga';
+
 const axios = require('axios');
 // const config = require('../../../config.json');
 const offApiPath = 'https://world.openfoodfacts.org/api/v0/product/';
@@ -130,6 +138,7 @@ const productIDTest = '737628064502';
 const imagesExt = '.svg';
 const imagesContext = require.context('@/assets/productInfo/', true, /\.svg$/);
 
+console.log(Quagga);
 // TODO add function to format numbers (trim decimals and add dots for thousands)
 
 export default {
@@ -180,6 +189,12 @@ export default {
       qty: 100,
       ingredientsText: '',
 
+      readerSize: {
+        width: 640,
+        height: 480,
+      },
+      aspectRatio: { min: 1, max: 2 },
+      detecteds: [],
     };
   },
   methods: {
@@ -277,6 +292,9 @@ export default {
           alert(JSON.stringify(error));
           console.log(error);
         });
+    },
+    logIt(data) {
+      console.log('detected', data);
     },
   },
 };
