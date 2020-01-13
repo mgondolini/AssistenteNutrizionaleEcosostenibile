@@ -9,7 +9,10 @@
         data-index="0"
         data-name="Sostegno Ambiente"
         @slideclick="handleSlideClick">
-        <img class="homeImagesScroll" src="../../assets/home/img_sliding.jpg">
+        <img v-if='$root.$i18n.locale === "it" '
+          class="homeImagesScroll" src="../../assets/home/img_sliding_ita.jpg">
+        <img v-if='$root.$i18n.locale === "en" '
+          class="homeImagesScroll" src="../../assets/home/img_sliding_eng.jpg">
     </slide>
     <slide
         data-index="1"

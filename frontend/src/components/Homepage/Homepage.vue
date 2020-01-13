@@ -33,7 +33,7 @@
               <div class="wpb_text_column wpb_content_element  ombraBox vc_custom_1548165107261">
                 <div class="wpb_wrapper">
                   <h1 style="text-align: center;">
-                    <span style="color: #ec6b69;">{{ $t('educate') }} </span>
+                    <span class="titleBanner">{{ $t('educate') }} </span>
                   </h1>
                   <p style="text-align: center;">
                     {{ $t('educapop') }}
@@ -59,7 +59,7 @@
               <div class="wpb_text_column wpb_content_element  ombraBox vc_custom_1548165107261">
                 <div class="wpb_wrapper">
                   <h1 style="text-align: center;">
-                    <span style="color: #ec6b69;">{{ $t('save') }}</span>
+                    <span class="titleBanner">{{ $t('save') }}</span>
                   </h1>
                   <p style="text-align: center;">
                     {{ $t('saveplanet') }}
@@ -85,7 +85,7 @@
               <div class="wpb_text_column wpb_content_element  ombraBox vc_custom_1548165107261">
                 <div class="wpb_wrapper">
                   <h1 style="text-align: center;">
-                    <span style="color: #ec6b69;">{{ $t('respect') }}</span>
+                    <span class="titleBanner">{{ $t('respect') }}</span>
                   </h1>
                   <p style="text-align: center;">
                    {{ $t('respEarth') }}
@@ -110,7 +110,7 @@
         v-if='this.$store.state.isLogged === false'
         style="text-decoration:none; margin-bottom:30px;">
         <div class="sim-button button1" >
-          <span>Registrati</span>
+          <span>{{ $t('reg') }}</span>
         </div>
       </router-link>
     </div>
