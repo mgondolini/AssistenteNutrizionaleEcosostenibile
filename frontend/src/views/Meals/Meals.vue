@@ -105,6 +105,9 @@
     <div v-else>
       <p>{{ $t(this.noMeals) }}</p>
     </div>
+    <b-modal id="modal-error" title="Error" hide-footer>
+      {{ $t(this.inputCheckMessage) }}
+    </b-modal>
   </div>
 </template>
 
@@ -175,8 +178,8 @@ export default {
           })
           .catch((error) => {
             this.mealNameState = false;
-            this.inputCheckMessage = error.response.data.description;
-          }); // mostrare su una label
+            this.checkError(error.response.data.description);
+          });
       } else {
         this.mealNameState = false;
         this.inputCheckMessage = 'meal_name_null';
@@ -194,7 +197,7 @@ export default {
 
       this.$store.state.http.delete(`api/${params.username}/meals/${params.mealName}`, { params })
         .then(() => this.loadMealsList())
-        .catch(error => console.log(error.response.data.description));
+        .catch(error => this.checkError(error.response.data.description));
     },
     addComponent(mealName) {
       // Passo meal name, per accedere alla query dalla pagina info prodotto
@@ -218,7 +221,7 @@ export default {
           this.showMealsByDate(this.currentDate);
           console.log(`component removed ${this.mealsList}`); // DEBUG
         })
-        .catch(error => console.log(error.response.data.description));
+        .catch(error => this.checkError(error.response.data.description));
     },
     calculateMeal(mealName, timestamp) {
       // Passo meal name, per accedere alla query dalla pagina calculate meal
@@ -256,6 +259,14 @@ export default {
     setDateAndShow(date) {
       this.currentDate = new Date(date);
       this.showMealsByDate(this.currentDate);
+    },
+    checkError(error) {
+      if (error === 'internal_server_error' || error === 'meal_not_found') {
+        this.inputCheckMessage = error;
+        this.$bvModal.show('modal-error');
+      } else {
+        this.inputCheckMessage = error;
+      }
     },
   },
   mounted() {
