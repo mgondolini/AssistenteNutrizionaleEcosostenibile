@@ -75,6 +75,9 @@
                             </option>
                           </b-select>
                         </div>
+                        <div v-else-if="tmp.key == 'email'">
+                          <span> {{`${tmp.value}`}}</span>
+                        </div>
                         <div v-else>
                           <b-input size="sm" v-model="tmp.value"
                             type="text"

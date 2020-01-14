@@ -4,6 +4,7 @@ export default {
   name: 'registration',
   data() {
     return {
+      datePlaceholder: new Date().toLocaleDateString(),
       form: {
         email: '',
         password: '',

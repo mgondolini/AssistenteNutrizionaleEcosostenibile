@@ -186,8 +186,10 @@
                           <label class="labelText">{{ $t('DOB') }}</label>
                         </div>
                         <div class="col-md-8 col-6">
-                          <date-picker name="date" required v-model="form.dateOfBirth"
-                            :config="options"></date-picker>
+                          <date-picker name="date"
+                            required v-model="form.dateOfBirth"
+                            :config="options"
+                            :placeholder="datePlaceholder"></date-picker>
                         </div>
                       </div>
                       <hr/>
@@ -208,6 +210,7 @@
 </template>
 
 <script src="./Registration.js">
+
 </script>
 
 <i18n  src="./languageText.json">
