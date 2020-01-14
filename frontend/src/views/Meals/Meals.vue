@@ -67,34 +67,36 @@
               <img class="add mr-2" src="../../assets/buttons/plus.svg">
               {{ $t('add_component') }}
             </b-button>
-            <b-button
-              variant="info"
-              @click="calculateMeal(meal.meal_name, meal.timestamp)"
-            >
-              {{ $t('calculate_meal') }}
-            </b-button>
-            <div v-for="component in meal.components" v-bind:key="component.product_name">
-              <b-card
-                :img-src="component.image_url"
-                img-alt="Card image" img-left
-                class="card-components mb-3"
-              >
-                <b-card-text align="center" class="card-components-text m-0 p-0">
-                  <p class="component-p">
-                    <b> {{ component.product_name }} </b>
-                  </p>
-                  <p class="component-p">
-                    {{ component.quantity }} g
-                  </p>
-                </b-card-text>
+            <div v-if="meal.components.length > 0">
+              <div v-for="component in meal.components" v-bind:key="component.product_name">
+                <b-card
+                  :img-src="component.image_url"
+                  img-alt="Card image" img-left
+                  class="card-components mb-3"
+                >
+                  <b-card-text align="center" class="card-components-text m-0 p-0">
+                    <p class="component-p">
+                      <b> {{ component.product_name }} </b>
+                    </p>
+                    <p class="component-p">
+                      {{ component.quantity }} g
+                    </p>
+                  </b-card-text>
+                  <b-button
+                    pill
+                    variant="link"
+                    class="p-0"
+                    @click="removeComponent(component.barcode, meal.meal_name)"
+                  ><img class="remove" src="../../assets/buttons/remove.svg">
+                  </b-button>
+                </b-card>
                 <b-button
-                  pill
-                  variant="link"
-                  class="p-0"
-                  @click="removeComponent(component.barcode, meal.meal_name)"
-                ><img class="remove" src="../../assets/buttons/remove.svg">
+                  variant="info"
+                  @click="calculateMeal(meal.meal_name, meal.timestamp)"
+                >
+                  {{ $t('calculate_meal') }}
                 </b-button>
-              </b-card>
+              </div>
             </div>
           </b-card-body>
         </b-collapse>
