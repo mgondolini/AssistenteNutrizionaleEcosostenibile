@@ -63,9 +63,15 @@
               variant="link"
               class="add-component p-0"
               @click="addComponent(meal.meal_name)"
-            > <!--TODO aggiungere bottone CalculateMeal -->
+            >
               <img class="add mr-2" src="../../assets/buttons/plus.svg">
               {{ $t('add_component') }}
+            </b-button>
+            <b-button
+              variant="info"
+              @click="calculateMeal(meal.meal_name, meal.timestamp)"
+            >
+              {{ $t('calculate_meal') }}
             </b-button>
             <div v-for="component in meal.components" v-bind:key="component.product_name">
               <b-card
@@ -212,6 +218,14 @@ export default {
         })
         .catch(error => console.log(error.response.data.description));
     },
+    calculateMeal(mealName, timestamp) {
+      // Passo meal name, per accedere alla query dalla pagina calculate meal
+      // devo fare: this.$route.query.mealName
+      // const { mealName } = this.$route.query;
+      // const { date } = this.$route.query;
+      console.log(mealName, timestamp);
+      this.$router.push({ path: '/calculate_meal_composition', query: { mealName, date: timestamp } });
+    },
     showMealsByDate(date) {
       let mealDate;
       let found = false;
@@ -258,6 +272,7 @@ export default {
     "add_component": "Add component",
     "meal_name_enter": "Enter meal name",
     "date": "Date",
+    "calculate_meal": "Calculate meal",
     "meal_name_null": "Meal name cannot be null",
     "meal_name_exists": "Meal name already in use.",
     "meal_not_found": "Meal not found.",
@@ -269,6 +284,7 @@ export default {
     "meal_name_enter": "Inserire nome pasto",
     "add_component": "Aggiungi componente",
     "date": "Data",
+    "calculate_meal": "Calcola pasto",
     "meal_name_null": "Il nome del pasto non può essere nullo",
     "meal_name_exists": "Nome pasto già esistente.",
     "meal_not_found": "Pasto non trovato.",
