@@ -110,11 +110,11 @@ export default {
       mealsList: [],
       mealsListByDate: [],
       noMeals: '',
-      mealNameState: Boolean,
+      mealNameState: null,
       currentDate: new Date(),
       UTCDate: Number,
       mealName: '',
-      inputCheckMessage: 'Enter at least 3 letters',
+      inputCheckMessage: '',
       date: {
         key: 'date',
         value: '',
@@ -160,6 +160,7 @@ export default {
       if (mealName.length > 0) {
         this.$store.state.http.post(`api/${body.username}/meals`, body)
           .then((response) => {
+            this.mealNameState = true;
             this.mealsList = [];
             this.mealsList = response.data.meals;
             this.showMealsByDate(this.currentDate);
