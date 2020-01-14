@@ -5,8 +5,8 @@
       <p class="date-p text-center">{{ $d(currentDate, 'short') }}</p>
       <b-button
         variant="outline-info p-0"
-        @click="$refs.calendar.dp.show()">
-          <img class="calendar" src="../../assets/buttons/calendar.svg">
+        @click="$refs.calendar.dp.show()"
+      ><img class="calendar" src="../../assets/buttons/calendar.svg">
       </b-button>
       <date-picker v-model="calendar.value"
         ref="calendar"
@@ -17,9 +17,17 @@
     </b-card>
     <b-card class="card-new-meal">
       <b-form-input
+        id="input-new-meal"
         v-model="mealName"
+        :state="mealNameState"
+        aria-describedby="input-live-feedback"
         :placeholder="$t('meal_name_enter')"
-        class="input-new-meal" ></b-form-input>
+        class="input-new-meal"
+        trim
+      ></b-form-input>
+      <b-form-invalid-feedback id="input-live-feedback">
+        {{ $t(inputCheckMessage) }}
+      </b-form-invalid-feedback>
       <b-button
         pill
         variant="link"
@@ -28,7 +36,11 @@
       ><img class="add-meal" src="../../assets/buttons/add.svg">
       </b-button>
     </b-card>
-    <div class="card-last-meals" role="tablist">
+    <div
+      v-if="mealsListByDate.length > 0"
+      class="card-last-meals"
+      role="tablist"
+    >
       <b-card
         no-body class="mb-1"
         v-for="(meal, index) in mealsListByDate.slice().reverse()"
@@ -51,37 +63,51 @@
               variant="link"
               class="add-component p-0"
               @click="addComponent(meal.meal_name)"
-            > <!--TODO aggiungere bottone CalculateMeal -->
+            >
               <img class="add mr-2" src="../../assets/buttons/plus.svg">
               {{ $t('add_component') }}
             </b-button>
-            <div v-for="component in meal.components" v-bind:key="component.product_name">
-              <b-card
-                :img-src="component.image_url"
-                img-alt="Card image" img-left
-                class="card-components mb-3"
-              >
-                <b-card-text align="center" class="card-components-text m-0 p-0">
-                  <p class="component-p">
-                    <b> {{ component.product_name }} </b>
-                  </p>
-                  <p class="component-p">
-                    {{ component.quantity }} g
-                  </p>
-                </b-card-text>
+            <div v-if="meal.components.length > 0">
+              <div v-for="component in meal.components" v-bind:key="component.product_name">
+                <b-card
+                  :img-src="component.image_url"
+                  img-alt="Card image" img-left
+                  class="card-components mb-3"
+                >
+                  <b-card-text align="center" class="card-components-text m-0 p-0">
+                    <p class="component-p">
+                      <b> {{ component.product_name }} </b>
+                    </p>
+                    <p class="component-p">
+                      {{ component.quantity }} g
+                    </p>
+                  </b-card-text>
+                  <b-button
+                    pill
+                    variant="link"
+                    class="p-0"
+                    @click="removeComponent(component.barcode, meal.meal_name)"
+                  ><img class="remove" src="../../assets/buttons/remove.svg">
+                  </b-button>
+                </b-card>
                 <b-button
-                  pill
-                  variant="link"
-                  class="p-0"
-                  @click="removeComponent(component.barcode, meal.meal_name)"
-                ><img class="remove" src="../../assets/buttons/remove.svg">
+                  variant="info"
+                  @click="calculateMeal(meal.meal_name, meal.timestamp)"
+                >
+                  {{ $t('calculate_meal') }}
                 </b-button>
-              </b-card>
+              </div>
             </div>
           </b-card-body>
         </b-collapse>
       </b-card>
     </div>
+    <div v-else>
+      <p>{{ $t(this.noMeals) }}</p>
+    </div>
+    <b-modal id="modal-error" title="Error" hide-footer>
+      {{ $t(this.inputCheckMessage) }}
+    </b-modal>
   </div>
 </template>
 
@@ -94,8 +120,12 @@ export default {
     return {
       mealsList: [],
       mealsListByDate: [],
+      noMeals: '',
+      mealNameState: null,
       currentDate: new Date(),
+      UTCDate: Number,
       mealName: '',
+      inputCheckMessage: '',
       date: {
         key: 'date',
         value: '',
@@ -129,49 +159,45 @@ export default {
         .catch(error => console.log(error.response.data.description));
     },
     addMeal(mealName) {
-      const UTCDate = Date.UTC(this.currentDate.getFullYear(),
-        this.currentDate.getMonth(), this.currentDate.getDate());
-
       const username = 'mrossi';
       const body = {
         username, // username da sessione
         meals: {
           mealName,
-          timestamp: new Date(UTCDate),
+          timestamp: new Date(this.UTCDate),
         },
       };
-
       console.log(body); // DEBUG
-
-      if (mealName.length !== 0) {
+      if (mealName.length > 0) {
         this.$store.state.http.post(`api/${body.username}/meals`, body)
           .then((response) => {
+            this.mealNameState = true;
             this.mealsList = [];
             this.mealsList = response.data.meals;
             this.showMealsByDate(this.currentDate);
           })
-          .catch(error => console.log(error.response.data.description)); // mostrare su una label
+          .catch((error) => {
+            this.mealNameState = false;
+            this.checkError(error.response.data.description);
+          });
       } else {
-        // mettere una label
-        console.log('Il nome non può essere nullo');
+        this.mealNameState = false;
+        this.inputCheckMessage = 'meal_name_null';
       }
     },
     removeMeal(mealName) {
-      const UTCDate = Date.UTC(this.currentDate.getFullYear(),
-        this.currentDate.getMonth(), this.currentDate.getDate());
-
       const username = 'mrossi';
       const params = {
         username,
         mealName,
-        date: new Date(UTCDate),
+        date: new Date(this.UTCDate),
       };
 
       console.log(`remove${JSON.stringify(params)}`); // DEBUG
 
       this.$store.state.http.delete(`api/${params.username}/meals/${params.mealName}`, { params })
         .then(() => this.loadMealsList())
-        .catch(error => console.log(error.response.data.description));
+        .catch(error => this.checkError(error.response.data.description));
     },
     addComponent(mealName) {
       // Passo meal name, per accedere alla query dalla pagina info prodotto
@@ -179,15 +205,12 @@ export default {
       this.$router.push({ path: '/info_prod', query: { mealName } });
     },
     removeComponent(barcode, mealName) {
-      const UTCDate = Date.UTC(this.currentDate.getFullYear(),
-        this.currentDate.getMonth(), this.currentDate.getDate());
-
       const username = 'mrossi';
       const params = {
         username,
         barcode,
         mealName,
-        date: new Date(UTCDate),
+        date: new Date(this.UTCDate),
       };
 
       console.log(params); // DEBUG
@@ -198,11 +221,24 @@ export default {
           this.showMealsByDate(this.currentDate);
           console.log(`component removed ${this.mealsList}`); // DEBUG
         })
-        .catch(error => console.log(error.response.data.description));
+        .catch(error => this.checkError(error.response.data.description));
+    },
+    calculateMeal(mealName, timestamp) {
+      // Passo meal name, per accedere alla query dalla pagina calculate meal
+      // devo fare: this.$route.query.mealName
+      console.log(mealName, timestamp);
+      this.$router.push({ path: '/calculate_meal_composition', query: { mealName, date: timestamp } });
     },
     showMealsByDate(date) {
       let mealDate;
+      let found = false;
       this.mealsListByDate = [];
+      this.UTCDate = Date.UTC(
+        this.currentDate.getFullYear(),
+        this.currentDate.getMonth(),
+        this.currentDate.getDate(),
+      );
+
       this.mealsList.forEach((meal) => {
         mealDate = new Date(meal.timestamp);
 
@@ -210,21 +246,31 @@ export default {
             && mealDate.getMonth() === date.getMonth()
             && mealDate.getFullYear() === date.getFullYear()) {
           this.mealsListByDate.push(meal);
+          found = true;
         } else {
-          console.log('No meals yet for today'); // LABEL
+          found = false;
         }
       });
+
+      if (found === false) {
+        this.noMeals = 'no_meals';
+      }
     },
     setDateAndShow(date) {
       this.currentDate = new Date(date);
       this.showMealsByDate(this.currentDate);
     },
-    init() {
-      this.loadMealsList();
+    checkError(error) {
+      if (error === 'internal_server_error' || error === 'meal_not_found') {
+        this.inputCheckMessage = error;
+        this.$bvModal.show('modal-error');
+      } else {
+        this.inputCheckMessage = error;
+      }
     },
   },
   mounted() {
-    this.init();
+    this.loadMealsList();
   },
 };
 </script>
@@ -236,13 +282,25 @@ export default {
     "meals": "Your meals",
     "add_component": "Add component",
     "meal_name_enter": "Enter meal name",
-    "date": "Date"
+    "date": "Date",
+    "calculate_meal": "Calculate meal",
+    "meal_name_null": "Meal name cannot be null",
+    "meal_name_exists": "Meal name already in use.",
+    "meal_not_found": "Meal not found.",
+    "no_meals": "No meals inserted on this date yet",
+    "internal_server_error": "500 Internal Server Error"
   },
   "it": {
     "meals": "I tuoi pasti",
     "meal_name_enter": "Inserire nome pasto",
     "add_component": "Aggiungi componente",
-    "date": "Data"
+    "date": "Data",
+    "calculate_meal": "Calcola pasto",
+    "meal_name_null": "Il nome del pasto non può essere nullo",
+    "meal_name_exists": "Nome pasto già esistente.",
+    "meal_not_found": "Pasto non trovato.",
+    "no_meals": "Non sono ancora stati inseriti pasti in questa data",
+    "internal_server_error": "500 Errore interno al Server"
   }
 }
 </i18n>

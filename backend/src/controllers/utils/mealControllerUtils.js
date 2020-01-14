@@ -62,14 +62,14 @@ exports.addMeal = (req, userMeals, res) => {
     updateMeal.save()
       .then((meal) => {
         console.log(`meal updated -> ${meal}`); // DEBUG
-        res.status(201).json(meal);
+        res.status(200).json(meal);
       })
       .catch((err) => {
-        console.log('error while updating new meal'); // DEBUG
-        res.send(err);
+        console.log(`error while updating new meal${err}`); // DEBUG
+        res.status(500).send({ description: 'internal_server_error' });
       });
   } else {
-    res.status(400).json({ description: 'Meal name already in use.' });
+    res.status(400).send({ description: 'meal_name_exists' });
   }
 };
 
@@ -94,7 +94,7 @@ exports.createFirstMeal = (req, res) => {
     })
     .catch((err) => {
       console.log('error while creating new meal'); // DEBUG
-      res.send(err);
+      res.status(500).send(err);
     });
 };
 
@@ -153,7 +153,7 @@ exports.computeMealValues = async (barcode, quantity, res) => {
       carbonFootprintTot = this.valuePerPortion(product.carbon_footprint_100g, quantity);
       waterFootprintTot = this.valuePerPortion(product.water_footprint_100g, quantity);
     })
-    .catch((err) => res.send(err));
+    .catch((err) => res.status(500).send(err));
 
   // Creo il json da ritornare
   // TODO: forse si potrebbe fare anche con il modello new Product() ?
@@ -230,8 +230,8 @@ exports.updateMealValues = async (components, timestamp, mealName, userMeals, re
         }
       });
       userMeals.save()
-        .then((meals) => res.status(201).json(meals))
-        .catch((err) => res.send(err));
+        .then((meals) => res.status(200).json(meals))
+        .catch((err) => res.status(500).send(err));
     });
 };
 
@@ -255,6 +255,6 @@ exports.pullComponent = async (userMeals, timestamp, mealName, barcode, res) => 
   });
 
   userMeals.save()
-    .then((meals) => res.status(201).json(meals))
-    .catch((err) => res.send(err));
+    .then((meals) => res.status(200).json(meals))
+    .catch((err) => res.status(500).send(err));
 };

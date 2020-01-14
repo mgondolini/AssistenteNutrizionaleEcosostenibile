@@ -15,23 +15,23 @@ exports.load_meals_list = async (req, res) => {
     .exec()
     .then((meals) => {
       if (meals.length === 0) {
-        res.status(404).send({ description: `Meals not found for user ${req.query.username}` });
+        res.status(404).send({ description: 'meal_not_found' });
         console.log(`Meals not found for user ${req.query.username}`); // DEBUG
       } else {
         res.status(200).json(meals);
         console.log(`Meals list for user ${req.query.username}:\n${meals}`); // DEBUG
       }
     })
-    .catch((err) => res.send(err));
+    .catch((err) => res.status(500).send(err));
 };
 
 /** Loads a specific meal for a given user */
 exports.load_meal = async (req, res) => {
   console.log('looking for meal to load...'); // DEBUG
+  const { username } = req.query;
 
   // Lato client passare la data del pasto in formato UTC
-
-  const query = { username: req.query.username };
+  const query = { username };
   const projection = {
     username: req.query.username,
     meals: {
@@ -46,19 +46,20 @@ exports.load_meal = async (req, res) => {
     .exec()
     .then((meal) => {
       if (meal.length === 0) {
-        res.status(404).send({ description: `Meal not found for user ${req.query.username}` });
+        res.status(404).send({ description: 'meal_not_found' });
         console.log(`Meal not found for user ${req.query.username}`); // DEBUG
       } else {
         res.status(200).json(meal);
         console.log(`Meal found for user ${req.query.username}:\n${meal}`); // DEBUG
       }
     })
-    .catch((err) => res.send(err));
+    .catch((err) => res.status(500).send(err));
 };
 
 /** Inserts a new meal for a given user */
 exports.new_meal = async (req, res) => {
-  const query = { username: req.body.username };
+  const { username } = req.body;
+  const query = { username };
 
   await Meals.findOne(query)
     .exec()
@@ -71,7 +72,7 @@ exports.new_meal = async (req, res) => {
         mealControllerUtils.addMeal(req, userMeals, res);
       }
     })
-    .catch((err) => res.send(err));
+    .catch((err) => res.status(500).send(err));
 };
 
 /** Deletes a meal */
@@ -93,18 +94,19 @@ exports.delete_meal = async (req, res) => {
   };
 
   console.log(`UPDATE QUERY -> ${JSON.stringify(update)}`); // DEBUG
+
   await Meals.updateOne(query, update)
     .exec()
     .then((meal) => {
       if (meal.length === 0) {
-        res.status(404).send({ description: `Meal not found for user ${req.query.username}` });
+        res.status(404).send({ description: 'meal_not_found' });
         console.log(`Meal not found for user ${req.query.username}`); // DEBUG
       } else {
         console.log(`Meal updated for user ${req.query.username}:\n${JSON.stringify(meal)}`); // DEBUG
         res.status(200).json(meal);
       }
     })
-    .catch((err) => res.send(err));
+    .catch((err) => res.status(500).send(err));
 };
 
 /** Creates a component for an existing meal */
@@ -120,10 +122,10 @@ exports.new_component = async (req, res) => {
   await Meals.find(query)
     .exec()
     .then((userMeals) => {
-      if (userMeals == null) res.status(404).send({ description: `Meal not found for user ${req.query.username}` });
+      if (userMeals == null) res.status(404).send({ description: 'meal_not_found' });
       else mealControllerUtils.updateMealValues(components, timestamp, mealName, userMeals[0], res);
     })
-    .catch((err) => res.send(err));
+    .catch((err) => res.status(500).send(err));
 };
 
 /** Deletes a component in a meal given the barcode */
@@ -139,7 +141,7 @@ exports.delete_component = async (req, res) => {
     .exec()
     .then((userMeals) => {
       if (userMeals.length === 0) {
-        res.status(404).send({ description: `Meal not found for user ${req.query.username}` });
+        res.status(404).send({ description: 'meal_not_found' });
         console.log(`Meal not found for user ${req.query.username}`); // DEBUG
       } else {
         console.log(`Meal updated for user ${req.query.username}:\n${userMeals}`); // DEBUG
@@ -148,5 +150,5 @@ exports.delete_component = async (req, res) => {
         mealControllerUtils.pullComponent(userMeals, date, mealName, barcode, res);
       }
     })
-    .catch((err) => res.send(err));
+    .catch((err) => res.status(500).send(err));
 };
