@@ -1,6 +1,6 @@
 <template>
   <div class="containerFather">
-    <h3>{{ $t('intro') }}</h3>
+    <h3 class="chartTitle">{{ $t('intro') }}</h3>
     <div class="buttonsDisposition">
       <div id="button" class="sim-button button1 buttonCalculate" v-on:click='changeGraphGlobal'>
         <span>Global</span>
@@ -163,7 +163,7 @@ export default {
             offsetX: 0,
             offsetY: 0,
           },
-          title: { text: 'Acqua per grammo' },
+          title: { text: '{{$t(\'watergrams\')}}' },
         },
         yaxis: {
           max: 600,
@@ -187,6 +187,7 @@ export default {
     apexchart: VueApexCharts,
   },
   mounted() {
+    // prendere username da sessione
     const username = 'mrossi';
     const mealName = 'Cena';
     const date = '2019-12-29T00:00:00.000Z';
@@ -219,7 +220,7 @@ export default {
 
         Object.values(response.data.meals[0]).forEach((v, i) => {
           if (i > 2 && i < 13) {
-            if (v > 0) this.componentsMeal.av.push(v);
+            if (v > 0.0001) this.componentsMeal.av.push(v);
           }
         });
         this.calculate();
@@ -241,13 +242,11 @@ export default {
         tmp.push({ name: elem.name, data: [[elem.carbon, elem.qnt, elem.carbon * elem.qnt]] });
       });
       this.series = tmp;
-      console.log(this.series);
 
       this.waterFootprint.forEach((elem) => {
         tmp2.push({ name: elem.name, data: [[elem.water, elem.qnt, elem.water * elem.qnt]] });
       });
       this.series2 = tmp2;
-      console.log(this.series2);
     },
   },
 };
@@ -257,17 +256,23 @@ export default {
 <i18n>
 {
   "en": {
-    "intro": "Composition of your meal"
+    "intro": "Composition of your meal",
+    "CO2grams": "CO2 per grams",
+    "gCons":"Consumed grams",
+    "watergrams": "Water per grams"
   },
   "it": {
-    "intro": "Coposizione del tuo pasto"
+    "intro": "Coposizione del tuo pasto",
+    "CO2grams": "CO2 per grammi",
+    "gCons":"Grammi consumati",
+    "watergrams": "Acqua per grammi"
   }
 }
 </i18n>
 
 <style lang="sass">
   @import './calculateMeal'
-  @import 'bubbleChrartEmissions'
+  @import './bubbleChrartEmissions'
   .apexcharts-toolbar
     display: none
 </style>
