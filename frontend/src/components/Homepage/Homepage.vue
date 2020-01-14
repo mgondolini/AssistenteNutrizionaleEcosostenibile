@@ -25,7 +25,7 @@
               vc_align_center vc_custom_1548164725205">
                 <div class="wpb_wrapper">
                   <div class="vc_single_image-wrapper   vc_box_border_grey">
-                    <img class="vc_single_image-img " src="https://ecofoodprime.com/wp-content/uploads/2019/01/Group.svg"
+                    <img class="vc_single_image-img " src="../../assets/home/Group.svg"
                     width="" height="" alt="Group" title="Group" />
                     </div>
                   </div>
@@ -51,7 +51,7 @@
               vc_align_center vc_custom_1548164725205">
                 <div class="wpb_wrapper">
                   <div class="vc_single_image-wrapper   vc_box_border_grey">
-                    <img class="vc_single_image-img " src="https://ecofoodprime.com/wp-content/uploads/2019/01/SecondIcon.svg"
+                    <img class="vc_single_image-img " src="../../assets/home/SecondIcon.svg"
                     width="" height="" alt="Group" title="Group" />
                     </div>
                   </div>
@@ -77,7 +77,7 @@
               vc_align_center vc_custom_1548164725205">
                 <div class="wpb_wrapper">
                   <div class="vc_single_image-wrapper   vc_box_border_grey">
-                    <img class="vc_single_image-img resp" src="https://ecofoodprime.com/wp-content/uploads/2019/01/dona-1.svg"
+                    <img class="vc_single_image-img resp" src="../../assets/home/dona-1.svg"
                     width="" height="" alt="Group" title="Group" />
                     </div>
                   </div>
