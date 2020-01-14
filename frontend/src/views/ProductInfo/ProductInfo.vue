@@ -1,28 +1,38 @@
 <template>
   <div class="productInfo">
-    <div v-if=!productShowing class="insertEAN">
-      <p>
+
+    <div v-if="inputMode === 'SELECT'" class="buttonContainer">
+        <b-button v-on:click="inputMode = 'MANUAL'">Manual insert</b-button>
+        <b-button v-on:click="inputMode = 'STREAM'">Scan barcode</b-button>
+        <b-button v-on:click="uploadFile()">Upload barcode</b-button>
+        <b-button v-on:click="scanNutriTable()">Scan nutrition table</b-button>
+    </div>
+
+    <div v-else-if="inputMode === 'MANUAL'" class="insertEAN">
+      <div>
         <label for="ean">EAN code</label>
         <input
           id="ean"
           v-model="ean"
           value=""
         >
-      </p>
-      <p>EAN is: {{ ean }}</p>
-      <div>
-        <b-button v-on:click="submitEan()">Submit EAN</b-button>
-        <b-button >Upload photo</b-button>
-        <v-quagga
-          :onDetected="logIt"
-          :readerSize="readerSize"
-          :readerType="'ean_reader'"
-          :aspectRatio="aspectRatio"
-        ></v-quagga>
       </div>
-      <p v-if=!status > Product not found </p>
+      <b-button v-on:click="submitEan()">Lookup</b-button>
+      <b-button v-on:click="inputMode = 'SELECT'">Back</b-button>
     </div>
-    <div v-if=productShowing class="productData">
+
+    <div v-else-if="inputMode === 'STREAM'" class="videoStream">
+      <v-quagga
+        :onDetected="logIt"
+        :readerSize="readerSize"
+        :readerType="'ean_reader'"
+        :aspectRatio="aspectRatio"
+      ></v-quagga>
+      <b-button v-on:click="inputMode = 'SELECT'">Back</b-button>
+    </div>
+
+
+    <div v-else-if="inputMode === 'DONE'" class="productData">
       <b-card no-body class="productCard">
         <b-media>
           <template v-slot:aside>
@@ -122,7 +132,10 @@
           </span>
         </b-tab>
       </b-tabs>
+      <b-button v-on:click="inputMode = 'SELECT'">Scan another product</b-button>
     </div>
+
+
   </div>
 </template>
 
@@ -146,6 +159,7 @@ export default {
   data() {
     return {
       ean: productIDTest,
+      inputMode: 'SELECT',
       productShowing: false,
       status: 0,
       // OFF API values (factorize!)
@@ -189,6 +203,7 @@ export default {
       qty: 100,
       ingredientsText: '',
 
+      streamActive: false,
       readerSize: {
         width: 640,
         height: 480,
@@ -288,6 +303,7 @@ export default {
           });
           this.ingredientsText = ingredientsTexts.join(', ');
           console.log(this.ingredientsText);
+          this.inputMode = 'DONE';
         }).catch((error) => {
           alert(JSON.stringify(error));
           console.log(error);
@@ -295,6 +311,18 @@ export default {
     },
     logIt(data) {
       console.log('detected', data);
+
+      console.log(data.codeResult.code.trim());
+      console.log(data.codeResult.code.trim().length);
+
+      if (Object.prototype.hasOwnProperty.call(data, 'codeResult')
+       && Object.prototype.hasOwnProperty.call(data.codeResult, 'code')
+       && (data.codeResult.code.trim().length === 13 || data.codeResult.code.trim().length === 8)) {
+        alert(data.codeResult.code);
+        Quagga.stop();
+        this.ean = data.codeResult.code.trim();
+        this.inputMode = 'DONE';
+      }
     },
   },
 };
