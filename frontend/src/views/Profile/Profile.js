@@ -75,14 +75,9 @@ export default {
     update() {
       this.errors = [];
 
-      const usr = 'mrossi';
-      const param = { username: usr };
-
       const dataNew = {
-        username: this.username,
         name: this.campi.name.value,
         surname: this.campi.surname.value,
-        email: this.campi.email.value,
         sex: this.campi.gender.value,
         user_img_url: this.avatar,
         weight: this.campi.weight.value,
@@ -92,14 +87,13 @@ export default {
       };
 
       if (!dataNew.name || !dataNew.surname
-        || !dataNew.email || !dataNew.sex
-        || !dataNew.weight || !dataNew.height
-        || !dataNew.allergens) {
+        || !dataNew.sex || !dataNew.birth_date
+        || !dataNew.weight || !dataNew.height) {
         this.errors.push('Field must not be null');
       } else {
-        this.$store.state.http.put(`api/user/${param.username}`, dataNew /* { params: param, data:  } */)
+        this.$store.state.http.put('api/user', dataNew /* { params: param, data:  } */)
           .then(() => {
-            // console.log('tutto ok!'.concat(response));
+            // console.log('tutto ok!');
           })
           .catch(error => (error.toString()));
       }
@@ -117,10 +111,7 @@ export default {
     },
   },
   mounted() {
-    const usr = 'mrossi';
-    const param = { username: usr };
-
-    this.$store.state.http.get(`api/user/${param.username}`, { params: param })
+    this.$store.state.http.get('api/user')
     // this.$server.get(`api/user/${param.username}`, { params: param })
       .then((response) => {
         this.username = response.data.username;

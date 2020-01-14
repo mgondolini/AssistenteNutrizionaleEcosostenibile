@@ -1,14 +1,14 @@
 <template>
   <div class="homepage bg-img">
     <div class="page">
-      <Homepage style="opacity:1 !important" msg="Assistente Nutrizionale Ecosostenibile"/>
+      <Homepage style="opacity:1 !important"/>
     </div>
   </div>
 </template>
 
 <script>
 // @ is an alias to /src
-import Homepage from '@/components/Homepage/Homepage.vue';
+import Homepage from '../../components/Homepage/Homepage.vue';
 
 export default {
   name: 'home',
@@ -18,6 +18,6 @@ export default {
 };
 </script>
 
-<style lang="scss">
-  @import './home.scss';
+<style lang="sass">
+  @import './home.sass'
 </style>

@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
 const crypto = require('crypto');
+const auth = require('./authController');
 
 const User = mongoose.model('User');
 
@@ -74,8 +75,9 @@ exports.checkEmail = function checkEmail(req, res) {
 
 /** Loads a user by username */
 exports.load_user = async (req, res) => {
-  console.log(`looking for user: ${req.query.username}`); // DEBUG
-  const query = { username: req.query.username };
+  // console.log(`looking for user: ${req.query.username}`); // DEBUG
+  const us = auth.getUsername(req.headers.token);
+  const query = { username: us };
 
   await User.findOne(query)
     .exec()
@@ -87,14 +89,14 @@ exports.load_user = async (req, res) => {
         res.status(200).json(user);
         console.log(`Found user ->${user.username}`); // DEBUG
       }
-    })
-    .catch((err) => res.send(err));
+    }).catch((err) => res.send(err));
 };
 
 
 /** Updates a user */
 exports.update_user = async (req, res) => {
-  const query = { username: req.params.username };
+  const us = auth.getUsername(req.headers.token);
+  const query = { username: us };
   const update = req.body; // passare il json utente con tutti i campi (aggiornati e non)
 
   await User.findOneAndUpdate(query, update, { new: true })
