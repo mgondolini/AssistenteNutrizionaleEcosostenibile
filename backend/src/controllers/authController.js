@@ -30,6 +30,7 @@ exports.auth = function auth(req, res) {
         if (req.body.email === 'test@test.it') {
           const tok = jwt.sign({
             email: user.email,
+            user: user.username,
           }, config.tokenKey);
           /*
           fs.writeFile('token.txt', tok, (err) => {
@@ -42,6 +43,7 @@ exports.auth = function auth(req, res) {
 
         const t = jwt.sign({
           email: user.email,
+          user: user.username,
         }, config.tokenKey, { expiresIn: '8h' });
         // token generated
         return res.send({ token: t });
@@ -57,6 +59,14 @@ exports.auth = function auth(req, res) {
   // res.status(418).send('Wrong password');
 };
 
+function getUs(token) {
+  try {
+    return jwt.verify(token, config.tokenKey).user;
+  } catch (err) {
+    return '';
+  }
+}
+
 exports.checkToken = function checkToken(req, res) {
   try {
     // check token validity
@@ -66,6 +76,10 @@ exports.checkToken = function checkToken(req, res) {
     // invavild token
     res.status(401).send('Invalid token: '.concat(err));
   }
+};
+
+exports.getUsername = function getUsername(token) {
+  return getUs(token);
 };
 
 exports.createUser = function createUser() {

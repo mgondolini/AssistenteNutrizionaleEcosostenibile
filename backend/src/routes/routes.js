@@ -7,9 +7,11 @@ module.exports = function (app) {
   app.route('/api/publickey')
     .get(keyController.getPublicKey);
 
-  app.route('/api/user/:username')
+  app.route('/api/user')
     .get(userController.load_user)
-    .put(userController.update_user)
+    .put(userController.update_user);
+
+  app.route('/api/user/:username')
     .delete(userController.delete_user);
 
   app.route('/api/product')

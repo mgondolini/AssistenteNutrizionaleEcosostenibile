@@ -9,7 +9,9 @@
     "weight": "Weight",
     "height": "Height",
     "allergen": "Allergens",
-    "profile": "Profile of "
+    "profile": "Profile of ",
+    "operation": "Information updated successfully!!",
+    "error": "Errors occurred. Try again!"
 
   },
   "it": {
@@ -22,6 +24,8 @@
     "weight": "Peso",
     "height": "Altezza",
     "allergen": "Allergeni",
-    "profile": "Profilo di "
+    "profile": "Profilo di ",
+    "operation": "Informazioni aggiornate con successo!!",
+    "error": "Sono avvenuti degli errori. Riprova dopo!"
   }
 }
