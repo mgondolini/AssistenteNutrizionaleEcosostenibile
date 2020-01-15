@@ -47,12 +47,12 @@
             </b-form-text>
           </b-form-group>
         </div>
-        <div class="text-center buttonsDiv">
+        <div class="text-center buttonsDiv block">
           <b-button class="sim-button button1" type="submit">Login</b-button>
         </div>
       </b-form>
       <hr />
-      <label style="margin-right: 10px">{{ $t('not-reg') }}</label>
+      <span style="margin-right: 10px">{{ $t('not-reg') }}</span>
       <router-link to='registration'
         class="text-center buttonsDiv" style="text-decoration:none; margin-bottom:30px;">
         <b-button class="sim-button button1">{{ $t('reg') }}</b-button>
