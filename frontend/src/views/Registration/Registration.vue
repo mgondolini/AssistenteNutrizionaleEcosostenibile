@@ -68,6 +68,8 @@
                             placeholder="Inserisci password"
                             aria-describedby="password-help-block"
                           ></b-form-input>
+                           <button id="buttonHideShowPsw" title="Hold down to show password"
+                            @click="changeTypePsw" type = "button"></button>
                           <b-form-text id="password-help-block">
                               {{ $t('pwd') }}
                           </b-form-text>
@@ -87,6 +89,8 @@
                             placeholder="Inserisci password"
                             aria-describedby="password-help-block"
                           ></b-form-input>
+                          <button id="buttonHideShowRePsw" title="Hold down to show password"
+                           @click="changeTypeRePsw" type = "button"></button>
                         </div>
                       </div>
                       <h4 class="pers">{{ $t('pers') }}</h4>
