@@ -49,12 +49,14 @@ export default {
           placeholder: 'Enter your allergens',
         },
       },
-      errors: [],
+      errors: false,
+      modalShow: false,
+      modalErrorShow: false,
       options: {
         format: 'YYYY-MM-DD',
         useCurrent: false,
         showClear: false,
-        showClose: true,
+        showClose: false,
       },
     };
   },
@@ -70,32 +72,80 @@ export default {
   },
   methods: {
     editContent() {
-      this.isEditing = !this.isEditing;
+      if (!this.errors) {
+        this.isEditing = !this.isEditing;
+      }
+    },
+    hideModal() {
+      this.$refs['my-modal'].hide();
     },
     update() {
-      this.errors = [];
-
-      const dataNew = {
-        name: this.campi.name.value,
-        surname: this.campi.surname.value,
-        sex: this.campi.gender.value,
-        user_img_url: this.avatar,
-        weight: this.campi.weight.value,
-        height: this.campi.height.value,
-        allergens: this.campi.allergens.value,
-        birth_date: this.campi.dateOfBirth.value,
-      };
-
-      if (!dataNew.name || !dataNew.surname
-        || !dataNew.sex || !dataNew.birth_date
-        || !dataNew.weight || !dataNew.height) {
-        this.errors.push('Field must not be null');
+      this.errors = false;
+      this.modalShow = false;
+      this.modalErrorShow = false;
+      if (!this.campi.name.value) {
+        document.getElementById('name').classList.add('nsError');
+        this.errors = true;
       } else {
+        document.getElementById('name').classList.remove('nsError');
+      }
+
+      if (!this.campi.surname.value) {
+        document.getElementById('surname').classList.add('nsError');
+        this.errors = true;
+      } else {
+        document.getElementById('surname').classList.remove('nsError');
+      }
+
+      if (!this.campi.gender.value) {
+        document.getElementById('gender').classList.add('nsError');
+        this.errors = true;
+      } else {
+        document.getElementById('gender').classList.remove('nsError');
+      }
+
+      if (!this.campi.dateOfBirth.value) {
+        document.getElementById('dateOfBirth').classList.add('nsError');
+        this.errors = true;
+      } else {
+        document.getElementById('dateOfBirth').classList.remove('nsError');
+      }
+
+      if (!this.campi.weight.value) {
+        document.getElementById('weight').classList.add('nsError');
+        this.errors = true;
+      } else {
+        document.getElementById('weight').classList.remove('nsError');
+      }
+
+      if (!this.campi.height.value) {
+        document.getElementById('height').classList.add('nsError');
+        this.errors = true;
+      } else {
+        document.getElementById('height').classList.remove('nsError');
+      }
+      if (!this.errors) {
+        const dataNew = {
+          name: this.campi.name.value,
+          surname: this.campi.surname.value,
+          sex: this.campi.gender.value,
+          user_img_url: this.avatar,
+          weight: this.campi.weight.value,
+          height: this.campi.height.value,
+          allergens: this.campi.allergens.value,
+          birth_date: this.campi.dateOfBirth.value,
+        };
+
         this.$store.state.http.put('api/user', dataNew /* { params: param, data:  } */)
           .then(() => {
             // console.log('tutto ok!');
+            this.modalShow = true;
           })
-          .catch(error => (error.toString()));
+          .catch((error) => {
+            error.toString();
+            this.modalShow = false;
+            this.modalErrorShow = true;
+          });
       }
     },
     activateBtn() {

@@ -40,17 +40,19 @@
               placeholder="Inserisci password"
               aria-describedby="password-help-block"
             ></b-form-input>
+            <button id="buttonHideShow" title="Hold down to show password"
+              @click="changeType" type = "button"></button>
             <b-form-text id="password-help-block">
               {{ $t('info-psw') }}
             </b-form-text>
           </b-form-group>
         </div>
-        <div class="text-center buttonsDiv">
+        <div class="text-center buttonsDiv block">
           <b-button class="sim-button button1" type="submit">Login</b-button>
         </div>
       </b-form>
       <hr />
-      <label style="margin-right: 10px">{{ $t('not-reg') }}</label>
+      <span style="margin-right: 10px">{{ $t('not-reg') }}</span>
       <router-link to='registration'
         class="text-center buttonsDiv" style="text-decoration:none; margin-bottom:30px;">
         <b-button class="sim-button button1">{{ $t('reg') }}</b-button>
@@ -94,6 +96,16 @@ export default {
           console.log('Error');
         });
       */
+    },
+    changeType() {
+      const t = document.getElementById('input-password').type;
+      if (t === 'text') {
+        document.getElementById('input-password').type = 'password';
+        document.getElementById('buttonHideShow').style = 'background-position: 0px 0px';
+      } else {
+        document.getElementById('input-password').type = 'text';
+        document.getElementById('buttonHideShow').style = 'background-position: -44px 0px';
+      }
     },
   },
 };
