@@ -8,7 +8,7 @@
         <b-button v-on:click="scanNutriTable()">Scan nutrition table</b-button>
     </div>
 
-    <div v-else-if="inputMode === 'MANUAL'" class="insertEAN">
+    <div v-else-if="inputMode === 'MANUAL'" id="insertEAN" class="buttonContainer">
       <div>
         <label for="ean">EAN code</label>
         <input
@@ -21,7 +21,7 @@
       <b-button v-on:click="inputMode = 'SELECT'">Back</b-button>
     </div>
 
-    <div v-else-if="inputMode === 'STREAM'" class="videoStream">
+    <div v-else-if="inputMode === 'STREAM'" id="videoStream" class="buttonContainer">
       <v-quagga
         :onDetected="logIt"
         :readerSize="readerSize"
