@@ -1,22 +1,33 @@
 <template>
   <div class="productInfo">
-    <div v-if=!productShowing class="insertEAN">
-      <p>
+    <div v-if="inputMode === 'SELECT'" class="buttonContainer">
+        <b-button v-on:click="inputMode = 'MANUAL'">Manual insert</b-button>
+        <b-button v-on:click="inputMode = 'STREAM'">Scan barcode</b-button>
+        <b-button v-on:click="uploadFile()">Upload barcode</b-button>
+        <b-button v-on:click="scanNutriTable()">Scan nutrition table</b-button>
+    </div>
+    <div v-else-if="inputMode === 'MANUAL'" id="insertEAN" class="buttonContainer">
+      <div>
         <label for="ean">EAN code</label>
         <input
           id="ean"
           v-model="ean"
           value=""
         >
-      </p>
-      <p>EAN is: {{ ean }}</p>
-      <div>
-        <b-button v-on:click="submitEan()">Submit EAN</b-button>
-        <b-button>Upload photo</b-button>
       </div>
-      <p v-if=!status > Product not found </p>
+      <b-button v-on:click="submitEan()">Lookup</b-button>
+      <b-button v-on:click="inputMode = 'SELECT'">Back</b-button>
     </div>
-    <div v-if=productShowing class="productData">
+    <div v-else-if="inputMode === 'STREAM'" id="videoStream" class="buttonContainer">
+      <v-quagga
+        :onDetected="barcodeDetected"
+        :readerSize="readerSize"
+        :readerType="'ean_reader'"
+        :aspectRatio="aspectRatio"
+      ></v-quagga>
+      <b-button v-on:click="inputMode = 'SELECT'">Back</b-button>
+    </div>
+    <div v-else-if="inputMode === 'DONE'" class="productData">
       <b-card no-body class="productCard">
         <b-media>
           <template v-slot:aside>
@@ -116,11 +127,17 @@
           </span>
         </b-tab>
       </b-tabs>
+      <b-button v-on:click="inputMode = 'SELECT'">Scan another product</b-button>
     </div>
+    <b-modal id="modal-error" centered ok-only title="Error">
+      <p class="my-4">Product not found!</p>
+    </b-modal>
   </div>
 </template>
 
 <script>
+import Quagga from 'quagga';
+
 const axios = require('axios');
 // const config = require('../../../config.json');
 const offApiPath = 'https://world.openfoodfacts.org/api/v0/product/';
@@ -130,6 +147,7 @@ const productIDTest = '737628064502';
 const imagesExt = '.svg';
 const imagesContext = require.context('@/assets/productInfo/', true, /\.svg$/);
 
+console.log(Quagga);
 // TODO add function to format numbers (trim decimals and add dots for thousands)
 
 export default {
@@ -137,6 +155,7 @@ export default {
   data() {
     return {
       ean: productIDTest,
+      inputMode: 'SELECT',
       productShowing: false,
       status: 0,
       // OFF API values (factorize!)
@@ -180,6 +199,13 @@ export default {
       qty: 100,
       ingredientsText: '',
 
+      streamActive: false,
+      readerSize: {
+        width: 640,
+        height: 480,
+      },
+      aspectRatio: { min: 1, max: 2 },
+      detecteds: [],
     };
   },
   methods: {
@@ -195,6 +221,12 @@ export default {
           this.status = (response.data.status === 1)
                         && (response.data.code !== '')
                         && (Object.prototype.hasOwnProperty.call(response.data, 'product'));
+
+          if (!this.status) {
+            this.productNotFound();
+            return;
+          }
+
           this.productShowing = this.status;
           // Copying response.data.product
           const { product } = response.data;
@@ -273,10 +305,30 @@ export default {
           });
           this.ingredientsText = ingredientsTexts.join(', ');
           console.log(this.ingredientsText);
+          this.inputMode = 'DONE';
         }).catch((error) => {
           alert(JSON.stringify(error));
           console.log(error);
         });
+    },
+    productNotFound() {
+      this.$bvModal.show('modal-error');
+      this.inputMode = 'SELECT';
+    },
+    barcodeDetected(data) {
+      console.log('detected', data);
+
+      console.log(data.codeResult.code.trim());
+      console.log(data.codeResult.code.trim().length);
+
+      if (Object.prototype.hasOwnProperty.call(data, 'codeResult')
+       && Object.prototype.hasOwnProperty.call(data.codeResult, 'code')
+       && (data.codeResult.code.trim().length === 13 || data.codeResult.code.trim().length === 8)) {
+        alert(data.codeResult.code);
+        Quagga.stop();
+        this.ean = data.codeResult.code.trim();
+        this.submitEan();
+      }
     },
   },
 };
