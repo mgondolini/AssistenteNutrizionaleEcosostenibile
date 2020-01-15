@@ -1,13 +1,11 @@
 <template>
   <div class="productInfo">
-
     <div v-if="inputMode === 'SELECT'" class="buttonContainer">
         <b-button v-on:click="inputMode = 'MANUAL'">Manual insert</b-button>
         <b-button v-on:click="inputMode = 'STREAM'">Scan barcode</b-button>
         <b-button v-on:click="uploadFile()">Upload barcode</b-button>
         <b-button v-on:click="scanNutriTable()">Scan nutrition table</b-button>
     </div>
-
     <div v-else-if="inputMode === 'MANUAL'" id="insertEAN" class="buttonContainer">
       <div>
         <label for="ean">EAN code</label>
@@ -20,18 +18,15 @@
       <b-button v-on:click="submitEan()">Lookup</b-button>
       <b-button v-on:click="inputMode = 'SELECT'">Back</b-button>
     </div>
-
     <div v-else-if="inputMode === 'STREAM'" id="videoStream" class="buttonContainer">
       <v-quagga
-        :onDetected="logIt"
+        :onDetected="barcodeDetected"
         :readerSize="readerSize"
         :readerType="'ean_reader'"
         :aspectRatio="aspectRatio"
       ></v-quagga>
       <b-button v-on:click="inputMode = 'SELECT'">Back</b-button>
     </div>
-
-
     <div v-else-if="inputMode === 'DONE'" class="productData">
       <b-card no-body class="productCard">
         <b-media>
@@ -134,8 +129,9 @@
       </b-tabs>
       <b-button v-on:click="inputMode = 'SELECT'">Scan another product</b-button>
     </div>
-
-
+    <b-modal id="modal-error" centered ok-only title="Error">
+      <p class="my-4">Product not found!</p>
+    </b-modal>
   </div>
 </template>
 
@@ -225,6 +221,12 @@ export default {
           this.status = (response.data.status === 1)
                         && (response.data.code !== '')
                         && (Object.prototype.hasOwnProperty.call(response.data, 'product'));
+
+          if (!this.status) {
+            this.productNotFound();
+            return;
+          }
+
           this.productShowing = this.status;
           // Copying response.data.product
           const { product } = response.data;
@@ -309,7 +311,11 @@ export default {
           console.log(error);
         });
     },
-    logIt(data) {
+    productNotFound() {
+      this.$bvModal.show('modal-error');
+      this.inputMode = 'SELECT';
+    },
+    barcodeDetected(data) {
       console.log('detected', data);
 
       console.log(data.codeResult.code.trim());
@@ -321,7 +327,7 @@ export default {
         alert(data.codeResult.code);
         Quagga.stop();
         this.ean = data.codeResult.code.trim();
-        this.inputMode = 'DONE';
+        this.submitEan();
       }
     },
   },
