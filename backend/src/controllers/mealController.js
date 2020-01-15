@@ -1,6 +1,6 @@
 /* eslint-disable no-param-reassign */
 const mongoose = require('mongoose');
-// const authController = require('../controllers/authController');
+// const authController = require('./authController');
 const mealControllerUtils = require('./utils/mealControllerUtils.js');
 
 const Meals = mongoose.model('Meals');
@@ -8,7 +8,7 @@ const Meals = mongoose.model('Meals');
 /** Loads all the meals for a given user */
 exports.load_meals_list = async (req, res) => {
   console.log('looking for meal...'); // DEBUG
-
+  // const query = authController.getUsername(req.headers.token);
   const { query } = req;
 
   await Meals.findOne(query)
@@ -22,7 +22,7 @@ exports.load_meals_list = async (req, res) => {
         console.log(`Meals list for user ${req.query.username}:\n${meals}`); // DEBUG
       }
     })
-    .catch((err) => res.status(500).send(err));
+    .catch(() => res.status(500).send({ description: 'internal_server_error' }));
 };
 
 /** Loads a specific meal for a given user */
@@ -53,7 +53,7 @@ exports.load_meal = async (req, res) => {
         console.log(`Meal found for user ${req.query.username}:\n${meal}`); // DEBUG
       }
     })
-    .catch((err) => res.status(500).send(err));
+    .catch(() => res.status(500).send({ description: 'internal_server_error' }));
 };
 
 /** Inserts a new meal for a given user */
@@ -72,7 +72,7 @@ exports.new_meal = async (req, res) => {
         mealControllerUtils.addMeal(req, userMeals, res);
       }
     })
-    .catch((err) => res.status(500).send(err));
+    .catch(() => res.status(500).send({ description: 'internal_server_error' }));
 };
 
 /** Deletes a meal */
@@ -106,7 +106,7 @@ exports.delete_meal = async (req, res) => {
         res.status(200).json(meal);
       }
     })
-    .catch((err) => res.status(500).send(err));
+    .catch(() => res.status(500).send({ description: 'internal_server_error' }));
 };
 
 /** Creates a component for an existing meal */
@@ -125,7 +125,7 @@ exports.new_component = async (req, res) => {
       if (userMeals == null) res.status(404).send({ description: 'meal_not_found' });
       else mealControllerUtils.updateMealValues(components, timestamp, mealName, userMeals[0], res);
     })
-    .catch((err) => res.status(500).send(err));
+    .catch(() => res.status(500).send({ description: 'internal_server_error' }));
 };
 
 /** Deletes a component in a meal given the barcode */
@@ -150,5 +150,5 @@ exports.delete_component = async (req, res) => {
         mealControllerUtils.pullComponent(userMeals, date, mealName, barcode, res);
       }
     })
-    .catch((err) => res.status(500).send(err));
+    .catch(() => res.status(500).send({ description: 'internal_server_error' }));
 };

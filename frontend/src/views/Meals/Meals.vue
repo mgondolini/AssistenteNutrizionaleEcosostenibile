@@ -25,16 +25,17 @@
         class="input-new-meal"
         trim
       ></b-form-input>
-      <b-form-invalid-feedback id="input-live-feedback">
-        {{ $t(inputCheckMessage) }}
-      </b-form-invalid-feedback>
       <b-button
         pill
         variant="link"
         class="button-add p-0"
         @click="addMeal(mealName)"
-      ><img class="add-meal" src="../../assets/buttons/add.svg">
+      >
+       <img class="add-meal" src="../../assets/buttons/add.svg">
       </b-button>
+      <b-form-invalid-feedback id="input-live-feedback">
+        {{ $t(inputCheckMessage) }}
+      </b-form-invalid-feedback>
     </b-card>
     <div
       v-if="mealsListByDate.length > 0"
@@ -126,10 +127,6 @@ export default {
       UTCDate: Number,
       mealName: '',
       inputCheckMessage: '',
-      date: {
-        key: 'date',
-        value: '',
-      },
       calendar: {
         key: 'calendar',
         value: '',
