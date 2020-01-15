@@ -25,16 +25,17 @@
         class="input-new-meal"
         trim
       ></b-form-input>
-      <b-form-invalid-feedback id="input-live-feedback">
-        {{ $t(inputCheckMessage) }}
-      </b-form-invalid-feedback>
       <b-button
         pill
         variant="link"
         class="button-add p-0"
         @click="addMeal(mealName)"
-      ><img class="add-meal" src="../../assets/buttons/add.svg">
+      >
+       <img class="add-meal" src="../../assets/buttons/add.svg">
       </b-button>
+      <b-form-invalid-feedback id="input-live-feedback">
+        {{ $t(inputCheckMessage) }}
+      </b-form-invalid-feedback>
     </b-card>
     <div
       v-if="mealsListByDate.length > 0"
@@ -62,7 +63,7 @@
               pill
               variant="link"
               class="add-component p-0"
-              @click="addComponent(meal.meal_name)"
+              @click="addComponent(meal.meal_name, meal.timestamp)"
             >
               <img class="add mr-2" src="../../assets/buttons/plus.svg">
               {{ $t('add_component') }}
@@ -126,10 +127,6 @@ export default {
       UTCDate: Number,
       mealName: '',
       inputCheckMessage: '',
-      date: {
-        key: 'date',
-        value: '',
-      },
       calendar: {
         key: 'calendar',
         value: '',
@@ -199,10 +196,10 @@ export default {
         .then(() => this.loadMealsList())
         .catch(error => this.checkError(error.response.data.description));
     },
-    addComponent(mealName) {
+    addComponent(mealName, timestamp) {
       // Passo meal name, per accedere alla query dalla pagina info prodotto
       // devo fare: this.$route.query.mealName
-      this.$router.push({ path: '/info_prod', query: { mealName } });
+      this.$router.push({ path: '/info_prod', query: { mealName, date: timestamp } });
     },
     removeComponent(barcode, mealName) {
       const username = 'mrossi';
