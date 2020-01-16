@@ -36,7 +36,7 @@
           </template>
           <p>{{ productName }}</p>
           <p>{{ productVendor }}</p>
-          <p>{{ productPortion }}</p>
+          <p>{{ productPortion }} g</p>
         </b-media>
       </b-card>
       <b-tabs content-class="mt-3" justified>
@@ -128,6 +128,9 @@
         </b-tab>
       </b-tabs>
       <b-button v-on:click="inputMode = 'SELECT'">Scan another product</b-button>
+      <b-button v-if="mealName && mealDate"
+                v-on:click="insertProductInMeal()">
+        Add product to "{{mealName}}"</b-button>
     </div>
     <b-modal id="modal-error" centered ok-only title="Error">
       <p class="my-4">Product not found!</p>
@@ -147,7 +150,6 @@ const productIDTest = '737628064502';
 const imagesExt = '.svg';
 const imagesContext = require.context('@/assets/productInfo/', true, /\.svg$/);
 
-console.log(Quagga);
 // TODO add function to format numbers (trim decimals and add dots for thousands)
 
 export default {
@@ -158,11 +160,15 @@ export default {
       inputMode: 'SELECT',
       productShowing: false,
       status: 0,
+
+      mealName: '',
+      mealDate: '',
       // OFF API values (factorize!)
       imgPath: '',
       productName: '',
       productVendor: '',
       productPortion: '',
+      nutriScore: '',
       nutriScoreImgPath: '',
       novaGroupImgPath: '',
 
@@ -208,6 +214,11 @@ export default {
       detecteds: [],
     };
   },
+  mounted() {
+    this.mealName = this.$route.query.mealName || '';
+    this.mealDate = this.$route.query.date || '';
+    console.log(`${this.mealName} ${this.mealDate}`);
+  },
   methods: {
     submitEan() {
       console.log(`Requesting infos about ean ${this.ean}`);
@@ -237,11 +248,11 @@ export default {
           // Alternatively in response.data.brands
           // Absurd way to access brands_tags[0]
           [this.productVendor] = product.brands_tags;
-          this.productPortion = product.quantity;
+          this.productPortion = product.product_quantity;
 
           // NUTRITION TAB
-          const nutriScore = response.data.product.nutriscore_grade;
-          this.nutriScoreImgPath = imagesContext(`./nutriScore/${nutriScore}${imagesExt}`);
+          this.nutriScore = response.data.product.nutriscore_grade;
+          this.nutriScoreImgPath = imagesContext(`./nutriScore/${this.nutriScore}${imagesExt}`);
 
           // nutritional levels
           this.fatLvl = product.nutrient_levels.fat;
@@ -329,6 +340,46 @@ export default {
         this.ean = data.codeResult.code.trim();
         this.submitEan();
       }
+    },
+    insertProductInMeal() {
+      // console.log(this.$route.query);
+      console.log(`${this.mealName} ${this.mealDate}`);
+
+      const body = {
+        code: this.ean,
+        product_name: this.productName,
+        image_url: this.imgPath,
+        quantity: '',
+        brands: this.productVendor,
+        ingredients_text: this.ingredientsText,
+        traces: '',
+        serving_size: this.productPortion,
+        allergens: '',
+        energy_100g: this.energyKcal,
+        carbohydrates_100g: this.carbohydrates,
+        sugars_100g: this.sugar,
+        fat_100g: this.fat,
+        saturated_fat_100g: this.saturatedFat,
+        proteins_100g: this.proteins,
+        fiber_100g: this.fiber,
+        salt_100g: this.salt,
+        sodium_100g: this.sodium,
+        alcohol_100g: 0,
+        calcium_100g: 0,
+        nutrition_score_uk_100g: this.nutriScore,
+        carbon_footprint_100g: 0,
+        water_footprint_100g: 0,
+      };
+
+      this.$store.state.http.post('api/product', body)
+        .then((response) => {
+          console.log('Product created!');
+          console.log(response);
+        })
+        .catch((error) => {
+          console.log('Failed to create product');
+          console.log(error);
+        });
     },
   },
 };
