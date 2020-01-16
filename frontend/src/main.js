@@ -6,7 +6,7 @@ import VueCarousel from 'vue-carousel';
 import VueQuagga from 'vue-quaggajs';
 import App from './App.vue';
 import router from './router';
-import './custom.scss';
+import './custom.sass';
 import i18n from './i18n';
 
 

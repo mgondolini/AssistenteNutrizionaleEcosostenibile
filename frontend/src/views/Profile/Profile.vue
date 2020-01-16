@@ -27,7 +27,6 @@
               </div>
             </div>
           </div>
-
           <div class="row">
             <div class="col-12">
               <ul class="nav nav-tabs mb-4" id="myTab" role="tablist">
@@ -41,7 +40,6 @@
               <div class="tab-content ml-1" id="myTabContent">
                 <div class="tab-pane fade show active" id="basicInfo"
                   role="tabpanel" aria-labelledby="basicInfo-tab">
-
                   <div v-for="tmp in campi"
                     v-bind:key="tmp.key" >
                     <div class="row">
@@ -104,7 +102,8 @@
   <b-modal class="my-modal" hide-footer v-model="modalShow"
     title="Operation completed!!">{{ $t('operation') }}
   </b-modal>
-  <b-modal title="Errors!!" class="modal" v-model="modalErrorShow">{{ $t('error') }}</b-modal>
+  <b-modal title="Errors!!" hide-footer
+    class="modal" v-model="modalErrorShow">{{ $t('error') }}</b-modal>
 </div>
 </template>
 

@@ -102,16 +102,12 @@
       <router-link to='login' class="wrapper-inner-tab-backgrounds-first"
         v-if='this.$store.state.isLogged === false'
         style="text-decoration:none">
-        <div class="sim-button button1" >
-          <span>Login</span>
-        </div>
+        <b-button class="sim-button button1">Login</b-button>
       </router-link>
       <router-link to='registration' class="wrapper-inner-tab-backgrounds-first"
         v-if='this.$store.state.isLogged === false'
         style="text-decoration:none; margin-bottom:30px;">
-        <div class="sim-button button1" >
-          <span>{{ $t('reg') }}</span>
-        </div>
+        <b-button class="sim-button button1" >{{ $t('reg') }} </b-button>
       </router-link>
     </div>
   </div>

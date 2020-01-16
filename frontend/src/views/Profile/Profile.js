@@ -136,9 +136,8 @@ export default {
           birth_date: this.campi.dateOfBirth.value,
         };
 
-        this.$store.state.http.put('api/user', dataNew /* { params: param, data:  } */)
+        this.$store.state.http.put('api/user', dataNew)
           .then(() => {
-            // console.log('tutto ok!');
             this.modalShow = true;
           })
           .catch((error) => {
@@ -161,8 +160,8 @@ export default {
     },
   },
   mounted() {
+    this.modalShow = false;
     this.$store.state.http.get('api/user')
-    // this.$server.get(`api/user/${param.username}`, { params: param })
       .then((response) => {
         this.username = response.data.username;
         this.campi.name.value = response.data.name;
@@ -174,9 +173,11 @@ export default {
         this.campi.weight.value = response.data.weight;
         this.campi.height.value = response.data.height;
         this.campi.allergens.value = response.data.allergens;
-
-        this.campi.dateOfBirth.value = this.campi.dateOfBirth.dateParse('YYYY-MM-DD').dateFormat('MMMM D, YYYY');
       })
-      .catch(error => (error.toString()));
+      .catch((error) => {
+        error.toString();
+        this.modalShow = false;
+        this.modalErrorShow = true;
+      });
   },
 };
