@@ -2,13 +2,14 @@
   <div class="containerFather">
     <h3 class="chartTitle">{{ $t('intro') }}</h3>
     <div class="buttonsDisposition">
-      <div id="button" class="sim-button button1 buttonCalculate" v-on:click='changeGraphGlobal'>
-        <span>Global</span>
-      </div>
-      <div id="button" class="sim-button button1 buttonCalculate"
+      <b-button id="button" class="sim-button button1 buttonCalculate"
+        v-on:click='changeGraphGlobal'>
+        Global
+      </b-button>
+      <b-button id="button" class="sim-button button1 buttonCalculate"
         v-on:click='changeGraphComponent'>
-        <span>Component</span>
-      </div>
+        Component
+      </b-button>
     </div>
     <div class="container">
       <apexchart class="changeableGraph" type=pie height=450 width=800 :options="chartOptions"
@@ -189,8 +190,8 @@ export default {
   mounted() {
     // prendere username da sessione
     const username = 'mrossi';
-    const mealName = 'Cena';
-    const date = '2019-12-29T00:00:00.000Z';
+    const { mealName } = this.$route.query;
+    const { date } = this.$route.query;
     const params = { username, mealName, date };
     this.$store.state.http.get(`api/${params.username}/meals/${params.mealName}`, { params })
       .then((response) => {
@@ -271,8 +272,8 @@ export default {
 </i18n>
 
 <style lang="sass">
-  @import './calculateMeal'
-  @import './bubbleChrartEmissions'
-  .apexcharts-toolbar
-    display: none
+@import './calculateMeal'
+@import './bubbleChrartEmissions'
+.apexcharts-toolbar
+  display: none
 </style>
