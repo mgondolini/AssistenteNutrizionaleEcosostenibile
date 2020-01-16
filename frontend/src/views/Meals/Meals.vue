@@ -145,10 +145,10 @@ export default {
   methods: {
     loadMealsList() {
       // TODO: prendere username da sessione
-      const username = 'mrossi';
+      const username = 'kiur';
       const params = { username };
 
-      this.$store.state.http.get(`api/${params.username}/meals`, { params })
+      this.$store.state.http.get(`api/${params.username}/meals`)
         .then((response) => {
           this.mealsList = response.data.meals;
           this.showMealsByDate(this.currentDate);
