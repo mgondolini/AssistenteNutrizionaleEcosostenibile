@@ -11,7 +11,9 @@
     "allergen": "Allergens",
     "profile": "Profile of ",
     "operation": "Information updated successfully!!",
-    "error": "Errors occurred. Try again!"
+    "error": "Errors occurred. Try again!",
+    "unauthorized": "Unauthorized access",
+    "closeBtn": "Close me!"
 
   },
   "it": {
@@ -26,6 +28,8 @@
     "allergen": "Allergeni",
     "profile": "Profilo di ",
     "operation": "Informazioni aggiornate con successo!!",
-    "error": "Sono avvenuti degli errori. Riprova dopo!"
+    "error": "Sono avvenuti degli errori. Riprova dopo!",
+    "unauthorized": "Accesso non autorizzato",
+    "closeBtn": "Chiudi!"
   }
 }
