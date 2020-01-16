@@ -156,6 +156,7 @@ export default {
   name: 'productInfo',
   data() {
     return {
+      // TODO add control to verify that ean is indeed in number format
       ean: productIDTest,
       inputMode: 'SELECT',
       productShowing: false,
@@ -380,7 +381,7 @@ export default {
             username: 'mrossi',
             mealName: this.mealName,
             components: {
-              barcode: this.ean,
+              barcode: Number(this.ean),
               quantity: this.qty,
             },
             timestamp: this.mealDate,
@@ -388,7 +389,7 @@ export default {
           console.log('Adding product to meal');
           console.log(body2);
 
-          this.$store.state.http.post(`api/${body2.username}/meals/${body2.mealName}/components`, body2)
+          this.$store.state.http.put(`api/${body2.username}/meals/${body2.mealName}/components`, body2)
             .then((response2) => {
               console.log('Product added to meal!');
               console.log(response2);
