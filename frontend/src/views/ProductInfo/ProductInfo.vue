@@ -344,7 +344,7 @@ export default {
     insertProductInMeal() {
       // console.log(this.$route.query);
       console.log(`${this.mealName} ${this.mealDate}`);
-
+      // Creation of the new product
       const body = {
         code: this.ean,
         product_name: this.productName,
@@ -370,11 +370,33 @@ export default {
         carbon_footprint_100g: 0,
         water_footprint_100g: 0,
       };
-
       this.$store.state.http.post('api/product', body)
         .then((response) => {
           console.log('Product created!');
           console.log(response);
+
+          // Insertion of the new product into the meal
+          const body2 = {
+            username: 'mrossi',
+            mealName: this.mealName,
+            components: {
+              barcode: this.ean,
+              quantity: this.qty,
+            },
+            timestamp: this.mealDate,
+          };
+          console.log('Adding product to meal');
+          console.log(body2);
+
+          this.$store.state.http.post(`api/${body2.username}/meals/${body2.mealName}/components`, body2)
+            .then((response2) => {
+              console.log('Product added to meal!');
+              console.log(response2);
+            })
+            .catch((error) => {
+              console.log('Failed to add product to meal');
+              console.log(error);
+            });
         })
         .catch((error) => {
           console.log('Failed to create product');
