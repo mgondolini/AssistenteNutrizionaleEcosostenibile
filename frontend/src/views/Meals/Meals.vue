@@ -145,10 +145,7 @@ export default {
   methods: {
     loadMealsList() {
       // TODO: prendere username da sessione
-      const username = 'kiur';
-      const params = { username };
-
-      this.$store.state.http.get(`api/${params.username}/meals`)
+      this.$store.state.http.get('api/meals')
         .then((response) => {
           this.mealsList = response.data.meals;
           this.showMealsByDate(this.currentDate);
@@ -156,9 +153,7 @@ export default {
         .catch(error => console.log(error.response.data.description));
     },
     addMeal(mealName) {
-      const username = 'mrossi';
       const body = {
-        username, // username da sessione
         meals: {
           mealName,
           timestamp: new Date(this.UTCDate),
@@ -166,7 +161,7 @@ export default {
       };
       console.log(body); // DEBUG
       if (mealName.length > 0) {
-        this.$store.state.http.post(`api/${body.username}/meals`, body)
+        this.$store.state.http.post('api/meals', body)
           .then((response) => {
             this.mealNameState = true;
             this.mealsList = [];
@@ -183,16 +178,14 @@ export default {
       }
     },
     removeMeal(mealName) {
-      const username = 'mrossi';
       const params = {
-        username,
         mealName,
         date: new Date(this.UTCDate),
       };
 
       console.log(`remove${JSON.stringify(params)}`); // DEBUG
 
-      this.$store.state.http.delete(`api/${params.username}/meals/${params.mealName}`, { params })
+      this.$store.state.http.delete(`api/meals/${params.mealName}`, { params })
         .then(() => this.loadMealsList())
         .catch(error => this.checkError(error.response.data.description));
     },
@@ -202,16 +195,14 @@ export default {
       this.$router.push({ path: '/info_prod', query: { mealName, date: timestamp } });
     },
     removeComponent(barcode, mealName) {
-      const username = 'mrossi';
       const params = {
-        username,
         barcode,
         mealName,
         date: new Date(this.UTCDate),
       };
 
       console.log(params); // DEBUG
-      this.$store.state.http.delete(`api/${params.username}/meals/${params.mealName}/components`, { params })
+      this.$store.state.http.delete(`api/meals/${params.mealName}/components`, { params })
         .then((response) => {
           this.mealsList = [];
           this.mealsList = response.data.meals;
