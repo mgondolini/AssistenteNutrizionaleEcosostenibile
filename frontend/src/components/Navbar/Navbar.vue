@@ -23,7 +23,7 @@
                 <em>{{ $t('user') }}</em>
               </template>
                 <b-dropdown-item href="profile">{{ $t('profile') }}</b-dropdown-item>
-                <b-dropdown-item href="last_meals">{{ $t('last_meals') }}</b-dropdown-item>
+                <b-dropdown-item href="meals">{{ $t('meals') }}</b-dropdown-item>
                 <b-dropdown-item href="new_meal">{{ $t('new_meal') }}</b-dropdown-item>
                 <b-dropdown-item @click.prevent="signout">{{ $t('signout') }}</b-dropdown-item>
             </b-nav-item-dropdown>
@@ -78,7 +78,7 @@ export default {
     "prod_info": "Product informations",
     "user": "User",
     "profile": "My profile",
-    "last_meals": "My last meals",
+    "meals": "My last meals",
     "new_meal": "Insert new meal",
     "signout": "Signout"
   },
@@ -86,7 +86,7 @@ export default {
     "prod_info": "Informazioni prodotto",
     "user": "Utente",
     "profile": "Il mio profilo",
-    "last_meals": "I miei ultimi pasti",
+    "meals": "I miei ultimi pasti",
     "new_meal": "Inserisci nuovo pasto",
     "signout": "Esci"
   }

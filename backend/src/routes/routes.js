@@ -8,11 +8,10 @@ module.exports = function (app) {
     .get(keyController.getPublicKey);
 
   app.route('/api/user')
-    .post(userController.insert_user);
+    .get(userController.load_user)
+    .put(userController.update_user);
 
   app.route('/api/user/:username')
-    .get(userController.load_user)
-    .put(userController.update_user)
     .delete(userController.delete_user);
 
   app.route('/api/product')

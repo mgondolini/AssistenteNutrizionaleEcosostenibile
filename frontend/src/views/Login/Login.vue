@@ -24,7 +24,7 @@
               aria-describedby="email-help-block"
             ></b-form-input>
             <b-form-text id="email-help-block">
-              Non condivideremo mai la tua email con parti terze.
+              {{ $t('info') }}
             </b-form-text>
           </b-form-group>
           <b-form-group
@@ -40,16 +40,23 @@
               placeholder="Inserisci password"
               aria-describedby="password-help-block"
             ></b-form-input>
+            <button id="buttonHideShow" title="Hold down to show password"
+              @click="changeType" type = "button"></button>
             <b-form-text id="password-help-block">
-              La password deve avere lunghezza compresa tra 8 e 20 caratteri, può contenere
-              lettere e numeri ma non può contenere spazi bianchi, caratteri speciali o emoji.
+              {{ $t('info-psw') }}
             </b-form-text>
           </b-form-group>
         </div>
-        <div class="text-center">
-          <b-button type="submit" variant="primary">Login</b-button>
+        <div class="text-center buttonsDiv block">
+          <b-button class="sim-button button1" type="submit">Login</b-button>
         </div>
       </b-form>
+      <hr />
+      <span style="margin-right: 10px">{{ $t('not-reg') }}</span>
+      <router-link to='registration'
+        class="text-center buttonsDiv" style="text-decoration:none; margin-bottom:30px;">
+        <b-button class="sim-button button1">{{ $t('reg') }}</b-button>
+      </router-link>
     </b-card>
   </div>
 </template>
@@ -90,9 +97,36 @@ export default {
         });
       */
     },
+    changeType() {
+      const t = document.getElementById('input-password').type;
+      if (t === 'text') {
+        document.getElementById('input-password').type = 'password';
+        document.getElementById('buttonHideShow').style = 'background-position: 0px 0px';
+      } else {
+        document.getElementById('input-password').type = 'text';
+        document.getElementById('buttonHideShow').style = 'background-position: -44px 0px';
+      }
+    },
   },
 };
 </script>
-<style lang="scss">
-  @import './login.scss';
+
+<i18n>
+{
+  "en": {
+    "info": "We never share your email with third parties.",
+    "info-psw": "Password must be 8 to 20 characters long. It can not contains spaces.",
+    "not-reg": "Not registered?",
+    "reg": "Sign in"
+  },
+  "it": {
+    "info": " Non condivideremo mai la tua email con parti terze.",
+    "info-psw": "La password deve essere lunga tra 8 e 20 caratteri. Non può contenere spazi.",
+    "not-reg":"Non sei ancora registrato?",
+    "reg": "Registrati"
+  }
+}
+</i18n>
+<style lang="sass">
+  @import './login.sass'
 </style>

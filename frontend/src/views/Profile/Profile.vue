@@ -17,7 +17,7 @@
                   <img v-bind:src= "avatar" id="imgProfile"
                   class="card-avatar card-avatar--circle" />
                   <div class="middle">
-                    <input type="button" class="btn btn-secondary"
+                    <input v-show="isEditing" type="button" class="btn btn-secondary"
                     id="btnChangePicture" value="Change" v-on:click="activateBtn"/>
                     <input type="file" id="profilePicture" @change="uploadImgNew" name="file" />
                   </div>
@@ -25,13 +25,8 @@
               <div class="userData ml-3">
                 <h2 class="d-block"> {{ $t('profile') }} <br/><i>{{username}}</i></h2>
               </div>
-              <div class="ml-auto">
-                <input type="button" class="btn btn-primary d-none"
-                id="btnDiscard" value="Discard Changes" />
-              </div>
             </div>
           </div>
-
           <div class="row">
             <div class="col-12">
               <ul class="nav nav-tabs mb-4" id="myTab" role="tablist">
@@ -45,7 +40,6 @@
               <div class="tab-content ml-1" id="myTabContent">
                 <div class="tab-pane fade show active" id="basicInfo"
                   role="tabpanel" aria-labelledby="basicInfo-tab">
-
                   <div v-for="tmp in campi"
                     v-bind:key="tmp.key" >
                     <div class="row">
@@ -61,17 +55,21 @@
                         <div v-if="tmp.key == 'weight' || tmp.key == 'height'">
                           <b-input size="sm" v-model="tmp.value"
                             type="number"
-                            class="card-input"
+                            class="card-input-hw"
+                            :id="tmp.key"
                             :placeholder= "tmp.placeholder" ></b-input>
                         </div>
                         <div v-else-if="tmp.key == 'dateOfBirth'">
-                          <date-picker name="date" v-model="tmp.value"
+                          <date-picker class="card-input-date"
+                            name="date" v-model="tmp.value"
                             :config="options"
+                            :id="tmp.key"
                             value="dateOfBirth"></date-picker>
                         </div>
                         <div v-else-if="tmp.key == 'gender'">
                           <!--check che sia selezionato-->
-                          <b-select size="sm" v-model="tmp.value">
+                          <b-select class="card-input-g" :id="tmp.key"
+                            size="sm" v-model="tmp.value">
                             <option disabled value=""> {{ $t(`${tmp.key}`) }}</option>
                             <option v-for="opt in tmp.ar"
                             v-bind:key="opt" v-bind:value="opt">
@@ -79,10 +77,14 @@
                             </option>
                           </b-select>
                         </div>
+                        <div v-else-if="tmp.key == 'email'">
+                          <span> {{`${tmp.value}`}}</span>
+                        </div>
                         <div v-else>
                           <b-input size="sm" v-model="tmp.value"
                             type="text"
-                            class="card-input"
+                            class="card-input-ns"
+                            :id="tmp.key"
                             :placeholder= "tmp.placeholder" ></b-input>
                         </div>
                       </div>
@@ -97,6 +99,11 @@
       </div>
     </div>
   </div>
+  <b-modal class="my-modal" hide-footer v-model="modalShow"
+    title="Operation completed!!">{{ $t('operation') }}
+  </b-modal>
+  <b-modal title="Errors!!" hide-footer
+    class="modal" v-model="modalErrorShow">{{ $t('error') }}</b-modal>
 </div>
 </template>
 
@@ -105,6 +112,6 @@
 
 <i18n src="./languageText.json"></i18n>
 
-<style>
-  @import './Profile.scss';
+<style lang="sass">
+@import './Profile.sass'
 </style>

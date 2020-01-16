@@ -1,37 +1,156 @@
 $header-color: #17a2b8
 $border-color: #d3d3d3
 $black: #000
+$white: #fff
 
 .meals
   h1
     color: $header-color
-    margin: 3%
+    margin-bottom: 1%
+    margin-left: 3%
+    margin-right: 3%
+    margin-top: 3%
+    padding-bottom: 0
+
+
+  .trashcan
+    float: right
+    height: 1.5rem
+    width: 1.5rem
 
   .remove
-    width: 4%
+    height: 1.25rem
+    margin-top: 2rem
+    width: 1.25rem
 
   .add
     width: 10%
 
-  .add-meal
-    width: 20%
+
+  .card-calendar
+    border: 0
+
+    .card-body
+      font-size: small
+      padding: 0
+
+    .date-p
+      display: inline-block
+      width: 75%
+
+    .calendar
+      float: left
+      height: 1.5rem
+      width: 1.5rem
+
+    .meals-datepicker
+      height: 0
+      padding: 0
+      width: 0
+
+
+  .card-new-meal
+    border: 0
+
+    .card-body
+      padding-left: 0
+
+    .input-new-meal
+      float: left
+      margin-right: 5px
+      width: 40%
+
+    .date-new-meal
+      float: left
+      margin-right: 5px
+      width: 20%
+
+    .button-add
+      float: left
+
+    .add-meal
+      float: right
+      height: 2rem
+      width: 2rem
+
+  .add-component
+    display: flex
+
 
   @media only screen and (min-width: 380px)
     .card-img-left
       align-self: center
-      height: 15vh
+      height: 8em
+      max-width: 6em
 
+    .card-new-meal
+      border: 0
+
+      .card-body
+        padding-left: 1px
+
+      .input-new-meal
+        width: 75%
+        margin-left: 1.25rem
+
+      .date-new-meal
+        width: 30%
+
+      .input-live-feedback
+        margin-left: 1.25rem
+        max-width: 50%
+        
     .component-p
       font-size: small
+
+    .card-text
+      padding: 1em
+
+    .card-components-text
+      float: left
+      width: 80%
+
+    .meal-name-p
+      display: inline-block
+      width: 80%
 
 
   @media only screen and (max-width: 480px)
     .card-img-left
       align-self: center
-      height: 15vh
+      height: 8em
+      max-width: 6em
+
+    .card-new-meal
+      border: 0
+
+      .card-body
+        padding-left: 5px
+
+      .input-new-meal
+        margin-left: 1.5rem
+        width: 75%
+
+      .date-new-meal
+        width: 30%
+
+      .input-live-feedback
+        margin-left: 1.25rem
+        max-width: 50%
 
     .component-p
       font-size: small
+
+    .card-text
+      padding: .5em
+
+    .card-components-text
+      float: left
+      width: 80%
+
+    .meal-name-p
+      display: inline-block
+      width: 80%
 
 
   @media only screen and (min-width: 600px)
@@ -39,12 +158,31 @@ $black: #000
       margin: 0 auto
       max-width: 90%
 
+    .card-new-meal
+      margin: 10px auto
+      max-width: 90%
+
+      .input-live-feedback
+        display: flex
+        margin-left: 1.5rem
+
     .card-img-left
       align-self: center
-      height: 15vh
+      height: 10em
+      max-width: 10em
 
     .component-p
       font-size: medium
+
+    .card-text
+      padding: 1.25em
+
+    .card-components-text
+      width: 90%
+
+    .meal-name-p
+      display: inline-block
+      width: 95%
 
 
   @media only screen and (min-width: 768px)
@@ -52,11 +190,30 @@ $black: #000
       margin: 0 auto
       max-width: 70%
 
+    .card-new-meal
+      margin: 10px auto
+      max-width: 70%
+      
+      .input-live-feedback
+        display: flex
+        margin-left: 1.5rem
+
     .card-img-left
       align-self: center
-      height: 18vh
-      width: 100px
+      height: 10em
+      max-width: 10em
 
     .component-p
       font-size: medium
+
+    .card-text
+      padding: 1.25em
+
+    .card-components-text
+      width: 90%
+
+    .meal-name-p
+      display: inline-block
+      width: 95%
+
 
