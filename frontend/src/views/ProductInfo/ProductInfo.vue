@@ -14,6 +14,7 @@
           v-model="ean"
           value=""
         >
+        <b-form-select v-model="ean" :options="eanOptions"></b-form-select>
       </div>
       <b-button v-on:click="submitEan()">Lookup</b-button>
       <b-button v-on:click="inputMode = 'SELECT'">Back</b-button>
@@ -213,6 +214,16 @@ export default {
       },
       aspectRatio: { min: 1, max: 2 },
       detecteds: [],
+
+      eanOptions: [
+        { value: '737628064502', text: 'Noodles' },
+        { value: '20969578', text: 'Sbrisolona' },
+        { value: '8001300240785', text: 'Tonno' },
+        { value: '5411188110835', text: 'Latte' },
+        { value: '4104420208629', text: 'Spaghetti' },
+        { value: '3560070240258', text: 'Chips' },
+        { value: '8001300500773', text: 'Lievito' },
+      ],
     };
   },
   mounted() {
@@ -303,7 +314,8 @@ export default {
 
           // INGREDIENTS TAB
           const novaGroup = product.nova_group;
-          this.novaGroupImgPath = imagesContext(`./novaGroup/${novaGroup}${imagesExt}`);
+          // TODO use placeholder if nova score is missing
+          this.novaGroupImgPath = novaGroup ? imagesContext(`./novaGroup/${novaGroup}${imagesExt}`) : '';
 
           const { ingredients } = product;
           const ingredientsTexts = [];
@@ -403,6 +415,7 @@ export default {
           console.log('Failed to create product');
           console.log(error);
         });
+      this.$router.push({ path: '/meals', query: { date: this.mealDate } });
     },
   },
 };
