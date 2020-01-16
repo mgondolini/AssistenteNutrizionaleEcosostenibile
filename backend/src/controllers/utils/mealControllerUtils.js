@@ -193,6 +193,8 @@ exports.updateMealValues = async (components, timestamp, mealName, userMeals, re
 
   this.computeMealValues(barcode, quantity, res)
     .then((values) => {
+      let updated = false;
+
       userMeals.meals.forEach((meal) => {
         if (meal.timestamp.getUTCDate() === new Date(timestamp).getUTCDate()
           && meal.timestamp.getUTCMonth() === new Date(timestamp).getUTCMonth()
@@ -226,12 +228,19 @@ exports.updateMealValues = async (components, timestamp, mealName, userMeals, re
 
             // Add passed components to meal's components array
             meal.components.push(components);
+            updated = true;
           }
         }
       });
-      userMeals.save()
-        .then((meals) => res.status(200).json(meals))
-        .catch((err) => res.status(500).send(err));
+      if (updated === true) {
+        // salvo il pasto
+        userMeals.save()
+          .then((meals) => res.status(200).json(meals))
+          .catch((err) => res.status(500).send(err));
+      } else {
+        // Se non ho trovato il pasto mando un messaggio di errore
+        res.status(400).send({ description: 'meal_not_found' });
+      }
     });
 };
 
@@ -239,6 +248,7 @@ exports.updateMealValues = async (components, timestamp, mealName, userMeals, re
 exports.pullComponent = async (userMeals, timestamp, mealName, barcode, res) => {
   // Controllo se esiste un pasto con il nome passato
   // e tolgo il componente corrispondente la barcode
+  let updated = false;
   userMeals.meals.forEach((meal) => {
     if (meal.timestamp.getUTCDate() === new Date(timestamp).getUTCDate()
       && meal.timestamp.getUTCMonth() === new Date(timestamp).getUTCMonth()
@@ -248,13 +258,19 @@ exports.pullComponent = async (userMeals, timestamp, mealName, barcode, res) => 
           // eslint-disable-next-line eqeqeq
           if (component.barcode == barcode) {
             meal.components = meal.components.pull(component);
+            updated = true;
           }
         });
       }
     }
   });
 
-  userMeals.save()
-    .then((meals) => res.status(200).json(meals))
-    .catch((err) => res.status(500).send(err));
+  if (updated === true) {
+    userMeals.save()
+      .then((meals) => res.status(200).json(meals))
+      .catch((err) => res.status(500).send(err));
+  } else {
+    // Se non ho trovato il pasto mando un messaggio di errore
+    res.status(400).send({ description: 'meal_not_found' });
+  }
 };

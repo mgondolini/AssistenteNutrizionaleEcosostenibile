@@ -13,13 +13,14 @@ exports.load_meals_list = async (req, res) => {
 
   await Meals.findOne(query)
     .exec()
-    .then((meals) => {
-      if (meals.length === 0) {
-        res.status(404).send({ description: 'meal_not_found' });
+    .then((userMeals) => {
+      console.log(userMeals);
+      if (userMeals.length === 0) {
+        res.status(400).send({ description: 'meal_not_found' });
         console.log(`Meals not found for user ${req.query.username}`); // DEBUG
       } else {
-        res.status(200).json(meals);
-        console.log(`Meals list for user ${req.query.username}:\n${meals}`); // DEBUG
+        res.status(200).json(userMeals);
+        console.log(`Meals list for user ${req.query.username}:\n${userMeals}`); // DEBUG
       }
     })
     .catch(() => res.status(500).send({ description: 'internal_server_error' }));
@@ -46,7 +47,7 @@ exports.load_meal = async (req, res) => {
     .exec()
     .then((meal) => {
       if (meal.length === 0) {
-        res.status(404).send({ description: 'meal_not_found' });
+        res.status(400).send({ description: 'meal_not_found' });
         console.log(`Meal not found for user ${req.query.username}`); // DEBUG
       } else {
         res.status(200).json(meal);
@@ -99,7 +100,7 @@ exports.delete_meal = async (req, res) => {
     .exec()
     .then((meal) => {
       if (meal.length === 0) {
-        res.status(404).send({ description: 'meal_not_found' });
+        res.status(400).send({ description: 'meal_not_found' });
         console.log(`Meal not found for user ${req.query.username}`); // DEBUG
       } else {
         console.log(`Meal updated for user ${req.query.username}:\n${JSON.stringify(meal)}`); // DEBUG
@@ -119,11 +120,11 @@ exports.new_component = async (req, res) => {
   const query = { username };
   console.log(`NEW COMPONENT\nmealName${JSON.stringify(mealName)}\ncomponents${JSON.stringify(components)}`); // DEBUG
 
-  await Meals.find(query)
+  await Meals.findOne(query)
     .exec()
     .then((userMeals) => {
       if (userMeals == null) res.status(404).send({ description: 'meal_not_found' });
-      else mealControllerUtils.updateMealValues(components, timestamp, mealName, userMeals[0], res);
+      else mealControllerUtils.updateMealValues(components, timestamp, mealName, userMeals, res);
     })
     .catch(() => res.status(500).send({ description: 'internal_server_error' }));
 };
@@ -141,7 +142,7 @@ exports.delete_component = async (req, res) => {
     .exec()
     .then((userMeals) => {
       if (userMeals.length === 0) {
-        res.status(404).send({ description: 'meal_not_found' });
+        res.status(400).send({ description: 'meal_not_found' });
         console.log(`Meal not found for user ${req.query.username}`); // DEBUG
       } else {
         console.log(`Meal updated for user ${req.query.username}:\n${userMeals}`); // DEBUG
