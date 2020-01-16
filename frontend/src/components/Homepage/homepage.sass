@@ -1,7 +1,4 @@
-$white: #fff
-$background_color_1: #17a2b8
-$background_color_3: #2EA968
-
+@import '../globalCompStyle/globalStyle.sass'
 *
   box-sizing: inherit
   transition-property: all
@@ -23,39 +20,6 @@ p
   margin: 5%
   text-align: justify
 
-.buttonsDiv, .buttonsDisposition
-  margin: 0 auto
-  display: flex
-  flex-direction: column
-  max-width: 100%
-
-  .sim-button
-    line-height: 50px
-    height: 50px
-    text-align: center
-    margin-right: auto
-    margin-left: auto
-    margin-top: 35px
-    width: 25%
-    cursor: pointer
-
-  .button1
-    background-color: $background_color_1 !important
-    color: $white
-    -webkit-transition: all 0.5s !important
-    -moz-transition: all 0.5s !important
-    -o-transition: all 0.5s !important
-    transition: all 0.5s !important
-    position: relative
-    border: 1px solid $background_color_1 !important
-
-    &:hover
-      background-color: $white
-      color: $white
-      -webkit-border-radius: 25px
-      -moz-border-radius: 25px
-      border-radius: 25px
-
 .homeImagesScroll
   width: 80%
 
@@ -72,14 +36,6 @@ p
 
   .vc_col-sm-4
     width: 33%
-
-  .buttonsDiv
-    flex-direction: row
-    justify-content: space-evenly
-    max-width: 40%
-
-    .sim-button
-      width: 15vh
 
   .titleBanner
     font-size: 3vw

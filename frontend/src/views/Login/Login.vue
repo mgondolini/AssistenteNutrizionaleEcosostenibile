@@ -129,4 +129,5 @@ export default {
 </i18n>
 <style lang="sass">
   @import './login.sass'
+  @import '../../components/globalCompStyle/globalStyle.sass'
 </style>
