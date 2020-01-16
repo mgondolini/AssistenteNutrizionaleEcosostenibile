@@ -128,5 +128,4 @@ export default {
 
 <style lang="sass">
   @import './homepage.sass'
-  @import '../globalCompStyle/globalStyle.sass'
 </style>

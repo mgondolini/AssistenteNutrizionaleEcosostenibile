@@ -114,5 +114,4 @@
 
 <style lang="sass">
 @import './Profile.sass'
-@import '../../components/globalCompStyle/globalStyle.sass'
 </style>

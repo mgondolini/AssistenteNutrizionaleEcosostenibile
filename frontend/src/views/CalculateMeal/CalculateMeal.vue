@@ -274,7 +274,6 @@ export default {
 <style lang="sass">
 @import './calculateMeal'
 @import './bubbleChrartEmissions'
-@import '../../components/globalCompStyle/globalStyle.sass'
 .apexcharts-toolbar
   display: none
 </style>
