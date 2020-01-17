@@ -6,7 +6,7 @@
         v-on:click='changeGraphGlobal'>
         Global
       </b-button>
-      <b-button v-show="this.buttonToShow" id="button" class="sim-button button1 buttonCalculate"
+      <b-button id="button" class="sim-button button1 buttonCalculate"
         v-on:click='changeGraphComponent'>
         Component
       </b-button>
@@ -47,7 +47,6 @@ export default {
       errorMsgModal: '',
       modalErrorShow: false,
       toLogin: false,
-      buttonToShow: false,
       series: [{
         name: '',
         data: [],
@@ -230,14 +229,7 @@ export default {
         });
 
         Object.values(response.data.meals[0]).forEach((v, i) => {
-          if (i > 2 && i < 13) {
-            if (v > 0.0001) {
-              this.componentsMeal.av.push(v);
-              this.buttonToShow = true;
-            } else {
-              this.buttonToShow = false;
-            }
-          }
+          if (i > 2 && i < 13) { if (v > 0.0001) this.componentsMeal.av.push(v); }
         });
         this.calculate();
       }).catch(error => this.checkError(error.description));
