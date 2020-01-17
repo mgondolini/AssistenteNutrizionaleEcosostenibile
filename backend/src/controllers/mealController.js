@@ -15,8 +15,8 @@ exports.load_meals_list = async (req, res) => {
   await Meals.findOne(query)
     .exec()
     .then((userMeals) => {
-      console.log(userMeals);
-      if (userMeals.length === 0) {
+      console.log(`userMeals${userMeals}`);
+      if (userMeals === null) {
         res.status(400).send({ description: 'meal_not_found' });
         console.log(`Meals not found for user ${username}`); // DEBUG
       } else {
@@ -24,7 +24,7 @@ exports.load_meals_list = async (req, res) => {
         console.log(`Meals list for user ${username}:\n${userMeals}`); // DEBUG
       }
     })
-    .catch(() => res.status(500).send({ description: 'internal_server_error' }));
+    .catch((err) => res.status(500).send(err));
 };
 
 /** Loads a specific meal for a given user */
@@ -66,6 +66,8 @@ exports.load_meal = async (req, res) => {
 exports.new_meal = async (req, res) => {
   const username = authController.getUsername(req.headers.token);
   const query = { username };
+  console.log(username);
+  console.log(`date----- ${req.body.meals.timestamp}`); // DEBUG
 
   await Meals.findOne(query)
     .exec()

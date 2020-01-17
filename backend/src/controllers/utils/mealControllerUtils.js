@@ -38,14 +38,21 @@ exports.addMeal = (req, userMeals, res) => {
   const { timestamp } = req.body.meals;
   const updateMeal = new Meals(userMeals);
 
-  console.log(timestamp); // DEBUG
+  console.log(`timestamp${timestamp}`); // DEBUG
 
   // controllo se ci sono pasti per lo stesso utente con lo stesso nome che voglio inserire
   userMeals.meals.forEach((m) => {
+    console.log(1);
+    console.log(`${m.timestamp.getUTCDate()}-${new Date(timestamp).getUTCDate()}`);
+
     if (m.timestamp.getUTCDate() === new Date(timestamp).getUTCDate()
       && m.timestamp.getUTCMonth() === new Date(timestamp).getUTCMonth()
       && m.timestamp.getUTCFullYear() === new Date(timestamp).getUTCFullYear()) {
-      if (m.meal_name === mealName) exists = true;
+      console.log('2');
+      if (m.meal_name === mealName) {
+        console.log('3');
+        exists = true;
+      }
     }
   });
 
@@ -75,13 +82,14 @@ exports.addMeal = (req, userMeals, res) => {
 
 
 /** Creates the first meal of a user */
-exports.createFirstMeal = (req, res) => {
-  const { username } = req.body;
+exports.createFirstMeal = (username, req, res) => {
   const { mealName } = req.body.meals;
   const { timestamp } = req.body.meals;
 
   const newMeal = new Meals();
   newMeal.username = username;
+
+  console.log(`create first meal${timestamp}`);
 
   // Inizializzo i campi e lo aggiungo all'array dei pasti
   const mealToAdd = this.initMealValues(mealName, timestamp);
