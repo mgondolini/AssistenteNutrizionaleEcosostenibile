@@ -24,8 +24,9 @@ exports.load_meals_list = async (req, res) => {
         console.log(`Meals list for user ${req.query.username}:\n${userMeals}`); // DEBUG
       }
     })
-    .catch((err) => res.status(500).send({description: 'internal_server_error'})
+    .catch(() => res.status(500).send({ description: 'internal_server_error' }));
 };
+
 
 /** Loads a specific meal for a given user */
 exports.load_meal = async (req, res) => {
@@ -77,7 +78,7 @@ exports.new_meal = async (req, res) => {
         mealControllerUtils.addMeal(req, userMeals, res);
       }
     })
-    .catch((err) => res.status(500).send({description: 'internal_server_error'}));
+    .catch((err) => res.status(500).send({ description: 'internal_server_error' }));
 };
 
 /** Deletes a meal */
