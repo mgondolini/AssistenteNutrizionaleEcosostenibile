@@ -18,10 +18,10 @@ exports.load_meals_list = async (req, res) => {
       console.log(`userMeals${userMeals}`);
       if (userMeals === null) {
         res.status(400).send({ description: 'meal_not_found' });
-        console.log(`Meals not found for user ${req.query.username}`); // DEBUG
+        console.log(`Meals not found for user ${username}`); // DEBUG
       } else {
         res.status(200).json(userMeals);
-        console.log(`Meals list for user ${req.query.username}:\n${userMeals}`); // DEBUG
+        console.log(`Meals list for user ${username}:\n${userMeals}`); // DEBUG
       }
     })
     .catch((err) => res.status(500).send(err));
@@ -31,11 +31,12 @@ exports.load_meals_list = async (req, res) => {
 exports.load_meal = async (req, res) => {
   console.log('looking for meal to load...'); // DEBUG
   const username = authController.getUsername(req.headers.token);
+  console.log(username);
 
   // Lato client passare la data del pasto in formato UTC
   const query = { username };
   const projection = {
-    username: req.query.username,
+    username: username,
     meals: {
       $elemMatch: {
         meal_name: req.query.mealName,
@@ -49,13 +50,16 @@ exports.load_meal = async (req, res) => {
     .then((meal) => {
       if (meal.length === 0) {
         res.status(400).send({ description: 'meal_not_found' });
-        console.log(`Meal not found for user ${req.query.username}`); // DEBUG
+        console.log(`Meal not found for user ${username}`); // DEBUG
       } else {
         res.status(200).json(meal);
-        console.log(`Meal found for user ${req.query.username}:\n${meal}`); // DEBUG
+        console.log(`Meal found for user ${username}:\n${meal}`); // DEBUG
       }
     })
-    .catch(() => res.status(500).send({ description: 'internal_server_error' }));
+    .catch((er) => {
+      console.log('errore in load_meal'.concat(er));
+      res.status(500).send({ description: 'internal_server_error' })
+    });
 };
 
 /** Inserts a new meal for a given user */
@@ -68,16 +72,18 @@ exports.new_meal = async (req, res) => {
   await Meals.findOne(query)
     .exec()
     .then((userMeals) => {
-      console.log(userMeals);
-      if (userMeals === null) {
-        mealControllerUtils.createFirstMeal(username, req, res);
+      if (userMeals == null) {
+        mealControllerUtils.createFirstMeal(req, res);
         console.log(`Meal not found for user ${username}\n Inserting...`); // DEBUG
       } else {
         console.log(`Meal found for user ${username}:\n${userMeals}`); // DEBUG
         mealControllerUtils.addMeal(req, userMeals, res);
       }
     })
-    .catch((err) => res.status(500).send(err));
+    .catch((er) => {
+      console.log('pippo '.concat(er));
+      res.status(500).send({ description: 'internal_server_error' })
+      });
 };
 
 /** Deletes a meal */
