@@ -1,6 +1,6 @@
 /* eslint-disable no-param-reassign */
 const mongoose = require('mongoose');
-// const authController = require('./authController');
+const authController = require('./authController');
 const mealControllerUtils = require('./utils/mealControllerUtils.js');
 
 const Meals = mongoose.model('Meals');
@@ -8,8 +8,9 @@ const Meals = mongoose.model('Meals');
 /** Loads all the meals for a given user */
 exports.load_meals_list = async (req, res) => {
   console.log('looking for meal...'); // DEBUG
-  // const query = authController.getUsername(req.headers.token);
-  const { query } = req;
+  const username = authController.getUsername(req.headers.token);
+  const query = { username };
+  console.log(query);
 
   await Meals.findOne(query)
     .exec()
@@ -29,7 +30,7 @@ exports.load_meals_list = async (req, res) => {
 /** Loads a specific meal for a given user */
 exports.load_meal = async (req, res) => {
   console.log('looking for meal to load...'); // DEBUG
-  const { username } = req.query;
+  const username = authController.getUsername(req.headers.token);
 
   // Lato client passare la data del pasto in formato UTC
   const query = { username };
@@ -59,7 +60,7 @@ exports.load_meal = async (req, res) => {
 
 /** Inserts a new meal for a given user */
 exports.new_meal = async (req, res) => {
-  const { username } = req.body;
+  const username = authController.getUsername(req.headers.token);
   const query = { username };
 
   await Meals.findOne(query)
@@ -78,9 +79,9 @@ exports.new_meal = async (req, res) => {
 
 /** Deletes a meal */
 exports.delete_meal = async (req, res) => {
+  const username = authController.getUsername(req.headers.token);
   const { mealName } = req.query;
   const { date } = req.query;
-  const { username } = req.query;
 
   console.log(`date----- ${date}`); // DEBUG
 
@@ -112,7 +113,7 @@ exports.delete_meal = async (req, res) => {
 
 /** Creates a component for an existing meal */
 exports.new_component = async (req, res) => {
-  const { username } = req.body;
+  const username = authController.getUsername(req.headers.token);
   const { mealName } = req.body;
   const { timestamp } = req.body;
   const { components } = req.body;
@@ -131,10 +132,11 @@ exports.new_component = async (req, res) => {
 
 /** Deletes a component in a meal given the barcode */
 exports.delete_component = async (req, res) => {
-  const { username } = req.query;
+  const username = authController.getUsername(req.headers.token);
   const { mealName } = req.query;
   const { date } = req.query;
   const { barcode } = req.query;
+
   const query = { username };
 
   // Controllo se esistono pasti per l'utente

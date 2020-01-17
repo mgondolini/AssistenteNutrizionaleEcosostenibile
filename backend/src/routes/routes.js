@@ -18,15 +18,15 @@ module.exports = function (app) {
     .get(productController.load_product)
     .post(productController.insert_product);
 
-  app.route('/api/:user/meals/')
+  app.route('/api/meals/')
     .get(mealController.load_meals_list)
     .post(mealController.new_meal);
 
-  app.route('/api/:user/meals/:mealName')
+  app.route('/api/meals/:mealName')
     .get(mealController.load_meal)
     .delete(mealController.delete_meal);
 
-  app.route('/api/:user/meals/:mealName/components')
+  app.route('/api/meals/:mealName/components')
     .put(mealController.new_component)
     .delete(mealController.delete_component);
 };
