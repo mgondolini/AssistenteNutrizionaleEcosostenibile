@@ -69,9 +69,8 @@ exports.new_meal = async (req, res) => {
   await Meals.findOne(query)
     .exec()
     .then((userMeals) => {
-      console.log(userMeals);
       if (userMeals === null) {
-        mealControllerUtils.createFirstMeal(username, req, res);
+        res.status(500).send({ description: 'internal_server_error' });
         console.log(`Meal not found for user ${username}\n Inserting...`); // DEBUG
       } else {
         console.log(`Meal found for user ${username}:\n${userMeals}`); // DEBUG
