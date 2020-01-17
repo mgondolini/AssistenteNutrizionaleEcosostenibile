@@ -5,6 +5,22 @@ const SingleMeal = mongoose.model('SingleMeal');
 const Meals = mongoose.model('Meals');
 const Products = mongoose.model('Product');
 
+/** Creates user document inside Meals collection */
+exports.initUserMeals = (username, res) => {
+  const userMeals = new Meals();
+  userMeals.username = username;
+  userMeals.meals = [];
+  userMeals.save()
+    .then((userMeal) => {
+      console.log(`userMeals created -> ${userMeal}`); // DEBUG
+      res.status(200).json(userMeal);
+    })
+    .catch((err) => {
+      console.log(`error while creating userMeals ${err}`); // DEBUG
+      res.status(500).send({ description: 'internal_server_error' });
+    });
+};
+
 
 /** Inits meal values to 0 */
 exports.initMealValues = (mealName, timestamp) => {
@@ -73,32 +89,6 @@ exports.addMeal = (req, userMeals, res) => {
   } else {
     res.status(400).send({ description: 'meal_name_exists' });
   }
-};
-
-
-/** Creates the first meal of a user */
-exports.createFirstMeal = (username, req, res) => {
-  const { mealName } = req.body.meals;
-  const { timestamp } = req.body.meals;
-
-  const newMeal = new Meals();
-  newMeal.username = username;
-
-  console.log(`create first meal${timestamp}`);
-
-  // Inizializzo i campi e lo aggiungo all'array dei pasti
-  const mealToAdd = this.initMealValues(mealName, timestamp);
-  newMeal.meals.push(mealToAdd);
-
-  newMeal.save()
-    .then((meal) => {
-      console.log(`meal created -> ${meal}`); // DEBUG
-      res.status(201).json(meal);
-    })
-    .catch(() => {
-      console.log('error while creating new meal'); // DEBUG
-      res.status(500).send({ description: 'internal_server_error' });
-    });
 };
 
 
