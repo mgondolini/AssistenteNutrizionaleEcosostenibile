@@ -17,15 +17,16 @@ exports.load_meals_list = async (req, res) => {
     .then((userMeals) => {
       console.log(`userMeals${userMeals}`);
       if (userMeals === null) {
-        res.status(400).send({ description: 'meal_not_found' });
+        res.status(400).send({ description: 'mealslist_not_found' });
         console.log(`Meals not found for user ${username}`); // DEBUG
       } else {
         res.status(200).json(userMeals);
         console.log(`Meals list for user ${username}:\n${userMeals}`); // DEBUG
       }
     })
-    .catch((err) => res.status(500).send(err));
+    .catch(() => res.status(500).send({ description: 'internal_server_error' }));
 };
+
 
 /** Loads a specific meal for a given user */
 exports.load_meal = async (req, res) => {
@@ -36,7 +37,7 @@ exports.load_meal = async (req, res) => {
   // Lato client passare la data del pasto in formato UTC
   const query = { username };
   const projection = {
-    username: username,
+    username: req.query.username,
     meals: {
       $elemMatch: {
         meal_name: req.query.mealName,
@@ -66,7 +67,7 @@ exports.load_meal = async (req, res) => {
 exports.new_meal = async (req, res) => {
   const username = authController.getUsername(req.headers.token);
   const query = { username };
-  console.log(username);
+
   console.log(`date----- ${req.body.meals.timestamp}`); // DEBUG
 
   await Meals.findOne(query)
@@ -80,10 +81,7 @@ exports.new_meal = async (req, res) => {
         mealControllerUtils.addMeal(req, userMeals, res);
       }
     })
-    .catch((er) => {
-      console.log('pippo '.concat(er));
-      res.status(500).send({ description: 'internal_server_error' })
-      });
+    .catch((err) => res.status(500).send(err));
 };
 
 /** Deletes a meal */
@@ -111,9 +109,9 @@ exports.delete_meal = async (req, res) => {
     .then((meal) => {
       if (meal.length === 0) {
         res.status(400).send({ description: 'meal_not_found' });
-        console.log(`Meal not found for user ${req.query.username}`); // DEBUG
+        console.log(`Meal not found for user ${username}`); // DEBUG
       } else {
-        console.log(`Meal updated for user ${req.query.username}:\n${JSON.stringify(meal)}`); // DEBUG
+        console.log(`Meal updated for user ${username}:\n${JSON.stringify(meal)}`); // DEBUG
         res.status(200).json(meal);
       }
     })
@@ -154,9 +152,9 @@ exports.delete_component = async (req, res) => {
     .then((userMeals) => {
       if (userMeals.length === 0) {
         res.status(400).send({ description: 'meal_not_found' });
-        console.log(`Meal not found for user ${req.query.username}`); // DEBUG
+        console.log(`Meal not found for user ${username}`); // DEBUG
       } else {
-        console.log(`Meal updated for user ${req.query.username}:\n${userMeals}`); // DEBUG
+        console.log(`Meal updated for user ${username}:\n${userMeals}`); // DEBUG
         // Se esistono pasti chiamo questa funzione che: cerca il pasto corrispondente al nome dato,
         // cerca il componente e lo elimina
         mealControllerUtils.pullComponent(userMeals, date, mealName, barcode, res);

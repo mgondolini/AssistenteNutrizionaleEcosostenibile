@@ -42,15 +42,10 @@ exports.addMeal = (req, userMeals, res) => {
 
   // controllo se ci sono pasti per lo stesso utente con lo stesso nome che voglio inserire
   userMeals.meals.forEach((m) => {
-    console.log(1);
-    console.log(`${m.timestamp.getUTCDate()}-${new Date(timestamp).getUTCDate()}`);
-
     if (m.timestamp.getUTCDate() === new Date(timestamp).getUTCDate()
       && m.timestamp.getUTCMonth() === new Date(timestamp).getUTCMonth()
       && m.timestamp.getUTCFullYear() === new Date(timestamp).getUTCFullYear()) {
-      console.log('2');
       if (m.meal_name === mealName) {
-        console.log('3');
         exists = true;
       }
     }
@@ -100,9 +95,9 @@ exports.createFirstMeal = (username, req, res) => {
       console.log(`meal created -> ${meal}`); // DEBUG
       res.status(201).json(meal);
     })
-    .catch((err) => {
+    .catch(() => {
       console.log('error while creating new meal'); // DEBUG
-      res.status(500).send(err);
+      res.status(500).send({ description: 'internal_server_error' });
     });
 };
 
@@ -122,8 +117,8 @@ exports.valuePerPortion = (value, quantity) => {
 };
 
 
-/** Computes values for a meal */
-exports.computeMealValues = async (barcode, quantity, res) => {
+/** Computes product values for a given quantity */
+exports.computeProductValues = async (barcode, quantity, res) => {
   let productName;
   let imageUrl;
   let energyTot;
@@ -182,7 +177,6 @@ exports.computeMealValues = async (barcode, quantity, res) => {
     carbon_footprint_tot: carbonFootprintTot,
     water_footprint_tot: waterFootprintTot,
   };
-  console.log(`VALUES -> ${JSON.stringify(values)}`); // DEBUG
 
   return values;
 };
