@@ -59,7 +59,7 @@ exports.load_meal = async (req, res) => {
     })
     .catch((er) => {
       console.log('errore in load_meal'.concat(er));
-      res.status(500).send({ description: 'internal_server_error' })
+      res.status(500).send({ description: 'internal_server_error' });
     });
 };
 
