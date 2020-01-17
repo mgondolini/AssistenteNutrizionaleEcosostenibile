@@ -17,14 +17,14 @@ exports.load_meals_list = async (req, res) => {
     .then((userMeals) => {
       console.log(`userMeals${userMeals}`);
       if (userMeals === null) {
-        res.status(400).send({ description: 'meal_not_found' });
+        res.status(400).send({ description: 'mealslist_not_found' });
         console.log(`Meals not found for user ${req.query.username}`); // DEBUG
       } else {
         res.status(200).json(userMeals);
         console.log(`Meals list for user ${req.query.username}:\n${userMeals}`); // DEBUG
       }
     })
-    .catch((err) => res.status(500).send(err));
+    .catch((err) => res.status(500).send({description: 'internal_server_error'})
 };
 
 /** Loads a specific meal for a given user */
@@ -62,7 +62,7 @@ exports.load_meal = async (req, res) => {
 exports.new_meal = async (req, res) => {
   const username = authController.getUsername(req.headers.token);
   const query = { username };
-  console.log(username);
+
   console.log(`date----- ${req.body.meals.timestamp}`); // DEBUG
 
   await Meals.findOne(query)
@@ -77,7 +77,7 @@ exports.new_meal = async (req, res) => {
         mealControllerUtils.addMeal(req, userMeals, res);
       }
     })
-    .catch((err) => res.status(500).send(err));
+    .catch((err) => res.status(500).send({description: 'internal_server_error'}));
 };
 
 /** Deletes a meal */
