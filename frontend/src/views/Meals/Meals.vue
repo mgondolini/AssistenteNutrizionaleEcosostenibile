@@ -152,7 +152,7 @@ export default {
           this.mealsList = response.data.meals;
           this.showMealsByDate(this.currentDate);
         })
-        .catch(error => console.log(error.response.data.description));
+        .catch(error => this.checkError(error.response.data.description));
     },
     addMeal(mealName) {
       this.UTCDate = Date.UTC(
@@ -259,6 +259,8 @@ export default {
       if (error === 'internal_server_error' || error === 'meal_not_found') {
         this.inputCheckMessage = error;
         this.$bvModal.show('modal-error');
+      } else if (error === 'mealslist_not_found') {
+        this.noMeals = 'no_meals';
       } else {
         this.inputCheckMessage = error;
       }
