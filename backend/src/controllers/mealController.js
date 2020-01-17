@@ -18,10 +18,10 @@ exports.load_meals_list = async (req, res) => {
       console.log(`userMeals${userMeals}`);
       if (userMeals === null) {
         res.status(400).send({ description: 'mealslist_not_found' });
-        console.log(`Meals not found for user ${req.query.username}`); // DEBUG
+        console.log(`Meals not found for user ${username}`); // DEBUG
       } else {
         res.status(200).json(userMeals);
-        console.log(`Meals list for user ${req.query.username}:\n${userMeals}`); // DEBUG
+        console.log(`Meals list for user ${username}:\n${userMeals}`); // DEBUG
       }
     })
     .catch(() => res.status(500).send({ description: 'internal_server_error' }));
@@ -36,7 +36,7 @@ exports.load_meal = async (req, res) => {
   // Lato client passare la data del pasto in formato UTC
   const query = { username };
   const projection = {
-    username: req.query.username,
+    username,
     meals: {
       $elemMatch: {
         meal_name: req.query.mealName,
@@ -50,10 +50,10 @@ exports.load_meal = async (req, res) => {
     .then((meal) => {
       if (meal.length === 0) {
         res.status(400).send({ description: 'meal_not_found' });
-        console.log(`Meal not found for user ${req.query.username}`); // DEBUG
+        console.log(`Meal not found for user ${username}`); // DEBUG
       } else {
         res.status(200).json(meal);
-        console.log(`Meal found for user ${req.query.username}:\n${meal}`); // DEBUG
+        console.log(`Meal found for user ${username}:\n${meal}`); // DEBUG
       }
     })
     .catch(() => res.status(500).send({ description: 'internal_server_error' }));
@@ -106,9 +106,9 @@ exports.delete_meal = async (req, res) => {
     .then((meal) => {
       if (meal.length === 0) {
         res.status(400).send({ description: 'meal_not_found' });
-        console.log(`Meal not found for user ${req.query.username}`); // DEBUG
+        console.log(`Meal not found for user ${username}`); // DEBUG
       } else {
-        console.log(`Meal updated for user ${req.query.username}:\n${JSON.stringify(meal)}`); // DEBUG
+        console.log(`Meal updated for user ${username}:\n${JSON.stringify(meal)}`); // DEBUG
         res.status(200).json(meal);
       }
     })
@@ -149,9 +149,9 @@ exports.delete_component = async (req, res) => {
     .then((userMeals) => {
       if (userMeals.length === 0) {
         res.status(400).send({ description: 'meal_not_found' });
-        console.log(`Meal not found for user ${req.query.username}`); // DEBUG
+        console.log(`Meal not found for user ${username}`); // DEBUG
       } else {
-        console.log(`Meal updated for user ${req.query.username}:\n${userMeals}`); // DEBUG
+        console.log(`Meal updated for user ${username}:\n${userMeals}`); // DEBUG
         // Se esistono pasti chiamo questa funzione che: cerca il pasto corrispondente al nome dato,
         // cerca il componente e lo elimina
         mealControllerUtils.pullComponent(userMeals, date, mealName, barcode, res);
