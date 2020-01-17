@@ -1,6 +1,7 @@
 const mongoose = require('mongoose');
 const crypto = require('crypto');
 const auth = require('./authController');
+const mealControllerUtils = require('./utils/mealControllerUtils.js');
 
 const User = mongoose.model('User');
 
@@ -36,6 +37,9 @@ exports.createNewUser = function createNewUser(req, res) {
     .then((user) => {
       console.log(`User created ->${user}`); // DEBUG
       res.status(201).json(user);
+
+      // Init user document inside Meals collection
+      mealControllerUtils.initUserMeals(user.username);
     })
     .catch((err) => {
       // check existing user
