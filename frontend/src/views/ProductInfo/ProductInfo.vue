@@ -404,6 +404,8 @@ export default {
             .then((response2) => {
               console.log('Product added to meal!');
               console.log(response2);
+              this.$router.push({ path: '/meals', query: { date: this.mealDate } });
+              // TODO refactor with AWAIT
             })
             .catch((error) => {
               console.log('Failed to add product to meal');
@@ -414,7 +416,6 @@ export default {
           console.log('Failed to create product');
           console.log(error);
         });
-      this.$router.push({ path: '/meals', query: { date: this.mealDate } });
     },
   },
 };
