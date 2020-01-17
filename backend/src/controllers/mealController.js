@@ -78,7 +78,7 @@ exports.new_meal = async (req, res) => {
         mealControllerUtils.addMeal(req, userMeals, res);
       }
     })
-    .catch((err) => res.status(500).send({ description: 'internal_server_error' }));
+    .catch(() => res.status(500).send({ description: 'internal_server_error' }));
 };
 
 /** Deletes a meal */
