@@ -145,6 +145,8 @@ export default {
   methods: {
     loadMealsList() {
       // TODO: prendere username da sessione
+      console.log(this.currentDate);
+
       this.$store.state.http.get('api/meals')
         .then((response) => {
           this.mealsList = response.data.meals;
@@ -153,6 +155,11 @@ export default {
         .catch(error => console.log(error.response.data.description));
     },
     addMeal(mealName) {
+      this.UTCDate = Date.UTC(
+        this.currentDate.getFullYear(),
+        this.currentDate.getMonth(),
+        this.currentDate.getDate(),
+      );
       const body = {
         meals: {
           mealName,
