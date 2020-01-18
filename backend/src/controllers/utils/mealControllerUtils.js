@@ -183,7 +183,7 @@ exports.updateMealValues = async (components, timestamp, mealName, userMeals, re
   // alla quantità in grammi che ho inserito,
   // poi incremento i valori del pasto aggiungendo il risultato ottenuto
 
-  this.computeMealValues(barcode, quantity, res)
+  this.computeProductValues(barcode, quantity, res)
     .then((values) => {
       let updated = false;
 
