@@ -37,7 +37,7 @@ exports.load_meal = async (req, res) => {
   // Lato client passare la data del pasto in formato UTC
   const query = { username };
   const projection = {
-    username: req.query.username,
+    username,
     meals: {
       $elemMatch: {
         meal_name: req.query.mealName,
