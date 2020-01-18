@@ -260,7 +260,7 @@ exports.pullComponent = async (userMeals, timestamp, mealName, barcode, res) => 
   if (updated === true) {
     userMeals.save()
       .then((meals) => res.status(200).json(meals))
-      .catch((err) => res.status(500).send(err));
+      .catch(() => res.status(500).send({ description: 'internal_server_error' }));
   } else {
     // Se non ho trovato il pasto mando un messaggio di errore
     res.status(400).send({ description: 'meal_not_found' });
