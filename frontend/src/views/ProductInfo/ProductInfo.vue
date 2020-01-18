@@ -401,7 +401,7 @@ export default {
           console.log('Adding product to meal');
           console.log(body2);
 
-          this.$store.state.http.put(`api/${body2.username}/meals/${body2.mealName}/components`, body2)
+          this.$store.state.http.put(`api/meals/${body2.mealName}/components`, body2)
             .then((response2) => {
               console.log('Product added to meal!');
               console.log(response2);

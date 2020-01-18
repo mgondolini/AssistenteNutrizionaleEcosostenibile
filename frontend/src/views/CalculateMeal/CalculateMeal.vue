@@ -189,11 +189,10 @@ export default {
   },
   mounted() {
     // prendere username da sessione
-    const username = 'mrossi';
     const { mealName } = this.$route.query;
     const { date } = this.$route.query;
-    const params = { username, mealName, date };
-    this.$store.state.http.get(`api/${params.username}/meals/${params.mealName}`, { params })
+    const params = { mealName, date };
+    this.$store.state.http.get(`api/meals/${params.mealName}`, { params })
       .then((response) => {
         response.data.meals[0].components.forEach((elem) => {
           this.composition.al.push(elem.product_name.concat(' - ').concat(elem.quantity).concat(' g'));
