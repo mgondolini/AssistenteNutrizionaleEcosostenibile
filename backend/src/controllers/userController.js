@@ -4,6 +4,19 @@ const auth = require('./authController');
 const mealControllerUtils = require('./utils/mealControllerUtils.js');
 
 const User = mongoose.model('User');
+const Who = mongoose.model('who');
+
+function getFabbisognoQuery(dataN, sesso) {
+  const ageDiffMs = new Date().getTime() - dataN;
+  const ageDate = new Date(ageDiffMs);
+  const age = Math.abs(ageDate.getFullYear() - 1970);
+  const s = sesso === 'm' ? 'male' : 'female';
+  return {
+    age_min: { $lt: age },
+    age_max: { $gt: age },
+    sex: s,
+  };
+}
 
 /** Creates a new user */
 exports.createNewUser = function createNewUser(req, res) {
@@ -19,32 +32,38 @@ exports.createNewUser = function createNewUser(req, res) {
     keyLen,
     digest).toString();
 
-  const newUser = new User({
-    username: b.username,
-    password_hash_salt: pswHashSalt,
-    salt: sale,
-    name: b.name,
-    surname: b.surname,
-    birth_date: dataN,
-    email: b.email,
-    sex: b.sex,
-    user_img_url: 'https://cdn.pixabay.com/photo/2012/04/13/21/07/user-33638_960_720.png',
-    weight: parseInt(b.weight, 10),
-    height: parseInt(b.height, 10),
-    allergens: b.allergens,
-  });
-  newUser.save()
-    .then((user) => {
-      console.log(`User created ->${user}`); // DEBUG
-      res.status(201).json(user);
-
-      // Init user document inside Meals collection
-      mealControllerUtils.initUserMeals(user.username);
-    })
-    .catch((err) => {
-      // check existing user
-      res.send(err);
+  Who.findOne(getFabbisognoQuery(new Date(b.birth_date).getTime(), b.sex)).exec().then((fab) => {
+    const newUser = new User({
+      username: b.username,
+      password_hash_salt: pswHashSalt,
+      salt: sale,
+      name: b.name,
+      surname: b.surname,
+      birth_date: dataN,
+      email: b.email,
+      sex: b.sex,
+      user_img_url: 'https://cdn.pixabay.com/photo/2012/04/13/21/07/user-33638_960_720.png',
+      weight: parseInt(b.weight, 10),
+      height: parseInt(b.height, 10),
+      allergens: b.allergens,
+      fabbisogno: fab,
     });
+    newUser.save()
+      .then((user) => {
+        console.log(`User created ->${user}`); // DEBUG
+        // res.status(201).json(user);
+        // Init user document inside Meals collection
+        mealControllerUtils.initUserMeals(user.username, res);
+      })
+      .catch((err) => {
+        console.log('createNewUser saveError: '.concat(err));
+        res.status(500).send();
+      });
+    //
+  }).catch((e) => {
+    console.log('createNewUser findWhoError: '.concat(e));
+    res.status(500).send();
+  });
 };
 
 exports.checkUser = function checkUser(req, res) {
