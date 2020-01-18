@@ -107,7 +107,7 @@ exports.load_user = async (req, res) => {
     .exec()
     .then((user) => {
       if (user == null) {
-        res.status(404).send({ description: 'User not found' });
+        res.status(404).send({ description: 'user_not_found' });
         console.log('User not found'); // DEBUG
       } else {
         res.status(200).json(user);

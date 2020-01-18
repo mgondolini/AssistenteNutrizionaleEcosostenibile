@@ -36,6 +36,12 @@
                   aria-controls="basicInfo" aria-selected="true">
                   {{ $t('info') }}</a>
                 </li>
+                 <li class="nav-item">
+                    <a class="nav-link" id="achievements-tab"
+                    data-toggle="tab" href="#achievements" role="tab"
+                    aria-controls="achievements" aria-selected="false">
+                    {{ $t('achievements') }}</a>
+                </li>
               </ul>
               <div class="tab-content ml-1" id="myTabContent">
                 <div class="tab-pane fade show active" id="basicInfo"
@@ -92,6 +98,10 @@
                     <hr />
                   </div>
                 </div>
+                <div class="tab-pane fade" id="achievements" role="tabpanel"
+                  aria-labelledby="achievements-tab">
+                    <Achievements />
+                </div>
               </div>
             </div>
           </div>
@@ -99,11 +109,14 @@
       </div>
     </div>
   </div>
-  <b-modal class="my-modal" hide-footer v-model="modalShow"
-    title="Operation completed!!">{{ $t('operation') }}
+  <b-modal id="modal-error" title="Error"
+    hide-footer v-model="modalErrorShow">
+    <div class="d-block text-center">
+      <img src="https://img.icons8.com/color/48/000000/restriction-shield.png">
+      {{ this.errorMsgModal }}
+    </div>
+    <b-button class="mt-3" block @click="hideModal">{{ $t('closeBtn')}}</b-button>
   </b-modal>
-  <b-modal title="Errors!!" hide-footer
-    class="modal" v-model="modalErrorShow">{{ $t('error') }}</b-modal>
 </div>
 </template>
 
