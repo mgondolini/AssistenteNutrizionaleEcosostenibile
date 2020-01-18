@@ -107,7 +107,7 @@
       <p>{{ $t(this.noMeals) }}</p>
     </div>
     <b-modal id="modal-error" title="Error" hide-footer>
-      {{ $t(this.inputCheckMessage) }}
+      {{ $t(this.modalMessage) }}
     </b-modal>
   </div>
 </template>
@@ -127,6 +127,7 @@ export default {
       UTCDate: Number,
       mealName: '',
       inputCheckMessage: '',
+      modalMessage: '',
       calendar: {
         key: 'calendar',
         value: '',
@@ -257,7 +258,7 @@ export default {
     },
     checkError(error) {
       if (error === 'internal_server_error' || error === 'meal_not_found') {
-        this.inputCheckMessage = error;
+        this.modalMessage = error;
         this.$bvModal.show('modal-error');
       } else if (error === 'mealslist_not_found') {
         this.noMeals = 'no_meals';
@@ -272,7 +273,7 @@ export default {
 };
 </script>
 
-
+<i18n src='../../locales/errorMessages.json'></i18n>
 <i18n>
 {
   "en": {
@@ -282,10 +283,7 @@ export default {
     "date": "Date",
     "calculate_meal": "Calculate meal",
     "meal_name_null": "Meal name cannot be null",
-    "meal_name_exists": "Meal name already in use.",
-    "meal_not_found": "Meal not found.",
-    "no_meals": "No meals inserted on this date yet",
-    "internal_server_error": "500 Internal Server Error"
+    "no_meals": "No meals inserted on this date yet"
   },
   "it": {
     "meals": "I tuoi pasti",
@@ -294,10 +292,7 @@ export default {
     "date": "Data",
     "calculate_meal": "Calcola pasto",
     "meal_name_null": "Il nome del pasto non può essere nullo",
-    "meal_name_exists": "Nome pasto già esistente.",
-    "meal_not_found": "Pasto non trovato.",
-    "no_meals": "Non sono ancora stati inseriti pasti in questa data",
-    "internal_server_error": "500 Errore interno al Server"
+    "no_meals": "Non sono ancora stati inseriti pasti in questa data"
   }
 }
 </i18n>
