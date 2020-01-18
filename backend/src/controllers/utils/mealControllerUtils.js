@@ -1,7 +1,7 @@
 /* eslint-disable no-param-reassign */
 const mongoose = require('mongoose');
 
-const productControllerUtils = require('./utils/productControllerUtils.js');
+const productControllerUtils = require('./productControllerUtils.js');
 
 const SingleMeal = mongoose.model('SingleMeal');
 const Meals = mongoose.model('Meals');
