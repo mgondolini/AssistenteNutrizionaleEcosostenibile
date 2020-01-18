@@ -1,4 +1,5 @@
 import datePicker from 'vue-bootstrap-datetimepicker';
+import Achievements from './Achievements.vue';
 
 export default {
   data() {
@@ -62,6 +63,7 @@ export default {
   },
   components: {
     datePicker,
+    Achievements,
   },
   computed: {
     cardStates() {

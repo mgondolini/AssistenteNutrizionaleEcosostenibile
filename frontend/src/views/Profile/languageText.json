@@ -13,7 +13,8 @@
     "operation": "Information updated successfully!!",
     "error": "Errors occurred. Try again!",
     "unauthorized": "Unauthorized access",
-    "closeBtn": "Close me!"
+    "closeBtn": "Close me!",
+    "achievements": "Achievements"
 
   },
   "it": {
@@ -30,6 +31,7 @@
     "operation": "Informazioni aggiornate con successo!!",
     "error": "Sono avvenuti degli errori. Riprova dopo!",
     "unauthorized": "Accesso non autorizzato",
-    "closeBtn": "Chiudi!"
+    "closeBtn": "Chiudi!",
+    "achievements": "I tuoi obiettivi"
   }
 }
