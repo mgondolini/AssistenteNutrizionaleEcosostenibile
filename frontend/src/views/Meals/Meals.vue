@@ -145,20 +145,22 @@ export default {
   methods: {
     loadMealsList() {
       // TODO: prendere username da sessione
-      const username = 'mrossi';
-      const params = { username };
+      console.log(this.currentDate);
 
-      this.$store.state.http.get(`api/${params.username}/meals`, { params })
+      this.$store.state.http.get('api/meals')
         .then((response) => {
           this.mealsList = response.data.meals;
           this.showMealsByDate(this.currentDate);
         })
-        .catch(error => console.log(error.response.data.description));
+        .catch(error => this.checkError(error.response.data.description));
     },
     addMeal(mealName) {
-      const username = 'mrossi';
+      this.UTCDate = Date.UTC(
+        this.currentDate.getFullYear(),
+        this.currentDate.getMonth(),
+        this.currentDate.getDate(),
+      );
       const body = {
-        username, // username da sessione
         meals: {
           mealName,
           timestamp: new Date(this.UTCDate),
@@ -166,7 +168,7 @@ export default {
       };
       console.log(body); // DEBUG
       if (mealName.length > 0) {
-        this.$store.state.http.post(`api/${body.username}/meals`, body)
+        this.$store.state.http.post('api/meals', body)
           .then((response) => {
             this.mealNameState = true;
             this.mealsList = [];
@@ -183,16 +185,14 @@ export default {
       }
     },
     removeMeal(mealName) {
-      const username = 'mrossi';
       const params = {
-        username,
         mealName,
         date: new Date(this.UTCDate),
       };
 
       console.log(`remove${JSON.stringify(params)}`); // DEBUG
 
-      this.$store.state.http.delete(`api/${params.username}/meals/${params.mealName}`, { params })
+      this.$store.state.http.delete(`api/meals/${params.mealName}`, { params })
         .then(() => this.loadMealsList())
         .catch(error => this.checkError(error.response.data.description));
     },
@@ -202,16 +202,14 @@ export default {
       this.$router.push({ path: '/info_prod', query: { mealName, date: timestamp } });
     },
     removeComponent(barcode, mealName) {
-      const username = 'mrossi';
       const params = {
-        username,
         barcode,
         mealName,
         date: new Date(this.UTCDate),
       };
 
       console.log(params); // DEBUG
-      this.$store.state.http.delete(`api/${params.username}/meals/${params.mealName}/components`, { params })
+      this.$store.state.http.delete(`api/meals/${params.mealName}/components`, { params })
         .then((response) => {
           this.mealsList = [];
           this.mealsList = response.data.meals;
@@ -223,7 +221,7 @@ export default {
     calculateMeal(mealName, timestamp) {
       // Passo meal name, per accedere alla query dalla pagina calculate meal
       // devo fare: this.$route.query.mealName
-      console.log(mealName, timestamp);
+      console.log(`Meals calculateMeal ${mealName}`, timestamp);
       this.$router.push({ path: '/calculate_meal_composition', query: { mealName, date: timestamp } });
     },
     showMealsByDate(date) {
@@ -261,6 +259,8 @@ export default {
       if (error === 'internal_server_error' || error === 'meal_not_found') {
         this.inputCheckMessage = error;
         this.$bvModal.show('modal-error');
+      } else if (error === 'mealslist_not_found') {
+        this.noMeals = 'no_meals';
       } else {
         this.inputCheckMessage = error;
       }

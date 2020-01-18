@@ -4,7 +4,7 @@ export default {
   name: 'registration',
   data() {
     return {
-      datePlaceholder: new Date().toLocaleDateString(),
+      datePlaceholder: new Date().toISOString().split('T')[0],
       form: {
         email: '',
         password: '',
@@ -24,7 +24,7 @@ export default {
         allergens: '',
       },
       options: {
-        format: 'YYYY/MM/DD',
+        format: 'YYYY-MM-DD',
         useCurrent: false,
         showClear: false,
         showClose: true,
