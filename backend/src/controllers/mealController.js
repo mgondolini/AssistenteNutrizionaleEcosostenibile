@@ -5,6 +5,35 @@ const mealControllerUtils = require('./utils/mealControllerUtils.js');
 
 const Meals = mongoose.model('Meals');
 
+/** Creates user document inside Meals collection */
+exports.initUserMeals = async (username, res) => {
+  const userMeals = new Meals();
+  userMeals.username = username;
+  userMeals.meals = [];
+  userMeals.save()
+    .then((userMeal) => {
+      console.log(`userMeals created -> ${userMeal}`); // DEBUG
+      res.status(200).json(userMeal);
+    })
+    .catch((err) => {
+      console.log(`error while creating userMeals ${err}`); // DEBUG
+      res.status(500).send({ description: 'internal_server_error' });
+    });
+};
+
+
+/** Deletes user document inside Meals collection */
+exports.deleteUserMeals = async (username, res) => {
+  const query = { username };
+  Meals.remove(query)
+    .then((removed) => {
+      console.log(`User Meal document removed for user ${username}:\n${JSON.stringify(removed)}`); // DEBUG
+      res.status(200).send({ message: 'user_meal_removed' });
+    })
+    .catch(res.status(500).send({ description: 'internal_server_error' }));
+};
+
+
 /** Loads all the meals for a given user */
 exports.load_meals_list = async (req, res) => {
   console.log('looking for meal...'); // DEBUG
@@ -37,7 +66,7 @@ exports.load_meal = async (req, res) => {
   // Lato client passare la data del pasto in formato UTC
   const query = { username };
   const projection = {
-    username: req.query.username,
+    username,
     meals: {
       $elemMatch: {
         meal_name: req.query.mealName,
