@@ -8,6 +8,7 @@ const User = mongoose.model('User');
 /** Creates a new user */
 exports.createNewUser = function createNewUser(req, res) {
   const b = req.body;
+  const dataN = new Date(b.birth_date).toISOString();
   const iterations = 420;
   const keyLen = 512;
   const digest = 'sha512';
@@ -24,7 +25,7 @@ exports.createNewUser = function createNewUser(req, res) {
     salt: sale,
     name: b.name,
     surname: b.surname,
-    birth_date: b.birth_date,
+    birth_date: dataN,
     email: b.email,
     sex: b.sex,
     user_img_url: 'https://cdn.pixabay.com/photo/2012/04/13/21/07/user-33638_960_720.png',

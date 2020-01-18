@@ -32,11 +32,12 @@ exports.load_meals_list = async (req, res) => {
 exports.load_meal = async (req, res) => {
   console.log('looking for meal to load...'); // DEBUG
   const username = authController.getUsername(req.headers.token);
+  console.log(username);
 
   // Lato client passare la data del pasto in formato UTC
   const query = { username };
   const projection = {
-    username,
+    username: req.query.username,
     meals: {
       $elemMatch: {
         meal_name: req.query.mealName,
@@ -56,7 +57,10 @@ exports.load_meal = async (req, res) => {
         console.log(`Meal found for user ${username}:\n${meal}`); // DEBUG
       }
     })
-    .catch(() => res.status(500).send({ description: 'internal_server_error' }));
+    .catch((er) => {
+      console.log('errore in load_meal'.concat(er));
+      res.status(500).send({ description: 'internal_server_error' });
+    });
 };
 
 /** Inserts a new meal for a given user */
@@ -77,7 +81,7 @@ exports.new_meal = async (req, res) => {
         mealControllerUtils.addMeal(req, userMeals, res);
       }
     })
-    .catch(() => res.status(500).send({ description: 'internal_server_error' }));
+    .catch((err) => res.status(500).send(err));
 };
 
 /** Deletes a meal */

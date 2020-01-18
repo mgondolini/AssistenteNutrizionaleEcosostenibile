@@ -21,6 +21,14 @@
       <apexchart type=bubble height=350 width=600 :options="chartBubbleWaterOptions"
       :series="series2" />
     </div>
+    <b-modal id="modal-error" title="Error"
+      hide-footer v-model="modalErrorShow">
+      <div class="d-block text-center">
+        <img src="https://img.icons8.com/color/48/000000/restriction-shield.png">
+        {{ this.errorMsgModal }}
+      </div>
+      <b-button class="mt-3" block @click="hideModal">{{ $t('closeBtn')}}</b-button>
+    </b-modal>
   </div>
 </template>
 
@@ -36,6 +44,9 @@ export default {
       composition: { al: [], av: [] },
       arr: [],
       waterFootprint: [],
+      errorMsgModal: '',
+      modalErrorShow: false,
+      toLogin: false,
       series: [{
         name: '',
         data: [],
@@ -109,11 +120,11 @@ export default {
             offsetX: 0,
             offsetY: 0,
           },
-          title: { text: 'CO2 per grammo' },
+          title: { text: this.$i18n.t('CO2grams') },
         },
         yaxis: {
           max: 600,
-          title: { text: 'grammi consumati' },
+          title: { text: this.$i18n.t('gCons') },
           labels: {
             showDuplicates: false,
           },
@@ -164,14 +175,14 @@ export default {
             offsetX: 0,
             offsetY: 0,
           },
-          title: { text: '{{$t(\'watergrams\')}}' },
+          title: { text: this.$i18n.t('watergrams') },
         },
         yaxis: {
           max: 600,
           labels: {
             showDuplicates: false,
           },
-          title: { text: 'grammi consumati' },
+          title: { text: this.$i18n.t('gCons') },
         },
         responsive: [{
           breakpoint: 480,
@@ -188,11 +199,10 @@ export default {
     apexchart: VueApexCharts,
   },
   mounted() {
-    // prendere username da sessione
-    const { mealName } = this.$route.query;
-    const { date } = this.$route.query;
-    const params = { mealName, date };
-    this.$store.state.http.get(`api/meals/${params.mealName}`, { params })
+    const params = { mealName: this.$route.query.mealName, date: this.$route.query.date };
+    console.log(`Calculate_meal_comp mounted ${params.mealName}`);
+    this.modalErrorShow = false;
+    this.$store.state.http.get('api/meal', { params })
       .then((response) => {
         response.data.meals[0].components.forEach((elem) => {
           this.composition.al.push(elem.product_name.concat(' - ').concat(elem.quantity).concat(' g'));
@@ -219,14 +229,28 @@ export default {
         });
 
         Object.values(response.data.meals[0]).forEach((v, i) => {
-          if (i > 2 && i < 13) {
-            if (v > 0.0001) this.componentsMeal.av.push(v);
-          }
+          if (i > 2 && i < 13) { if (v > 0.0001) this.componentsMeal.av.push(v); }
         });
         this.calculate();
-      }).catch(error => (console.log(error)));
+      }).catch(error => this.checkError(error.description));
   },
   methods: {
+    checkError(error, status) {
+      if (status === 401) {
+        this.errorMsgModal = this.$i18n.t('unauthorized');
+        this.modalErrorShow = true;
+        this.toLogin = true;
+      } else {
+        this.toLogin = false;
+        this.errorMsgModal = this.$i18n.t('error');
+        this.modalErrorShow = true;
+      }
+    },
+    hideModal() {
+      this.$bvModal.hide('modal-error');
+      if (this.toLogin) this.$router.push('/login');
+      else this.$router.push('/meals');
+    },
     changeGraphGlobal() {
       this.chart.al = this.composition.al;
       this.chart.av = this.composition.av;
@@ -259,13 +283,19 @@ export default {
     "intro": "Composition of your meal",
     "CO2grams": "CO2 per grams",
     "gCons":"Consumed grams",
-    "watergrams": "Water per grams"
+    "watergrams": "Water per grams",
+    "error": "Errors occurred. Try again!",
+    "unauthorized": "Unauthorized access",
+    "closeBtn": "Close me!"
   },
   "it": {
     "intro": "Coposizione del tuo pasto",
     "CO2grams": "CO2 per grammi",
     "gCons":"Grammi consumati",
-    "watergrams": "Acqua per grammi"
+    "watergrams": "Acqua per grammi",
+    "error": "Sono avvenuti degli errori. Riprova dopo!",
+    "unauthorized": "Accesso non autorizzato",
+    "closeBtn": "Chiudi!"
   }
 }
 </i18n>

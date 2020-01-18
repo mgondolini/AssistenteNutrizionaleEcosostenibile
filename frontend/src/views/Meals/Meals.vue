@@ -221,7 +221,7 @@ export default {
     calculateMeal(mealName, timestamp) {
       // Passo meal name, per accedere alla query dalla pagina calculate meal
       // devo fare: this.$route.query.mealName
-      console.log(mealName, timestamp);
+      console.log(`Meals calculateMeal ${mealName}`, timestamp);
       this.$router.push({ path: '/calculate_meal_composition', query: { mealName, date: timestamp } });
     },
     showMealsByDate(date) {
