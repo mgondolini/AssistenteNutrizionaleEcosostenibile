@@ -1,5 +1,6 @@
 import Vue from 'vue';
 import VueI18n from 'vue-i18n';
+import dateTimeFormats from './locales/dateTimeFormats.json';
 
 Vue.use(VueI18n);
 
@@ -15,41 +16,6 @@ function loadLocaleMessages() {
   });
   return messages;
 }
-
-const dateTimeFormats = {
-  en: {
-    short: {
-      year: 'numeric',
-      month: 'short',
-      day: 'numeric',
-      weekday: 'short',
-    },
-    long: {
-      year: 'numeric',
-      month: 'short',
-      day: 'numeric',
-      weekday: 'short',
-      hour: 'numeric',
-      minute: 'numeric',
-    },
-  },
-  it: {
-    short: {
-      year: 'numeric',
-      month: 'short',
-      day: 'numeric',
-      weekday: 'short',
-    },
-    long: {
-      year: 'numeric',
-      month: 'short',
-      day: 'numeric',
-      weekday: 'short',
-      hour: 'numeric',
-      minute: 'numeric',
-    },
-  },
-};
 
 export default new VueI18n({
   locale: process.env.VUE_APP_I18N_LOCALE || 'en',
