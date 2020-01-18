@@ -57,12 +57,12 @@ exports.createNewUser = function createNewUser(req, res) {
       })
       .catch((err) => {
         console.log('createNewUser saveError: '.concat(err));
-        res.status(500).send();
+        res.status(500).send({ description: 'internal_server_error' });
       });
     //
   }).catch((e) => {
     console.log('createNewUser findWhoError: '.concat(e));
-    res.status(500).send();
+    res.status(500).send({ description: 'internal_server_error' });
   });
 };
 
@@ -100,8 +100,8 @@ exports.checkEmail = function checkEmail(req, res) {
 /** Loads a user by username */
 exports.load_user = async (req, res) => {
   // console.log(`looking for user: ${req.query.username}`); // DEBUG
-  const us = auth.getUsername(req.headers.token);
-  const query = { username: us };
+  const username = auth.getUsername(req.headers.token);
+  const query = { username };
 
   await User.findOne(query)
     .exec()
@@ -113,28 +113,29 @@ exports.load_user = async (req, res) => {
         res.status(200).json(user);
         console.log(`Found user ->${user.username}`); // DEBUG
       }
-    }).catch((err) => res.send(err));
+    }).catch(() => res.status(500).send({ description: 'internal_server_error' }));
 };
 
 
 /** Updates a user */
 exports.update_user = async (req, res) => {
-  const us = auth.getUsername(req.headers.token);
-  const query = { username: us };
+  const username = auth.getUsername(req.headers.token);
+  const query = { username };
+
   const update = req.body; // passare il json utente con tutti i campi (aggiornati e non)
 
   await User.findOneAndUpdate(query, update, { new: true })
     .exec()
     .then((user) => {
       if (user == null) {
-        res.status(404).send({ description: 'User not found' });
+        res.status(400).send({ description: 'user_not_found' });
         console.log('User not found'); // DEBUG
       } else {
         res.status(200).json(user);
         console.log('user updated'); // DEBUG
       }
     })
-    .catch((err) => res.send(err));
+    .catch(() => res.status(500).send({ description: 'internal_server_error' }));
 };
 
 
