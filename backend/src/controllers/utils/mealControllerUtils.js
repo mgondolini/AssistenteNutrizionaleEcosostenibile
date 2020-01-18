@@ -7,23 +7,6 @@ const SingleMeal = mongoose.model('SingleMeal');
 const Meals = mongoose.model('Meals');
 
 
-/** Creates user document inside Meals collection */
-exports.initUserMeals = (username, res) => {
-  const userMeals = new Meals();
-  userMeals.username = username;
-  userMeals.meals = [];
-  userMeals.save()
-    .then((userMeal) => {
-      console.log(`userMeals created -> ${userMeal}`); // DEBUG
-      res.status(200).json(userMeal);
-    })
-    .catch((err) => {
-      console.log(`error while creating userMeals ${err}`); // DEBUG
-      res.status(500).send({ description: 'internal_server_error' });
-    });
-};
-
-
 /** Inits meal values to 0 */
 exports.initMealValues = (mealName, timestamp) => {
   console.log('init meal values');
