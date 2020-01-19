@@ -12,14 +12,14 @@ exports.load_product = async (req, res) => {
     .exec()
     .then((product) => {
       if (product == null) {
-        res.status(404).send({ description: 'Product not found' });
+        res.status(400).send({ description: 'product_not_found' });
         console.log(`Product${req.query.barcode} not found`); // DEBUG
       } else {
-        res.json(product);
+        res.status(200).json(product);
         console.log(`Product found ->${product.barcode}`); // DEBUG
       }
     })
-    .catch((err) => res.send(err));
+    .catch(() => res.status(500).send({ description: 'internal_server_error' }));
 };
 
 /** Inserts a new product if not found in the database */
@@ -37,16 +37,17 @@ exports.insert_product = async (req, res) => {
         this.createNewProduct(req, res);
       } else {
         // Se trovo il prodotto mando quello
-        res.json(product);
+        res.status(200).json(product);
         console.log(`Product found ->${JSON.stringify(product)}`); // DEBUG
       }
     })
-    .catch((err) => res.send(err));
+    .catch(() => res.status(500).send({ description: 'internal_server_error' }));
 };
 
 /** Creates a new product and inserts it in the database */
 exports.createNewProduct = (req, res) => {
   const newProduct = new Product(req.body);
+
   console.log(JSON.stringify(newProduct)); // DEBUG
 
   newProduct.save()
@@ -55,7 +56,7 @@ exports.createNewProduct = (req, res) => {
       res.status(201).json(product);
     })
     .catch((err) => {
-      console.log('error while creating new product'); // DEBUG
-      res.send(err);
+      console.log(`error while creating new product${err}`); // DEBUG
+      res.status(500).send({ description: 'internal_server_error' });
     });
 };

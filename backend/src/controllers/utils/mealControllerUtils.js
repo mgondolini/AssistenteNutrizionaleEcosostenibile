@@ -1,9 +1,10 @@
 /* eslint-disable no-param-reassign */
 const mongoose = require('mongoose');
 
+const productControllerUtils = require('./productControllerUtils.js');
+
 const SingleMeal = mongoose.model('SingleMeal');
 const Meals = mongoose.model('Meals');
-const Products = mongoose.model('Product');
 
 
 /** Inits meal values to 0 */
@@ -38,14 +39,16 @@ exports.addMeal = (req, userMeals, res) => {
   const { timestamp } = req.body.meals;
   const updateMeal = new Meals(userMeals);
 
-  console.log(timestamp); // DEBUG
+  console.log(`timestamp${timestamp}`); // DEBUG
 
   // controllo se ci sono pasti per lo stesso utente con lo stesso nome che voglio inserire
   userMeals.meals.forEach((m) => {
     if (m.timestamp.getUTCDate() === new Date(timestamp).getUTCDate()
       && m.timestamp.getUTCMonth() === new Date(timestamp).getUTCMonth()
       && m.timestamp.getUTCFullYear() === new Date(timestamp).getUTCFullYear()) {
-      if (m.meal_name === mealName) exists = true;
+      if (m.meal_name === mealName) {
+        exists = true;
+      }
     }
   });
 
@@ -74,112 +77,6 @@ exports.addMeal = (req, userMeals, res) => {
 };
 
 
-/** Creates the first meal of a user */
-exports.createFirstMeal = (req, res) => {
-  const { username } = req.body;
-  const { mealName } = req.body.meals;
-  const { timestamp } = req.body.meals;
-
-  const newMeal = new Meals();
-  newMeal.username = username;
-
-  // Inizializzo i campi e lo aggiungo all'array dei pasti
-  const mealToAdd = this.initMealValues(mealName, timestamp);
-  newMeal.meals.push(mealToAdd);
-
-  newMeal.save()
-    .then((meal) => {
-      console.log(`meal created -> ${meal}`); // DEBUG
-      res.status(201).json(meal);
-    })
-    .catch((err) => {
-      console.log('error while creating new meal'); // DEBUG
-      res.status(500).send(err);
-    });
-};
-
-
-/** Computes value in grams for a portion of a given quantity */
-exports.computeValuePerPortion = (value, quantity) => ((value / 100) * quantity);
-
-
-/** Checks the value before compute the expression */
-exports.valuePerPortion = (value, quantity) => {
-  let valuePerQuantity;
-
-  if (value != null) valuePerQuantity = this.computeValuePerPortion(value, quantity);
-  else valuePerQuantity = 0;
-
-  return valuePerQuantity;
-};
-
-
-/** Computes values for a meal */
-exports.computeMealValues = async (barcode, quantity, res) => {
-  let productName;
-  let imageUrl;
-  let energyTot;
-  let carbsTot;
-  let sugarsTot;
-  let fatTot;
-  let saturatedFatTot;
-  let proteinsTot;
-  let fiberTot;
-  let saltTot;
-  let sodiumTot;
-  let alcoholTot;
-  let calciumTot;
-  let carbonFootprintTot;
-  let waterFootprintTot;
-
-  const query = { code: barcode };
-
-  await Products.findOne(query)
-    .exec()
-    .then((product) => {
-      productName = product.product_name;
-      imageUrl = product.image_url;
-      energyTot = this.valuePerPortion(product.energy_100g, quantity);
-      carbsTot = this.valuePerPortion(product.carbohydrates_100g, quantity);
-      sugarsTot = this.valuePerPortion(product.sugars_100g, quantity);
-      fatTot = this.valuePerPortion(product.fat_100g, quantity);
-      saturatedFatTot = this.valuePerPortion(product.saturated_fat_100g, quantity);
-      proteinsTot = this.valuePerPortion(product.proteins_100g, quantity);
-      fiberTot = this.valuePerPortion(product.fiber_100g, quantity);
-      saltTot = this.valuePerPortion(product.salt_100g, quantity);
-      sodiumTot = this.valuePerPortion(product.sodium_100g, quantity);
-      alcoholTot = this.valuePerPortion(product.alcohol_100g, quantity);
-      calciumTot = this.valuePerPortion(product.calcium_100g, quantity);
-      carbonFootprintTot = this.valuePerPortion(product.carbon_footprint_100g, quantity);
-      waterFootprintTot = this.valuePerPortion(product.water_footprint_100g, quantity);
-    })
-    .catch((err) => res.status(500).send(err));
-
-  // Creo il json da ritornare
-  // TODO: forse si potrebbe fare anche con il modello new Product() ?
-  const values = {
-    product_name: productName,
-    image_url: imageUrl,
-    energy_tot: energyTot,
-    carbohidrates_tot: carbsTot,
-    sugars_tot: sugarsTot,
-    fat_tot: fatTot,
-    saturated_fat_tot: saturatedFatTot,
-    proteins_tot: proteinsTot,
-    salt_tot: saltTot,
-    sodium_tot: sodiumTot,
-    calcium_tot: calciumTot,
-    alcohol_tot: alcoholTot,
-    fiber_tot: fiberTot,
-    carbon_footprint_tot: carbonFootprintTot,
-    water_footprint_tot: waterFootprintTot,
-  };
-  console.log(`VALUES -> ${JSON.stringify(values)}`); // DEBUG
-
-  return values;
-};
-
-
 /** Update meal values after inserting a new component */
 exports.updateMealValues = async (components, timestamp, mealName, userMeals, res) => {
   const { barcode } = components;
@@ -191,8 +88,10 @@ exports.updateMealValues = async (components, timestamp, mealName, userMeals, re
   // alla quantità in grammi che ho inserito,
   // poi incremento i valori del pasto aggiungendo il risultato ottenuto
 
-  this.computeMealValues(barcode, quantity, res)
+  productControllerUtils.computeProductValues(barcode, quantity, res)
     .then((values) => {
+      let updated = false;
+
       userMeals.meals.forEach((meal) => {
         if (meal.timestamp.getUTCDate() === new Date(timestamp).getUTCDate()
           && meal.timestamp.getUTCMonth() === new Date(timestamp).getUTCMonth()
@@ -226,12 +125,19 @@ exports.updateMealValues = async (components, timestamp, mealName, userMeals, re
 
             // Add passed components to meal's components array
             meal.components.push(components);
+            updated = true;
           }
         }
       });
-      userMeals.save()
-        .then((meals) => res.status(200).json(meals))
-        .catch((err) => res.status(500).send(err));
+      if (updated === true) {
+        // salvo il pasto
+        userMeals.save()
+          .then((meals) => res.status(200).json(meals))
+          .catch((err) => res.status(500).send(err));
+      } else {
+        // Se non ho trovato il pasto mando un messaggio di errore
+        res.status(400).send({ description: 'meal_not_found' });
+      }
     });
 };
 
@@ -239,6 +145,7 @@ exports.updateMealValues = async (components, timestamp, mealName, userMeals, re
 exports.pullComponent = async (userMeals, timestamp, mealName, barcode, res) => {
   // Controllo se esiste un pasto con il nome passato
   // e tolgo il componente corrispondente la barcode
+  let updated = false;
   userMeals.meals.forEach((meal) => {
     if (meal.timestamp.getUTCDate() === new Date(timestamp).getUTCDate()
       && meal.timestamp.getUTCMonth() === new Date(timestamp).getUTCMonth()
@@ -248,13 +155,19 @@ exports.pullComponent = async (userMeals, timestamp, mealName, barcode, res) => 
           // eslint-disable-next-line eqeqeq
           if (component.barcode == barcode) {
             meal.components = meal.components.pull(component);
+            updated = true;
           }
         });
       }
     }
   });
 
-  userMeals.save()
-    .then((meals) => res.status(200).json(meals))
-    .catch((err) => res.status(500).send(err));
+  if (updated === true) {
+    userMeals.save()
+      .then((meals) => res.status(200).json(meals))
+      .catch(() => res.status(500).send({ description: 'internal_server_error' }));
+  } else {
+    // Se non ho trovato il pasto mando un messaggio di errore
+    res.status(400).send({ description: 'meal_not_found' });
+  }
 };

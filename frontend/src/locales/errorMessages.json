@@ -1,0 +1,12 @@
+{
+    "en": {
+        "meal_name_exists": "Meal name already in use.",
+        "meal_not_found": "Meal not found.",
+        "internal_server_error": "500 Internal Server Error"
+    },
+    "it": {
+        "meal_name_exists": "Nome pasto già esistente.",
+        "meal_not_found": "Pasto non trovato.",
+        "internal_server_error": "500 Errore interno al Server"
+    }
+}
