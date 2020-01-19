@@ -1,4 +1,5 @@
 import datePicker from 'vue-bootstrap-datetimepicker';
+import Achievements from './Achievements.vue';
 
 export default {
   data() {
@@ -7,6 +8,7 @@ export default {
       avatar: '',
       genderSelected: '',
       isEditing: false,
+      errorMsgModal: '',
 
       campi: {
         name: {
@@ -50,7 +52,6 @@ export default {
         },
       },
       errors: false,
-      modalShow: false,
       modalErrorShow: false,
       options: {
         format: 'YYYY-MM-DD',
@@ -62,6 +63,7 @@ export default {
   },
   components: {
     datePicker,
+    Achievements,
   },
   computed: {
     cardStates() {
@@ -71,17 +73,25 @@ export default {
     },
   },
   methods: {
+    checkError(error, status) {
+      if (status === 401) {
+        this.errorMsgModal = this.$i18n.t('unauthorized');
+        this.modalErrorShow = true;
+      } else {
+        this.errorMsgModal = this.$i18n.t('error');
+      }
+    },
     editContent() {
       if (!this.errors) {
         this.isEditing = !this.isEditing;
       }
     },
     hideModal() {
-      this.$refs['my-modal'].hide();
+      this.$bvModal.hide('modal-error');
+      this.$router.push('/login');
     },
     update() {
       this.errors = false;
-      this.modalShow = false;
       this.modalErrorShow = false;
       if (!this.campi.name.value) {
         document.getElementById('name').classList.add('nsError');
@@ -138,13 +148,9 @@ export default {
 
         this.$store.state.http.put('api/user', dataNew)
           .then(() => {
-            this.modalShow = true;
           })
-          .catch((error) => {
-            error.toString();
-            this.modalShow = false;
-            this.modalErrorShow = true;
-          });
+          .catch(error => this.checkError(error.response.data.description,
+            error.response.status));
       }
     },
     activateBtn() {
@@ -161,23 +167,33 @@ export default {
   },
   mounted() {
     this.modalShow = false;
+    this.modalErrorShow = false;
+
     this.$store.state.http.get('api/user')
       .then((response) => {
-        this.username = response.data.username;
-        this.campi.name.value = response.data.name;
-        this.campi.surname.value = response.data.surname;
-        this.campi.dateOfBirth.value = response.data.birth_date;
-        this.campi.email.value = response.data.email;
-        this.avatar = response.data.user_img_url;
-        this.campi.gender.value = response.data.sex;
-        this.campi.weight.value = response.data.weight;
-        this.campi.height.value = response.data.height;
-        this.campi.allergens.value = response.data.allergens;
+        if (response.data.username != null) this.username = response.data.username;
+
+        if (response.data.name != null) this.campi.name.value = response.data.name;
+
+        if (response.data.surname != null) this.campi.surname.value = response.data.surname;
+
+        if (response.data.birth_date != null) {
+          this.campi.dateOfBirth.value = response.data.birth_date;
+        }
+
+        if (response.data.email != null) this.campi.email.value = response.data.email;
+
+        if (response.data.user_img_url != null) this.avatar = response.data.user_img_url;
+
+        if (response.data.sex != null) this.campi.gender.value = response.data.sex;
+
+        if (response.data.weight != null) this.campi.weight.value = response.data.weight;
+
+        if (response.data.height) this.campi.height.value = response.data.height;
+
+        if (response.data.allergens != null) this.campi.allergens.value = response.data.allergens;
       })
-      .catch((error) => {
-        error.toString();
-        this.modalShow = false;
-        this.modalErrorShow = true;
-      });
+      .catch(error => this.checkError(error.response.data.description,
+        error.response.status));
   },
 };
