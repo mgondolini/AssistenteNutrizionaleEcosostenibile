@@ -113,15 +113,22 @@ exports.updateMealValues = async (components, timestamp, mealName, userMeals, re
             // quindi li riempio ora con i valori del prodotto trovati
 
             // Components schema field update
-            components.product_name = values.product_name;
-            components.image_url = values.image_url;
-            components.carbon_footprint = 0;
-            components.water_footprint = 0;
+            meal.components.forEach((component) => {
+              if (component.barcode === barcode) {
+                component.quantity += quantity;
+              } else {
+                components.product_name = values.product_name;
+                components.image_url = values.image_url;
+                components.carbon_footprint = 0;
+                components.water_footprint = 0;
 
-            global.log(`components: ${components}`); // DEBUG
+                global.log(`components: ${components}`); // DEBUG
 
-            // Add passed components to meal's components array
-            meal.components.push(components);
+                // Add passed components to meal's components array
+                meal.components.push(components);
+              }
+            });
+
             updated = true;
           }
         }
