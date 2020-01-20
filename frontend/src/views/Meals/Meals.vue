@@ -93,13 +93,13 @@
                   ><img class="remove" src="../../assets/buttons/remove.svg">
                   </b-button>
                 </b-card>
-                <b-button
+              </div>
+               <b-button
                   variant="info"
                   @click="calculateMeal(meal.meal_name, meal.timestamp)"
                 >
                   {{ $t('calculate_meal') }}
                 </b-button>
-              </div>
             </div>
           </b-card-body>
         </b-collapse>
