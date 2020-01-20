@@ -148,7 +148,7 @@ export default {
       // TODO: prendere username da sessione
       console.log(this.currentDate);
 
-      this.$store.state.http.get('api/meals')
+      this.$store.state.http.get(`api/meals/${this.currentDate}`)
         .then((response) => {
           this.mealsList = response.data.meals;
           this.showMealsByDate(this.currentDate);
@@ -169,7 +169,7 @@ export default {
       };
       console.log(body); // DEBUG
       if (mealName.length > 0) {
-        this.$store.state.http.post('api/meals', body)
+        this.$store.state.http.post(`api/meals/${this.currentDate}`, body)
           .then((response) => {
             this.mealNameState = true;
             this.mealsList = [];
@@ -193,7 +193,7 @@ export default {
 
       console.log(`remove${JSON.stringify(params)}`); // DEBUG
 
-      this.$store.state.http.delete(`api/meals/${params.mealName}`, { params })
+      this.$store.state.http.delete(`api/meals/${params.mealName}/${this.currentDate}`, { params })
         .then(() => this.loadMealsList())
         .catch(error => this.checkError(error.response.data.description));
     },
@@ -210,7 +210,7 @@ export default {
       };
 
       console.log(params); // DEBUG
-      this.$store.state.http.delete(`api/meals/${params.mealName}/components`, { params })
+      this.$store.state.http.delete(`api/meals/${params.mealName}/${this.currentDate}/components`, { params })
         .then((response) => {
           this.mealsList = [];
           this.mealsList = response.data.meals;
