@@ -57,7 +57,10 @@ exports.computeProductValues = async (barcode, quantity, res) => {
       carbonFootprintTot = this.valuePerPortion(product.carbon_footprint_100g, quantity);
       waterFootprintTot = this.valuePerPortion(product.water_footprint_100g, quantity);
     })
-    .catch((err) => res.status(500).send(err));
+    .catch((err) => {
+      global.log(`Error while computing product values: ${err}`); // DEBUG
+      res.status(500).send({ description: 'internal_server_error' });
+    });
 
   // Creo il json da ritornare
   // TODO: forse si potrebbe fare anche con il modello new Product() ?
