@@ -58,6 +58,13 @@
         <b-button class="sim-button button1">{{ $t('reg') }}</b-button>
       </router-link>
     </b-card>
+    <b-modal id="modal-error" title="Error" hide-footer v-model="modalErrorShow">
+      <div class="d-block text-center">
+        <img src="https://img.icons8.com/color/48/000000/restriction-shield.png">
+        {{ this.errorMsgModal }}
+      </div>
+      <b-button class="mt-3" block @click="hideModal">{{ $t('closeBtn')}}</b-button>
+    </b-modal>
   </div>
 </template>
 
@@ -66,6 +73,8 @@ export default {
   name: 'login',
   data() {
     return {
+      errorMsgModal: '',
+      modalErrorShow: false,
       form: {
         email: '',
         password: '',
@@ -74,28 +83,36 @@ export default {
   },
   methods: {
     onSubmit(evt) {
+      this.modalErrorShow = false;
       evt.preventDefault();
       const mail = this.form.email;
       const psw = this.form.password;
 
       this.$store.state.http.post('api/auth', { email: mail, key: psw })
         .then((response) => {
-          localStorage.ecoAssToken = response.data.token.toString();
-          this.$store.commit('login', response.data.token.toString());
+          const t = response.data.token.toString();
+          const u = response.data.user.toString();
+          localStorage.ecoAssToken = t;
+          localStorage.ecoAssUser = u;
+          this.$store.commit('login', { token: t, user: u });
           this.$router.push('/meals');
         }).catch((error) => {
-          // TODO manage error getting public key
-          console.log('Error during authentication: '.concat(error));
+          if (error.response) {
+            if (error.response.status === 401) {
+              this.errorMsgModal = this.$i18n.t('unauthorized');
+              this.modalErrorShow = true;
+            } else {
+              this.errorMsgModal = this.$i18n.t('genericError');
+              this.modalErrorShow = true;
+            }
+          } else {
+            this.errorMsgModal = this.$i18n.t('noAnswer');
+            this.modalErrorShow = true;
+          }
         });
-      /*
-      ESEMPIO chiamata get con token
-      this.$store.state.http.get('api/publickey')
-        .then((resp) => {
-          console.log('Ok!');
-        }).catch((er) => {
-          console.log('Error');
-        });
-      */
+    },
+    hideModal() {
+      this.$bvModal.hide('modal-error');
     },
     changeType() {
       const t = document.getElementById('input-password').type;
@@ -117,13 +134,21 @@ export default {
     "info": "We'll never share your email with third parties.",
     "info-psw": "Password must be 8 to 20 characters long. It cannot contain spaces.",
     "not-reg": "Not registered?",
-    "reg": "Sign in"
+    "reg": "Sign in",
+    "unauthorized": "Wrong credentials!",
+    "closeBtn": "Ok",
+    "genericError": "Errors occurred. Try again later",
+    "noAnswer": "No answer from server. Try again later"
   },
   "it": {
     "info": "Non condivideremo mai la tua email con terze parti.",
     "info-psw": "La password deve essere lunga tra 8 e 20 caratteri. Non può contenere spazi.",
     "not-reg":"Non sei ancora registrato?",
-    "reg": "Registrati"
+    "reg": "Registrati",
+    "unauthorized": "Credenziali errate!",
+    "closeBtn": "Ok",
+    "genericError": "Qualcosa è andato storto. Riprova più tardi",
+    "noAnswer": "Nessuna risposta dal server. Riprova più tardi"
   }
 }
 </i18n>
