@@ -72,6 +72,17 @@ exports.addMeal = (req, userMeals, res) => {
   }
 };
 
+exports.addComponent = (components, values, meal) => {
+  components.product_name = values.product_name;
+  components.image_url = values.image_url;
+  components.carbon_footprint = 0;
+  components.water_footprint = 0;
+  components.nutrition_score = values.nutrition_score;
+
+  // Add passed components to meal's components array
+  meal.components.push(components);
+};
+
 
 /** Update meal values after inserting a new component */
 exports.updateMealValues = async (components, timestamp, mealName, userMeals, res) => {
@@ -112,20 +123,15 @@ exports.updateMealValues = async (components, timestamp, mealName, userMeals, re
             // quindi li riempio ora con i valori del prodotto trovati
 
             // Components schema field update
-            meal.components.forEach((component) => {
-              if (component.barcode === barcode) {
-                component.quantity += quantity;
-              } else {
-                components.product_name = values.product_name;
-                components.image_url = values.image_url;
-                components.carbon_footprint = 0;
-                components.water_footprint = 0;
-                components.nutrition_score = values.nutrition_score;
+            if (meal.components.length > 0) {
+              meal.components.forEach((component) => {
+                if (component.barcode === barcode) component.quantity += quantity;
+                else this.addComponent(components, values, meal);
+              });
+            } else {
+              this.addComponent(components, values, meal);
+            }
 
-                // Add passed components to meal's components array
-                meal.components.push(components);
-              }
-            });
             updated = true;
           }
         }
