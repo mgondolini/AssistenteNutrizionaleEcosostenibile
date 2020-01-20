@@ -1,6 +1,5 @@
 /* eslint-disable no-param-reassign */
 const mongoose = require('mongoose');
-
 const productControllerUtils = require('./productControllerUtils.js');
 
 const SingleMeal = mongoose.model('SingleMeal');
@@ -121,14 +120,12 @@ exports.updateMealValues = async (components, timestamp, mealName, userMeals, re
                 components.image_url = values.image_url;
                 components.carbon_footprint = 0;
                 components.water_footprint = 0;
-
-                global.log(`components: ${components}`); // DEBUG
+                components.nutrition_score = values.nutrition_score;
 
                 // Add passed components to meal's components array
                 meal.components.push(components);
               }
             });
-
             updated = true;
           }
         }
