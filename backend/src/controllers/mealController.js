@@ -12,11 +12,11 @@ exports.initUserMeals = async (username, res) => {
   userMeals.meals = [];
   userMeals.save()
     .then((userMeal) => {
-      console.log(`userMeals created -> ${userMeal}`); // DEBUG
-      res.status(200).json(userMeal);
+      global.log(`userMeals created -> ${userMeal}`); // DEBUG
+      res.status(200).send(userMeal);
     })
     .catch((err) => {
-      console.log(`error while creating userMeals ${err}`); // DEBUG
+      global.log(`Error while creating userMeals ${err}`); // DEBUG
       res.status(500).send({ description: 'internal_server_error' });
     });
 };
@@ -27,41 +27,46 @@ exports.deleteUserMeals = async (username, res) => {
   const query = { username };
   Meals.remove(query)
     .then((removed) => {
-      console.log(`User Meal document removed for user ${username}:\n${JSON.stringify(removed)}`); // DEBUG
+      global.log(`User Meal document removed for user ${username}:\n${JSON.stringify(removed)}`); // DEBUG
       res.status(200).send({ message: 'user_meal_removed' });
     })
-    .catch(res.status(500).send({ description: 'internal_server_error' }));
+    .catch((err) => {
+      global.log(`Error while creating userMeals ${err}`); // DEBUG
+      res.status(500).send({ description: 'internal_server_error' });
+    });
 };
 
 
 /** Loads all the meals for a given user */
 exports.load_meals_list = async (req, res) => {
-  console.log('looking for meal...'); // DEBUG
+  global.log('looking for meal...'); // DEBUG
   const username = authController.getUsername(req.headers.token);
   const query = { username };
-  console.log(query);
+  global.log(query);
 
   await Meals.findOne(query)
     .exec()
     .then((userMeals) => {
-      console.log(`userMeals${userMeals}`);
       if (userMeals === null) {
         res.status(400).send({ description: 'mealslist_not_found' });
-        console.log(`Meals not found for user ${username}`); // DEBUG
+        global.log(`Meals not found for user ${username}`); // DEBUG
       } else {
-        res.status(200).json(userMeals);
-        console.log(`Meals list for user ${username}:\n${userMeals}`); // DEBUG
+        res.status(200).send(userMeals);
+        global.log(`Meals list for user ${username}:\n${userMeals}`); // DEBUG
       }
     })
-    .catch(() => res.status(500).send({ description: 'internal_server_error' }));
+    .catch((err) => {
+      global.log(`Error while loading meals list: ${err}`); // DEBUG
+      res.status(500).send({ description: 'internal_server_error' });
+    });
 };
 
 
 /** Loads a specific meal for a given user */
 exports.load_meal = async (req, res) => {
-  console.log('looking for meal to load...'); // DEBUG
+  global.log('looking for meal to load...'); // DEBUG
   const username = authController.getUsername(req.headers.token);
-  console.log(username);
+  global.log(username);
 
   // Lato client passare la data del pasto in formato UTC
   const query = { username };
@@ -80,14 +85,14 @@ exports.load_meal = async (req, res) => {
     .then((meal) => {
       if (meal.length === 0) {
         res.status(400).send({ description: 'meal_not_found' });
-        console.log(`Meal not found for user ${username}`); // DEBUG
+        global.log(`Meal not found for user ${username}`); // DEBUG
       } else {
-        res.status(200).json(meal);
-        console.log(`Meal found for user ${username}:\n${meal}`); // DEBUG
+        res.status(200).send(meal);
+        global.log(`Meal found for user ${username}:\n${meal}`); // DEBUG
       }
     })
-    .catch((er) => {
-      console.log('errore in load_meal'.concat(er));
+    .catch((err) => {
+      global.log(`Error while loading meal ${err}`);
       res.status(500).send({ description: 'internal_server_error' });
     });
 };
@@ -97,20 +102,23 @@ exports.new_meal = async (req, res) => {
   const username = authController.getUsername(req.headers.token);
   const query = { username };
 
-  console.log(`date----- ${req.body.meals.timestamp}`); // DEBUG
+  global.log(`date----- ${req.body.meals.timestamp}`); // DEBUG
 
   await Meals.findOne(query)
     .exec()
     .then((userMeals) => {
       if (userMeals === null) {
         res.status(500).send({ description: 'internal_server_error' });
-        console.log(`Meal not found for user ${username}\n Inserting...`); // DEBUG
+        global.log(`Meal not found for user ${username}\n`); // DEBUG
       } else {
-        console.log(`Meal found for user ${username}:\n${userMeals}`); // DEBUG
+        global.log(`Meal found for user ${username}:\n${userMeals}`); // DEBUG
         mealControllerUtils.addMeal(req, userMeals, res);
       }
     })
-    .catch((err) => res.status(500).send(err));
+    .catch((err) => {
+      global.log(`Error while creating new meal: ${err}`); // DEBUG
+      res.status(500).send({ description: 'internal_server_error' });
+    });
 };
 
 /** Deletes a meal */
@@ -119,7 +127,7 @@ exports.delete_meal = async (req, res) => {
   const { mealName } = req.query;
   const { date } = req.query;
 
-  console.log(`date----- ${date}`); // DEBUG
+  global.log(`date----- ${date}`); // DEBUG
 
   const query = { username };
   const update = {
@@ -131,20 +139,23 @@ exports.delete_meal = async (req, res) => {
     },
   };
 
-  console.log(`UPDATE QUERY -> ${JSON.stringify(update)}`); // DEBUG
+  global.log(`UPDATE QUERY -> ${JSON.stringify(update)}`); // DEBUG
 
   await Meals.updateOne(query, update)
     .exec()
     .then((meal) => {
       if (meal.length === 0) {
         res.status(400).send({ description: 'meal_not_found' });
-        console.log(`Meal not found for user ${username}`); // DEBUG
+        global.log(`Meal not found for user ${username}`); // DEBUG
       } else {
-        console.log(`Meal updated for user ${username}:\n${JSON.stringify(meal)}`); // DEBUG
-        res.status(200).json(meal);
+        global.log(`Meal updated for user ${username}:\n${JSON.stringify(meal)}`); // DEBUG
+        res.status(200).send(meal);
       }
     })
-    .catch(() => res.status(500).send({ description: 'internal_server_error' }));
+    .catch((err) => {
+      global.log(`Error while deleting meal: ${err}`); // DEBUG
+      res.status(500).send({ description: 'internal_server_error' });
+    });
 };
 
 /** Creates a component for an existing meal */
@@ -155,7 +166,7 @@ exports.new_component = async (req, res) => {
   const { components } = req.body;
 
   const query = { username };
-  console.log(`NEW COMPONENT\nmealName${JSON.stringify(mealName)}\ncomponents${JSON.stringify(components)}`); // DEBUG
+  global.log(`NEW COMPONENT\nmealName${JSON.stringify(mealName)}\ncomponents${JSON.stringify(components)}`); // DEBUG
 
   await Meals.findOne(query)
     .exec()
@@ -163,7 +174,10 @@ exports.new_component = async (req, res) => {
       if (userMeals == null) res.status(404).send({ description: 'meal_not_found' });
       else mealControllerUtils.updateMealValues(components, timestamp, mealName, userMeals, res);
     })
-    .catch(() => res.status(500).send({ description: 'internal_server_error' }));
+    .catch((err) => {
+      global.log(`Error while creating component ${err}`); // DEBUG
+      res.status(500).send({ description: 'internal_server_error' });
+    });
 };
 
 /** Deletes a component in a meal given the barcode */
@@ -181,13 +195,15 @@ exports.delete_component = async (req, res) => {
     .then((userMeals) => {
       if (userMeals.length === 0) {
         res.status(400).send({ description: 'meal_not_found' });
-        console.log(`Meal not found for user ${username}`); // DEBUG
+        global.log(`Meal not found for user ${username}`); // DEBUG
       } else {
-        console.log(`Meal updated for user ${username}:\n${userMeals}`); // DEBUG
         // Se esistono pasti chiamo questa funzione che: cerca il pasto corrispondente al nome dato,
         // cerca il componente e lo elimina
         mealControllerUtils.pullComponent(userMeals, date, mealName, barcode, res);
       }
     })
-    .catch(() => res.status(500).send({ description: 'internal_server_error' }));
+    .catch((err) => {
+      global.log(`Error while deleting component: ${err}`);
+      res.status(500).send({ description: 'internal_server_error' });
+    });
 };
