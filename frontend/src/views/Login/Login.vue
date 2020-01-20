@@ -114,13 +114,13 @@ export default {
 <i18n>
 {
   "en": {
-    "info": "We never share your email with third parties.",
-    "info-psw": "Password must be 8 to 20 characters long. It can not contains spaces.",
+    "info": "We'll never share your email with third parties.",
+    "info-psw": "Password must be 8 to 20 characters long. It cannot contain spaces.",
     "not-reg": "Not registered?",
     "reg": "Sign in"
   },
   "it": {
-    "info": " Non condivideremo mai la tua email con parti terze.",
+    "info": "Non condivideremo mai la tua email con terze parti.",
     "info-psw": "La password deve essere lunga tra 8 e 20 caratteri. Non può contenere spazi.",
     "not-reg":"Non sei ancora registrato?",
     "reg": "Registrati"
