@@ -77,7 +77,9 @@
                 >
                   <b-card-text align="center" class="card-components-text m-0 p-0">
                     <p class="component-p">
-                      <b> {{ component.product_name }} </b>
+                      <b><a :href="'/info_prod?ean='+component.barcode">
+                        {{ component.product_name }}
+                      </a></b>
                     </p>
                     <p class="component-p">
                       {{ component.quantity }} g
@@ -169,7 +171,7 @@ export default {
       };
       console.log(body); // DEBUG
       if (mealName.length > 0) {
-        this.$store.state.http.post(`api/meals/${this.currentDate}`, body)
+        this.$store.state.http.post(`api/meals/${body.meals.timestamp}`, body)
           .then((response) => {
             this.mealNameState = true;
             this.mealsList = [];
@@ -193,7 +195,7 @@ export default {
 
       console.log(`remove${JSON.stringify(params)}`); // DEBUG
 
-      this.$store.state.http.delete(`api/meals/${params.mealName}/${this.currentDate}`, { params })
+      this.$store.state.http.delete(`api/meals/${params.mealName}/${params.date}`, { params })
         .then(() => this.loadMealsList())
         .catch(error => this.checkError(error.response.data.description));
     },
@@ -210,7 +212,7 @@ export default {
       };
 
       console.log(params); // DEBUG
-      this.$store.state.http.delete(`api/meals/${params.mealName}/${this.currentDate}/components`, { params })
+      this.$store.state.http.delete(`api/meals/${params.mealName}/${params.date}/components`, { params })
         .then((response) => {
           this.mealsList = [];
           this.mealsList = response.data.meals;
