@@ -20,7 +20,7 @@
             <b-nav-item-dropdown right v-if="this.$store.state.isLogged === true">
               <!-- Using 'button-content' slot -->
               <template v-slot:button-content>
-                <em>{{ $t('user') }}</em>
+                <em>{{ getUsername }}</em>
               </template>
                 <b-dropdown-item href="profile">{{ $t('profile') }}</b-dropdown-item>
                 <b-dropdown-item href="meals">{{ $t('meals') }}</b-dropdown-item>
@@ -57,12 +57,16 @@ export default {
       langs: ['en', 'it'],
     };
   },
+  computed: {
+    getUsername() {
+      return this.$store.state.username;
+    },
+  },
   methods: {
     getLocaleFlagPath(lang) {
       return localeFlagsContext(`./${lang}${localeFlagsExt}`);
     },
     signout() {
-      localStorage.ecoAssToken = 'InvalidToken';
       this.$store.commit('logout');
       if (this.$route.path !== '/') {
         this.$router.push('/');
