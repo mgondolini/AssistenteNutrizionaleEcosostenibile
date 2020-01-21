@@ -118,11 +118,25 @@
     <b-modal id="modal-error" title="Error" hide-footer>
       {{ $t(this.modalMessage) }}
     </b-modal>
+      <div class="chart-box">
+        <div id="chart-bar">
+          <apexchart
+            type="bar"
+            height="160"
+            :options="chartOptionsBar"
+            :series="seriesBar">
+          </apexchart>
+        </div>
+      </div>
   </div>
 </template>
 
 <script>
 import datePicker from 'vue-bootstrap-datetimepicker';
+import VueApexCharts from 'vue-apexcharts';
+import Vue from 'vue';
+
+Vue.use(VueApexCharts);
 
 const imagesExt = '.svg';
 const imagesContext = require.context('@/assets/productInfo/', true, /\.svg$/);
@@ -131,19 +145,24 @@ export default {
   name: 'meals',
   data() {
     return {
+      // Meals
       mealsList: [],
       mealsListByDate: [],
       mealName: '',
 
+      // Meal state
       noMeals: '',
       mealNameState: null,
 
+      // Error messages
       inputCheckMessage: '',
       modalMessage: '',
 
+      // Dates
       currentDate: new Date(),
       UTCDate: Number,
 
+      // DateTimePicker
       calendar: {
         key: 'calendar',
         value: '',
@@ -154,10 +173,56 @@ export default {
         showClear: false,
         showClose: true,
       },
+
+      // Graph
+      seriesBar: [{
+        name: 'volume',
+        data: [-30, -40, -50, -60, -70, -80, 90, 100, 110, 120, 130, 140, 150],
+      }],
+      chartOptionsBar: {
+        chart: {
+          height: 160,
+          type: 'bar',
+        },
+        dataLabels: {
+          enabled: false,
+        },
+        plotOptions: {
+          bar: {
+            columnWidth: '80%',
+            colors: {
+              ranges: [{
+                from: -1000,
+                to: 0,
+                color: '#F15B46',
+              }, {
+                from: 0,
+                to: 10000,
+                color: '#FEB019',
+              }],
+
+            },
+          },
+        },
+        stroke: {
+          width: 0,
+        },
+        xaxis: {
+          axisBorder: {
+            offsetX: 13,
+          },
+        },
+        yaxis: {
+          labels: {
+            show: false,
+          },
+        },
+      },
     };
   },
   components: {
     datePicker,
+    apexchart: VueApexCharts,
   },
   methods: {
     loadMealsList() {
