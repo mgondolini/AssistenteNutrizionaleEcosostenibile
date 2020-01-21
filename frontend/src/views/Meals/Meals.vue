@@ -77,10 +77,15 @@
                 >
                   <b-card-text align="center" class="card-components-text m-0 p-0">
                     <p class="component-p">
-                      <b> {{ component.product_name }} </b>
+                      <b><a :href="'/info_prod?ean='+component.barcode">
+                        {{ component.product_name }}
+                      </a></b>
                     </p>
                     <p class="component-p">
                       {{ component.quantity }} g
+                    </p>
+                    <p class="component-p">
+                      {{ component.energy_per_quantity }} kcal
                     </p>
                   </b-card-text>
                   <b-button
@@ -90,14 +95,18 @@
                     @click="removeComponent(component.barcode, meal.meal_name)"
                   ><img class="remove" src="../../assets/buttons/remove.svg">
                   </b-button>
+                  <b-img
+                    :src='getNutriScoreImage(component.nutrition_score)'
+                    alt="Nutri score image">
+                  </b-img>
                 </b-card>
-                <b-button
+              </div>
+               <b-button
                   variant="info"
                   @click="calculateMeal(meal.meal_name, meal.timestamp)"
                 >
                   {{ $t('calculate_meal') }}
                 </b-button>
-              </div>
             </div>
           </b-card-body>
         </b-collapse>
@@ -109,25 +118,51 @@
     <b-modal id="modal-error" title="Error" hide-footer>
       {{ $t(this.modalMessage) }}
     </b-modal>
+      <div class="chart-box">
+        <div id="chart-bar">
+          <apexchart
+            type="bar"
+            height="160"
+            :options="chartOptionsBar"
+            :series="seriesBar">
+          </apexchart>
+        </div>
+      </div>
   </div>
 </template>
 
 <script>
 import datePicker from 'vue-bootstrap-datetimepicker';
+import VueApexCharts from 'vue-apexcharts';
+import Vue from 'vue';
+
+Vue.use(VueApexCharts);
+
+const imagesExt = '.svg';
+const imagesContext = require.context('@/assets/productInfo/', true, /\.svg$/);
 
 export default {
   name: 'meals',
   data() {
     return {
+      // Meals
       mealsList: [],
       mealsListByDate: [],
+      mealName: '',
+
+      // Meal state
       noMeals: '',
       mealNameState: null,
-      currentDate: new Date(),
-      UTCDate: Number,
-      mealName: '',
+
+      // Error messages
       inputCheckMessage: '',
       modalMessage: '',
+
+      // Dates
+      currentDate: new Date(),
+      UTCDate: Number,
+
+      // DateTimePicker
       calendar: {
         key: 'calendar',
         value: '',
@@ -138,17 +173,63 @@ export default {
         showClear: false,
         showClose: true,
       },
+
+      // Graph
+      seriesBar: [{
+        name: 'volume',
+        data: [-30, -40, -50, -60, -70, -80, 90, 100, 110, 120, 130, 140, 150],
+      }],
+      chartOptionsBar: {
+        chart: {
+          height: 160,
+          type: 'bar',
+        },
+        dataLabels: {
+          enabled: false,
+        },
+        plotOptions: {
+          bar: {
+            columnWidth: '80%',
+            colors: {
+              ranges: [{
+                from: -1000,
+                to: 0,
+                color: '#F15B46',
+              }, {
+                from: 0,
+                to: 10000,
+                color: '#FEB019',
+              }],
+
+            },
+          },
+        },
+        stroke: {
+          width: 0,
+        },
+        xaxis: {
+          axisBorder: {
+            offsetX: 13,
+          },
+        },
+        yaxis: {
+          labels: {
+            show: false,
+          },
+        },
+      },
     };
   },
   components: {
     datePicker,
+    apexchart: VueApexCharts,
   },
   methods: {
     loadMealsList() {
       // TODO: prendere username da sessione
       console.log(this.currentDate);
 
-      this.$store.state.http.get('api/meals')
+      this.$store.state.http.get(`api/meals/${this.currentDate}`)
         .then((response) => {
           this.mealsList = response.data.meals;
           this.showMealsByDate(this.currentDate);
@@ -169,7 +250,7 @@ export default {
       };
       console.log(body); // DEBUG
       if (mealName.length > 0) {
-        this.$store.state.http.post('api/meals', body)
+        this.$store.state.http.post(`api/meals/${body.meals.timestamp}`, body)
           .then((response) => {
             this.mealNameState = true;
             this.mealsList = [];
@@ -193,7 +274,7 @@ export default {
 
       console.log(`remove${JSON.stringify(params)}`); // DEBUG
 
-      this.$store.state.http.delete(`api/meals/${params.mealName}`, { params })
+      this.$store.state.http.delete(`api/meals/${params.mealName}/${params.date}`, { params })
         .then(() => this.loadMealsList())
         .catch(error => this.checkError(error.response.data.description));
     },
@@ -210,7 +291,7 @@ export default {
       };
 
       console.log(params); // DEBUG
-      this.$store.state.http.delete(`api/meals/${params.mealName}/components`, { params })
+      this.$store.state.http.delete(`api/meals/${params.mealName}/${params.date}/components`, { params })
         .then((response) => {
           this.mealsList = [];
           this.mealsList = response.data.meals;
@@ -265,6 +346,10 @@ export default {
       } else {
         this.inputCheckMessage = error;
       }
+    },
+    getNutriScoreImage(nutriScore) {
+      this.nutriScoreImgPath = imagesContext(`./nutriScore/${nutriScore}${imagesExt}`);
+      return this.nutriScoreImgPath;
     },
   },
   mounted() {

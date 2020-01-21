@@ -50,18 +50,18 @@ exports.createNewUser = function createNewUser(req, res) {
     });
     newUser.save()
       .then((user) => {
-        console.log(`User created ->${user}`); // DEBUG
+        global.log(`User created ->${user}`); // DEBUG
         // res.status(201).json(user);
         // Init user document inside Meals collection
         mealController.initUserMeals(user.username, res);
       })
       .catch((err) => {
-        console.log('createNewUser saveError: '.concat(err));
+        global.log('createNewUser saveError: '.concat(err));
         res.status(500).send({ description: 'internal_server_error' });
       });
     //
   }).catch((e) => {
-    console.log('createNewUser findWhoError: '.concat(e));
+    global.log('createNewUser findWhoError: '.concat(e));
     res.status(500).send({ description: 'internal_server_error' });
   });
 };
@@ -78,7 +78,7 @@ exports.checkUser = function checkUser(req, res) {
         res.send('ok');
       }
     }).catch((err) => {
-      console.log(err);
+      global.log(err);
       res.status(400).send(err);
     });
 };
@@ -99,7 +99,7 @@ exports.checkEmail = function checkEmail(req, res) {
 
 /** Loads a user by username */
 exports.load_user = async (req, res) => {
-  // console.log(`looking for user: ${req.query.username}`); // DEBUG
+  // global.log(`looking for user: ${req.query.username}`); // DEBUG
   const username = auth.getUsername(req.headers.token);
   const query = { username };
 
@@ -108,12 +108,16 @@ exports.load_user = async (req, res) => {
     .then((user) => {
       if (user == null) {
         res.status(404).send({ description: 'user_not_found' });
-        console.log('User not found'); // DEBUG
+        global.log('User not found'); // DEBUG
       } else {
         res.status(200).json(user);
-        console.log(`Found user ->${user.username}`); // DEBUG
+        global.log(`Found user ->${user.username}`); // DEBUG
       }
-    }).catch(() => res.status(500).send({ description: 'internal_server_error' }));
+    })
+    .catch((err) => {
+      global.log(`Error while loading user: ${err}`); // DEBUG
+      res.status(500).send({ description: 'internal_server_error' });
+    });
 };
 
 
@@ -129,19 +133,22 @@ exports.update_user = async (req, res) => {
     .then((user) => {
       if (user == null) {
         res.status(400).send({ description: 'user_not_found' });
-        console.log('User not found'); // DEBUG
+        global.log('User not found'); // DEBUG
       } else {
         res.status(200).json(user);
-        console.log('user updated'); // DEBUG
+        global.log('user updated'); // DEBUG
       }
     })
-    .catch(() => res.status(500).send({ description: 'internal_server_error' }));
+    .catch((err) => {
+      global.log(`Error while updating user: ${err}`); // DEBUG
+      res.status(500).send({ description: 'internal_server_error' });
+    });
 };
 
 
 /** Deletes a user given its username */
 exports.delete_user = async (req, res) => {
-  console.log(`Deleting user: ${req.query.username}`); // DEBUG
+  global.log(`Deleting user: ${req.query.username}`); // DEBUG
   const username = auth.getUsername(req.headers.token);
   const query = { username };
 
@@ -150,12 +157,15 @@ exports.delete_user = async (req, res) => {
     .then((user) => {
       if (user == null) {
         res.status(400).send({ description: 'user_not_found' });
-        console.log('user not found'); // DEBUG
+        global.log(`User ${username} not found`); // DEBUG
       } else {
         res.status(200).send({ description: 'user_deleted' }); // User successfully deleted
         mealController.deleteUserMeals(username, res);
-        console.log('User deleted'); // DEBUG
+        global.log(`User ${username} deleted`); // DEBUG
       }
     })
-    .catch(() => res.status(500).send({ description: 'internal_server_error' }));
+    .catch((err) => {
+      global.log(`Error while deleting user: ${err}`); // DEBUG
+      res.status(500).send({ description: 'internal_server_error' });
+    });
 };

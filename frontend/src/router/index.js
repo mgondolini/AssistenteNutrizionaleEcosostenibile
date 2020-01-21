@@ -8,7 +8,6 @@ import ProductInfo from '../views/ProductInfo/ProductInfo.vue';
 import Meals from '../views/Meals/Meals.vue';
 import CalculateMeal from '../views/CalculateMeal/CalculateMeal.vue';
 import Profile from '../views/Profile/Profile.vue';
-import NutritionFacts from '../views/Meals/NutritionFacts.vue'; // CAMBIARE
 
 
 Vue.use(VueRouter);
@@ -43,11 +42,6 @@ const routes = [
     path: '/meals',
     name: 'meals',
     component: Meals,
-  },
-  {
-    path: '/nutrition_facts',
-    name: 'nutrition_facts',
-    component: NutritionFacts,
   },
   {
     path: '/new_meal',

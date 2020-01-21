@@ -1,6 +1,5 @@
 /* eslint-disable no-param-reassign */
 const mongoose = require('mongoose');
-
 const productControllerUtils = require('./productControllerUtils.js');
 
 const SingleMeal = mongoose.model('SingleMeal');
@@ -9,7 +8,6 @@ const Meals = mongoose.model('Meals');
 
 /** Inits meal values to 0 */
 exports.initMealValues = (mealName, timestamp) => {
-  console.log('init meal values');
   const meal = new SingleMeal(); // SingleMeal compone l'array meals di UserMealSchema
   meal.meal_name = mealName;
   meal.components = [];
@@ -39,8 +37,6 @@ exports.addMeal = (req, userMeals, res) => {
   const { timestamp } = req.body.meals;
   const updateMeal = new Meals(userMeals);
 
-  console.log(`timestamp${timestamp}`); // DEBUG
-
   // controllo se ci sono pasti per lo stesso utente con lo stesso nome che voglio inserire
   userMeals.meals.forEach((m) => {
     if (m.timestamp.getUTCDate() === new Date(timestamp).getUTCDate()
@@ -55,7 +51,7 @@ exports.addMeal = (req, userMeals, res) => {
   // se non ci sono pasti con lo stesso nome inizializzo il pasto da inserire
   if (exists === false) {
     mealToAdd = this.initMealValues(mealName, timestamp);
-    console.log(`Meal to add ${mealToAdd}`); // DEBUG
+    global.log(`Meal to add ${mealToAdd}`); // DEBUG
   }
 
   // se mealToAdd è nullo vuol dire che c'era già un pasto con il nome inserito
@@ -64,16 +60,29 @@ exports.addMeal = (req, userMeals, res) => {
     updateMeal.meals.push(mealToAdd);
     updateMeal.save()
       .then((meal) => {
-        console.log(`meal updated -> ${meal}`); // DEBUG
-        res.status(200).json(meal);
+        global.log(`Meal added -> ${meal}`); // DEBUG
+        res.status(200).send(meal);
       })
       .catch((err) => {
-        console.log(`error while updating new meal${err}`); // DEBUG
+        global.log(`Error while adding new meal${err}`); // DEBUG
         res.status(500).send({ description: 'internal_server_error' });
       });
   } else {
     res.status(400).send({ description: 'meal_name_exists' });
   }
+};
+
+/** Init and add a new component with computed parameters */
+exports.addComponent = (components, values, meal) => {
+  components.product_name = values.product_name;
+  components.energy_per_quantity = values.energy_tot;
+  components.image_url = values.image_url;
+  components.carbon_footprint = 0;
+  components.water_footprint = 0;
+  components.nutrition_score = values.nutrition_score;
+
+  // Add passed components to meal's components array
+  meal.components.push(components);
 };
 
 
@@ -116,15 +125,15 @@ exports.updateMealValues = async (components, timestamp, mealName, userMeals, re
             // quindi li riempio ora con i valori del prodotto trovati
 
             // Components schema field update
-            components.product_name = values.product_name;
-            components.image_url = values.image_url;
-            components.carbon_footprint = 0;
-            components.water_footprint = 0;
+            if (meal.components.length > 0) {
+              meal.components.forEach((component) => {
+                if (component.barcode === barcode) component.quantity += quantity;
+                else this.addComponent(components, values, meal);
+              });
+            } else {
+              this.addComponent(components, values, meal);
+            }
 
-            console.log(`components: ${components}`); // DEBUG
-
-            // Add passed components to meal's components array
-            meal.components.push(components);
             updated = true;
           }
         }
@@ -132,8 +141,14 @@ exports.updateMealValues = async (components, timestamp, mealName, userMeals, re
       if (updated === true) {
         // salvo il pasto
         userMeals.save()
-          .then((meals) => res.status(200).json(meals))
-          .catch((err) => res.status(500).send(err));
+          .then((meals) => {
+            global.log(`Meal updated \n${userMeals}`); // DEBUG
+            res.status(200).send(meals);
+          })
+          .catch((err) => {
+            global.log(`Error while updating meal: ${err}`); // DEBUG
+            res.status(500).send({ description: 'internal_server_error' });
+          });
       } else {
         // Se non ho trovato il pasto mando un messaggio di errore
         res.status(400).send({ description: 'meal_not_found' });
@@ -164,8 +179,11 @@ exports.pullComponent = async (userMeals, timestamp, mealName, barcode, res) => 
 
   if (updated === true) {
     userMeals.save()
-      .then((meals) => res.status(200).json(meals))
-      .catch(() => res.status(500).send({ description: 'internal_server_error' }));
+      .then((meals) => res.status(200).send(meals))
+      .catch((err) => {
+        global.log(`Error while deleting component: ${err}`);
+        res.status(500).send({ description: 'internal_server_error' });
+      });
   } else {
     // Se non ho trovato il pasto mando un messaggio di errore
     res.status(400).send({ description: 'meal_not_found' });

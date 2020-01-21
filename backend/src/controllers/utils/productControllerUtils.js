@@ -33,6 +33,7 @@ exports.computeProductValues = async (barcode, quantity, res) => {
   let sodiumTot;
   let alcoholTot;
   let calciumTot;
+  let nutritionScore;
   let carbonFootprintTot;
   let waterFootprintTot;
 
@@ -54,10 +55,14 @@ exports.computeProductValues = async (barcode, quantity, res) => {
       sodiumTot = this.valuePerPortion(product.sodium_100g, quantity);
       alcoholTot = this.valuePerPortion(product.alcohol_100g, quantity);
       calciumTot = this.valuePerPortion(product.calcium_100g, quantity);
+      nutritionScore = product.nutrition_score_uk_100g;
       carbonFootprintTot = this.valuePerPortion(product.carbon_footprint_100g, quantity);
       waterFootprintTot = this.valuePerPortion(product.water_footprint_100g, quantity);
     })
-    .catch((err) => res.status(500).send(err));
+    .catch((err) => {
+      global.log(`Error while computing product values: ${err}`); // DEBUG
+      res.status(500).send({ description: 'internal_server_error' });
+    });
 
   // Creo il json da ritornare
   // TODO: forse si potrebbe fare anche con il modello new Product() ?
@@ -75,6 +80,7 @@ exports.computeProductValues = async (barcode, quantity, res) => {
     calcium_tot: calciumTot,
     alcohol_tot: alcoholTot,
     fiber_tot: fiberTot,
+    nutrition_score: nutritionScore,
     carbon_footprint_tot: carbonFootprintTot,
     water_footprint_tot: waterFootprintTot,
   };
