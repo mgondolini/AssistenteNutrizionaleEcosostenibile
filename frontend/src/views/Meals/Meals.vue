@@ -84,6 +84,9 @@
                     <p class="component-p">
                       {{ component.quantity }} g
                     </p>
+                    <p class="component-p">
+                      {{ component.energy_per_quantity }} kcal
+                    </p>
                   </b-card-text>
                   <b-button
                     pill

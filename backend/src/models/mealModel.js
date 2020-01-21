@@ -6,6 +6,7 @@ const MealComponentSchema = new Schema({
   barcode: Number,
   product_name: String,
   image_url: String,
+  energy_per_quantity: Number,
   quantity: Number,
   nutrition_score: String,
   carbon_footprint: Number,

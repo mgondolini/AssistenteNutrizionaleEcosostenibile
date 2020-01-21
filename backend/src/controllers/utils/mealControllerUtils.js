@@ -75,6 +75,7 @@ exports.addMeal = (req, userMeals, res) => {
 /** Init and add a new component with computed parameters */
 exports.addComponent = (components, values, meal) => {
   components.product_name = values.product_name;
+  components.energy_per_quantity = values.energy_tot;
   components.image_url = values.image_url;
   components.carbon_footprint = 0;
   components.water_footprint = 0;
