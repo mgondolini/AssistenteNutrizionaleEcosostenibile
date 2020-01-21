@@ -42,6 +42,8 @@ const store = new Vuex.Store({
       });
     },
     logout(state) {
+      localStorage.ecoAssToken = 'InvalidToken';
+      localStorage.ecoAssUser = '';
       state.isLogged = false;
       state.username = '';
       state.http = Axios.create({
@@ -57,8 +59,12 @@ if (localStorage.ecoAssToken !== 'InvalidToken') {
   const t = localStorage.ecoAssToken;
   const u = localStorage.ecoAssUser;
   store.commit('login', { token: t, user: u });
-  store.state.http.get('api/checkToken')
-    .then().catch(() => {
+  store.state.http.get('api/checkOldToken')
+    .then((res) => {
+      if (res.data !== 'Ok') {
+        store.commit('logout');
+      }
+    }).catch(() => {
       store.commit('logout');
     });
 } else {

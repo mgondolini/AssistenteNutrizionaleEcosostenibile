@@ -67,7 +67,6 @@ export default {
       return localeFlagsContext(`./${lang}${localeFlagsExt}`);
     },
     signout() {
-      localStorage.ecoAssToken = 'InvalidToken';
       this.$store.commit('logout');
       if (this.$route.path !== '/') {
         this.$router.push('/');

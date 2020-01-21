@@ -17,4 +17,7 @@ module.exports = function publicRoutes(app) {
 
   app.route('/api/checkToken')
     .get(authController.checkToken);
+
+  app.route('/api/checkOldToken')
+    .get(authController.checkOldToken);
 };

@@ -48,8 +48,6 @@ exports.auth = function auth(req, res) {
       // User not found
       res.status(401).send('User Credential');
     });
-  // teapot
-  // res.status(418).send('Wrong password');
 };
 
 function getUs(token) {
@@ -59,6 +57,17 @@ function getUs(token) {
     return '';
   }
 }
+
+exports.checkOldToken = function checkOldToken(req, res) {
+  try {
+    // check old token validity
+    jwt.verify(req.headers.token, config.tokenKey);
+    res.status(200).send('Ok');
+  } catch (err) {
+    // invavild token, no error
+    res.status(200).send('Invalid token');
+  }
+};
 
 exports.checkToken = function checkToken(req, res) {
   try {
