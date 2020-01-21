@@ -92,6 +92,10 @@
                     @click="removeComponent(component.barcode, meal.meal_name)"
                   ><img class="remove" src="../../assets/buttons/remove.svg">
                   </b-button>
+                  <b-img
+                    :src='getNutriScoreImage(component.nutrition_score)'
+                    alt="Nutri score image">
+                  </b-img>
                 </b-card>
               </div>
                <b-button
@@ -117,19 +121,26 @@
 <script>
 import datePicker from 'vue-bootstrap-datetimepicker';
 
+const imagesExt = '.svg';
+const imagesContext = require.context('@/assets/productInfo/', true, /\.svg$/);
+
 export default {
   name: 'meals',
   data() {
     return {
       mealsList: [],
       mealsListByDate: [],
+      mealName: '',
+
       noMeals: '',
       mealNameState: null,
-      currentDate: new Date(),
-      UTCDate: Number,
-      mealName: '',
+
       inputCheckMessage: '',
       modalMessage: '',
+
+      currentDate: new Date(),
+      UTCDate: Number,
+
       calendar: {
         key: 'calendar',
         value: '',
@@ -267,6 +278,10 @@ export default {
       } else {
         this.inputCheckMessage = error;
       }
+    },
+    getNutriScoreImage(nutriScore) {
+      this.nutriScoreImgPath = imagesContext(`./nutriScore/${nutriScore}${imagesExt}`);
+      return this.nutriScoreImgPath;
     },
   },
   mounted() {

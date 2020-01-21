@@ -72,6 +72,7 @@ exports.addMeal = (req, userMeals, res) => {
   }
 };
 
+/** Init and add a new component with computed parameters */
 exports.addComponent = (components, values, meal) => {
   components.product_name = values.product_name;
   components.image_url = values.image_url;
