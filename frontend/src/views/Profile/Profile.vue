@@ -29,23 +29,8 @@
           </div>
           <div class="row">
             <div class="col-12">
-              <ul class="nav nav-tabs mb-4" id="myTab" role="tablist">
-                <li class="nav-item">
-                  <a class="nav-link active" id="basicInfo-tab"
-                  data-toggle="tab" href="#basicInfo" role="tab"
-                  aria-controls="basicInfo" aria-selected="true">
-                  {{ $t('info') }}</a>
-                </li>
-                 <li class="nav-item">
-                    <a class="nav-link" id="achievements-tab"
-                    data-toggle="tab" href="#achievements" role="tab"
-                    aria-controls="achievements" aria-selected="false">
-                    {{ $t('achievements') }}</a>
-                </li>
-              </ul>
-              <div class="tab-content ml-1" id="myTabContent">
-                <div class="tab-pane fade show active" id="basicInfo"
-                  role="tabpanel" aria-labelledby="basicInfo-tab">
+              <b-tabs class="tab-content mt-3" id="myTabContent">
+                <b-tab class="tab-content-info" :title="$t('info')" active>
                   <div v-for="tmp in campi"
                     v-bind:key="tmp.key" >
                     <div class="row">
@@ -97,12 +82,11 @@
                     </div>
                     <hr />
                   </div>
-                </div>
-                <div class="tab-pane fade" id="achievements" role="tabpanel"
-                  aria-labelledby="achievements-tab">
+                </b-tab>
+                <b-tab class="tab-content-info" :title="$t('achievements')">
                     <Achievements />
-                </div>
-              </div>
+                </b-tab>
+              </b-tabs>
             </div>
           </div>
         </div>

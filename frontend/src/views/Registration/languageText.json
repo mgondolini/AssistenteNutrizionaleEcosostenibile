@@ -14,12 +14,12 @@
     "weight": "Weight",
     "allergens": "Allergens",
     "sex": "Gender",
-    "allergens-info": "Allergens must be separated by space.",
+    "allergens-info": "Allergens must be separated by a space.",
     "DOB": "Date of Birth",
     "reg-me":"Sign in",
-    "username": "Select a username!",
+    "username": "Choose a username!",
     "mail": "We won't share your email with third party",
-    "pwd": "The password must be between 8 and 20 characters long, it can contains special characters but not white spaces."
+    "pwd": "The password must be between 8 and 20 characters long, may contain special characters but not white spaces."
   },
   "it": {
     "reg": "Registrazione",
@@ -35,12 +35,12 @@
     "height": "Altezza",
     "weight": "Peso",
     "allergens": "Allergeni",
-    "allergens-info": "Gli allergeni devono essere separati da spazio",
+    "allergens-info": "Gli allergeni devono essere separati da uno spazio",
     "sex": "Genere",
     "DOB": "Data di Nascita",
     "reg-me":"Registrami",
     "username": "Scegli un username univoco!",
     "mail": "Non condivideremo mai la tu email con terze parti",
-    "pwd": "La password deve avere lunghezza compresa tra 8 e 20 caratteri, può contenere caratteri speciali escluso gli spazi."
+    "pwd": "La password deve avere lunghezza compresa tra 8 e 20 caratteri, può contenere caratteri speciali ma non spazi."
   }
 }
