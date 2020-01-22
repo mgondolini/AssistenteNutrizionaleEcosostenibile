@@ -128,13 +128,16 @@
           </apexchart>
         </div>
       </div>
+    <addProduct ref="addProduct">
+    </addProduct>
   </div>
 </template>
 
 <script>
+import Vue from 'vue';
 import datePicker from 'vue-bootstrap-datetimepicker';
 import VueApexCharts from 'vue-apexcharts';
-import Vue from 'vue';
+import addProduct from '../../components/AddProduct/AddProduct.vue';
 
 Vue.use(VueApexCharts);
 
@@ -181,7 +184,7 @@ export default {
       }],
       chartOptionsBar: {
         chart: {
-          height: 160,
+          height: 200,
           type: 'bar',
         },
         dataLabels: {
@@ -223,10 +226,10 @@ export default {
   components: {
     datePicker,
     apexchart: VueApexCharts,
+    addProduct,
   },
   methods: {
     loadMealsList() {
-      // TODO: prendere username da sessione
       console.log(this.currentDate);
 
       this.$store.state.http.get(`api/meals/${this.currentDate}`)
@@ -281,7 +284,8 @@ export default {
     addComponent(mealName, timestamp) {
       // Passo meal name, per accedere alla query dalla pagina info prodotto
       // devo fare: this.$route.query.mealName
-      this.$router.push({ path: '/info_prod', query: { mealName, date: timestamp } });
+      // this.$router.push({ path: '/info_prod', query: { mealName, date: timestamp } });
+      this.$refs.addProduct.open(mealName, timestamp);
     },
     removeComponent(barcode, mealName) {
       const params = {
