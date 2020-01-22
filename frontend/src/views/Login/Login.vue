@@ -100,7 +100,7 @@ export default {
               this.errorMsgModal = this.$i18n.t('unauthorized');
               this.modalErrorShow = true;
             } else {
-              this.errorMsgModal = this.$i18n.t('genericError');
+              this.errorMsgModal = this.$i18n.t('internal_server_error');
               this.modalErrorShow = true;
             }
           } else {
@@ -126,6 +126,7 @@ export default {
 };
 </script>
 
+<i18n src='../../locales/errorMessages.json'></i18n>
 <i18n>
 {
   "en": {
@@ -133,20 +134,14 @@ export default {
     "info-psw": "Password must be 8 to 20 characters long. It cannot contain spaces.",
     "not-reg": "Not registered?",
     "reg": "Sign in",
-    "unauthorized": "Wrong credentials!",
-    "closeBtn": "Ok",
-    "genericError": "Errors occurred. Try again later",
-    "noAnswer": "No answer from server. Try again later"
+    "closeBtn": "Ok"
   },
   "it": {
     "info": "Non condivideremo mai la tua email con terze parti.",
     "info-psw": "La password deve essere lunga tra 8 e 20 caratteri. Non può contenere spazi.",
     "not-reg":"Non sei ancora registrato?",
     "reg": "Registrati",
-    "unauthorized": "Credenziali errate!",
-    "closeBtn": "Ok",
-    "genericError": "Qualcosa è andato storto. Riprova più tardi",
-    "noAnswer": "Nessuna risposta dal server. Riprova più tardi"
+    "closeBtn": "Ok"
   }
 }
 </i18n>

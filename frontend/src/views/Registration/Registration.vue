@@ -218,8 +218,8 @@
 
 </script>
 
-<i18n  src="./languageText.json">
-</i18n>
+<i18n  src="./languageText.json"></i18n>
+<i18n src='../../locales/errorMessages.json'></i18n>
 
 <style lang="sass">
   @import './registration'
