@@ -5,6 +5,8 @@
         "mealslist_not_found": "Meals list not found.",
         "product_not_found": "Product not found.",
         "user_not_found": "User not found.",
+        "unauthorized": "Unauthorized access",
+        "genericError": "Something went wrong. Try later",
         "internal_server_error": "500 Internal Server Error"
     },
     "it": {
@@ -13,6 +15,8 @@
         "mealslist_not_found": "Lista pasti non trovata.",
         "product_not_found": "Prodotto non trovato.",
         "user_not_found": "Utente non trovato",
+        "unauthorized": "Accesso non autorizzato",
+        "genericError": "Qualcosa è andato storto. Riprova più tardi",
         "internal_server_error": "500 Errore interno al Server"
     }
 }

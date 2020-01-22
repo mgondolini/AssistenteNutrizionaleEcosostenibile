@@ -93,8 +93,7 @@
       </div>
     </div>
   </div>
-  <b-modal id="modal-error" title="Error"
-    hide-footer v-model="modalErrorShow">
+  <b-modal id="modal-error" title="Error" hide-footer>
     <div class="d-block text-center">
       <img src="https://img.icons8.com/color/48/000000/restriction-shield.png">
       {{ this.errorMsgModal }}
@@ -108,6 +107,7 @@
 </script>
 
 <i18n src="./languageText.json"></i18n>
+<i18n src="../../locales/errorMessages.json"></i18n>
 
 <style lang="sass">
 @import './Profile.sass'

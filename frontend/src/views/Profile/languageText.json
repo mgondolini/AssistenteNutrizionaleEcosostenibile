@@ -11,8 +11,6 @@
     "allergen": "Allergens",
     "profile": "Profile of ",
     "operation": "Information updated successfully!!",
-    "error": "Errors occurred. Try again!",
-    "unauthorized": "Unauthorized access",
     "closeBtn": "Close me!",
     "achievements": "Achievements"
 
@@ -29,8 +27,6 @@
     "allergen": "Allergeni",
     "profile": "Profilo di ",
     "operation": "Informazioni aggiornate con successo!!",
-    "error": "Sono avvenuti degli errori. Riprova dopo!",
-    "unauthorized": "Accesso non autorizzato",
     "closeBtn": "Chiudi!",
     "achievements": "I tuoi obiettivi"
   }

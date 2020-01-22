@@ -92,8 +92,6 @@ export default {
         .then((response) => {
           const t = response.data.token.toString();
           const u = response.data.user.toString();
-          localStorage.ecoAssToken = t;
-          localStorage.ecoAssUser = u;
           this.$store.commit('login', { token: t, user: u });
           this.$router.push('/meals');
         }).catch((error) => {

@@ -59,8 +59,9 @@ export default {
           console.log(res);
           this.$store.state.http.post('api/auth', { email: this.form.email, key: this.form.password })
             .then((response) => {
-              localStorage.ecoAssToken = response.data.token.toString();
-              this.$store.commit('login', { token: response.data.token.toString(), user: response.data.user });
+              const t = response.data.token.toString();
+              const u = response.data.user;
+              this.$store.commit('login', { token: t, user: u });
               this.$router.push('/meals');
             }).catch((error) => {
               // TODO manage error getting public key

@@ -52,7 +52,6 @@ export default {
         },
       },
       errors: false,
-      modalErrorShow: false,
       options: {
         format: 'YYYY-MM-DD',
         useCurrent: false,
@@ -74,11 +73,14 @@ export default {
   },
   methods: {
     checkError(error, status) {
-      if (status === 401) {
+      if (error === 'internal_server_error' || error === 'user_not_found') {
+        this.errorMsgModal = error;
+        this.$bvModal.show('modal-error');
+      } else if (status === 401) {
         this.errorMsgModal = this.$i18n.t('unauthorized');
-        this.modalErrorShow = true;
+        this.$bvModal.show('modal-error');
       } else {
-        this.errorMsgModal = this.$i18n.t('error');
+        this.errorMsgModal = this.$i18n.t('genericError');
       }
     },
     editContent() {
@@ -92,7 +94,7 @@ export default {
     },
     update() {
       this.errors = false;
-      this.modalErrorShow = false;
+      this.$bvModal.hide('modal-error');
       if (!this.campi.name.value) {
         document.getElementById('name').classList.add('nsError');
         this.errors = true;
@@ -167,7 +169,7 @@ export default {
   },
   mounted() {
     this.modalShow = false;
-    this.modalErrorShow = false;
+    this.$bvModal.hide('modal-error');
 
     this.$store.state.http.get('api/user')
       .then((response) => {
@@ -193,7 +195,7 @@ export default {
 
         if (response.data.allergens != null) this.campi.allergens.value = response.data.allergens;
       })
-      .catch(error => this.checkError(error.response.data.description,
+      .catch(error => this.checkError(error,
         error.response.status));
   },
 };
