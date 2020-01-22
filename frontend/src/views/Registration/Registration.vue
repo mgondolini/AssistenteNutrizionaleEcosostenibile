@@ -24,6 +24,7 @@
                             id="input-username"
                             v-model="form.username"
                             required
+                            type="text"
                             @focusout="onBlurUser"
                             placeholder="Inserisci username"
                             aria-describedby="user-help-block"
