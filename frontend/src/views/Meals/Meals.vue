@@ -95,10 +95,12 @@
                     @click="removeComponent(component.barcode, meal.meal_name)"
                   ><img class="remove" src="../../assets/buttons/remove.svg">
                   </b-button>
+                  <!--
                   <b-img
                     :src='getNutriScoreImage(component.nutrition_score)'
                     alt="Nutri score image">
                   </b-img>
+                  -->
                 </b-card>
               </div>
                <b-button
@@ -128,13 +130,16 @@
           </apexchart>
         </div>
       </div>
+    <addProduct ref="addProduct">
+    </addProduct>
   </div>
 </template>
 
 <script>
+import Vue from 'vue';
 import datePicker from 'vue-bootstrap-datetimepicker';
 import VueApexCharts from 'vue-apexcharts';
-import Vue from 'vue';
+import addProduct from '../../components/AddProduct/AddProduct.vue';
 
 Vue.use(VueApexCharts);
 
@@ -223,6 +228,7 @@ export default {
   components: {
     datePicker,
     apexchart: VueApexCharts,
+    addProduct,
   },
   methods: {
     loadMealsList() {
@@ -281,7 +287,8 @@ export default {
     addComponent(mealName, timestamp) {
       // Passo meal name, per accedere alla query dalla pagina info prodotto
       // devo fare: this.$route.query.mealName
-      this.$router.push({ path: '/info_prod', query: { mealName, date: timestamp } });
+      // this.$router.push({ path: '/info_prod', query: { mealName, date: timestamp } });
+      this.$refs.addProduct.open(mealName, timestamp);
     },
     removeComponent(barcode, mealName) {
       const params = {
