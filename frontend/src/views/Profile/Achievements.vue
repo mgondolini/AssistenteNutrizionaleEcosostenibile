@@ -11,7 +11,7 @@
           <p class="textTitle"> {{`${tmp.title}`}}</p>
         </div>
         <div class="col-md-2 col-2">
-          <p classs="textCounter"> {{`${tmp.counter}`}}</p>
+          <p class="textCounter"> {{`${tmp.counter}`}}</p>
         </div>
       </div>
     </div>
