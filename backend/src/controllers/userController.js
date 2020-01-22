@@ -172,3 +172,32 @@ exports.delete_user = async (req, res) => {
       res.status(500).send({ description: 'internal_server_error' });
     });
 };
+
+exports.checkAchievements = function checkAchievements(username) {
+  // const username = auth.getUsername(req.headers.token);
+  User.findOne({ username })
+    .exec()
+    .then((user) => {
+      // check achievements
+      global.log(user);
+    })
+    .catch((err) => {
+      // manage errors
+      global.log(err);
+    });
+};
+
+exports.getAchievements = function getAchievements(req, res) {
+  const username = auth.getUsername(req.headers.token);
+  User.findOne({ username })
+    .exec()
+    .then((user) => {
+      const ach = user.achievements;
+      global.log(`${username} achievements: ${ach}`);
+      res.status(200).send({ achievements: ach });
+    })
+    .catch((err) => {
+      global.log(`Error while getting user achievements: ${err}`); // DEBUG
+      res.status(500).send({ description: 'internal_server_error' });
+    });
+};
