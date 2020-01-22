@@ -95,10 +95,12 @@
                     @click="removeComponent(component.barcode, meal.meal_name)"
                   ><img class="remove" src="../../assets/buttons/remove.svg">
                   </b-button>
+                  <!--
                   <b-img
                     :src='getNutriScoreImage(component.nutrition_score)'
                     alt="Nutri score image">
                   </b-img>
+                  -->
                 </b-card>
               </div>
                <b-button
