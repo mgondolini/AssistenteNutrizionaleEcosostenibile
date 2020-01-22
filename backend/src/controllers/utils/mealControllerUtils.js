@@ -90,6 +90,7 @@ exports.addComponent = (components, values, meal) => {
 exports.updateMealValues = async (components, timestamp, mealName, userMeals, res) => {
   const { barcode } = components;
   const { quantity } = components;
+  let exists = true;
 
   // Quando aggiungo un nuovo componente devo aggiornare tutti i valori totali del pasto
   // (energia, carboidrati, ecc)
@@ -128,11 +129,11 @@ exports.updateMealValues = async (components, timestamp, mealName, userMeals, re
             if (meal.components.length > 0) {
               meal.components.forEach((component) => {
                 if (component.barcode === barcode) component.quantity += quantity;
-                else this.addComponent(components, values, meal);
+                else exists = false;
               });
-            } else {
-              this.addComponent(components, values, meal);
-            }
+            } else exists = false;
+
+            if (exists === false) this.addComponent(components, values, meal);
 
             updated = true;
           }
