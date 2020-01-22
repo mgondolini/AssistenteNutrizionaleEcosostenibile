@@ -134,10 +134,10 @@
 </template>
 
 <script>
-import datePicker from 'vue-bootstrap-datetimepicker';
-import addProduct from '../../components/AddProduct/AddProduct.vue';
-import VueApexCharts from 'vue-apexcharts';
 import Vue from 'vue';
+import datePicker from 'vue-bootstrap-datetimepicker';
+import VueApexCharts from 'vue-apexcharts';
+import addProduct from '../../components/AddProduct/AddProduct.vue';
 
 Vue.use(VueApexCharts);
 
