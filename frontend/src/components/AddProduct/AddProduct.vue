@@ -5,6 +5,7 @@
     centered
     hide-footer
     @close="inputMode = 'SELECT'"
+    @hide="inputMode = 'SELECT'"
     >
     <div v-if="inputMode === 'SELECT'" class="buttonContainerVertical">
         <b-button v-on:click="inputMode = 'MANUAL'">Manual insert</b-button>
@@ -23,7 +24,7 @@
       </div>
       <b-form-select v-model="ean" :options="eanOptions"></b-form-select>
       <div>
-        <b-button v-on:click="submitEan()">Lookup</b-button>
+        <b-button v-on:click="gotoProductInfo()">Lookup</b-button>
         <b-button v-on:click="inputMode = 'SELECT'">Back</b-button>
       </div>
     </div>
@@ -78,7 +79,7 @@ export default {
       this.$bvModal.show('modal-addProduct');
     },
     gotoProductInfo() {
-      this.$router.push({ path: '/info_prod', query: { mealName: this.mealDate, date: this.mealDate } });
+      this.$router.push({ path: '/info_prod', query: { ean: this.ean, mealName: this.mealName, date: this.mealDate } });
     },
     barcodeDetected(data) {
       console.log('detected', data);
@@ -92,7 +93,8 @@ export default {
         alert(data.codeResult.code);
         Quagga.stop();
         this.ean = data.codeResult.code.trim();
-        this.submitEan();
+        this.$bvModal.close('modal-addProduct');
+        this.gotoProductInfo();
       }
     },
   },
