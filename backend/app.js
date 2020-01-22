@@ -66,6 +66,5 @@ app.use((req, res) => {
 });
 
 app.listen(config.port, () => {
-  global.log('Node API server started on port '.concat(config.port));
-  // console.log('Node API server started on port '.concat(config.port));
+  global.log(`Node API server started on port ${config.port}`);
 });

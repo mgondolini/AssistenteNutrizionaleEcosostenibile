@@ -2,11 +2,17 @@
     "en": {
         "meal_name_exists": "Meal name already in use.",
         "meal_not_found": "Meal not found.",
+        "mealslist_not_found": "Meals list not found.",
+        "product_not_found": "Product not found.",
+        "user_not_found": "User not found.",
         "internal_server_error": "500 Internal Server Error"
     },
     "it": {
         "meal_name_exists": "Nome pasto già esistente.",
         "meal_not_found": "Pasto non trovato.",
+        "mealslist_not_found": "Lista pasti non trovata.",
+        "product_not_found": "Prodotto non trovato.",
+        "user_not_found": "Utente non trovato",
         "internal_server_error": "500 Errore interno al Server"
     }
 }
