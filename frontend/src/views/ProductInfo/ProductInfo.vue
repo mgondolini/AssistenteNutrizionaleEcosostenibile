@@ -1,34 +1,6 @@
 <template>
   <div class="productInfo">
-    <div v-if="inputMode === 'SELECT'" class="buttonContainer">
-        <b-button v-on:click="inputMode = 'MANUAL'">Manual insert</b-button>
-        <b-button v-on:click="inputMode = 'STREAM'">Scan barcode</b-button>
-        <b-button v-on:click="uploadFile()">Upload barcode</b-button>
-        <b-button v-on:click="scanNutriTable()">Scan nutrition table</b-button>
-    </div>
-    <div v-else-if="inputMode === 'MANUAL'" id="insertEAN" class="buttonContainer">
-      <div>
-        <label for="ean">EAN code</label>
-        <input
-          id="ean"
-          v-model="ean"
-          value=""
-        >
-        <b-form-select v-model="ean" :options="eanOptions"></b-form-select>
-      </div>
-      <b-button v-on:click="submitEan()">Lookup</b-button>
-      <b-button v-on:click="inputMode = 'SELECT'">Back</b-button>
-    </div>
-    <div v-else-if="inputMode === 'STREAM'" id="videoStream" class="buttonContainer">
-      <v-quagga
-        :onDetected="barcodeDetected"
-        :readerSize="readerSize"
-        :readerType="'ean_reader'"
-        :aspectRatio="aspectRatio"
-      ></v-quagga>
-      <b-button v-on:click="inputMode = 'SELECT'">Back</b-button>
-    </div>
-    <div v-else-if="inputMode === 'DONE'" class="productData">
+    <div class="productData">
       <b-card no-body class="productCard">
         <b-media>
           <template v-slot:aside>
@@ -229,7 +201,9 @@ export default {
   mounted() {
     this.mealName = this.$route.query.mealName || '';
     this.mealDate = this.$route.query.date || '';
-    console.log(`${this.mealName} ${this.mealDate}`);
+    this.ean = this.$route.query.ean || '';
+    console.log(`Mounted ProductInfo. EAN: ${this.ean} Meal: ${this.mealName} Date: ${this.mealDate}`);
+    this.submitEan();
   },
   methods: {
     submitEan() {
