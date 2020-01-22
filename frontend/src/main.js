@@ -33,6 +33,8 @@ const store = new Vuex.Store({
   },
   mutations: {
     login(state, newState) {
+      localStorage.ecoAssToken = newState.token;
+      localStorage.ecoAssUser = newState.user;
       state.isLogged = true;
       state.username = newState.user;
       state.http = Axios.create({
