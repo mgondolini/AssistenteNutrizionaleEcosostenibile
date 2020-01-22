@@ -95,12 +95,10 @@
                     @click="removeComponent(component.barcode, meal.meal_name)"
                   ><img class="remove" src="../../assets/buttons/remove.svg">
                   </b-button>
-                  <!--
                   <b-img
                     :src='getNutriScoreImage(component.nutrition_score)'
                     alt="Nutri score image">
                   </b-img>
-                  -->
                 </b-card>
               </div>
                <b-button
@@ -186,7 +184,7 @@ export default {
       }],
       chartOptionsBar: {
         chart: {
-          height: 160,
+          height: 200,
           type: 'bar',
         },
         dataLabels: {
@@ -232,7 +230,6 @@ export default {
   },
   methods: {
     loadMealsList() {
-      // TODO: prendere username da sessione
       console.log(this.currentDate);
 
       this.$store.state.http.get(`api/meals/${this.currentDate}`)
