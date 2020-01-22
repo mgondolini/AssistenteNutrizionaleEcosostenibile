@@ -77,9 +77,9 @@ exports.addComponent = (components, values, meal) => {
   components.product_name = values.product_name;
   components.energy_per_quantity = values.energy_tot;
   components.image_url = values.image_url;
-  components.carbon_footprint = 0;
-  components.water_footprint = 0;
-  components.nutrition_score = values.nutrition_score;
+  components.carbon_footprint += values.carbon_footprint_tot;
+  components.water_footprint += values.water_footprint_tot;
+  components.nutrition_score += values.nutrition_score;
 
   // Add passed components to meal's components array
   meal.components.push(components);
@@ -90,7 +90,7 @@ exports.addComponent = (components, values, meal) => {
 exports.updateMealValues = async (components, timestamp, mealName, userMeals, res) => {
   const { barcode } = components;
   const { quantity } = components;
-  let exists = true;
+  let exists = false;
 
   // Quando aggiungo un nuovo componente devo aggiornare tutti i valori totali del pasto
   // (energia, carboidrati, ecc)
@@ -128,12 +128,18 @@ exports.updateMealValues = async (components, timestamp, mealName, userMeals, re
             // Components schema field update
             if (meal.components.length > 0) {
               meal.components.forEach((component) => {
-                if (component.barcode === barcode) component.quantity += quantity;
-                else exists = false;
+                if (component.barcode === barcode) {
+                  component.quantity += quantity;
+                  component.energy_per_quantity += values.energy_tot;
+                  component.carbon_footprint += values.carbon_footprint_tot;
+                  component.water_footprint += values.water_footprint_tot;
+                  // co2 h2o
+                  exists = true;
+                }
               });
-            } else exists = false;
+            }
 
-            if (exists === false) this.addComponent(components, values, meal);
+            if (!exists) this.addComponent(components, values, meal);
 
             updated = true;
           }
