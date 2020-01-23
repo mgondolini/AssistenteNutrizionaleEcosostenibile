@@ -32,7 +32,7 @@
       <v-quagga
         :onDetected="barcodeDetected"
         :readerSize="readerSize"
-        :readerType="'ean_reader'"
+        :readerTypes="['ean_reader']"
         :aspectRatio="aspectRatio"
       ></v-quagga>
       <b-button v-on:click="inputMode = 'SELECT'">Back</b-button>
@@ -41,7 +41,7 @@
 </template>
 
 <script>
-import Quagga from 'quagga';
+// import Quagga from 'quagga';
 
 export default {
   name: 'AddProduct',
@@ -57,7 +57,7 @@ export default {
         width: 640,
         height: 480,
       },
-      aspectRatio: { min: 1, max: 2 },
+      aspectRatio: { min: 1, max: 100 },
       detecteds: [],
 
       // ean dropdown selector facility
@@ -82,18 +82,17 @@ export default {
       this.$router.push({ path: '/info_prod', query: { ean: this.ean, mealName: this.mealName, date: this.mealDate } });
     },
     barcodeDetected(data) {
-      console.log('detected', data);
-
+      console.log('EAN detected', data);
       console.log(data.codeResult.code.trim());
       console.log(data.codeResult.code.trim().length);
 
       if (Object.prototype.hasOwnProperty.call(data, 'codeResult')
        && Object.prototype.hasOwnProperty.call(data.codeResult, 'code')
        && (data.codeResult.code.trim().length === 13 || data.codeResult.code.trim().length === 8)) {
-        alert(data.codeResult.code);
-        Quagga.stop();
+        // alert(data.codeResult.code);
+        // Quagga.stop();
         this.ean = data.codeResult.code.trim();
-        this.$bvModal.close('modal-addProduct');
+        this.$bvModal.hide('modal-addProduct');
         this.gotoProductInfo();
       }
     },
