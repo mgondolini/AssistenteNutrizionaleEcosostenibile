@@ -29,12 +29,12 @@
       </div>
     </div>
     <div v-else-if="inputMode === 'STREAM'" id="videoStream" class="buttonContainer">
-      <barcodeScanner
+      <v-quagga
         :onDetected="barcodeDetected"
         :readerSize="readerSize"
         :readerTypes="['ean_reader']"
         :aspectRatio="aspectRatio"
-      ></barcodeScanner>
+      ></v-quagga>
       <b-button v-on:click="inputMode = 'SELECT'">Back</b-button>
     </div>
   </b-modal>
@@ -42,7 +42,6 @@
 
 <script>
 // import Quagga from 'quagga';
-import barcodeScanner from '../BarcodeScanner/BarcodeScanner.vue';
 
 export default {
   name: 'AddProduct',
@@ -73,9 +72,6 @@ export default {
       ],
     };
   },
-  components: {
-    barcodeScanner,
-  },
   methods: {
     open(mealName, timestamp) {
       this.mealName = mealName;
@@ -86,21 +82,19 @@ export default {
       this.$router.push({ path: '/info_prod', query: { ean: this.ean, mealName: this.mealName, date: this.mealDate } });
     },
     barcodeDetected(data) {
-      console.log('detected', data);
-      /*
+      console.log('EAN detected', data);
       console.log(data.codeResult.code.trim());
       console.log(data.codeResult.code.trim().length);
 
       if (Object.prototype.hasOwnProperty.call(data, 'codeResult')
        && Object.prototype.hasOwnProperty.call(data.codeResult, 'code')
        && (data.codeResult.code.trim().length === 13 || data.codeResult.code.trim().length === 8)) {
-        alert(data.codeResult.code);
-        //Quagga.stop();
+        // alert(data.codeResult.code);
+        // Quagga.stop();
         this.ean = data.codeResult.code.trim();
-        this.$bvModal.close('modal-addProduct');
+        this.$bvModal.hide('modal-addProduct');
         this.gotoProductInfo();
       }
-*/
     },
   },
   mounted() {
