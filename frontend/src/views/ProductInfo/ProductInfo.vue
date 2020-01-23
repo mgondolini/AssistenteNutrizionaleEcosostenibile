@@ -1,33 +1,6 @@
 <template>
   <div class="productInfo">
-    <div v-if="inputMode === 'SELECT'" class="buttonContainer">
-        <b-button v-on:click="inputMode = 'MANUAL'">Manual insert</b-button>
-        <b-button v-on:click="inputMode = 'STREAM'">Scan barcode</b-button>
-        <b-button v-on:click="uploadFile()">Upload barcode</b-button>
-        <b-button v-on:click="scanNutriTable()">Scan nutrition table</b-button>
-    </div>
-    <div v-else-if="inputMode === 'MANUAL'" id="insertEAN" class="buttonContainer">
-      <div>
-        <label for="ean">EAN code</label>
-        <input
-          id="ean"
-          v-model="ean"
-          value=""
-        >
-      </div>
-      <b-button v-on:click="submitEan()">Lookup</b-button>
-      <b-button v-on:click="inputMode = 'SELECT'">Back</b-button>
-    </div>
-    <div v-else-if="inputMode === 'STREAM'" id="videoStream" class="buttonContainer">
-      <v-quagga
-        :onDetected="barcodeDetected"
-        :readerSize="readerSize"
-        :readerType="'ean_reader'"
-        :aspectRatio="aspectRatio"
-      ></v-quagga>
-      <b-button v-on:click="inputMode = 'SELECT'">Back</b-button>
-    </div>
-    <div v-else-if="inputMode === 'DONE'" class="productData">
+    <div class="productData">
       <b-card no-body class="productCard">
         <b-media>
           <template v-slot:aside>
@@ -36,7 +9,7 @@
           </template>
           <p>{{ productName }}</p>
           <p>{{ productVendor }}</p>
-          <p>{{ productPortion }}</p>
+          <p>{{ productPortion }} g</p>
         </b-media>
       </b-card>
       <b-tabs content-class="mt-3" justified>
@@ -128,6 +101,9 @@
         </b-tab>
       </b-tabs>
       <b-button v-on:click="inputMode = 'SELECT'">Scan another product</b-button>
+      <b-button v-if="mealName && mealDate"
+                v-on:click="insertProductInMeal()">
+        Add product to "{{mealName}}"</b-button>
     </div>
     <b-modal id="modal-error" centered ok-only title="Error">
       <p class="my-4">Product not found!</p>
@@ -147,22 +123,26 @@ const productIDTest = '737628064502';
 const imagesExt = '.svg';
 const imagesContext = require.context('@/assets/productInfo/', true, /\.svg$/);
 
-console.log(Quagga);
 // TODO add function to format numbers (trim decimals and add dots for thousands)
 
 export default {
   name: 'productInfo',
   data() {
     return {
+      // TODO add control to verify that ean is indeed in number format
       ean: productIDTest,
       inputMode: 'SELECT',
       productShowing: false,
       status: 0,
+
+      mealName: '',
+      mealDate: '',
       // OFF API values (factorize!)
       imgPath: '',
       productName: '',
       productVendor: '',
       productPortion: '',
+      nutriScore: '',
       nutriScoreImgPath: '',
       novaGroupImgPath: '',
 
@@ -206,7 +186,24 @@ export default {
       },
       aspectRatio: { min: 1, max: 2 },
       detecteds: [],
+
+      eanOptions: [
+        { value: '737628064502', text: 'Noodles' },
+        { value: '20969578', text: 'Sbrisolona' },
+        { value: '8001300240785', text: 'Tonno' },
+        { value: '5411188110835', text: 'Latte' },
+        { value: '4104420208629', text: 'Spaghetti' },
+        { value: '3560070240258', text: 'Chips' },
+        { value: '8001300500773', text: 'Lievito' },
+      ],
     };
+  },
+  mounted() {
+    this.mealName = this.$route.query.mealName || '';
+    this.mealDate = this.$route.query.date || '';
+    this.ean = this.$route.query.ean || '';
+    console.log(`Mounted ProductInfo. EAN: ${this.ean} Meal: ${this.mealName} Date: ${this.mealDate}`);
+    this.submitEan();
   },
   methods: {
     submitEan() {
@@ -237,11 +234,11 @@ export default {
           // Alternatively in response.data.brands
           // Absurd way to access brands_tags[0]
           [this.productVendor] = product.brands_tags;
-          this.productPortion = product.quantity;
+          this.productPortion = product.product_quantity;
 
           // NUTRITION TAB
-          const nutriScore = response.data.product.nutriscore_grade;
-          this.nutriScoreImgPath = imagesContext(`./nutriScore/${nutriScore}${imagesExt}`);
+          this.nutriScore = response.data.product.nutriscore_grade;
+          this.nutriScoreImgPath = imagesContext(`./nutriScore/${this.nutriScore}${imagesExt}`);
 
           // nutritional levels
           this.fatLvl = product.nutrient_levels.fat;
@@ -291,7 +288,8 @@ export default {
 
           // INGREDIENTS TAB
           const novaGroup = product.nova_group;
-          this.novaGroupImgPath = imagesContext(`./novaGroup/${novaGroup}${imagesExt}`);
+          // TODO use placeholder if nova score is missing
+          this.novaGroupImgPath = novaGroup ? imagesContext(`./novaGroup/${novaGroup}${imagesExt}`) : '';
 
           const { ingredients } = product;
           const ingredientsTexts = [];
@@ -329,6 +327,69 @@ export default {
         this.ean = data.codeResult.code.trim();
         this.submitEan();
       }
+    },
+    insertProductInMeal() {
+      // console.log(this.$route.query);
+      console.log(`${this.mealName} ${this.mealDate}`);
+      // Creation of the new product
+      const body = {
+        code: this.ean,
+        product_name: this.productName,
+        image_url: this.imgPath,
+        quantity: '',
+        brands: this.productVendor,
+        ingredients_text: this.ingredientsText,
+        traces: '',
+        serving_size: this.productPortion,
+        allergens: '',
+        energy_100g: this.energyKcal,
+        carbohydrates_100g: this.carbohydrates,
+        sugars_100g: this.sugar,
+        fat_100g: this.fat,
+        saturated_fat_100g: this.saturatedFat,
+        proteins_100g: this.proteins,
+        fiber_100g: this.fiber,
+        salt_100g: this.salt,
+        sodium_100g: this.sodium,
+        alcohol_100g: 0,
+        calcium_100g: 0,
+        nutrition_score_uk_100g: this.nutriScore,
+        carbon_footprint_100g: 0,
+        water_footprint_100g: 0,
+      };
+      this.$store.state.http.post('api/product', body)
+        .then((response) => {
+          console.log('Product created!');
+          console.log(response);
+
+          // Insertion of the new product into the meal
+          const body2 = {
+            mealName: this.mealName,
+            components: {
+              barcode: Number(this.ean),
+              quantity: this.qty,
+            },
+            timestamp: this.mealDate,
+          };
+          console.log('Adding product to meal');
+          console.log(body2);
+
+          this.$store.state.http.put(`api/meals/${body2.mealName}/${body2.timestamp}/components`, body2)
+            .then((response2) => {
+              console.log('Product added to meal!');
+              console.log(response2);
+              this.$router.push({ path: '/meals', query: { date: this.mealDate } });
+              // TODO refactor with AWAIT
+            })
+            .catch((error) => {
+              console.log('Failed to add product to meal');
+              console.log(error);
+            });
+        })
+        .catch((error) => {
+          console.log('Failed to create product');
+          console.log(error);
+        });
     },
   },
 };

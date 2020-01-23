@@ -24,7 +24,7 @@
               aria-describedby="email-help-block"
             ></b-form-input>
             <b-form-text id="email-help-block">
-              Non condivideremo mai la tua email con parti terze.
+              {{ $t('info') }}
             </b-form-text>
           </b-form-group>
           <b-form-group
@@ -40,20 +40,31 @@
               placeholder="Inserisci password"
               aria-describedby="password-help-block"
             ></b-form-input>
+            <button id="buttonHideShow" title="Hold down to show password"
+              @click="changeType" type = "button"></button>
             <b-form-text id="password-help-block">
-              La password deve avere lunghezza compresa tra 8 e 20 caratteri, può contenere
-              lettere e numeri ma non può contenere spazi bianchi, caratteri speciali o emoji.
+              {{ $t('info-psw') }}
             </b-form-text>
           </b-form-group>
         </div>
-        <div class="text-center">
-          <b-button type="submit" variant="primary">Login</b-button>
+        <div class="text-center buttonsDiv block">
+          <b-button class="sim-button button1" type="submit">Login</b-button>
         </div>
       </b-form>
       <hr />
-      <label style="margin-right: 10px">Non sei ancora registrato?</label>
-      <b-button>Registrati</b-button>
+      <span style="margin-right: 10px">{{ $t('not-reg') }}</span>
+      <router-link to='registration'
+        class="text-center buttonsDiv" style="text-decoration:none; margin-bottom:30px;">
+        <b-button class="sim-button button1">{{ $t('reg') }}</b-button>
+      </router-link>
     </b-card>
+    <b-modal id="modal-error" title="Error" hide-footer v-model="modalErrorShow">
+      <div class="d-block text-center">
+        <img src="https://img.icons8.com/color/48/000000/restriction-shield.png">
+        {{ this.errorMsgModal }}
+      </div>
+      <b-button class="mt-3" block @click="hideModal">{{ $t('closeBtn')}}</b-button>
+    </b-modal>
   </div>
 </template>
 
@@ -62,6 +73,8 @@ export default {
   name: 'login',
   data() {
     return {
+      errorMsgModal: '',
+      modalErrorShow: false,
       form: {
         email: '',
         password: '',
@@ -70,32 +83,68 @@ export default {
   },
   methods: {
     onSubmit(evt) {
+      this.modalErrorShow = false;
       evt.preventDefault();
       const mail = this.form.email;
       const psw = this.form.password;
 
       this.$store.state.http.post('api/auth', { email: mail, key: psw })
         .then((response) => {
-          localStorage.ecoAssToken = response.data.token.toString();
-          this.$store.commit('login', response.data.token.toString());
+          const t = response.data.token.toString();
+          const u = response.data.user.toString();
+          this.$store.commit('login', { token: t, user: u });
           this.$router.push('/meals');
         }).catch((error) => {
-          // TODO manage error getting public key
-          console.log('Error during authentication: '.concat(error));
+          if (error.response) {
+            if (error.response.status === 401) {
+              this.errorMsgModal = this.$i18n.t('unauthorized');
+              this.modalErrorShow = true;
+            } else {
+              this.errorMsgModal = this.$i18n.t('internal_server_error');
+              this.modalErrorShow = true;
+            }
+          } else {
+            this.errorMsgModal = this.$i18n.t('noAnswer');
+            this.modalErrorShow = true;
+          }
         });
-      /*
-      ESEMPIO chiamata get con token
-      this.$store.state.http.get('api/publickey')
-        .then((resp) => {
-          console.log('Ok!');
-        }).catch((er) => {
-          console.log('Error');
-        });
-      */
+    },
+    hideModal() {
+      this.$bvModal.hide('modal-error');
+    },
+    changeType() {
+      const t = document.getElementById('input-password').type;
+      if (t === 'text') {
+        document.getElementById('input-password').type = 'password';
+        document.getElementById('buttonHideShow').style = 'background-position: 0px 0px';
+      } else {
+        document.getElementById('input-password').type = 'text';
+        document.getElementById('buttonHideShow').style = 'background-position: -44px 0px';
+      }
     },
   },
 };
 </script>
-<style lang="scss">
-  @import './login.scss';
+
+<i18n src='../../locales/errorMessages.json'></i18n>
+<i18n>
+{
+  "en": {
+    "info": "We'll never share your email with third parties.",
+    "info-psw": "Password must be 8 to 20 characters long. It cannot contain spaces.",
+    "not-reg": "Not registered?",
+    "reg": "Sign in",
+    "closeBtn": "Ok"
+  },
+  "it": {
+    "info": "Non condivideremo mai la tua email con terze parti.",
+    "info-psw": "La password deve essere lunga tra 8 e 20 caratteri. Non può contenere spazi.",
+    "not-reg":"Non sei ancora registrato?",
+    "reg": "Registrati",
+    "closeBtn": "Ok"
+  }
+}
+</i18n>
+<style lang="sass">
+  @import './login.sass'
 </style>

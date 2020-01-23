@@ -1,0 +1,22 @@
+{
+    "en": {
+        "meal_name_exists": "Meal name already in use.",
+        "meal_not_found": "Meal not found.",
+        "mealslist_not_found": "Meals list not found.",
+        "product_not_found": "Product not found.",
+        "user_not_found": "User not found.",
+        "unauthorized": "Unauthorized access",
+        "internal_server_error": "Something went wrong. Try later",
+        "noAnswer": "No answer from server. Try again later"
+    },
+    "it": {
+        "meal_name_exists": "Nome pasto già esistente.",
+        "meal_not_found": "Pasto non trovato.",
+        "mealslist_not_found": "Lista pasti non trovata.",
+        "product_not_found": "Prodotto non trovato.",
+        "user_not_found": "Utente non trovato",
+        "unauthorized": "Accesso non autorizzato",
+        "internal_server_error": "Qualcosa è andato storto. Riprova più tardi",
+        "noAnswer": "Nessuna risposta dal server. Riprova più tardi"
+    }
+}

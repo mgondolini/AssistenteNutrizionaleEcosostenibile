@@ -13,48 +13,60 @@ exports.auth = function auth(req, res) {
   const query = { email: req.body.email };
   UserModel.findOne(query)
     .exec()
-    .then((user) => {
+    .then((us) => {
       // User found
       const psw = req.body.key;
-      const salt = user.salt.toString();
+      const salt = us.salt.toString();
       const pswHash = crypto.pbkdf2Sync(psw,
         salt,
         iterations,
         keyLen,
         digest).toString();
-      if (pswHash === user.password_hash_salt) {
+      if (pswHash === us.password_hash_salt) {
         // Correct password
         res.status(200);
 
         // TODO REMOVE ME
         if (req.body.email === 'test@test.it') {
           const tok = jwt.sign({
-            email: user.email,
+            email: us.email,
+            user: us.username,
           }, config.tokenKey);
-          /*
-          fs.writeFile('token.txt', tok, (err) => {
-            if (err) global.log(err);
-            // global.log('Saved publicKey!');
-          });
-          */
-          return res.send({ token: tok });
+          return res.send({ token: tok, user: us.username });
         }
 
         const t = jwt.sign({
-          email: user.email,
+          email: us.email,
+          user: us.username,
         }, config.tokenKey, { expiresIn: '8h' });
         // token generated
-        return res.send({ token: t });
+        return res.send({ token: t, user: us.username });
       }
       // wrong password
-      return res.status(401).send('Wrong Password');
-    }).catch((err) => {
+      return res.status(401).send('Wrong Credential');
+    }).catch(() => {
       // User not found
-      console.log('Errore: '.concat(err));
-      res.status(401).send('User Not Found');
+      res.status(401).send('User Credential');
     });
-  // teapot
-  // res.status(418).send('Wrong password');
+};
+
+function getUs(token) {
+  try {
+    return jwt.verify(token, config.tokenKey).user;
+  } catch (err) {
+    return '';
+  }
+}
+
+exports.checkOldToken = function checkOldToken(req, res) {
+  try {
+    // check old token validity
+    jwt.verify(req.headers.token, config.tokenKey);
+    res.status(200).send('Ok');
+  } catch (err) {
+    // invavild token, no error
+    res.status(200).send('Invalid token');
+  }
 };
 
 exports.checkToken = function checkToken(req, res) {
@@ -66,6 +78,10 @@ exports.checkToken = function checkToken(req, res) {
     // invavild token
     res.status(401).send('Invalid token: '.concat(err));
   }
+};
+
+exports.getUsername = function getUsername(token) {
+  return getUs(token);
 };
 
 exports.createUser = function createUser() {

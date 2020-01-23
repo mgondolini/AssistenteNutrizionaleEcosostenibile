@@ -9,7 +9,10 @@
     "weight": "Weight",
     "height": "Height",
     "allergen": "Allergens",
-    "profile": "Profile of "
+    "profile": "Profile of ",
+    "operation": "Information updated successfully!!",
+    "closeBtn": "Close me!",
+    "achievements": "Achievements"
 
   },
   "it": {
@@ -22,6 +25,9 @@
     "weight": "Peso",
     "height": "Altezza",
     "allergen": "Allergeni",
-    "profile": "Profilo di "
+    "profile": "Profilo di ",
+    "operation": "Informazioni aggiornate con successo!!",
+    "closeBtn": "Chiudi!",
+    "achievements": "I tuoi obiettivi"
   }
 }

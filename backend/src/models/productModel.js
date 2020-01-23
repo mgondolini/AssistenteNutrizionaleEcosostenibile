@@ -6,7 +6,7 @@ const { Schema } = mongoose;
 // origin: String,
 // packaging: String,
 // nutri_score: String,
-// nova_score: Number,
+// nova_score: String,
 
 const ProductSchema = new Schema({
   code: Number,
@@ -29,7 +29,7 @@ const ProductSchema = new Schema({
   sodium_100g: Number,
   alcohol_100g: Number,
   calcium_100g: Number,
-  nutrition_score_uk_100g: Number,
+  nutrition_score_uk_100g: String,
   carbon_footprint_100g: Number,
   water_footprint_100g: Number,
 });

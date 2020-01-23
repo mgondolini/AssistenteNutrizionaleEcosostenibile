@@ -7,24 +7,28 @@ module.exports = function (app) {
   app.route('/api/publickey')
     .get(keyController.getPublicKey);
 
-  app.route('/api/user/:username')
+  app.route('/api/user')
     .get(userController.load_user)
-    .put(userController.update_user)
+    .put(userController.update_user);
+
+  app.route('/api/user/:username')
     .delete(userController.delete_user);
 
   app.route('/api/product')
     .get(productController.load_product)
     .post(productController.insert_product);
 
-  app.route('/api/:user/meals/')
+  app.route('/api/meals/:date')
     .get(mealController.load_meals_list)
     .post(mealController.new_meal);
 
-  app.route('/api/:user/meals/:mealName')
-    .get(mealController.load_meal)
+  app.route('/api/meals/:mealName/:date')
     .delete(mealController.delete_meal);
 
-  app.route('/api/:user/meals/:mealName/components')
+  app.route('/api/meal')
+    .get(mealController.load_meal);
+
+  app.route('/api/meals/:mealName/:date/components')
     .put(mealController.new_component)
     .delete(mealController.delete_component);
 };

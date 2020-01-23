@@ -34,6 +34,7 @@ const db = mongoose.connection;
 db.on('error', console.error.bind(console, 'MongoDB connection error:'));
 
 // TODO insert here the require for every db schema you need
+require('./src/models/whoModel');
 require('./src/models/userModel');
 require('./src/models/productModel');
 require('./src/models/mealModel');
@@ -65,6 +66,5 @@ app.use((req, res) => {
 });
 
 app.listen(config.port, () => {
-  global.log('Node API server started on port '.concat(config.port));
-  // console.log('Node API server started on port '.concat(config.port));
+  global.log(`Node API server started on port ${config.port}`);
 });

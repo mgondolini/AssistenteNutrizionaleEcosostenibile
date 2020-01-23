@@ -1,53 +1,91 @@
 <template>
   <div class="meals">
-    <h1> {{ $t('last_meals') }} </h1>
-    <b-form-input v-model="mealName" placeholder="Enter meal name"></b-form-input>
-    <b-button
-      pill
-      variant="link"
-      class="p-0"
-      @click="addMeal(mealName)"
-    ><img class="add-meal" src="../../assets/buttons/add.svg">
-    </b-button>
-    <b-button
-      class="p-0"
-      @click="removeMeal(mealName)"
-    >REMOVE</b-button>
-    <div class="card-last-meals" role="tablist">
+    <h1> {{ $t('meals') }} </h1>
+    <b-card class="card-calendar p-0">
+      <p class="date-p text-center">{{ $d(currentDate, 'short') }}</p>
+      <b-button
+        variant="outline-info p-0"
+        @click="$refs.calendar.dp.show()"
+      ><img class="calendar" src="../../assets/buttons/calendar.svg">
+      </b-button>
+      <date-picker v-model="calendar.value"
+        ref="calendar"
+        :config="options"
+        value="calendar"
+        class="meals-datepicker"
+        @dp-change="setDateAndShow(calendar.value)"> </date-picker>
+    </b-card>
+    <b-card class="card-new-meal">
+      <b-form-input
+        id="input-new-meal"
+        v-model="mealName"
+        :state="mealNameState"
+        aria-describedby="input-live-feedback"
+        :placeholder="$t('meal_name_enter')"
+        class="input-new-meal"
+        trim
+      ></b-form-input>
+      <b-button
+        pill
+        variant="link"
+        class="button-add p-0"
+        @click="addMeal(mealName)"
+      >
+       <img class="add-meal" src="../../assets/buttons/add.svg">
+      </b-button>
+      <b-form-invalid-feedback id="input-live-feedback">
+        {{ $t(inputCheckMessage) }}
+      </b-form-invalid-feedback>
+    </b-card>
+    <div
+      v-if="mealsListByDate.length > 0"
+      class="card-last-meals"
+      role="tablist"
+    >
       <b-card
         no-body class="mb-1"
-        v-for="(meal, index) in mealsList.slice().reverse()"
+        v-for="(meal, index) in mealsListByDate.slice().reverse()"
         v-bind:key="index"
       >
         <b-card-header header-tag="header" class="p-0" role="tab">
           <b-button block href="#" v-b-toggle="'accordion-' + index" variant="info">
-            {{ meal.meal_name }}
+            <p class="meal-name-p text-center m-0">{{ meal.meal_name }}</p>
+            <b-button
+              class="p-0"
+              variant="outline-light p-0"
+              @click="removeMeal(meal.meal_name)"
+            ><img class="trashcan" src="../../assets/buttons/trashcan.svg"></b-button>
           </b-button>
         </b-card-header>
         <b-collapse :id="'accordion-' + index" visible accordion="my-accordion" role="tabpanel">
           <b-card-body>
             <b-button
-                  pill
-                  variant="link"
-                  class="p-0"
-                  @click="addComponent(meal.meal_name)"
-                >
-                  <img class="add" src="../../assets/buttons/plus.svg">
-                  Add component
+              pill
+              variant="link"
+              class="add-component p-0"
+              @click="addComponent(meal.meal_name, meal.timestamp)"
+            >
+              <img class="add mr-2" src="../../assets/buttons/plus.svg">
+              {{ $t('add_component') }}
             </b-button>
-            <div v-if = "meal.components!=null">
+            <div v-if="meal.components.length > 0">
               <div v-for="component in meal.components" v-bind:key="component.product_name">
                 <b-card
                   :img-src="component.image_url"
                   img-alt="Card image" img-left
-                  class="mb-3"
+                  class="card-components mb-3"
                 >
-                  <b-card-text align="center" class="m-0">
+                  <b-card-text align="center" class="card-components-text m-0 p-0">
                     <p class="component-p">
-                      <b> {{ component.product_name }} </b>
+                      <b><a :href="'/info_prod?ean='+component.barcode">
+                        {{ component.product_name }}
+                      </a></b>
                     </p>
                     <p class="component-p">
                       {{ component.quantity }} g
+                    </p>
+                    <p class="component-p">
+                      {{ component.energy_per_quantity }} kcal
                     </p>
                   </b-card-text>
                   <b-button
@@ -55,106 +93,295 @@
                     variant="link"
                     class="p-0"
                     @click="removeComponent(component.barcode, meal.meal_name)"
-                  >
-                    <img class="remove" src="../../assets/buttons/remove.svg">
+                  ><img class="remove" src="../../assets/buttons/remove.svg">
                   </b-button>
+                  <b-img
+                    :src='getNutriScoreImage(component.nutrition_score)'
+                    alt="Nutri score image">
+                  </b-img>
                 </b-card>
               </div>
+               <b-button
+                  variant="info"
+                  @click="calculateMeal(meal.meal_name, meal.timestamp)"
+                >
+                  {{ $t('calculate_meal') }}
+                </b-button>
             </div>
           </b-card-body>
         </b-collapse>
       </b-card>
     </div>
+    <div v-else>
+      <p>{{ $t(this.noMeals) }}</p>
+    </div>
+    <b-modal id="modal-error" title="Error" hide-footer>
+      {{ $t(this.modalMessage) }}
+    </b-modal>
+      <div class="chart-box">
+        <div id="chart-bar">
+          <apexchart
+            type="bar"
+            height="160"
+            :options="chartOptionsBar"
+            :series="seriesBar">
+          </apexchart>
+        </div>
+      </div>
+    <addProduct ref="addProduct">
+    </addProduct>
   </div>
 </template>
 
 <script>
+import Vue from 'vue';
+import datePicker from 'vue-bootstrap-datetimepicker';
+import VueApexCharts from 'vue-apexcharts';
+import addProduct from '../../components/AddProduct/AddProduct.vue';
+
+Vue.use(VueApexCharts);
+
+const imagesExt = '.svg';
+const imagesContext = require.context('@/assets/productInfo/', true, /\.svg$/);
+
 export default {
   name: 'meals',
   data() {
     return {
+      // Meals
       mealsList: [],
+      mealsListByDate: [],
       mealName: '',
+
+      // Meal state
+      noMeals: '',
+      mealNameState: null,
+
+      // Error messages
+      inputCheckMessage: '',
+      modalMessage: '',
+
+      // Dates
+      currentDate: new Date(),
+      UTCDate: Number,
+
+      // DateTimePicker
+      calendar: {
+        key: 'calendar',
+        value: '',
+      },
+      options: {
+        format: 'YYYY-MM-DD',
+        useCurrent: false,
+        showClear: false,
+        showClose: true,
+      },
+
+      // Graph
+      seriesBar: [{
+        name: 'volume',
+        data: [-30, -40, -50, -60, -70, -80, 90, 100, 110, 120, 130, 140, 150],
+      }],
+      chartOptionsBar: {
+        chart: {
+          height: 200,
+          type: 'bar',
+        },
+        dataLabels: {
+          enabled: false,
+        },
+        plotOptions: {
+          bar: {
+            columnWidth: '80%',
+            colors: {
+              ranges: [{
+                from: -1000,
+                to: 0,
+                color: '#F15B46',
+              }, {
+                from: 0,
+                to: 10000,
+                color: '#FEB019',
+              }],
+
+            },
+          },
+        },
+        stroke: {
+          width: 0,
+        },
+        xaxis: {
+          axisBorder: {
+            offsetX: 13,
+          },
+        },
+        yaxis: {
+          labels: {
+            show: false,
+          },
+        },
+      },
     };
+  },
+  components: {
+    datePicker,
+    apexchart: VueApexCharts,
+    addProduct,
   },
   methods: {
     loadMealsList() {
-      // TODO: prendere username da sessione
-      const usr = 'mrossi';
-      const param = { username: usr };
+      console.log(this.currentDate);
 
-      this.$store.state.http.get(`api/${param.username}/meals`, { params: param })
+      this.$store.state.http.get(`api/meals/${this.currentDate}`)
         .then((response) => {
           this.mealsList = response.data.meals;
+          this.showMealsByDate(this.currentDate);
         })
-        .catch(error => (console.log(error)));
+        .catch(error => this.checkError(error.response.data.description));
     },
     addMeal(mealName) {
+      this.UTCDate = Date.UTC(
+        this.currentDate.getFullYear(),
+        this.currentDate.getMonth(),
+        this.currentDate.getDate(),
+      );
       const body = {
-        username: 'mrossi',
         meals: {
           mealName,
+          timestamp: new Date(this.UTCDate),
         },
       };
-      console.log(body);
-      this.$store.state.http.post(`api/${body.username}/meals`, body)
-        .then((response) => {
-          this.mealsList = [];
-          this.mealsList = response.data.meals;
-        })
-        .catch(error => (console.log(error))); // mostrare su una label
+      console.log(body); // DEBUG
+      if (mealName.length > 0) {
+        this.$store.state.http.post(`api/meals/${body.meals.timestamp}`, body)
+          .then((response) => {
+            this.mealNameState = true;
+            this.mealsList = [];
+            this.mealsList = response.data.meals;
+            this.showMealsByDate(this.currentDate);
+          })
+          .catch((error) => {
+            this.mealNameState = false;
+            this.checkError(error.response.data.description);
+          });
+      } else {
+        this.mealNameState = false;
+        this.inputCheckMessage = 'meal_name_null';
+      }
     },
     removeMeal(mealName) {
       const params = {
-        username: 'mrossi',
         mealName,
+        date: new Date(this.UTCDate),
       };
-      console.log(`remove${params}`);
-      this.$store.state.http.delete(`api/${params.username}/meals/${params.mealName}`, { params })
+
+      console.log(`remove${JSON.stringify(params)}`); // DEBUG
+
+      this.$store.state.http.delete(`api/meals/${params.mealName}/${params.date}`, { params })
         .then(() => this.loadMealsList())
-        .catch(error => (console.log(error)));
+        .catch(error => this.checkError(error.response.data.description));
     },
-    addComponent(mealName) {
+    addComponent(mealName, timestamp) {
       // Passo meal name, per accedere alla query dalla pagina info prodotto
       // devo fare: this.$route.query.mealName
-      this.$router.push({ path: '/info_prod', query: { mealName } });
+      // this.$router.push({ path: '/info_prod', query: { mealName, date: timestamp } });
+      this.$refs.addProduct.open(mealName, timestamp);
     },
     removeComponent(barcode, mealName) {
-      const usr = 'mrossi';
       const params = {
-        username: usr,
         barcode,
         mealName,
+        date: new Date(this.UTCDate),
       };
+
       console.log(params); // DEBUG
-      this.$store.state.http.delete(`api/${params.username}/meals/${params.mealName}/components`, { params })
+      this.$store.state.http.delete(`api/meals/${params.mealName}/${params.date}/components`, { params })
         .then((response) => {
           this.mealsList = [];
           this.mealsList = response.data.meals;
+          this.showMealsByDate(this.currentDate);
           console.log(`component removed ${this.mealsList}`); // DEBUG
         })
-        .catch(error => (console.log(error)));
+        .catch(error => this.checkError(error.response.data.description));
     },
-    init() {
-      this.loadMealsList();
+    calculateMeal(mealName, timestamp) {
+      // Passo meal name, per accedere alla query dalla pagina calculate meal
+      // devo fare: this.$route.query.mealName
+      console.log(`Meals calculateMeal ${mealName}`, timestamp);
+      this.$router.push({ path: '/calculate_meal_composition', query: { mealName, date: timestamp } });
+    },
+    showMealsByDate(date) {
+      let mealDate;
+      let found = false;
+      this.mealsListByDate = [];
+      this.UTCDate = Date.UTC(
+        this.currentDate.getFullYear(),
+        this.currentDate.getMonth(),
+        this.currentDate.getDate(),
+      );
+
+      this.mealsList.forEach((meal) => {
+        mealDate = new Date(meal.timestamp);
+
+        if (mealDate.getDate() === date.getDate()
+            && mealDate.getMonth() === date.getMonth()
+            && mealDate.getFullYear() === date.getFullYear()) {
+          this.mealsListByDate.push(meal);
+          found = true;
+        } else {
+          found = false;
+        }
+      });
+
+      if (found === false) {
+        this.noMeals = 'no_meals';
+      }
+    },
+    setDateAndShow(date) {
+      this.currentDate = new Date(date);
+      this.showMealsByDate(this.currentDate);
+    },
+    checkError(error) {
+      if (error === 'internal_server_error' || error === 'meal_not_found') {
+        this.modalMessage = error;
+        this.$bvModal.show('modal-error');
+      } else if (error === 'mealslist_not_found') {
+        this.noMeals = 'no_meals';
+      } else {
+        this.inputCheckMessage = error;
+      }
+    },
+    getNutriScoreImage(nutriScore) {
+      this.nutriScoreImgPath = imagesContext(`./nutriScore/${nutriScore}${imagesExt}`);
+      return this.nutriScoreImgPath;
     },
   },
   mounted() {
-    this.init();
+    this.loadMealsList();
   },
 };
 </script>
 
-
+<i18n src='../../locales/errorMessages.json'></i18n>
 <i18n>
 {
   "en": {
-    "last_meals": "Your last meals",
-    "quantity": "Quantity"
+    "meals": "Your meals",
+    "add_component": "Add component",
+    "meal_name_enter": "Enter meal name",
+    "date": "Date",
+    "calculate_meal": "Calculate meal",
+    "meal_name_null": "Meal name cannot be null",
+    "no_meals": "No meals inserted on this date yet"
   },
   "it": {
-    "last_meals": "I tuoi ultimi pasti",
-    "quantity": "Quantità"
+    "meals": "I tuoi pasti",
+    "meal_name_enter": "Inserire nome pasto",
+    "add_component": "Aggiungi componente",
+    "date": "Data",
+    "calculate_meal": "Calcola pasto",
+    "meal_name_null": "Il nome del pasto non può essere nullo",
+    "no_meals": "Non sono ancora stati inseriti pasti in questa data"
   }
 }
 </i18n>

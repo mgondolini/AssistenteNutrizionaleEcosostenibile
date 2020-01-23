@@ -1,4 +1,5 @@
 import datePicker from 'vue-bootstrap-datetimepicker';
+import Achievements from './Achievements.vue';
 
 export default {
   data() {
@@ -7,6 +8,7 @@ export default {
       avatar: '',
       genderSelected: '',
       isEditing: false,
+      errorMsgModal: '',
 
       campi: {
         name: {
@@ -49,17 +51,18 @@ export default {
           placeholder: 'Enter your allergens',
         },
       },
-      errors: [],
+      errors: false,
       options: {
         format: 'YYYY-MM-DD',
         useCurrent: false,
         showClear: false,
-        showClose: true,
+        showClose: false,
       },
     };
   },
   components: {
     datePicker,
+    Achievements,
   },
   computed: {
     cardStates() {
@@ -69,39 +72,87 @@ export default {
     },
   },
   methods: {
+    checkError(error, status) {
+      if (error === 'internal_server_error' || error === 'user_not_found') {
+        this.errorMsgModal = error;
+        this.$bvModal.show('modal-error');
+      } else if (status === 401) {
+        this.errorMsgModal = this.$i18n.t('unauthorized');
+        this.$bvModal.show('modal-error');
+      } else {
+        this.errorMsgModal = this.$i18n.t('internal_server_error');
+      }
+    },
     editContent() {
-      this.isEditing = !this.isEditing;
+      if (!this.errors) {
+        this.isEditing = !this.isEditing;
+      }
+    },
+    hideModal() {
+      this.$bvModal.hide('modal-error');
+      this.$router.push('/login');
     },
     update() {
-      this.errors = [];
-
-      const usr = 'mrossi';
-      const param = { username: usr };
-
-      const dataNew = {
-        username: this.username,
-        name: this.campi.name.value,
-        surname: this.campi.surname.value,
-        email: this.campi.email.value,
-        sex: this.campi.gender.value,
-        user_img_url: this.avatar,
-        weight: this.campi.weight.value,
-        height: this.campi.height.value,
-        allergens: this.campi.allergens.value,
-        birth_date: this.campi.dateOfBirth.value,
-      };
-
-      if (!dataNew.name || !dataNew.surname
-        || !dataNew.email || !dataNew.sex
-        || !dataNew.weight || !dataNew.height
-        || !dataNew.allergens) {
-        this.errors.push('Field must not be null');
+      this.errors = false;
+      this.$bvModal.hide('modal-error');
+      if (!this.campi.name.value) {
+        document.getElementById('name').classList.add('nsError');
+        this.errors = true;
       } else {
-        this.$store.state.http.put(`api/user/${param.username}`, dataNew /* { params: param, data:  } */)
+        document.getElementById('name').classList.remove('nsError');
+      }
+
+      if (!this.campi.surname.value) {
+        document.getElementById('surname').classList.add('nsError');
+        this.errors = true;
+      } else {
+        document.getElementById('surname').classList.remove('nsError');
+      }
+
+      if (!this.campi.gender.value) {
+        document.getElementById('gender').classList.add('nsError');
+        this.errors = true;
+      } else {
+        document.getElementById('gender').classList.remove('nsError');
+      }
+
+      if (!this.campi.dateOfBirth.value) {
+        document.getElementById('dateOfBirth').classList.add('nsError');
+        this.errors = true;
+      } else {
+        document.getElementById('dateOfBirth').classList.remove('nsError');
+      }
+
+      if (!this.campi.weight.value) {
+        document.getElementById('weight').classList.add('nsError');
+        this.errors = true;
+      } else {
+        document.getElementById('weight').classList.remove('nsError');
+      }
+
+      if (!this.campi.height.value) {
+        document.getElementById('height').classList.add('nsError');
+        this.errors = true;
+      } else {
+        document.getElementById('height').classList.remove('nsError');
+      }
+      if (!this.errors) {
+        const dataNew = {
+          name: this.campi.name.value,
+          surname: this.campi.surname.value,
+          sex: this.campi.gender.value,
+          user_img_url: this.avatar,
+          weight: this.campi.weight.value,
+          height: this.campi.height.value,
+          allergens: this.campi.allergens.value,
+          birth_date: this.campi.dateOfBirth.value,
+        };
+
+        this.$store.state.http.put('api/user', dataNew)
           .then(() => {
-            // console.log('tutto ok!'.concat(response));
           })
-          .catch(error => (error.toString()));
+          .catch(error => this.checkError(error.response.data.description,
+            error.response.status));
       }
     },
     activateBtn() {
@@ -117,25 +168,34 @@ export default {
     },
   },
   mounted() {
-    const usr = 'mrossi';
-    const param = { username: usr };
+    this.modalShow = false;
+    this.$bvModal.hide('modal-error');
 
-    this.$store.state.http.get(`api/user/${param.username}`, { params: param })
-    // this.$server.get(`api/user/${param.username}`, { params: param })
+    this.$store.state.http.get('api/user')
       .then((response) => {
-        this.username = response.data.username;
-        this.campi.name.value = response.data.name;
-        this.campi.surname.value = response.data.surname;
-        this.campi.dateOfBirth.value = response.data.birth_date;
-        this.campi.email.value = response.data.email;
-        this.avatar = response.data.user_img_url;
-        this.campi.gender.value = response.data.sex;
-        this.campi.weight.value = response.data.weight;
-        this.campi.height.value = response.data.height;
-        this.campi.allergens.value = response.data.allergens;
+        if (response.data.username != null) this.username = response.data.username;
 
-        this.campi.dateOfBirth.value = this.campi.dateOfBirth.dateParse('YYYY-MM-DD').dateFormat('MMMM D, YYYY');
+        if (response.data.name != null) this.campi.name.value = response.data.name;
+
+        if (response.data.surname != null) this.campi.surname.value = response.data.surname;
+
+        if (response.data.birth_date != null) {
+          this.campi.dateOfBirth.value = response.data.birth_date;
+        }
+
+        if (response.data.email != null) this.campi.email.value = response.data.email;
+
+        if (response.data.user_img_url != null) this.avatar = response.data.user_img_url;
+
+        if (response.data.sex != null) this.campi.gender.value = response.data.sex;
+
+        if (response.data.weight != null) this.campi.weight.value = response.data.weight;
+
+        if (response.data.height) this.campi.height.value = response.data.height;
+
+        if (response.data.allergens != null) this.campi.allergens.value = response.data.allergens;
       })
-      .catch(error => (error.toString()));
+      .catch(error => this.checkError(error,
+        error.response.status));
   },
 };
