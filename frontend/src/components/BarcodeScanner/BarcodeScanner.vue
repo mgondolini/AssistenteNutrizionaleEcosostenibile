@@ -93,8 +93,8 @@ export default {
           },
         },
         locator: {
-          patchSize: 'medium',
-          halfSample: true,
+          patchSize: 'large', // medium
+          halfSample: false, // true
           debug: {
             showCanvas: false,
             showPatches: false,

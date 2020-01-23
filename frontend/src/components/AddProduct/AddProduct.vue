@@ -32,7 +32,7 @@
       <barcodeScanner
         :onDetected="barcodeDetected"
         :readerSize="readerSize"
-        :readerType="'ean_reader'"
+        :readerTypes="['ean_reader']"
         :aspectRatio="aspectRatio"
       ></barcodeScanner>
       <b-button v-on:click="inputMode = 'SELECT'">Back</b-button>
@@ -41,7 +41,7 @@
 </template>
 
 <script>
-import Quagga from 'quagga';
+// import Quagga from 'quagga';
 import barcodeScanner from '../BarcodeScanner/BarcodeScanner.vue';
 
 export default {
@@ -58,7 +58,7 @@ export default {
         width: 640,
         height: 480,
       },
-      aspectRatio: { min: 1, max: 2 },
+      aspectRatio: { min: 1, max: 100 },
       detecteds: [],
 
       // ean dropdown selector facility
@@ -87,7 +87,7 @@ export default {
     },
     barcodeDetected(data) {
       console.log('detected', data);
-
+      /*
       console.log(data.codeResult.code.trim());
       console.log(data.codeResult.code.trim().length);
 
@@ -95,11 +95,12 @@ export default {
        && Object.prototype.hasOwnProperty.call(data.codeResult, 'code')
        && (data.codeResult.code.trim().length === 13 || data.codeResult.code.trim().length === 8)) {
         alert(data.codeResult.code);
-        Quagga.stop();
+        //Quagga.stop();
         this.ean = data.codeResult.code.trim();
         this.$bvModal.close('modal-addProduct');
         this.gotoProductInfo();
       }
+*/
     },
   },
   mounted() {
