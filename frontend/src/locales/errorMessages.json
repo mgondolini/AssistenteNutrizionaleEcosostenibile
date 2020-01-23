@@ -6,8 +6,8 @@
         "product_not_found": "Product not found.",
         "user_not_found": "User not found.",
         "unauthorized": "Unauthorized access",
-        "genericError": "Something went wrong. Try later",
-        "internal_server_error": "500 Internal Server Error"
+        "internal_server_error": "Something went wrong. Try later",
+        "noAnswer": "No answer from server. Try again later"
     },
     "it": {
         "meal_name_exists": "Nome pasto già esistente.",
@@ -16,7 +16,7 @@
         "product_not_found": "Prodotto non trovato.",
         "user_not_found": "Utente non trovato",
         "unauthorized": "Accesso non autorizzato",
-        "genericError": "Qualcosa è andato storto. Riprova più tardi",
-        "internal_server_error": "500 Errore interno al Server"
+        "internal_server_error": "Qualcosa è andato storto. Riprova più tardi",
+        "noAnswer": "Nessuna risposta dal server. Riprova più tardi"
     }
 }
