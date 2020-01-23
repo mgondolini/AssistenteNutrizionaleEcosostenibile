@@ -95,7 +95,7 @@
                     @click="removeComponent(component.barcode, meal.meal_name)"
                   ><img class="remove" src="../../assets/buttons/remove.svg">
                   </b-button>
-                  <b-img
+                  <b-img v-if="component.nutrition_score"
                     :src='getNutriScoreImage(component.nutrition_score)'
                     alt="Nutri score image">
                   </b-img>
@@ -352,8 +352,8 @@ export default {
       }
     },
     getNutriScoreImage(nutriScore) {
-      this.nutriScoreImgPath = imagesContext(`./nutriScore/${nutriScore}${imagesExt}`);
-      return this.nutriScoreImgPath;
+      console.log(`SCORE: ${nutriScore}`);
+      return nutriScore ? imagesContext(`./nutriScore/${nutriScore}${imagesExt}`) : '';
     },
   },
   mounted() {
