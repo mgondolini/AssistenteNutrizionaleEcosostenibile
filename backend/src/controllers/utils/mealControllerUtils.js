@@ -25,6 +25,7 @@ exports.initMealValues = (mealName, timestamp) => {
   meal.carbon_footprint_tot = 0;
   meal.water_footprint_tot = 0;
   meal.timestamp = timestamp;
+  meal.is_closed = false;
   return meal;
 };
 
@@ -69,6 +70,39 @@ exports.addMeal = (req, userMeals, res) => {
       });
   } else {
     res.status(400).send({ description: 'meal_name_exists' });
+  }
+};
+
+exports.updateMeal = async (userMeals, mealUpdated, res) => {
+  console.log(mealUpdated);
+  const closed = false;
+  const mealName = mealUpdated.meal_name;
+  const { timestamp } = mealUpdated;
+  console.log(mealName);
+  console.log(timestamp);
+
+
+  userMeals.meals.forEach((m) => {
+    if (m.timestamp.getUTCDate() === new Date(timestamp).getUTCDate()
+      && m.timestamp.getUTCMonth() === new Date(timestamp).getUTCMonth()
+      && m.timestamp.getUTCFullYear() === new Date(timestamp).getUTCFullYear()) {
+      if (m.meal_name === mealName) {
+        m = mealUpdated;
+      }
+    }
+  });
+  if (closed) {
+    userMeals.save()
+      .then((meal) => {
+        global.log(`Meal closed -> ${meal}`); // DEBUG
+        res.status(200).send(meal);
+      })
+      .catch((err) => {
+        global.log(`Error while closing meal${err}`); // DEBUG
+        res.status(500).send({ description: 'internal_server_error' });
+      });
+  } else {
+    res.status(500).send({ description: 'internal_server_error' });
   }
 };
 
