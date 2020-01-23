@@ -80,7 +80,7 @@ export default {
         this.errorMsgModal = this.$i18n.t('unauthorized');
         this.$bvModal.show('modal-error');
       } else {
-        this.errorMsgModal = this.$i18n.t('genericError');
+        this.errorMsgModal = this.$i18n.t('internal_server_error');
       }
     },
     editContent() {

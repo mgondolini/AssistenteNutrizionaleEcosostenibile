@@ -79,7 +79,7 @@ exports.checkUser = function checkUser(req, res) {
       }
     }).catch((err) => {
       global.log(err);
-      res.status(400).send(err);
+      res.status(500).send({ description: 'internal_server_error' });
     });
 };
 
@@ -94,7 +94,10 @@ exports.checkEmail = function checkEmail(req, res) {
       } else {
         res.send('ok');
       }
-    }).catch((err) => res.status(400).send(err));
+    }).catch((err) => {
+      global.log(err);
+      res.status(500).send({ description: 'internal_server_error' });
+    });
 };
 
 /** Loads a user by username */
