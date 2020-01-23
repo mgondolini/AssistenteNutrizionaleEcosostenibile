@@ -29,12 +29,12 @@
       </div>
     </div>
     <div v-else-if="inputMode === 'STREAM'" id="videoStream" class="buttonContainer">
-      <v-quagga
+      <barcodeScanner
         :onDetected="barcodeDetected"
         :readerSize="readerSize"
         :readerType="'ean_reader'"
         :aspectRatio="aspectRatio"
-      ></v-quagga>
+      ></barcodeScanner>
       <b-button v-on:click="inputMode = 'SELECT'">Back</b-button>
     </div>
   </b-modal>
@@ -42,6 +42,7 @@
 
 <script>
 import Quagga from 'quagga';
+import barcodeScanner from '../BarcodeScanner/BarcodeScanner.vue';
 
 export default {
   name: 'AddProduct',
@@ -71,6 +72,9 @@ export default {
         { value: '8001300500773', text: 'Lievito' },
       ],
     };
+  },
+  components: {
+    barcodeScanner,
   },
   methods: {
     open(mealName, timestamp) {

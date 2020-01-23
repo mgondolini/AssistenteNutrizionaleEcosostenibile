@@ -3,14 +3,14 @@ import BootstrapVue from 'bootstrap-vue';
 import Axios from 'axios';
 import Vuex from 'vuex';
 import VueCarousel from 'vue-carousel';
-import VueQuagga from 'vue-quaggajs';
+// import VueQuagga from 'vue-quaggajs';
 import App from './App.vue';
 import router from './router';
 import './custom.sass';
 import i18n from './i18n';
 
 
-Vue.use(VueQuagga);
+// Vue.use(VueQuagga);
 
 Vue.use(VueCarousel);
 
