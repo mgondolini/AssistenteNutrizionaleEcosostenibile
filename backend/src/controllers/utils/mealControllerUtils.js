@@ -77,9 +77,9 @@ exports.addComponent = (components, values, meal) => {
   components.product_name = values.product_name;
   components.energy_per_quantity = values.energy_tot;
   components.image_url = values.image_url;
-  components.carbon_footprint += values.carbon_footprint_tot;
-  components.water_footprint += values.water_footprint_tot;
-  components.nutrition_score += values.nutrition_score;
+  components.carbon_footprint = values.carbon_footprint_tot;
+  components.water_footprint = values.water_footprint_tot;
+  components.nutrition_score = values.nutrition_score;
 
   // Add passed components to meal's components array
   meal.components.push(components);
@@ -133,7 +133,6 @@ exports.updateMealValues = async (components, timestamp, mealName, userMeals, re
                   component.energy_per_quantity += values.energy_tot;
                   component.carbon_footprint += values.carbon_footprint_tot;
                   component.water_footprint += values.water_footprint_tot;
-                  // co2 h2o
                   exists = true;
                 }
               });
