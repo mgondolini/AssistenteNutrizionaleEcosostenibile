@@ -60,6 +60,7 @@
         <b-collapse :id="'accordion-' + index" visible accordion="my-accordion" role="tabpanel">
           <b-card-body>
             <b-button
+              v-if="!meal.is_closed"
               pill
               variant="link"
               class="add-component p-0"
@@ -101,12 +102,19 @@
                   </b-img>
                 </b-card>
               </div>
-               <b-button
-                  variant="info"
-                  @click="calculateMeal(meal.meal_name, meal.timestamp)"
-                >
-                  {{ $t('calculate_meal') }}
-                </b-button>
+              <b-button
+                variant="info"
+                @click="calculateMeal(meal.meal_name, meal.timestamp)"
+              >
+                {{ $t('calculate_meal') }}
+              </b-button>
+              <b-button
+                v-if="!meal.is_closed"
+                variant="info"
+                @click="completeMeal(meal)"
+              >
+                {{ $t('complete_meal') }}
+              </b-button>
             </div>
           </b-card-body>
         </b-collapse>
@@ -115,21 +123,36 @@
     <div v-else>
       <p>{{ $t(this.noMeals) }}</p>
     </div>
-    <b-modal id="modal-error" title="Error" hide-footer>
-      {{ $t(this.modalMessage) }}
-    </b-modal>
-      <div class="chart-box">
-        <div id="chart-bar">
-          <apexchart
-            type="bar"
-            height="160"
-            :options="chartOptionsBar"
-            :series="seriesBar">
-          </apexchart>
-        </div>
+    <b-modal id="modal-error" :title="$t('error_meals')" hide-footer>
+      <div class="d-block text-center">
+        <img src="https://img.icons8.com/color/48/000000/restriction-shield.png">
+        {{ $t(this.modalErrorMsg) }}
       </div>
-    <addProduct ref="addProduct">
-    </addProduct>
+    </b-modal>
+    <b-modal ref="modal-save" :title="$t('complete_meal')" hide-footer>
+      <div class="p-0 text-center">
+        {{ $t('save_meal') }}
+      </div>
+      <footer class="modal-footer p-0">
+        <b-button variant="secondary" @click="hideModal">
+          {{$t('no')}}
+        </b-button>
+        <b-button variant="primary" @click="saveMeal(meal)">
+          {{$t('yes')}}
+        </b-button>
+      </footer>
+    </b-modal>
+    <div class="chart-box">
+      <div id="chart-bar">
+        <apexchart
+          type="bar"
+          height="160"
+          :options="chartOptionsBar"
+          :series="seriesBar">
+        </apexchart>
+      </div>
+    </div>
+    <addProduct ref="addProduct"></addProduct>
   </div>
 </template>
 
@@ -159,7 +182,7 @@ export default {
 
       // Error messages
       inputCheckMessage: '',
-      modalMessage: '',
+      modalErrorMsg: '',
 
       // Dates
       currentDate: new Date(),
@@ -343,7 +366,7 @@ export default {
     },
     checkError(error) {
       if (error === 'internal_server_error' || error === 'meal_not_found') {
-        this.modalMessage = error;
+        this.modalErrorMsg = error;
         this.$bvModal.show('modal-error');
       } else if (error === 'mealslist_not_found') {
         this.noMeals = 'no_meals';
@@ -354,6 +377,29 @@ export default {
     getNutriScoreImage(nutriScore) {
       console.log(`SCORE: ${nutriScore}`);
       return nutriScore ? imagesContext(`./nutriScore/${nutriScore}${imagesExt}`) : '';
+    },
+    completeMeal(meal) {
+      this.mealToClose = meal;
+      console.log(this.mealToClose);
+      this.$refs['modal-save'].show();
+    },
+    saveMeal() {
+      this.mealToClose.is_closed = true;
+      console.log(this.mealToClose.is_closed);
+      const body = this.mealToClose;
+
+      console.log(body); // DEBUG
+      this.$store.state.http.put(`api/meals/${body.meal_name}/${body.timestamp}`, body)
+        .then((response) => {
+          this.mealsList = [];
+          this.mealsList = response.data.meals;
+          this.showMealsByDate(this.currentDate);
+          this.$refs['modal-save'].hide();
+        })
+        .catch(error => this.checkError(error.response.data.description));
+    },
+    hideModal() {
+      this.$refs['modal-save'].hide();
     },
   },
   mounted() {
@@ -372,7 +418,12 @@ export default {
     "date": "Date",
     "calculate_meal": "Calculate meal",
     "meal_name_null": "Meal name cannot be null",
-    "no_meals": "No meals inserted on this date yet"
+    "no_meals": "No meals inserted on this date yet",
+    "error_meals": "Error!",
+    "complete_meal": "Complete meal",
+    "save_meal": "If you complete the meal you will not be able to edit it again.\nConfirm?",
+    "yes": "Yes",
+    "no": "No"
   },
   "it": {
     "meals": "I tuoi pasti",
@@ -381,7 +432,12 @@ export default {
     "date": "Data",
     "calculate_meal": "Calcola pasto",
     "meal_name_null": "Il nome del pasto non può essere nullo",
-    "no_meals": "Non sono ancora stati inseriti pasti in questa data"
+    "no_meals": "Non sono ancora stati inseriti pasti in questa data",
+    "error_meals": "Errore!",
+    "complete_meal": "Completa il pasto",
+    "save_meal": "Se completi il pasto non potrai più modificarlo\nConfermare?",
+    "yes": "Si",
+    "no": "No"
   }
 }
 </i18n>
