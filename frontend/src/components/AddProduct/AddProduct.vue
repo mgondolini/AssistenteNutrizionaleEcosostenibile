@@ -4,8 +4,7 @@
     title="Lookup modes"
     centered
     hide-footer
-    @close="inputMode = 'SELECT'"
-    @hide="inputMode = 'SELECT'"
+    @hidden="inputMode = 'SELECT'"
     >
     <div v-if="inputMode === 'SELECT'" class="buttonContainerVertical">
         <b-button v-on:click="inputMode = 'MANUAL'">Manual insert</b-button>
