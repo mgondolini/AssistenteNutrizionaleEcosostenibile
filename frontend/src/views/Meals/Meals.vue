@@ -384,7 +384,6 @@ export default {
       } else this.inputCheckMessage = error;
     },
     getNutriScoreImage(nutriScore) {
-      console.log(`SCORE: ${nutriScore}`);
       return nutriScore ? imagesContext(`./nutriScore/${nutriScore}${imagesExt}`) : '';
     },
     completeMeal(meal) {
