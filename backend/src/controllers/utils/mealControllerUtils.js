@@ -74,31 +74,32 @@ exports.addMeal = (req, userMeals, res) => {
 };
 
 exports.updateMeal = async (userMeals, mealUpdated, res) => {
-  console.log(mealUpdated);
-  const closed = false;
+  let updated = false;
   const mealName = mealUpdated.meal_name;
   const { timestamp } = mealUpdated;
   console.log(mealName);
   console.log(timestamp);
 
 
-  userMeals.meals.forEach((m) => {
+  userMeals.meals.forEach((m, i) => {
     if (m.timestamp.getUTCDate() === new Date(timestamp).getUTCDate()
       && m.timestamp.getUTCMonth() === new Date(timestamp).getUTCMonth()
       && m.timestamp.getUTCFullYear() === new Date(timestamp).getUTCFullYear()) {
       if (m.meal_name === mealName) {
-        m = mealUpdated;
+        userMeals.meals[i] = mealUpdated;
+        updated = true;
       }
     }
   });
-  if (closed) {
+
+  if (updated) {
     userMeals.save()
       .then((meal) => {
-        global.log(`Meal closed -> ${meal}`); // DEBUG
+        global.log(`Meal updated -> ${meal}`); // DEBUG
         res.status(200).send(meal);
       })
       .catch((err) => {
-        global.log(`Error while closing meal${err}`); // DEBUG
+        global.log(`Error while updating meal${err}`); // DEBUG
         res.status(500).send({ description: 'internal_server_error' });
       });
   } else {

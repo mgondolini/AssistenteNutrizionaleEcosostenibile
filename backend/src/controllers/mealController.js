@@ -121,7 +121,7 @@ exports.new_meal = async (req, res) => {
     });
 };
 
-/** Updates meal with a given property */
+/** Updates a meal with a given property */
 exports.update_meal = async (req, res) => {
   const username = authController.getUsername(req.headers.token);
   const mealUpdated = req.body;
@@ -140,7 +140,7 @@ exports.update_meal = async (req, res) => {
       }
     })
     .catch((err) => {
-      global.log(`Error while creating new meal: ${err}`); // DEBUG
+      global.log(`Error while updating meal: ${err}`); // DEBUG
       res.status(500).send({ description: 'internal_server_error' });
     });
 };
