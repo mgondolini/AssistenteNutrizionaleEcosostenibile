@@ -6,11 +6,11 @@ const mealController = require('./mealController.js');
 const User = mongoose.model('User');
 const Who = mongoose.model('who');
 
-function getFabbisognoQuery(dataN, sesso) {
+function getDailyRequirementQuery(dataN, sex) {
   const ageDiffMs = new Date().getTime() - dataN;
   const ageDate = new Date(ageDiffMs);
   const age = Math.abs(ageDate.getFullYear() - 1970);
-  const s = sesso === 'm' ? 'male' : 'female';
+  const s = sex === 'm' ? 'male' : 'female';
   return {
     age_min: { $lt: age },
     age_max: { $gt: age },
@@ -32,38 +32,40 @@ exports.createNewUser = function createNewUser(req, res) {
     keyLen,
     digest).toString();
 
-  Who.findOne(getFabbisognoQuery(new Date(b.birth_date).getTime(), b.sex)).exec().then((fab) => {
-    const newUser = new User({
-      username: b.username,
-      password_hash_salt: pswHashSalt,
-      salt: sale,
-      name: b.name,
-      surname: b.surname,
-      birth_date: dataN,
-      email: b.email,
-      sex: b.sex,
-      user_img_url: 'https://cdn.pixabay.com/photo/2012/04/13/21/07/user-33638_960_720.png',
-      weight: parseInt(b.weight, 10),
-      height: parseInt(b.height, 10),
-      allergens: b.allergens,
-      fabbisogno: fab,
-    });
-    newUser.save()
-      .then((user) => {
-        global.log(`User created ->${user}`); // DEBUG
-        // res.status(201).json(user);
-        // Init user document inside Meals collection
-        mealController.initUserMeals(user.username, res);
-      })
-      .catch((err) => {
-        global.log('createNewUser saveError: '.concat(err));
-        res.status(500).send({ description: 'internal_server_error' });
+  Who.findOne(getDailyRequirementQuery(new Date(b.birth_date).getTime(), b.sex))
+    .exec()
+    .then((dailyreq) => {
+      const newUser = new User({
+        username: b.username,
+        password_hash_salt: pswHashSalt,
+        salt: sale,
+        name: b.name,
+        surname: b.surname,
+        birth_date: dataN,
+        email: b.email,
+        sex: b.sex,
+        user_img_url: 'https://cdn.pixabay.com/photo/2012/04/13/21/07/user-33638_960_720.png',
+        weight: parseInt(b.weight, 10),
+        height: parseInt(b.height, 10),
+        allergens: b.allergens,
+        daily_requirement: dailyreq,
       });
+      newUser.save()
+        .then((user) => {
+          global.log(`User created ->${user}`); // DEBUG
+
+          // Init user document inside Meals collection
+          mealController.initUserMeals(user.username, res);
+        })
+        .catch((err) => {
+          global.log('createNewUser saveError: '.concat(err));
+          res.status(500).send({ description: 'internal_server_error' });
+        });
     //
-  }).catch((e) => {
-    global.log('createNewUser findWhoError: '.concat(e));
-    res.status(500).send({ description: 'internal_server_error' });
-  });
+    }).catch((e) => {
+      global.log('createNewUser findWhoError: '.concat(e));
+      res.status(500).send({ description: 'internal_server_error' });
+    });
 };
 
 exports.checkUser = function checkUser(req, res) {

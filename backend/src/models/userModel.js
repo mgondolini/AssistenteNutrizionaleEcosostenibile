@@ -30,7 +30,7 @@ const UserSchema = new Schema({
   weight: Number,
   height: Number,
   allergens: String,
-  fabbisogno: [WhoSchema],
+  daily_requirement: WhoSchema,
 });
 
 module.exports = mongoose.model('User', UserSchema, 'Users');
