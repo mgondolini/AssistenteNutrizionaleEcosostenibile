@@ -30,6 +30,7 @@ const MealSchema = new Schema({
   carbon_footprint_tot: Number,
   water_footprint_tot: Number,
   timestamp: Date,
+  is_closed: Boolean,
 }, { _id: false });
 
 const UserMealSchema = new Schema({
