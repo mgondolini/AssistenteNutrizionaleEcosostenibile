@@ -25,6 +25,7 @@ exports.initMealValues = (mealName, timestamp) => {
   meal.carbon_footprint_tot = 0;
   meal.water_footprint_tot = 0;
   meal.timestamp = timestamp;
+  meal.is_closed = false;
   return meal;
 };
 
@@ -72,14 +73,48 @@ exports.addMeal = (req, userMeals, res) => {
   }
 };
 
+exports.updateMeal = async (userMeals, mealUpdated, res) => {
+  let updated = false;
+  const mealName = mealUpdated.meal_name;
+  const { timestamp } = mealUpdated;
+  console.log(mealName);
+  console.log(timestamp);
+
+
+  userMeals.meals.forEach((m, i) => {
+    if (m.timestamp.getUTCDate() === new Date(timestamp).getUTCDate()
+      && m.timestamp.getUTCMonth() === new Date(timestamp).getUTCMonth()
+      && m.timestamp.getUTCFullYear() === new Date(timestamp).getUTCFullYear()) {
+      if (m.meal_name === mealName) {
+        userMeals.meals[i] = mealUpdated;
+        updated = true;
+      }
+    }
+  });
+
+  if (updated) {
+    userMeals.save()
+      .then((meal) => {
+        global.log(`Meal updated -> ${meal}`); // DEBUG
+        res.status(200).send(meal);
+      })
+      .catch((err) => {
+        global.log(`Error while updating meal${err}`); // DEBUG
+        res.status(500).send({ description: 'internal_server_error' });
+      });
+  } else {
+    res.status(500).send({ description: 'internal_server_error' });
+  }
+};
+
 /** Init and add a new component with computed parameters */
 exports.addComponent = (components, values, meal) => {
   components.product_name = values.product_name;
   components.energy_per_quantity = values.energy_tot;
   components.image_url = values.image_url;
-  components.carbon_footprint += values.carbon_footprint_tot;
-  components.water_footprint += values.water_footprint_tot;
-  components.nutrition_score += values.nutrition_score;
+  components.carbon_footprint = values.carbon_footprint_tot;
+  components.water_footprint = values.water_footprint_tot;
+  components.nutrition_score = values.nutrition_score;
 
   // Add passed components to meal's components array
   meal.components.push(components);
@@ -133,7 +168,6 @@ exports.updateMealValues = async (components, timestamp, mealName, userMeals, re
                   component.energy_per_quantity += values.energy_tot;
                   component.carbon_footprint += values.carbon_footprint_tot;
                   component.water_footprint += values.water_footprint_tot;
-                  // co2 h2o
                   exists = true;
                 }
               });
