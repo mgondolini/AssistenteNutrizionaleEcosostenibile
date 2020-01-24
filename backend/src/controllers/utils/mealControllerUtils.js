@@ -179,7 +179,7 @@ exports.updateMealValues = async (components, timestamp, mealName, userMeals, re
           }
         }
       });
-      if (updated === true) {
+      if (updated) {
         // salvo il pasto
         userMeals.save()
           .then((meals) => {
@@ -218,7 +218,7 @@ exports.pullComponent = async (userMeals, timestamp, mealName, barcode, res) => 
     }
   });
 
-  if (updated === true) {
+  if (updated) {
     userMeals.save()
       .then((meals) => res.status(200).send(meals))
       .catch((err) => {

@@ -137,7 +137,7 @@
         <b-button variant="secondary" @click="hideModal">
           {{$t('no')}}
         </b-button>
-        <b-button variant="primary" @click="saveMeal(meal)">
+        <b-button variant="primary" @click="saveMeal()">
           {{$t('yes')}}
         </b-button>
       </footer>
@@ -253,7 +253,7 @@ export default {
   },
   methods: {
     loadMealsList() {
-      console.log(this.currentDate);
+      console.log(this.currentDate); // DEBUG
 
       this.$store.state.http.get(`api/meals/${this.currentDate}`)
         .then((response) => {
@@ -268,13 +268,16 @@ export default {
         this.currentDate.getMonth(),
         this.currentDate.getDate(),
       );
+
       const body = {
         meals: {
           mealName,
           timestamp: new Date(this.UTCDate),
         },
       };
+
       console.log(body); // DEBUG
+
       if (mealName.length > 0) {
         this.$store.state.http.post(`api/meals/${body.meals.timestamp}`, body)
           .then((response) => {
@@ -298,16 +301,13 @@ export default {
         date: new Date(this.UTCDate),
       };
 
-      console.log(`remove${JSON.stringify(params)}`); // DEBUG
+      console.log(`remove meal ${JSON.stringify(params)}`); // DEBUG
 
       this.$store.state.http.delete(`api/meals/${params.mealName}/${params.date}`, { params })
         .then(() => this.loadMealsList())
         .catch(error => this.checkError(error.response.data.description));
     },
     addComponent(mealName, timestamp) {
-      // Passo meal name, per accedere alla query dalla pagina info prodotto
-      // devo fare: this.$route.query.mealName
-      // this.$router.push({ path: '/info_prod', query: { mealName, date: timestamp } });
       this.$refs.addProduct.open(mealName, timestamp);
     },
     removeComponent(barcode, mealName) {
@@ -328,9 +328,6 @@ export default {
         .catch(error => this.checkError(error.response.data.description));
     },
     calculateMeal(mealName, timestamp) {
-      // Passo meal name, per accedere alla query dalla pagina calculate meal
-      // devo fare: this.$route.query.mealName
-      console.log(`Meals calculateMeal ${mealName}`, timestamp);
       this.$router.push({ path: '/calculate_meal_composition', query: { mealName, date: timestamp } });
     },
     showMealsByDate(date) {
@@ -351,14 +348,10 @@ export default {
             && mealDate.getFullYear() === date.getFullYear()) {
           this.mealsListByDate.push(meal);
           found = true;
-        } else {
-          found = false;
-        }
+        } else found = false;
       });
 
-      if (found === false) {
-        this.noMeals = 'no_meals';
-      }
+      if (!found) this.noMeals = 'no_meals';
     },
     setDateAndShow(date) {
       this.currentDate = new Date(date);
@@ -370,9 +363,7 @@ export default {
         this.$bvModal.show('modal-error');
       } else if (error === 'mealslist_not_found') {
         this.noMeals = 'no_meals';
-      } else {
-        this.inputCheckMessage = error;
-      }
+      } else this.inputCheckMessage = error;
     },
     getNutriScoreImage(nutriScore) {
       console.log(`SCORE: ${nutriScore}`);
@@ -394,7 +385,7 @@ export default {
           this.mealsList = [];
           this.mealsList = response.data.meals;
           this.showMealsByDate(this.currentDate);
-          this.$refs['modal-save'].hide();
+          this.hideModal();
         })
         .catch(error => this.checkError(error.response.data.description));
     },
