@@ -308,7 +308,7 @@ export default {
       // Passo meal name, per accedere alla query dalla pagina info prodotto
       // devo fare: this.$route.query.mealName
       // this.$router.push({ path: '/info_prod', query: { mealName, date: timestamp } });
-      this.$refs.addProduct.open(mealName, timestamp);
+      this.$refs.addProduct.openModal(mealName, timestamp);
     },
     removeComponent(barcode, mealName) {
       const params = {

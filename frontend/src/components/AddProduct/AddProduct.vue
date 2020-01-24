@@ -73,7 +73,7 @@ export default {
     };
   },
   methods: {
-    open(mealName, timestamp) {
+    openModal(mealName, timestamp) {
       this.mealName = mealName;
       this.mealDate = timestamp;
       this.$bvModal.show('modal-addProduct');
