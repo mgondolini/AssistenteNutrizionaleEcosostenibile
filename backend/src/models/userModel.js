@@ -15,7 +15,7 @@ const WhoSchema = new Schema({
   saturated_fat_perc: Number,
   calcium_g: Number,
   sodium: Number,
-});
+}, { _id: false });
 
 const UserSchema = new Schema({
   username: { type: String, required: true },
