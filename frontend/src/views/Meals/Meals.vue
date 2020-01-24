@@ -90,6 +90,7 @@
                     </p>
                   </b-card-text>
                   <b-button
+                    v-if="!meal.is_closed"
                     pill
                     variant="link"
                     class="p-0"
@@ -200,6 +201,21 @@ export default {
         showClose: true,
       },
 
+      // Daily nutrition values
+      energy: 0,
+      calories: 0,
+      protein: 0,
+      carbohydrate: 0,
+      fiber: 0,
+      total_fat: 0,
+      saturated_fat: 0,
+      calcium: 0,
+      sodium: 0,
+
+      // Graph data
+      dailyRequirement: Object,
+
+
       // Graph
       seriesBar: [{
         name: 'volume',
@@ -276,8 +292,6 @@ export default {
         },
       };
 
-      console.log(body); // DEBUG
-
       if (mealName.length > 0) {
         this.$store.state.http.post(`api/meals/${body.meals.timestamp}`, body)
           .then((response) => {
@@ -334,6 +348,7 @@ export default {
       let mealDate;
       let found = false;
       this.mealsListByDate = [];
+
       this.UTCDate = Date.UTC(
         this.currentDate.getFullYear(),
         this.currentDate.getMonth(),
@@ -343,9 +358,7 @@ export default {
       this.mealsList.forEach((meal) => {
         mealDate = new Date(meal.timestamp);
 
-        if (mealDate.getDate() === date.getDate()
-            && mealDate.getMonth() === date.getMonth()
-            && mealDate.getFullYear() === date.getFullYear()) {
+        if (this.checkDates(mealDate, date)) {
           this.mealsListByDate.push(meal);
           found = true;
         } else found = false;
@@ -357,8 +370,13 @@ export default {
       this.currentDate = new Date(date);
       this.showMealsByDate(this.currentDate);
     },
+    checkDates(d1, d2) {
+      return (d1.getDate() === d2.getDate()
+            && d1.getMonth() === d2.getMonth()
+            && d1.getFullYear() === d2.getFullYear());
+    },
     checkError(error) {
-      if (error === 'internal_server_error' || error === 'meal_not_found') {
+      if (error === 'internal_server_error' || error === 'meal_not_found' || 'user_not_found') {
         this.modalErrorMsg = error;
         this.$bvModal.show('modal-error');
       } else if (error === 'mealslist_not_found') {
@@ -371,7 +389,6 @@ export default {
     },
     completeMeal(meal) {
       this.mealToClose = meal;
-      console.log(this.mealToClose);
       this.$refs['modal-save'].show();
     },
     saveMeal() {
@@ -392,9 +409,47 @@ export default {
     hideModal() {
       this.$refs['modal-save'].hide();
     },
+    getGraphData() {
+      this.$store.state.http.get('/api/user')
+        .then((response) => {
+          this.dailyRequirement = response.data.daily_requirement;
+          console.log('Daily Requirement'); // DEBUG
+          console.log(this.dailyRequirement);
+          this.getDayNutritionFact(this.currentDate);
+        })
+        .catch(error => this.checkError(error.response.data.description));
+    },
+    getDayNutritionFact(date) {
+      console.log('Get nutrition fact');
+      let mealDate;
+
+      this.mealsList.forEach((meal) => {
+        mealDate = new Date(meal.timestamp);
+        if (this.checkDates(mealDate, date)) {
+          console.log(meal);
+          // valori totali del pasto di una certa data
+          this.energy += meal.energy_tot;
+          this.carbohydrate += meal.carbohydrates_tot;
+          this.protein += meal.protein_tot;
+          this.fiber += meal.fiber_tot;
+          // TODO controllare i nomi!!!!
+          // this.total_fat += meal.fat_tot;
+          // this.saturated_fat += meal.saturated_fat_tot;
+          // this.calcium += meal.calcium.tot;
+          // this.sodium += meal.sodium_tot;
+        }
+        console.log('eheh');
+      });
+      console.log(this.energy);
+      console.log(this.getDailyNutritionRatio(this.energy, this.dailyRequirement.calories));
+    },
+    getDailyNutritionRatio(value, dailyRequirement) {
+      return (value / dailyRequirement) * 100;
+    },
   },
   mounted() {
     this.loadMealsList();
+    this.getGraphData();
   },
 };
 </script>
