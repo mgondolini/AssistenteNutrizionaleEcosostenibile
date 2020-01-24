@@ -26,7 +26,8 @@ module.exports = function (app) {
     .post(mealController.new_meal);
 
   app.route('/api/meals/:mealName/:date')
-    .delete(mealController.delete_meal);
+    .delete(mealController.delete_meal)
+    .put(mealController.update_meal);
 
   app.route('/api/meal')
     .get(mealController.load_meal);

@@ -121,6 +121,30 @@ exports.new_meal = async (req, res) => {
     });
 };
 
+/** Updates a meal with a given property */
+exports.update_meal = async (req, res) => {
+  const username = authController.getUsername(req.headers.token);
+  const mealUpdated = req.body;
+  const query = { username };
+  console.log(mealUpdated);
+
+  await Meals.findOne(query)
+    .exec()
+    .then((userMeals) => {
+      if (userMeals === null) {
+        res.status(500).send({ description: 'internal_server_error' });
+        global.log(`UserMeals not found for user ${username}\n`); // DEBUG
+      } else {
+        global.log(`Meal found for user ${username}:\n${userMeals}`); // DEBUG
+        mealControllerUtils.updateMeal(userMeals, mealUpdated, res);
+      }
+    })
+    .catch((err) => {
+      global.log(`Error while updating meal: ${err}`); // DEBUG
+      res.status(500).send({ description: 'internal_server_error' });
+    });
+};
+
 /** Deletes a meal */
 exports.delete_meal = async (req, res) => {
   const username = authController.getUsername(req.headers.token);
