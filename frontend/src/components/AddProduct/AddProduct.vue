@@ -1,20 +1,20 @@
 <template>
   <b-modal
     id="modal-addProduct"
-    title="Lookup modes"
+    :title="this.$i18n.t('lookup_modes')"
     centered
     hide-footer
     @hidden="inputMode = 'SELECT'"
     >
     <div v-if="inputMode === 'SELECT'" class="buttonContainerVertical">
-        <b-button v-on:click="inputMode = 'MANUAL'">Manual insert</b-button>
-        <b-button v-on:click="inputMode = 'STREAM'">Scan barcode</b-button>
-        <b-button v-on:click="uploadFile()">Upload barcode</b-button>
-        <b-button v-on:click="scanNutriTable()">Scan nutrition table</b-button>
+        <b-button v-on:click="inputMode = 'MANUAL'">{{$t('input_btn_manual')}}</b-button>
+        <b-button v-on:click="inputMode = 'STREAM'">{{$t('input_btn_scan_barcode')}}</b-button>
+        <b-button v-on:click="uploadFile()">{{$t('input_btn_upload')}}</b-button>
+        <b-button v-on:click="scanNutriTable()">{{$t('input_btn_scan_nutri')}}</b-button>
     </div>
     <div v-else-if="inputMode === 'MANUAL'" id="insertEAN" class="buttonContainer">
       <div>
-        <label for="ean">EAN code</label>
+        <label for="ean">{{$t('ean_code')}}</label>
         <input
           id="ean"
           v-model="ean"
@@ -23,8 +23,8 @@
       </div>
       <b-form-select v-model="ean" :options="eanOptions"></b-form-select>
       <div>
-        <b-button v-on:click="gotoProductInfo()">Lookup</b-button>
-        <b-button v-on:click="inputMode = 'SELECT'">Back</b-button>
+        <b-button v-on:click="gotoProductInfo()">{{$t('lookup')}}</b-button>
+        <b-button v-on:click="inputMode = 'SELECT'">{{$t('back')}}</b-button>
       </div>
     </div>
     <div v-else-if="inputMode === 'STREAM'" id="videoStream" class="buttonContainer">
@@ -34,7 +34,7 @@
         :readerTypes="['ean_reader']"
         :aspectRatio="aspectRatio"
       ></v-quagga>
-      <b-button v-on:click="inputMode = 'SELECT'">Back</b-button>
+      <b-button v-on:click="inputMode = 'SELECT'">{{$t('back')}}</b-button>
     </div>
   </b-modal>
 </template>
@@ -95,6 +95,7 @@ export default {
         this.gotoProductInfo();
       }
     },
+
   },
   mounted() {
   },
@@ -104,10 +105,24 @@ export default {
 <i18n>
 {
   "en": {
-
+    "lookup_modes" : "Lookup modes",
+    "input_btn_manual" : "Manual insert",
+    "input_btn_scan_barcode" : "Scan barcode",
+    "input_btn_upload" : "Upload barcode",
+    "input_btn_scan_nutri" : "Scan nutrition table",
+    "ean_code" : "EAN code",
+    "lookup" : "Lookup",
+    "back" : "Back"
   },
   "it": {
-
+    "lookup_modes" : "Modalità di ricerca",
+    "input_btn_manual" : "Inserimento manuale",
+    "input_btn_scan_barcode" : "Scansiona barcode",
+    "input_btn_upload" : "Carica foto barcode",
+    "input_btn_scan_nutri" : "Scansiona tabella nutrizionale",
+    "ean_code" : "Codice EAN",
+    "lookup" : "Cerca",
+    "back" : "Indietro"
   }
 }
 </i18n>
