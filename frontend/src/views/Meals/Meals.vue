@@ -137,7 +137,7 @@
         <b-button variant="secondary" @click="hideModal">
           {{$t('no')}}
         </b-button>
-        <b-button variant="primary" @click="saveMeal(meal)">
+        <b-button variant="primary" @click="saveMeal()">
           {{$t('yes')}}
         </b-button>
       </footer>
