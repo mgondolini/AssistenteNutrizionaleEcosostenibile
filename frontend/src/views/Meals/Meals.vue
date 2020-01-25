@@ -202,24 +202,27 @@ export default {
       },
 
       // Daily nutrition values
-      energy: 0,
-      calories: 0,
-      protein: 0,
-      carbohydrate: 0,
-      fiber: 0,
-      total_fat: 0,
-      saturated_fat: 0,
-      calcium: 0,
-      sodium: 0,
+      todayNutritionValues: {
+        // energy: 0,
+        calories: 0,
+        protein: 0,
+        carbohydrate: 0,
+        fiber: 0,
+        total_fat: 0,
+        saturated_fat: 0,
+        calcium: 0,
+        sodium: 0,
+      },
 
       // Graph data
       dailyRequirement: Object,
+      todayValues: [],
 
 
       // Graph
       seriesBar: [{
         name: 'volume',
-        data: [-30, -40, -50, -60, -70, -80, 90, 100, 110, 120, 130, 140, 150],
+        data: [],
       }],
       chartOptionsBar: {
         chart: {
@@ -234,12 +237,12 @@ export default {
             columnWidth: '80%',
             colors: {
               ranges: [{
-                from: -1000,
+                from: -100,
                 to: 0,
                 color: '#F15B46',
               }, {
                 from: 0,
-                to: 10000,
+                to: 100,
                 color: '#FEB019',
               }],
 
@@ -247,7 +250,7 @@ export default {
           },
         },
         stroke: {
-          width: 0,
+          width: 1,
         },
         xaxis: {
           axisBorder: {
@@ -275,6 +278,7 @@ export default {
         .then((response) => {
           this.mealsList = response.data.meals;
           this.showMealsByDate(this.currentDate);
+          this.getGraphData();
         })
         .catch(error => this.checkError(error.response.data.description));
     },
@@ -425,22 +429,32 @@ export default {
       this.mealsList.forEach((meal) => {
         mealDate = new Date(meal.timestamp);
         if (this.checkDates(mealDate, date)) {
-          console.log(meal);
-          // valori totali del pasto di una certa data
-          this.energy += meal.energy_tot;
-          this.carbohydrate += meal.carbohydrates_tot;
-          this.protein += meal.protein_tot;
-          this.fiber += meal.fiber_tot;
-          // TODO controllare i nomi!!!!
-          // this.total_fat += meal.fat_tot;
-          // this.saturated_fat += meal.saturated_fat_tot;
-          // this.calcium += meal.calcium.tot;
-          // this.sodium += meal.sodium_tot;
+          // Sum of the nutrition values of the meals on a date
+          // this.todayNutritionValues.calories += meal.calories_tot;
+          this.todayNutritionValues.carbohydrate += meal.carbohydrates_tot;
+          this.todayNutritionValues.protein += meal.protein_tot;
+          this.todayNutritionValues.fiber += meal.fiber_tot;
+          this.todayNutritionValues.total_fat += meal.fat_tot;
+          this.todayNutritionValues.saturated_fat += meal.saturated_fat_tot;
+          this.todayNutritionValues.calcium += meal.calcium_tot;
+          this.todayNutritionValues.sodium += meal.sodium_tot;
         }
-        console.log('eheh');
       });
-      console.log(this.energy);
-      console.log(this.getDailyNutritionRatio(this.energy, this.dailyRequirement.calories));
+
+      let dailyRequirementValues = Object.values(this.dailyRequirement);
+      dailyRequirementValues = dailyRequirementValues.splice(3, 10);
+
+      const todayKeys = Object.key(this.todayNutritionValues);
+      let todayValues = Object.values(this.todayNutritionValues);
+      todayValues = todayValues
+        .map((val, i) => this.getDailyNutritionRatio(val, dailyRequirementValues[i]))
+        .map(val => (val - 100).toFixed(2));
+
+      console.log('todayValues mapped');
+      console.log(todayValues);
+
+      this.seriesBar.data = todayValues;
+      console.log(this.seriesBar.data);
     },
     getDailyNutritionRatio(value, dailyRequirement) {
       return (value / dailyRequirement) * 100;
