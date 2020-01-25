@@ -1,0 +1,20 @@
+{
+  "en": {
+    "intro": "Composition of your meal",
+    "CO2grams": "CO2 per grams",
+    "gCons":"Consumed grams",
+    "watergrams": "Water per grams",
+    "info": "Meal Graph",
+    "emission": "Emission Graph",
+    "closeBtn": "Close me!"
+  },
+  "it": {
+    "intro": "Coposizione del tuo pasto",
+    "CO2grams": "CO2 per grammi",
+    "gCons":"Grammi consumati",
+    "watergrams": "Acqua per grammi",
+    "info": "Grafici dei tuoi pasti",
+    "emission": "Grafici Emissioni",
+    "closeBtn": "Chiudi!"
+  }
+}

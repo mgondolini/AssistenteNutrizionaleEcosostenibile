@@ -15,7 +15,7 @@
       <apexchart class="changeableGraph" type=pie height=450 width=800 :options="chartOptions"
         :series="chart.av" />
     </div>
-    <div class="emissionsGraphs">
+    <div class="emissionsGraphs container">
       <apexchart type=bubble height=350 width=600 :options="chartBubbleCO2Options"
       :series="series" />
       <apexchart type=bubble height=350 width=600 :options="chartBubbleWaterOptions"
@@ -80,6 +80,27 @@ export default {
               position: 'bottom',
             },
           },
+        },
+        {
+          breakpoint: 800,
+          options: {
+            chart: {
+              height: 350,
+              width: 500,
+            },
+            legend: {
+              position: 'bottom',
+            },
+          },
+        },
+        {
+          breakpoint: 850,
+          options: {
+            chart: {
+              height: 350,
+              width: 600,
+            },
+          },
         }],
       };
     },
@@ -133,10 +154,30 @@ export default {
           breakpoint: 480,
           options: {
             chart: {
-              width: 350,
+              width: 400,
+              height: 350,
             },
           },
-        }],
+        },
+        {
+          breakpoint: 780,
+          options: {
+            chart: {
+              width: 300,
+              height: 350,
+            },
+          },
+        },
+        {
+          breakpoint: 1200,
+          options: {
+            chart: {
+              width: 350,
+              height: 350,
+            },
+          },
+        },
+        ],
       };
     },
     chartBubbleWaterOptions() {
@@ -188,7 +229,26 @@ export default {
           breakpoint: 480,
           options: {
             chart: {
+              width: 400,
+              height: 350,
+            },
+          },
+        },
+        {
+          breakpoint: 780,
+          options: {
+            chart: {
+              width: 300,
+              height: 350,
+            },
+          },
+        },
+        {
+          breakpoint: 1200,
+          options: {
+            chart: {
               width: 350,
+              height: 350,
             },
           },
         }],
@@ -201,7 +261,7 @@ export default {
   mounted() {
     const params = { mealName: this.$route.query.mealName, date: this.$route.query.date };
     console.log(`Calculate_meal_comp mounted ${params.mealName}`);
-    this.modalErrorShow = false;
+    this.toLogin = false;
     this.$store.state.http.get('api/meal', { params })
       .then((response) => {
         response.data.meals[0].components.forEach((elem) => {
@@ -232,18 +292,22 @@ export default {
           if (i > 2 && i < 13) { if (v > 0.0001) this.componentsMeal.av.push(v); }
         });
         this.calculate();
-      }).catch(error => this.checkError(error.description));
+      }).catch(error => this.checkError(error.response.data.description,
+        error.response.status));
   },
   methods: {
     checkError(error, status) {
-      if (status === 401) {
+      if (error === 'internal_server_error' || error === 'meal_not_found') {
+        this.errorMsgModal = error;
+        this.$bvModal.show('modal-error');
+        this.toLogin = false;
+      } else if (status === 401) {
         this.errorMsgModal = this.$i18n.t('unauthorized');
-        this.modalErrorShow = true;
+        this.$bvModal.show('modal-error');
         this.toLogin = true;
       } else {
         this.toLogin = false;
-        this.errorMsgModal = this.$i18n.t('error');
-        this.modalErrorShow = true;
+        this.errorMsgModal = this.$i18n.t('internal_server_error');
       }
     },
     hideModal() {
@@ -277,27 +341,7 @@ export default {
 </script>
 
 
-<i18n>
-{
-  "en": {
-    "intro": "Composition of your meal",
-    "CO2grams": "CO2 per grams",
-    "gCons":"Consumed grams",
-    "watergrams": "Water per grams",
-    "error": "Errors occurred. Try again!",
-    "unauthorized": "Unauthorized access",
-    "closeBtn": "Close me!"
-  },
-  "it": {
-    "intro": "Coposizione del tuo pasto",
-    "CO2grams": "CO2 per grammi",
-    "gCons":"Grammi consumati",
-    "watergrams": "Acqua per grammi",
-    "error": "Sono avvenuti degli errori. Riprova dopo!",
-    "unauthorized": "Accesso non autorizzato",
-    "closeBtn": "Chiudi!"
-  }
-}
+<i18n src='./text.json'>
 </i18n>
 
 <style lang="sass">
