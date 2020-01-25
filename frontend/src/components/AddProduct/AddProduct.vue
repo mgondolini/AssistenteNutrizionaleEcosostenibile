@@ -1,57 +1,49 @@
 <template>
-  <div>
-    <b-modal
-      id="modal-addProduct"
-      :title="$t('lookup_modes')"
-      centered
-      hide-footer
-      @hidden="inputMode = 'SELECT'"
-      >
-      <div v-if="inputMode === 'SELECT'" class="buttonContainerVertical">
-          <b-button v-on:click="inputMode = 'MANUAL'">{{$t('input_btn_manual')}}</b-button>
-          <b-button v-on:click="inputMode = 'STREAM'">{{$t('input_btn_scan_barcode')}}</b-button>
-          <b-button v-on:click="uploadFile()">{{$t('input_btn_upload')}}</b-button>
-          <b-button v-on:click="scanNutriTable()">{{$t('input_btn_scan_nutri')}}</b-button>
+  <b-modal
+    id="modal-addProduct"
+    :title="$t('lookup_modes')"
+    centered
+    hide-footer
+    @hidden="inputMode = 'SELECT'"
+    >
+    <div v-if="inputMode === 'SELECT'" class="buttonContainerVertical">
+        <b-button v-on:click="inputMode = 'MANUAL'">{{$t('input_btn_manual')}}</b-button>
+        <b-button v-on:click="inputMode = 'STREAM'">{{$t('input_btn_scan_barcode')}}</b-button>
+        <b-button v-on:click="uploadFile()">{{$t('input_btn_upload')}}</b-button>
+        <b-button v-on:click="scanNutriTable()">{{$t('input_btn_scan_nutri')}}</b-button>
+    </div>
+    <div v-else-if="inputMode === 'MANUAL'" id="insertEAN" class="buttonContainer">
+      <div>
+        <label for="ean">{{$t('ean_code')}}</label>
+        <input
+          id="ean"
+          v-model="ean"
+          value=""
+        >
       </div>
-      <div v-else-if="inputMode === 'MANUAL'" id="insertEAN" class="buttonContainer">
-        <div>
-          <label for="ean">{{$t('ean_code')}}</label>
-          <input
-            id="ean"
-            v-model="ean"
-            value=""
-          >
-        </div>
-        <b-form-select v-model="ean" :options="eanOptions"></b-form-select>
-        <div>
-          <b-button v-on:click="loadProductInfo()">{{$t('lookup')}}</b-button>
-          <b-button v-on:click="inputMode = 'SELECT'">{{$t('back')}}</b-button>
-        </div>
-      </div>
-      <div v-else-if="inputMode === 'STREAM'" id="videoStream" class="buttonContainer">
-        <v-quagga
-          :onDetected="barcodeDetected"
-          :readerSize="readerSize"
-          :readerTypes="['ean_reader']"
-          :aspectRatio="aspectRatio"
-        ></v-quagga>
+      <b-form-select v-model="ean" :options="eanOptions"></b-form-select>
+      <div>
+        <b-button v-on:click="loadProductInfo()">{{$t('lookup')}}</b-button>
         <b-button v-on:click="inputMode = 'SELECT'">{{$t('back')}}</b-button>
       </div>
-    </b-modal>
-    <b-modal id="modal-product-not-found" centered hide-footer :title="$t('modal_title_error')">
-      <div class="d-block text-center">
-        {{$t('modal_prod_not_found_text')}}
-      </div>
-      <!-- <p class="my-4">{{$t('modal_prod_not_found_text')}}</p> -->
-    </b-modal>
-  </div>
+    </div>
+    <div v-else-if="inputMode === 'STREAM'" id="videoStream" class="buttonContainer">
+      <v-quagga
+        :onDetected="barcodeDetected"
+        :readerSize="readerSize"
+        :readerTypes="['ean_reader']"
+        :aspectRatio="aspectRatio"
+      ></v-quagga>
+      <b-button v-on:click="inputMode = 'SELECT'">{{$t('back')}}</b-button>
+    </div>
+  </b-modal>
 </template>
 
 <script>
 // import Quagga from 'quagga';
 const axios = require('axios');
 
-const offApiPath = 'https://world.openfoooodfacts.org/api/v0/product/';
+const offApiPath = 'https://world.openfoodfacts.org/api/v0/product/';
 const offApiSuffix = '.json';
 
 export default {
