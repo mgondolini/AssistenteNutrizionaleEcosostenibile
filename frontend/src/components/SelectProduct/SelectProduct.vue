@@ -1,6 +1,6 @@
 <template>
   <b-modal
-    id="modal-addProduct"
+    id="modal-selectProduct"
     :title="$t('lookup_modes')"
     centered
     hide-footer
@@ -47,7 +47,7 @@ const offApiPath = 'https://world.openfoodfacts.org/api/v0/product/';
 const offApiSuffix = '.json';
 
 export default {
-  name: 'AddProduct',
+  name: 'SelectProduct',
   data() {
     return {
       inputMode: 'SELECT',
@@ -79,7 +79,7 @@ export default {
     openModal(mealName, timestamp) {
       this.mealName = mealName;
       this.mealDate = timestamp;
-      this.$bvModal.show('modal-addProduct');
+      this.$bvModal.show('modal-selectProduct');
     },
     gotoProductInfo() {
       this.$router.push({ path: '/info_prod', query: { ean: this.ean, mealName: this.mealName, date: this.mealDate } });
@@ -120,7 +120,7 @@ export default {
           const { product } = response.data;
           localStorage.setItem('product', JSON.stringify(product));
 
-          // this.$bvModal.hide('modal-addProduct');
+          // this.$bvModal.hide('modal-selectProduct');
           this.gotoProductInfo();
         }).catch((error) => {
           console.log(error);
@@ -177,5 +177,5 @@ export default {
 </i18n>
 
 <style lang="sass">
-  @import './AddProduct.sass';
+  @import './SelectProduct.sass';
 </style>
