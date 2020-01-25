@@ -83,6 +83,8 @@ export default {
     },
     gotoProductInfo() {
       this.$router.push({ path: '/info_prod', query: { ean: this.ean, mealName: this.mealName, date: this.mealDate } });
+      // Keep this AFTER the router push
+      this.$bvModal.hide('modal-selectProduct');
     },
     barcodeDetected(data) {
       console.log('EAN detected', data);
@@ -120,7 +122,6 @@ export default {
           const { product } = response.data;
           localStorage.setItem('product', JSON.stringify(product));
 
-          // this.$bvModal.hide('modal-selectProduct');
           this.gotoProductInfo();
         }).catch((error) => {
           console.log(error);

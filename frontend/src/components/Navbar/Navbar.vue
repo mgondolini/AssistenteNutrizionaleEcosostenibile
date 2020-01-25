@@ -7,7 +7,9 @@
         <b-navbar-toggle target="nav-collapse"></b-navbar-toggle>
         <b-collapse id="nav-collapse" class="nav-router" is-nav>
           <b-navbar-nav>
-            <router-link class="info_prod" to="info_prod">{{ $t('prod_info') }}</router-link>
+            <b-nav-item class="info_prod" @click="productInfo()">
+              {{ $t('prod_info') }}
+            </b-nav-item>
           </b-navbar-nav>
 
           <!-- Right aligned nav items -->
@@ -38,10 +40,12 @@
           </b-navbar-nav>
         </b-collapse>
       </b-navbar>
+      <selectProduct ref="selectProduct"></selectProduct>
     </div>
 </template>
 
 <script>
+import selectProduct from '../SelectProduct/SelectProduct.vue';
 // const localeFlagsPath = '@/assets/flags/';
 const localeFlagsExt = '.svg';
 // If localeFlagsPath is passed instead of hardcoded path the function no longer works
@@ -54,6 +58,9 @@ export default {
       navhome: 'Eco-assistant',
       langs: ['en', 'it'],
     };
+  },
+  components: {
+    selectProduct,
   },
   computed: {
     getUsername() {
@@ -69,6 +76,9 @@ export default {
       if (this.$route.path !== '/') {
         this.$router.push('/');
       }
+    },
+    productInfo() {
+      this.$refs.selectProduct.openModal('', '');
     },
   },
 };
