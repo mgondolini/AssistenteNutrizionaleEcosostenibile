@@ -192,7 +192,7 @@ export default {
       ],
     };
   },
-  mounted() {
+  created() {
     this.mealName = this.$route.query.mealName || '';
     this.mealDate = this.$route.query.date || '';
     this.ean = this.$route.query.ean || '';
@@ -201,6 +201,10 @@ export default {
     const product = JSON.parse(localStorage.getItem('product'));
     console.log(product);
     this.loadProductInfo();
+  },
+  beforeMount() {
+  },
+  mounted() {
   },
   methods: {
     loadProductInfo() {
