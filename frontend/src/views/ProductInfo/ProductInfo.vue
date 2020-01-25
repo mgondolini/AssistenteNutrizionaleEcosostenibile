@@ -204,6 +204,8 @@ export default {
     this.ean = this.$route.query.ean || '';
     console.log(`Mounted ProductInfo. EAN: ${this.ean} Meal: ${this.mealName} Date: ${this.mealDate}`);
     // this.submitEan();
+    const product = JSON.parse(localStorage.getItem('product'));
+    console.log(product);
   },
   methods: {
     submitEan() {

@@ -118,11 +118,9 @@ export default {
           }
 
           const { product } = response.data;
-          this.$store.commit('setProduct', product);
-          console.log('product committed:');
-          console.log(this.$store.state.product);
+          localStorage.setItem('product', JSON.stringify(product));
 
-          this.$bvModal.hide('modal-addProduct');
+          // this.$bvModal.hide('modal-addProduct');
           this.gotoProductInfo();
         }).catch((error) => {
           alert(JSON.stringify(error));
@@ -135,9 +133,7 @@ export default {
     },
   },
   mounted() {
-    this.$store.commit('setProduct', null);
-    console.log('STATE:');
-    console.log(this.$store.state.product);
+    localStorage.removeItem('product');
   },
 };
 </script>
