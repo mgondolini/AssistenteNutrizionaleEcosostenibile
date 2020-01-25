@@ -25,6 +25,7 @@ const store = new Vuex.Store({
   state: {
     isLogged: false,
     username: '',
+    product: '',
     http: Axios.create({
       baseURL: 'http://localhost:8081/',
       timeout: 10000,
@@ -53,6 +54,9 @@ const store = new Vuex.Store({
         timeout: 10000,
         headers: { token: 'InvalidToken' },
       });
+    },
+    setProduct(state, product) {
+      state.product = product;
     },
   },
 });

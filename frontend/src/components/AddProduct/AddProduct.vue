@@ -23,7 +23,7 @@
       </div>
       <b-form-select v-model="ean" :options="eanOptions"></b-form-select>
       <div>
-        <b-button v-on:click="gotoProductInfo()">{{$t('lookup')}}</b-button>
+        <b-button v-on:click="loadProductInfo()">{{$t('lookup')}}</b-button>
         <b-button v-on:click="inputMode = 'SELECT'">{{$t('back')}}</b-button>
       </div>
     </div>
@@ -41,6 +41,10 @@
 
 <script>
 // import Quagga from 'quagga';
+const axios = require('axios');
+
+const offApiPath = 'https://world.openfoodfacts.org/api/v0/product/';
+const offApiSuffix = '.json';
 
 export default {
   name: 'AddProduct',
@@ -91,13 +95,49 @@ export default {
         // alert(data.codeResult.code);
         // Quagga.stop();
         this.ean = data.codeResult.code.trim();
-        this.$bvModal.hide('modal-addProduct');
-        this.gotoProductInfo();
+        this.loadProductInfo();
       }
     },
+    loadProductInfo() {
+      console.log(`Requesting infos about ean ${this.ean}`);
+      console.log(offApiPath + this.ean + offApiSuffix);
+      axios.get(offApiPath + this.ean + offApiSuffix)
+        .then((response) => {
+          console.log(response);
 
+          // Status === 1 means the product has been found
+          // some random EANs can also return a status 1 so we check the code not to be empty
+
+          const status = (response.data.status === 1)
+                        && (response.data.code !== '')
+                        && (Object.prototype.hasOwnProperty.call(response.data, 'product'));
+
+          if (!status) {
+            this.productNotFound();
+            return;
+          }
+
+          const { product } = response.data;
+          this.$store.commit('setProduct', product);
+          console.log('product committed:');
+          console.log(this.$store.state.product);
+
+          this.$bvModal.hide('modal-addProduct');
+          this.gotoProductInfo();
+        }).catch((error) => {
+          alert(JSON.stringify(error));
+          console.log(error);
+        });
+    },
+    productNotFound() {
+      this.$bvModal.show('modal-error');
+      this.inputMode = 'SELECT';
+    },
   },
   mounted() {
+    this.$store.commit('setProduct', null);
+    console.log('STATE:');
+    console.log(this.$store.state.product);
   },
 };
 </script>

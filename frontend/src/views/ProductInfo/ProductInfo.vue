@@ -203,7 +203,7 @@ export default {
     this.mealDate = this.$route.query.date || '';
     this.ean = this.$route.query.ean || '';
     console.log(`Mounted ProductInfo. EAN: ${this.ean} Meal: ${this.mealName} Date: ${this.mealDate}`);
-    this.submitEan();
+    // this.submitEan();
   },
   methods: {
     submitEan() {
