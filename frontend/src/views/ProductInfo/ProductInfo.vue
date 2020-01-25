@@ -105,9 +105,6 @@
                 v-on:click="insertProductInMeal()">
         Add product to "{{mealName}}"</b-button>
     </div>
-    <b-modal id="modal-error" centered ok-only title="Error">
-      <p class="my-4">Product not found!</p>
-    </b-modal>
   </div>
 </template>
 
@@ -280,7 +277,7 @@ export default {
 
         Object.values(ingredients).forEach((i) => {
           if (!Object.prototype.hasOwnProperty.call(i, 'has_sub_ingredients')) {
-            console.log(i.text.toLowerCase());
+            // console.log(i.text.toLowerCase());
             ingredientsTexts.push(i.text.toLowerCase());
           }
         });
@@ -288,7 +285,7 @@ export default {
       }
     },
     productNotFound() {
-      this.$bvModal.show('modal-error');
+      this.$bvModal.show('modal-product-not-found');
       this.inputMode = 'SELECT';
     },
     insertProductInMeal() {
@@ -373,8 +370,8 @@ export default {
     "sodium" : "Sodium",
     "proteins" : "Proteins",
     "fiber" : "Fiber",
-    "nutriFacts": "Nutritional facts",
-    "portion": "Portion"
+    "nutriFacts" : "Nutritional facts",
+    "portion" : "Portion"
   },
   "it": {
     "tab_nutrition_title" : "Valori nutrizionali",
