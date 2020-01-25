@@ -221,7 +221,7 @@ export default {
 
       // Graph
       seriesBar: [{
-        name: 'volume',
+        name: 'daily requirement',
         data: [],
       }],
       chartOptionsBar: {
@@ -444,7 +444,9 @@ export default {
       let dailyRequirementValues = Object.values(this.dailyRequirement);
       dailyRequirementValues = dailyRequirementValues.splice(3, 10);
 
-      const todayKeys = Object.key(this.todayNutritionValues);
+      const todayKeys = Object.keys(this.todayNutritionValues);
+      console.log(todayKeys);
+
       let todayValues = Object.values(this.todayNutritionValues);
       todayValues = todayValues
         .map((val, i) => this.getDailyNutritionRatio(val, dailyRequirementValues[i]))
@@ -453,8 +455,15 @@ export default {
       console.log('todayValues mapped');
       console.log(todayValues);
 
-      this.seriesBar.data = todayValues;
-      console.log(this.seriesBar.data);
+      const tmp = [];
+
+      todayKeys.forEach((key) => {
+        tmp.push({ name: key, data: todayValues });
+      });
+      console.log(tmp);
+
+      // this.seriesBar.data = todayValues;
+      // // console.log(this.seriesBar.data);
     },
     getDailyNutritionRatio(value, dailyRequirement) {
       return (value / dailyRequirement) * 100;
