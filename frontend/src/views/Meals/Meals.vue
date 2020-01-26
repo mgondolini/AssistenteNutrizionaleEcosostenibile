@@ -15,144 +15,150 @@
         class="meals-datepicker"
         @dp-change="setDateAndShow(calendar.value)"> </date-picker>
     </b-card>
-    <b-card class="card-new-meal">
-      <b-form-input
-        id="input-new-meal"
-        v-model="mealName"
-        :state="mealNameState"
-        aria-describedby="input-live-feedback"
-        :placeholder="$t('meal_name_enter')"
-        class="input-new-meal"
-        trim
-      ></b-form-input>
-      <b-button
-        pill
-        variant="link"
-        class="button-add p-0"
-        @click="addMeal(mealName)"
-      >
-       <img class="add-meal" src="../../assets/buttons/add.svg">
-      </b-button>
-      <b-form-invalid-feedback id="input-live-feedback">
-        {{ $t(inputCheckMessage) }}
-      </b-form-invalid-feedback>
-    </b-card>
-    <div
-      v-if="mealsListByDate.length > 0"
-      class="card-last-meals"
-      role="tablist"
-    >
-      <b-card
-        no-body class="mb-1"
-        v-for="(meal, index) in mealsListByDate.slice().reverse()"
-        v-bind:key="index"
-      >
-        <b-card-header header-tag="header" class="p-0" role="tab">
-          <b-button block href="#" v-b-toggle="'accordion-' + index" variant="info">
-            <p class="meal-name-p text-center m-0">{{ meal.meal_name }}</p>
-            <b-button
-              class="p-0"
-              variant="outline-light p-0"
-              @click="removeMeal(meal.meal_name)"
-            ><img class="trashcan" src="../../assets/buttons/trashcan.svg"></b-button>
+    <b-tabs content-class="mt-3">
+      <b-tab title="Meals" active>
+        <b-card class="card-new-meal">
+          <b-form-input
+            id="input-new-meal"
+            v-model="mealName"
+            :state="mealNameState"
+            aria-describedby="input-live-feedback"
+            :placeholder="$t('meal_name_enter')"
+            class="input-new-meal"
+            trim
+          ></b-form-input>
+          <b-button
+            pill
+            variant="link"
+            class="button-add p-0"
+            @click="addMeal(mealName)"
+          >
+          <img class="add-meal" src="../../assets/buttons/add.svg">
           </b-button>
-        </b-card-header>
-        <b-collapse :id="'accordion-' + index" visible accordion="my-accordion" role="tabpanel">
-          <b-card-body>
-            <b-button
-              v-if="!meal.is_closed"
-              pill
-              variant="link"
-              class="add-component p-0"
-              @click="addComponent(meal.meal_name, meal.timestamp)"
-            >
-              <img class="add mr-2" src="../../assets/buttons/plus.svg">
-              {{ $t('add_component') }}
-            </b-button>
-            <div v-if="meal.components.length > 0">
-              <div v-for="component in meal.components" v-bind:key="component.product_name">
-                <b-card
-                  :img-src="component.image_url"
-                  img-alt="Card image" img-left
-                  class="card-components mb-3"
+          <b-form-invalid-feedback id="input-live-feedback">
+            {{ $t(inputCheckMessage) }}
+          </b-form-invalid-feedback>
+        </b-card>
+        <div
+          v-if="mealsListByDate.length > 0"
+          class="card-last-meals"
+          role="tablist"
+        >
+          <b-card
+            no-body class="mb-1"
+            v-for="(meal, index) in mealsListByDate.slice().reverse()"
+            v-bind:key="index"
+          >
+            <b-card-header header-tag="header" class="p-0" role="tab">
+              <b-button block href="#" v-b-toggle="'accordion-' + index" variant="info">
+                <p class="meal-name-p text-center m-0">{{ meal.meal_name }}</p>
+                <b-button
+                  class="p-0"
+                  variant="outline-light p-0"
+                  @click="removeMeal(meal.meal_name)"
+                ><img class="trashcan" src="../../assets/buttons/trashcan.svg"></b-button>
+              </b-button>
+            </b-card-header>
+            <b-collapse :id="'accordion-' + index" visible accordion="my-accordion" role="tabpanel">
+              <b-card-body>
+                <b-button
+                  v-if="!meal.is_closed"
+                  pill
+                  variant="link"
+                  class="add-component p-0"
+                  @click="addComponent(meal.meal_name, meal.timestamp)"
                 >
-                  <b-card-text align="center" class="card-components-text m-0 p-0">
-                    <p class="component-p">
-                      <b><a :href="'/info_prod?ean='+component.barcode">
-                        {{ component.product_name }}
-                      </a></b>
-                    </p>
-                    <p class="component-p">
-                      {{ component.quantity }} g
-                    </p>
-                    <p class="component-p">
-                      {{ component.energy_per_quantity }} kcal
-                    </p>
-                  </b-card-text>
+                  <img class="add mr-2" src="../../assets/buttons/plus.svg">
+                  {{ $t('add_component') }}
+                </b-button>
+                <div v-if="meal.components.length > 0">
+                  <div v-for="component in meal.components" v-bind:key="component.product_name">
+                    <b-card
+                      :img-src="component.image_url"
+                      img-alt="Card image" img-left
+                      class="card-components mb-3"
+                    >
+                      <b-card-text align="center" class="card-components-text m-0 p-0">
+                        <p class="component-p">
+                          <b><a :href="'/info_prod?ean='+component.barcode">
+                            {{ component.product_name }}
+                          </a></b>
+                        </p>
+                        <p class="component-p">
+                          {{ component.quantity }} g
+                        </p>
+                        <p class="component-p">
+                          {{ component.energy_per_quantity }} kcal
+                        </p>
+                      </b-card-text>
+                      <b-button
+                        v-if="!meal.is_closed"
+                        pill
+                        variant="link"
+                        class="p-0"
+                        @click="removeComponent(component.barcode, meal.meal_name)"
+                      ><img class="remove" src="../../assets/buttons/remove.svg">
+                      </b-button>
+                      <b-img v-if="component.nutrition_score"
+                        :src='getNutriScoreImage(component.nutrition_score)'
+                        alt="Nutri score image">
+                      </b-img>
+                    </b-card>
+                  </div>
+                  <b-button
+                    variant="info"
+                    @click="calculateMeal(meal.meal_name, meal.timestamp)"
+                  >
+                    {{ $t('calculate_meal') }}
+                  </b-button>
                   <b-button
                     v-if="!meal.is_closed"
-                    pill
-                    variant="link"
-                    class="p-0"
-                    @click="removeComponent(component.barcode, meal.meal_name)"
-                  ><img class="remove" src="../../assets/buttons/remove.svg">
+                    variant="info"
+                    @click="completeMeal(meal)"
+                  >
+                    {{ $t('complete_meal') }}
                   </b-button>
-                  <b-img v-if="component.nutrition_score"
-                    :src='getNutriScoreImage(component.nutrition_score)'
-                    alt="Nutri score image">
-                  </b-img>
-                </b-card>
-              </div>
-              <b-button
-                variant="info"
-                @click="calculateMeal(meal.meal_name, meal.timestamp)"
-              >
-                {{ $t('calculate_meal') }}
-              </b-button>
-              <b-button
-                v-if="!meal.is_closed"
-                variant="info"
-                @click="completeMeal(meal)"
-              >
-                {{ $t('complete_meal') }}
-              </b-button>
-            </div>
-          </b-card-body>
-        </b-collapse>
-      </b-card>
-    </div>
-    <div v-else>
-      <p>{{ $t(this.noMeals) }}</p>
-    </div>
-    <b-modal id="modal-error" :title="$t('error_meals')" hide-footer>
-      <div class="d-block text-center">
-        <img src="https://img.icons8.com/color/48/000000/restriction-shield.png">
-        {{ $t(this.modalErrorMsg) }}
-      </div>
-    </b-modal>
-    <b-modal ref="modal-save" :title="$t('complete_meal')" hide-footer>
-      <div class="p-0 text-center">
-        {{ $t('save_meal') }}
-      </div>
-      <footer class="modal-footer p-0">
-        <b-button variant="secondary" @click="hideModal">
-          {{$t('no')}}
-        </b-button>
-        <b-button variant="primary" @click="saveMeal()">
-          {{$t('yes')}}
-        </b-button>
-      </footer>
-    </b-modal>
-    <div class="chart-box">
-      <div id="chart-bar">
-        <apexchart
-          type="bar"
-          height="400"
-          :options="chartOptions"
-          :series="series">
-        </apexchart>
-      </div>
-    </div>
+                </div>
+              </b-card-body>
+            </b-collapse>
+          </b-card>
+        </div>
+        <div v-else>
+          <p>{{ $t(this.noMeals) }}</p>
+        </div>
+        <b-modal id="modal-error" :title="$t('error_meals')" hide-footer>
+          <div class="d-block text-center">
+            <img src="https://img.icons8.com/color/48/000000/restriction-shield.png">
+            {{ $t(this.modalErrorMsg) }}
+          </div>
+        </b-modal>
+        <b-modal ref="modal-save" :title="$t('complete_meal')" hide-footer>
+          <div class="p-0 text-center">
+            {{ $t('save_meal') }}
+          </div>
+          <footer class="modal-footer p-0">
+            <b-button variant="secondary" @click="hideModal">
+              {{$t('no')}}
+            </b-button>
+            <b-button variant="primary" @click="saveMeal()">
+              {{$t('yes')}}
+            </b-button>
+          </footer>
+        </b-modal>
+      </b-tab>
+      <b-tab title="Graph">
+        <div class="chart-box">
+          <div id="chart-bar">
+            <apexchart
+              type="bar"
+              height="400"
+              :options="chartOptions"
+              :series="series">
+            </apexchart>
+          </div>
+        </div>
+      </b-tab>
+    </b-tabs>
     <addProduct ref="addProduct"></addProduct>
   </div>
 </template>
