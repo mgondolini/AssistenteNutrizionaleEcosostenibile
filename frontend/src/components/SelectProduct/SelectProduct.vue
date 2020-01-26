@@ -40,9 +40,6 @@
 </template>
 
 <script>
-// import Quagga from 'quagga';
-// import EventBus from '../../main';
-
 const axios = require('axios');
 
 const offApiPath = 'https://world.openfoodfacts.org/api/v0/product/';
@@ -129,10 +126,8 @@ export default {
             this.productNotFound();
             return;
           }
-
           const { product } = response.data;
           localStorage.setItem('product', JSON.stringify(product));
-
           this.gotoProductInfo();
         }).catch((error) => {
           console.log(error);

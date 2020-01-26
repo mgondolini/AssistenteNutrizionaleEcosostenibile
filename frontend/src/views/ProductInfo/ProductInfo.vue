@@ -110,9 +110,9 @@
 
 <script>
 const productIDTest = '737628064502';
-
 const imagesExt = '.svg';
 const imagesContext = require.context('@/assets/productInfo/', true, /\.svg$/);
+const calToJ = 4.184;
 
 // TODO add function to format numbers (trim decimals and add dots for thousands)
 
@@ -208,84 +208,89 @@ export default {
       this.loadProductInfo();
     },
     loadProductInfo() {
-      {
-        // Get productInfos from localStorage
-        const product = JSON.parse(localStorage.getItem('product'));
+      // Get productInfos from localStorage
+      const product = JSON.parse(localStorage.getItem('product'));
 
-        // PRODUCT CARD
-        this.imgPath = product.image_thumb_url.replace('100.jpg', 'full.jpg');
-        this.productName = product.product_name;
-        // Alternatively in response.data.brands
-        // Absurd way to access brands_tags[0]
-        [this.productVendor] = product.brands_tags;
-        this.productPortion = product.product_quantity;
+      // PRODUCT CARD
+      this.imgPath = product.image_thumb_url.replace('100.jpg', 'full.jpg');
+      this.productName = product.product_name;
+      // Alternatively in response.data.brands
+      // Absurd way to access brands_tags[0]
+      [this.productVendor] = product.brands_tags;
+      this.productPortion = product.product_quantity;
 
-        // NUTRITION TAB
-        this.nutriScore = product.nutriscore_grade;
-        this.nutriScoreImgPath = imagesContext(`./nutriScore/${this.nutriScore}${imagesExt}`);
+      // NUTRITION TAB
+      this.nutriScore = product.nutriscore_grade;
+      this.nutriScoreImgPath = imagesContext(`./nutriScore/${this.nutriScore}${imagesExt}`);
 
-        // nutritional levels
-        this.fatLvl = product.nutrient_levels.fat;
-        this.satFatLvl = product.nutrient_levels['saturated-fat'];
-        this.sugarLvl = product.nutrient_levels.sugars;
-        this.saltLvl = product.nutrient_levels.salt;
+      // nutritional levels
+      this.fatLvl = product.nutrient_levels.fat;
+      this.satFatLvl = product.nutrient_levels['saturated-fat'];
+      this.sugarLvl = product.nutrient_levels.sugars;
+      this.saltLvl = product.nutrient_levels.salt;
 
-        // nutritional values
-        this.fat = product.nutriments.fat_100g || 0;
-        this.saturatedFat = product.nutriments['saturated-fat_100g'] || 0;
-        this.sugar = product.nutriments.sugars_100g || 0;
-        this.salt = product.nutriments.salt_100g || 0;
+      // nutritional values
+      this.fat = product.nutriments.fat_100g || 0;
+      this.saturatedFat = product.nutriments['saturated-fat_100g'] || 0;
+      this.sugar = product.nutriments.sugars_100g || 0;
+      this.salt = product.nutriments.salt_100g || 0;
 
-        this.energyKj = product.nutriments['energy-kj_100g'] || 0;
-        this.energyKcal = product.nutriments['energy-kcal_100g'] || 0;
-        this.carbohydrates = product.nutriments.carbohydrates_100g || 0;
-        this.proteins = product.nutriments.proteins_100g || 0;
-        this.sodium = product.nutriments.sodium_100g || 0;
-        this.fiber = product.nutriments.fiber_100g || 0;
+      // original values, replaced by the precalculated ones in selectProduct
+      // this.energyKj = product.nutriments['energy-kj_100g'] || 0;
+      // this.energyKcal = product.nutriments['energy-kcal_100g'] || 0;
 
-        const fatUnit = product.nutriments.fat_unit || '';
-        const saturatedFatUnit = product.nutriments['saturated-fat_unit'] || '';
-        const sugarUnit = product.nutriments.sugars_unit || '';
-        const saltUnit = product.nutriments.salt_unit || '';
-        const energyKjUnit = product.nutriments['energy-kj_unit'] || '';
-        const energyKcalUnit = product.nutriments['energy-kcal_unit'] || '';
-        const carbohydratesUnit = product.nutriments.carbohydrates_unit || '';
-        const proteinsUnit = product.nutriments.proteins_unit || '';
-        const sodiumUnit = product.nutriments.sodium_unit || '';
-        const fiberUnit = product.nutriments.fiber_unit || '';
+      const energyKj100g = product.nutriments.energy || 0;
 
-        this.nutritionTableItems.push({ nutriFact: 'energyKj', for100g: this.energyKj, unit: energyKjUnit });
-        this.nutritionTableItems.push({ nutriFact: 'energyKcal', for100g: this.energyKcal, unit: energyKcalUnit });
-        this.nutritionTableItems.push({ nutriFact: 'fat', for100g: this.fat, unit: fatUnit });
-        this.nutritionTableItems.push({ nutriFact: 'saturatedFat', for100g: this.saturatedFat, unit: saturatedFatUnit });
-        this.nutritionTableItems.push({ nutriFact: 'carbohydrates', for100g: this.carbohydrates, unit: carbohydratesUnit });
-        this.nutritionTableItems.push({ nutriFact: 'sugar', for100g: this.sugar, unit: sugarUnit });
-        this.nutritionTableItems.push({ nutriFact: 'salt', for100g: this.salt, unit: saltUnit });
-        this.nutritionTableItems.push({ nutriFact: 'sodium', for100g: this.sodium, unit: sodiumUnit });
-        this.nutritionTableItems.push({ nutriFact: 'proteins', for100g: this.proteins, unit: proteinsUnit });
-        this.nutritionTableItems.push({ nutriFact: 'fiber', for100g: this.fiber, unit: fiberUnit });
+      this.energyKj = energyKj100g;
+      this.energyKcal = energyKj100g / calToJ;
 
-        this.fatLvlImgPath = imagesContext(`./nutrientLevels/${this.fatLvl}${imagesExt}`);
-        this.satFatLvlImgPath = imagesContext(`./nutrientLevels/${this.satFatLvl}${imagesExt}`);
-        this.sugarLvlImgPath = imagesContext(`./nutrientLevels/${this.sugarLvl}${imagesExt}`);
-        this.saltLvlImgPath = imagesContext(`./nutrientLevels/${this.saltLvl}${imagesExt}`);
+      this.carbohydrates = product.nutriments.carbohydrates_100g || 0;
+      this.proteins = product.nutriments.proteins_100g || 0;
+      this.sodium = product.nutriments.sodium_100g || 0;
+      this.fiber = product.nutriments.fiber_100g || 0;
 
-        // INGREDIENTS TAB
-        const novaGroup = product.nova_group;
-        // TODO use placeholder if nova score is missing
-        this.novaGroupImgPath = novaGroup ? imagesContext(`./novaGroup/${novaGroup}${imagesExt}`) : '';
+      const fatUnit = product.nutriments.fat_unit || '';
+      const saturatedFatUnit = product.nutriments['saturated-fat_unit'] || '';
+      const sugarUnit = product.nutriments.sugars_unit || '';
+      const saltUnit = product.nutriments.salt_unit || '';
+      const energyKjUnit = product.nutriments['energy-kj_unit'] || '';
+      const energyKcalUnit = product.nutriments['energy-kcal_unit'] || '';
+      const carbohydratesUnit = product.nutriments.carbohydrates_unit || '';
+      const proteinsUnit = product.nutriments.proteins_unit || '';
+      const sodiumUnit = product.nutriments.sodium_unit || '';
+      const fiberUnit = product.nutriments.fiber_unit || '';
 
-        const { ingredients } = product;
-        const ingredientsTexts = [];
+      this.nutritionTableItems.push({ nutriFact: 'energyKj', for100g: this.energyKj, unit: energyKjUnit });
+      this.nutritionTableItems.push({ nutriFact: 'energyKcal', for100g: this.energyKcal, unit: energyKcalUnit });
+      this.nutritionTableItems.push({ nutriFact: 'fat', for100g: this.fat, unit: fatUnit });
+      this.nutritionTableItems.push({ nutriFact: 'saturatedFat', for100g: this.saturatedFat, unit: saturatedFatUnit });
+      this.nutritionTableItems.push({ nutriFact: 'carbohydrates', for100g: this.carbohydrates, unit: carbohydratesUnit });
+      this.nutritionTableItems.push({ nutriFact: 'sugar', for100g: this.sugar, unit: sugarUnit });
+      this.nutritionTableItems.push({ nutriFact: 'salt', for100g: this.salt, unit: saltUnit });
+      this.nutritionTableItems.push({ nutriFact: 'sodium', for100g: this.sodium, unit: sodiumUnit });
+      this.nutritionTableItems.push({ nutriFact: 'proteins', for100g: this.proteins, unit: proteinsUnit });
+      this.nutritionTableItems.push({ nutriFact: 'fiber', for100g: this.fiber, unit: fiberUnit });
 
-        Object.values(ingredients).forEach((i) => {
-          if (!Object.prototype.hasOwnProperty.call(i, 'has_sub_ingredients')) {
-            // console.log(i.text.toLowerCase());
-            ingredientsTexts.push(i.text.toLowerCase());
-          }
-        });
-        this.ingredientsText = ingredientsTexts.join(', ');
-      }
+      this.fatLvlImgPath = imagesContext(`./nutrientLevels/${this.fatLvl}${imagesExt}`);
+      this.satFatLvlImgPath = imagesContext(`./nutrientLevels/${this.satFatLvl}${imagesExt}`);
+      this.sugarLvlImgPath = imagesContext(`./nutrientLevels/${this.sugarLvl}${imagesExt}`);
+      this.saltLvlImgPath = imagesContext(`./nutrientLevels/${this.saltLvl}${imagesExt}`);
+
+      // INGREDIENTS TAB
+      const novaGroup = product.nova_group;
+      // TODO use placeholder if nova score is missing
+      this.novaGroupImgPath = novaGroup ? imagesContext(`./novaGroup/${novaGroup}${imagesExt}`) : '';
+
+      const { ingredients } = product;
+      const ingredientsTexts = [];
+
+      Object.values(ingredients).forEach((i) => {
+        if (!Object.prototype.hasOwnProperty.call(i, 'has_sub_ingredients')) {
+          // console.log(i.text.toLowerCase());
+          ingredientsTexts.push(i.text.toLowerCase());
+        }
+      });
+      this.ingredientsText = ingredientsTexts.join(', ');
     },
     productNotFound() {
       this.$bvModal.show('modal-product-not-found');
