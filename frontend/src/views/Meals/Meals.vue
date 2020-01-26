@@ -303,7 +303,7 @@ export default {
     },
     addComponent(mealName, timestamp) {
       console.log(mealName + timestamp);
-      // EventBus.$emit('openProductSelection', mealName, timestamp);
+      this.$root.$emit('openProductSelection', mealName, timestamp);
     },
     removeComponent(barcode, mealName) {
       const params = {

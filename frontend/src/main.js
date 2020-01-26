@@ -17,9 +17,6 @@ Vue.use(VueCarousel);
 Vue.use(BootstrapVue);
 Vue.use(Vuex);
 
-const EventBus = new Vue();
-export default EventBus;
-
 const store = new Vuex.Store({
   state: {
     isLogged: false,

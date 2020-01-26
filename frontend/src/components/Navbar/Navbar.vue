@@ -44,7 +44,6 @@
 </template>
 
 <script>
-import EventBus from '../../main';
 // const localeFlagsPath = '@/assets/flags/';
 const localeFlagsExt = '.svg';
 // If localeFlagsPath is passed instead of hardcoded path the function no longer works
@@ -74,7 +73,7 @@ export default {
       }
     },
     productInfo() {
-      EventBus.$emit('openProductSelection');
+      this.$root.$emit('openProductSelection');
     },
   },
 };

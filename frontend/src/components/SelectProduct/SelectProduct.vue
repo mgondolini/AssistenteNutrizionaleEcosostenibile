@@ -41,7 +41,7 @@
 
 <script>
 // import Quagga from 'quagga';
-import EventBus from '../../main';
+// import EventBus from '../../main';
 
 const axios = require('axios');
 
@@ -78,9 +78,7 @@ export default {
     };
   },
   created() {
-    console.log('CREATED SELPROD');
-    console.log(EventBus);
-    EventBus.$on('openProductSelection', (mealName, timestamp) => {
+    this.$root.$on('openProductSelection', (mealName, timestamp) => {
       this.mealName = mealName;
       this.mealDate = timestamp;
       console.log(`${this.mealName} ${this.mealDate}`);
