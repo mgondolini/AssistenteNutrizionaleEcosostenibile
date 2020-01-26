@@ -147,9 +147,9 @@
       <div id="chart-bar">
         <apexchart
           type="bar"
-          height="160"
-          :options="chartOptionsBar"
-          :series="seriesBar">
+          height="400"
+          :options="chartOptions"
+          :series="series">
         </apexchart>
       </div>
     </div>
@@ -217,50 +217,66 @@ export default {
       // Graph data
       dailyRequirement: Object,
       todayValues: [],
+      todayKeys: [],
 
 
       // Graph
-      seriesBar: [{
-        name: 'daily requirement',
-        data: [],
-      }],
-      chartOptionsBar: {
+      series: [
+        {
+          name: '',
+          data: [],
+        },
+      ],
+
+      chartOptions: {
         chart: {
-          height: 200,
           type: 'bar',
+          height: 500,
+        },
+        plotOptions: {
+          bar: {
+            colors: {
+              ranges: [
+                {
+                  from: -100,
+                  to: -75,
+                  color: '#F15B46', // rosso
+                },
+                {
+                  from: -75,
+                  to: -10,
+                  color: '#FEB019', // arancio
+                },
+                {
+                  from: -10,
+                  to: 10,
+                  color: '#679c4d', // verde
+                },
+                {
+                  from: 10,
+                  to: 25,
+                  color: '#FEB019', // arancio
+                },
+                {
+                  from: 25,
+                  to: 500,
+                  color: '#F15B46', // rosso
+                },
+              ],
+            },
+            columnWidth: '80%',
+          },
         },
         dataLabels: {
           enabled: false,
         },
-        plotOptions: {
-          bar: {
-            columnWidth: '80%',
-            colors: {
-              ranges: [{
-                from: -100,
-                to: 0,
-                color: '#F15B46',
-              }, {
-                from: 0,
-                to: 100,
-                color: '#FEB019',
-              }],
-
-            },
+        yaxis: {
+          title: {
+            text: 'Daily Requirement',
           },
-        },
-        stroke: {
-          width: 1,
         },
         xaxis: {
-          axisBorder: {
-            offsetX: 13,
-          },
-        },
-        yaxis: {
-          labels: {
-            show: false,
-          },
+          categories: ['calories', 'protein', 'carbohydrate', 'fiber', 'total_fat', 'saturated_fat', 'calcium', 'sodium'],
         },
       },
     };
@@ -430,7 +446,7 @@ export default {
         mealDate = new Date(meal.timestamp);
         if (this.checkDates(mealDate, date)) {
           // Sum of the nutrition values of the meals on a date
-          // this.todayNutritionValues.calories += meal.calories_tot;
+          this.todayNutritionValues.calories += meal.calories_tot;
           this.todayNutritionValues.carbohydrate += meal.carbohydrates_tot;
           this.todayNutritionValues.protein += meal.protein_tot;
           this.todayNutritionValues.fiber += meal.fiber_tot;
@@ -444,8 +460,9 @@ export default {
       let dailyRequirementValues = Object.values(this.dailyRequirement);
       dailyRequirementValues = dailyRequirementValues.splice(3, 10);
 
-      const todayKeys = Object.keys(this.todayNutritionValues);
-      console.log(todayKeys);
+      this.todayKeys = Object.keys(this.todayNutritionValues);
+      console.log('todayKeys');
+      console.log(this.todayKeys);
 
       let todayValues = Object.values(this.todayNutritionValues);
       todayValues = todayValues
@@ -455,15 +472,9 @@ export default {
       console.log('todayValues mapped');
       console.log(todayValues);
 
-      const tmp = [];
-
-      todayKeys.forEach((key) => {
-        tmp.push({ name: key, data: todayValues });
-      });
-      console.log(tmp);
-
-      // this.seriesBar.data = todayValues;
-      // // console.log(this.seriesBar.data);
+      this.series[0].data = todayValues;
+      this.chartOptions.xaxis.categories = this.todayKeys;
+      console.log(`categories ${this.chartOptions.xaxis.categories}`);
     },
     getDailyNutritionRatio(value, dailyRequirement) {
       return (value / dailyRequirement) * 100;
@@ -471,7 +482,6 @@ export default {
   },
   mounted() {
     this.loadMealsList();
-    this.getGraphData();
   },
 };
 </script>
