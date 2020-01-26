@@ -100,7 +100,7 @@
           </span>
         </b-tab>
       </b-tabs>
-      <b-button v-on:click="inputMode = 'SELECT'">Scan another product</b-button>
+      <b-button v-on:click="scanAnother()">Scan another product</b-button>
       <b-button v-if="mealName && mealDate"
                 v-on:click="insertProductInMeal()">
         Add product to "{{mealName}}"</b-button>
@@ -353,6 +353,9 @@ export default {
           console.log('Failed to create product');
           console.log(error);
         });
+    },
+    scanAnother() {
+      this.$root.$emit('openProductSelection', this.mealName, this.mealDate);
     },
   },
 };
