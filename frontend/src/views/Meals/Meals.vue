@@ -302,8 +302,8 @@ export default {
         .catch(error => this.checkError(error.response.data.description));
     },
     addComponent(mealName, timestamp) {
-      // TODO do via event-bus
-      this.$refs.selectProduct.openModal(mealName, timestamp);
+      console.log(mealName + timestamp);
+      // EventBus.$emit('openProductSelection', mealName, timestamp);
     },
     removeComponent(barcode, mealName) {
       const params = {

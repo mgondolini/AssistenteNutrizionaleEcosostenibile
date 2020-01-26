@@ -41,6 +41,8 @@
 
 <script>
 // import Quagga from 'quagga';
+import EventBus from '../../main';
+
 const axios = require('axios');
 
 const offApiPath = 'https://world.openfoodfacts.org/api/v0/product/';
@@ -75,10 +77,21 @@ export default {
       ],
     };
   },
-  methods: {
-    openModal(mealName, timestamp) {
+  created() {
+    console.log('CREATED SELPROD');
+    console.log(EventBus);
+    EventBus.$on('openProductSelection', (mealName, timestamp) => {
       this.mealName = mealName;
       this.mealDate = timestamp;
+      console.log(`${this.mealName} ${this.mealDate}`);
+      this.openModal();
+    });
+  },
+  mounted() {
+    localStorage.removeItem('product');
+  },
+  methods: {
+    openModal() {
       this.$bvModal.show('modal-selectProduct');
     },
     gotoProductInfo() {
@@ -139,9 +152,6 @@ export default {
         centered: true,
       });
     },
-  },
-  mounted() {
-    localStorage.removeItem('product');
   },
 };
 </script>
