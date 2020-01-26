@@ -302,7 +302,6 @@ export default {
         .catch(error => this.checkError(error.response.data.description));
     },
     addComponent(mealName, timestamp) {
-      console.log(mealName + timestamp);
       this.$root.$emit('openProductSelection', mealName, timestamp);
     },
     removeComponent(barcode, mealName) {

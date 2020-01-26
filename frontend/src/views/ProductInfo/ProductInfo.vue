@@ -190,20 +190,23 @@ export default {
     };
   },
   created() {
-    this.mealName = this.$route.query.mealName || '';
-    this.mealDate = this.$route.query.date || '';
-    this.ean = this.$route.query.ean || '';
-    console.log(`Mounted ProductInfo. EAN: ${this.ean} Meal: ${this.mealName} Date: ${this.mealDate}`);
-    // this.submitEan();
-    const product = JSON.parse(localStorage.getItem('product'));
-    console.log(product);
-    this.loadProductInfo();
+    this.initializeContent();
   },
-  beforeMount() {
-  },
-  mounted() {
+  beforeRouteUpdate() {
+    console.log('Router update');
+    this.initializeContent();
   },
   methods: {
+    initializeContent() {
+      this.mealName = this.$route.query.mealName || '';
+      this.mealDate = this.$route.query.date || '';
+      this.ean = this.$route.query.ean || '';
+      console.log(`Initialized ProductInfo. EAN: ${this.ean} Meal: ${this.mealName} Date: ${this.mealDate}`);
+      // this.submitEan();
+      const product = JSON.parse(localStorage.getItem('product'));
+      console.log(product);
+      this.loadProductInfo();
+    },
     loadProductInfo() {
       {
         // Get productInfos from localStorage
