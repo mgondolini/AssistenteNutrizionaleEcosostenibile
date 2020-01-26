@@ -40,12 +40,10 @@
           </b-navbar-nav>
         </b-collapse>
       </b-navbar>
-      <selectProduct ref="selectProduct"></selectProduct>
     </div>
 </template>
 
 <script>
-import selectProduct from '../SelectProduct/SelectProduct.vue';
 // const localeFlagsPath = '@/assets/flags/';
 const localeFlagsExt = '.svg';
 // If localeFlagsPath is passed instead of hardcoded path the function no longer works
@@ -58,9 +56,6 @@ export default {
       navhome: 'Eco-assistant',
       langs: ['en', 'it'],
     };
-  },
-  components: {
-    selectProduct,
   },
   computed: {
     getUsername() {
@@ -78,7 +73,10 @@ export default {
       }
     },
     productInfo() {
-      this.$refs.selectProduct.openModal('', '');
+      console.log(this.$root);
+      console.log(this.$root.$components);
+      console.log(this.$root.$data);
+      this.selectProduct.openModal('', '');
     },
   },
 };
