@@ -152,7 +152,6 @@
         </apexchart>
       </div>
     </div>
-    <selectProduct ref="selectProduct"></selectProduct>
   </div>
 </template>
 
@@ -160,7 +159,6 @@
 import Vue from 'vue';
 import datePicker from 'vue-bootstrap-datetimepicker';
 import VueApexCharts from 'vue-apexcharts';
-import selectProduct from '../../components/SelectProduct/SelectProduct.vue';
 
 Vue.use(VueApexCharts);
 
@@ -249,7 +247,6 @@ export default {
   components: {
     datePicker,
     apexchart: VueApexCharts,
-    selectProduct,
   },
   methods: {
     loadMealsList() {
@@ -305,9 +302,7 @@ export default {
         .catch(error => this.checkError(error.response.data.description));
     },
     addComponent(mealName, timestamp) {
-      // Passo meal name, per accedere alla query dalla pagina info prodotto
-      // devo fare: this.$route.query.mealName
-      // this.$router.push({ path: '/info_prod', query: { mealName, date: timestamp } });
+      // TODO do via event-bus
       this.$refs.selectProduct.openModal(mealName, timestamp);
     },
     removeComponent(barcode, mealName) {

@@ -76,6 +76,7 @@ export default {
       console.log(this.$root);
       console.log(this.$root.$components);
       console.log(this.$root.$data);
+      // TODO do via event-bus
       this.selectProduct.openModal('', '');
     },
   },
