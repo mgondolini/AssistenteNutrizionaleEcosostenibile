@@ -311,11 +311,10 @@ export default {
       this.inputMode = 'SELECT';
     },
     insertProductInMeal() {
-      // console.log(this.$route.query);
-      console.log(`${this.mealName} ${this.mealDate}`);
+      console.log(`${this.ean} ${this.productName} ${this.mealName} ${this.mealDate}`);
       // Creation of the new product
       const body = {
-        code: this.ean,
+        code: Number(this.ean),
         product_name: this.productName,
         image_url: this.imgPath,
         quantity: '',
@@ -349,7 +348,7 @@ export default {
             mealName: this.mealName,
             components: {
               barcode: Number(this.ean),
-              quantity: this.qty,
+              quantity: Number(this.qty),
             },
             timestamp: this.mealDate,
           };
