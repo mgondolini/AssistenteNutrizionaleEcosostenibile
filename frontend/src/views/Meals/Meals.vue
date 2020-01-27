@@ -278,7 +278,17 @@ export default {
         },
         yaxis: {
           title: {
-            text: 'Daily Requirement',
+            text: 'Daily Value % Overrun',
+          },
+          labels: {
+            formatter(y) {
+              let label = 0;
+              if (y < 0) {
+                if (y === -100) label = `${0}%`;
+                else label = `${(y).toFixed(0)}%`;
+              } else label = `+${(y).toFixed(0)}%`;
+              return label;
+            },
           },
         },
         xaxis: {
@@ -439,19 +449,19 @@ export default {
         .then((response) => {
           this.dailyRequirement = response.data.daily_requirement;
           console.log('Daily Requirement'); // DEBUG
-          console.log(this.dailyRequirement);
+          console.log(this.dailyRequirement); // DEBUG
           this.getDayNutritionFact(this.currentDate);
         })
         .catch(error => this.checkError(error.response.data.description));
     },
     getDayNutritionFact(date) {
-      console.log('Get nutrition fact');
+      console.log('Get nutrition fact'); // DEBUG
       let mealDate;
 
       this.mealsList.forEach((meal) => {
         mealDate = new Date(meal.timestamp);
         if (this.checkDates(mealDate, date)) {
-          // Sum of the nutrition values of the meals on a date
+          // Sum the nutrition values of the meals eaten on a certain date
           this.todayNutritionValues.calories += meal.calories_tot;
           this.todayNutritionValues.carbohydrate += meal.carbohydrates_tot;
           this.todayNutritionValues.protein += meal.protein_tot;
@@ -470,17 +480,15 @@ export default {
       console.log('todayKeys');
       console.log(this.todayKeys);
 
-      let todayValues = Object.values(this.todayNutritionValues);
-      todayValues = todayValues
+      this.todayValues = Object.values(this.todayNutritionValues);
+      this.todayValues = this.todayValues
         .map((val, i) => this.getDailyNutritionRatio(val, dailyRequirementValues[i]))
         .map(val => (val - 100).toFixed(2));
 
       console.log('todayValues mapped');
-      console.log(todayValues);
+      console.log(this.todayValues);
 
-      this.series[0].data = todayValues;
-      this.chartOptions.xaxis.categories = this.todayKeys;
-      console.log(`categories ${this.chartOptions.xaxis.categories}`);
+      this.series[0].data = this.todayValues;
     },
     getDailyNutritionRatio(value, dailyRequirement) {
       return (value / dailyRequirement) * 100;
