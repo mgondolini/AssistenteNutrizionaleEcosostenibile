@@ -15,8 +15,10 @@
         class="meals-datepicker"
         @dp-change="setDateAndShow(calendar.value)"> </date-picker>
     </b-card>
+
     <b-tabs content-class="mt-3">
       <b-tab title="Meals" active>
+
         <b-card class="card-new-meal">
           <b-form-input
             id="input-new-meal"
@@ -32,24 +34,22 @@
             variant="link"
             class="button-add p-0"
             @click="addMeal(mealName)"
-          >
-          <img class="add-meal" src="../../assets/buttons/add.svg">
+          ><img class="add-meal" src="../../assets/buttons/add.svg">
           </b-button>
           <b-form-invalid-feedback id="input-live-feedback">
             {{ $t(inputCheckMessage) }}
           </b-form-invalid-feedback>
         </b-card>
+
         <div
           v-if="mealsListByDate.length > 0"
           class="card-last-meals"
           role="tablist"
-        >
-          <b-card
+        ><b-card
             no-body class="mb-1"
             v-for="(meal, index) in mealsListByDate.slice().reverse()"
             v-bind:key="index"
-          >
-            <b-card-header header-tag="header" class="p-0" role="tab">
+          ><b-card-header header-tag="header" class="p-0" role="tab">
               <b-button block href="#" v-b-toggle="'accordion-' + index" variant="info">
                 <p class="meal-name-p text-center m-0">{{ meal.meal_name }}</p>
                 <b-button
@@ -59,6 +59,7 @@
                 ><img class="trashcan" src="../../assets/buttons/trashcan.svg"></b-button>
               </b-button>
             </b-card-header>
+
             <b-collapse :id="'accordion-' + index" visible accordion="my-accordion" role="tabpanel">
               <b-card-body>
                 <b-button
@@ -67,8 +68,7 @@
                   variant="link"
                   class="add-component p-0"
                   @click="addComponent(meal.meal_name, meal.timestamp)"
-                >
-                  <img class="add mr-2" src="../../assets/buttons/plus.svg">
+                ><img class="add mr-2" src="../../assets/buttons/plus.svg">
                   {{ $t('add_component') }}
                 </b-button>
                 <div v-if="meal.components.length > 0">
@@ -77,8 +77,7 @@
                       :img-src="component.image_url"
                       img-alt="Card image" img-left
                       class="card-components mb-3"
-                    >
-                      <b-card-text align="center" class="card-components-text m-0 p-0">
+                    ><b-card-text align="center" class="card-components-text m-0 p-0">
                         <p class="component-p">
                           <b><a :href="'/info_prod?ean='+component.barcode">
                             {{ component.product_name }}
@@ -108,30 +107,31 @@
                   <b-button
                     variant="info"
                     @click="calculateMeal(meal.meal_name, meal.timestamp)"
-                  >
-                    {{ $t('calculate_meal') }}
+                  > {{ $t('calculate_meal') }}
                   </b-button>
                   <b-button
                     v-if="!meal.is_closed"
                     variant="info"
                     @click="completeMeal(meal)"
-                  >
-                    {{ $t('complete_meal') }}
+                  > {{ $t('complete_meal') }}
                   </b-button>
                 </div>
               </b-card-body>
             </b-collapse>
           </b-card>
         </div>
+
         <div v-else>
           <p>{{ $t(this.noMeals) }}</p>
         </div>
+
         <b-modal id="modal-error" :title="$t('error_meals')" hide-footer>
           <div class="d-block text-center">
             <img src="https://img.icons8.com/color/48/000000/restriction-shield.png">
             {{ $t(this.modalErrorMsg) }}
           </div>
         </b-modal>
+
         <b-modal ref="modal-save" :title="$t('complete_meal')" hide-footer>
           <div class="p-0 text-center">
             {{ $t('save_meal') }}
@@ -146,6 +146,7 @@
           </footer>
         </b-modal>
       </b-tab>
+
       <b-tab title="Graph">
         <div class="chart-box">
           <div id="chart-bar">
