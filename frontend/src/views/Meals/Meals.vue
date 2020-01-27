@@ -174,6 +174,10 @@ const imagesContext = require.context('@/assets/productInfo/', true, /\.svg$/);
 
 export default {
   name: 'meals',
+  components: {
+    datePicker,
+    apexchart: VueApexCharts,
+  },
   data() {
     return {
       // Meals
@@ -206,11 +210,11 @@ export default {
       },
 
       // Daily nutrition values
-      todayNutritionValues: {
-        // energy: 0,
-        calories: 0,
-        protein: 0,
+      nutritionFact: {
+        energy_kj: 0,
+        energy_kcal: 0,
         carbohydrate: 0,
+        protein: 0,
         fiber: 0,
         total_fat: 0,
         saturated_fat: 0,
@@ -220,8 +224,8 @@ export default {
 
       // Graph data
       dailyRequirement: Object,
-      todayValues: [],
-      todayKeys: [],
+      nutritionValues: [],
+      nutritionKeys: [],
 
 
       // Graph
@@ -263,12 +267,12 @@ export default {
                 },
                 {
                   from: 25,
-                  to: 500,
+                  to: 1000,
                   color: '#F15B46', // rosso
                 },
               ],
             },
-            columnWidth: '80%',
+            columnWidth: '50%',
           },
         },
         dataLabels: {
@@ -276,28 +280,36 @@ export default {
         },
         yaxis: {
           title: {
-            text: 'Daily Value % Overrun',
+            text: this.$i18n.t('overrun'),
           },
+          // min: -100,
+          // max: 100,
           labels: {
             formatter(y) {
               let label = 0;
               if (y < 0) {
-                if (y === -100) label = `${0}%`;
-                else label = `${(y).toFixed(0)}%`;
+                // if (y === -100) label = `${0}%`;
+                label = `${(y).toFixed(0)}%`;
               } else label = `+${(y).toFixed(0)}%`;
               return label;
             },
           },
         },
         xaxis: {
-          categories: ['calories', 'protein', 'carbohydrate', 'fiber', 'total_fat', 'saturated_fat', 'calcium', 'sodium'],
+          categories: [
+            this.$i18n.t('nutritionFact.energy_kj'),
+            this.$i18n.t('nutritionFact.energy_kcal'),
+            this.$i18n.t('nutritionFact.carbohydrates'),
+            this.$i18n.t('nutritionFact.proteins'),
+            this.$i18n.t('nutritionFact.fibers'),
+            this.$i18n.t('nutritionFact.total_fats'),
+            this.$i18n.t('nutritionFact.saturated_fats'),
+            this.$i18n.t('nutritionFact.calcium'),
+            this.$i18n.t('nutritionFact.sodium'),
+          ],
         },
       },
     };
-  },
-  components: {
-    datePicker,
-    apexchart: VueApexCharts,
   },
   methods: {
     loadMealsList() {
@@ -459,33 +471,34 @@ export default {
         mealDate = new Date(meal.timestamp);
         if (this.checkDates(mealDate, date)) {
           // Sum the nutrition values of the meals eaten on a certain date
-          this.todayNutritionValues.calories += meal.calories_tot;
-          this.todayNutritionValues.carbohydrate += meal.carbohydrates_tot;
-          this.todayNutritionValues.protein += meal.protein_tot;
-          this.todayNutritionValues.fiber += meal.fiber_tot;
-          this.todayNutritionValues.total_fat += meal.fat_tot;
-          this.todayNutritionValues.saturated_fat += meal.saturated_fat_tot;
-          this.todayNutritionValues.calcium += meal.calcium_tot;
-          this.todayNutritionValues.sodium += meal.sodium_tot;
+          this.nutritionFact.energy_kj += meal.energy_kj_tot;
+          this.nutritionFact.energy_kcal += meal.energy_kcal_tot;
+          this.nutritionFact.carbohydrate += meal.carbohydrates_tot;
+          this.nutritionFact.protein += meal.protein_tot;
+          this.nutritionFact.fiber += meal.fiber_tot;
+          this.nutritionFact.total_fat += meal.fat_tot;
+          this.nutritionFact.saturated_fat += meal.saturated_fat_tot;
+          this.nutritionFact.calcium += meal.calcium_tot;
+          this.nutritionFact.sodium += meal.sodium_tot;
         }
       });
 
       let dailyRequirementValues = Object.values(this.dailyRequirement);
       dailyRequirementValues = dailyRequirementValues.splice(3, 10);
 
-      this.todayKeys = Object.keys(this.todayNutritionValues);
-      console.log('todayKeys');
-      console.log(this.todayKeys);
+      this.nutritionKeys = Object.keys(this.nutritionFact);
+      console.log('nutritionKeys');
+      console.log(this.nutritionKeys);
 
-      this.todayValues = Object.values(this.todayNutritionValues);
-      this.todayValues = this.todayValues
+      this.nutritionValues = Object.values(this.nutritionFact);
+      this.nutritionValues = this.nutritionValues
         .map((val, i) => this.getDailyNutritionRatio(val, dailyRequirementValues[i]))
         .map(val => (val - 100).toFixed(2));
 
-      console.log('todayValues mapped');
-      console.log(this.todayValues);
+      console.log('nutritionValues mapped');
+      console.log(this.nutritionValues);
 
-      this.series[0].data = this.todayValues;
+      this.series[0].data = this.nutritionValues;
     },
     getDailyNutritionRatio(value, dailyRequirement) {
       return (value / dailyRequirement) * 100;
@@ -512,7 +525,19 @@ export default {
     "complete_meal": "Complete meal",
     "save_meal": "If you complete the meal you will not be able to edit it again.\nConfirm?",
     "yes": "Yes",
-    "no": "No"
+    "no": "No",
+    "overrun": "Overrun Daily Value %",
+    "nutritionFact": {
+      "energy_kj": "Energy_kj",
+      "energy_kcal" : "Energy_kcal",
+      "carbohydrates": "Carbohydrates",
+      "proteins": "Protein",
+      "fibers": "Fiber",
+      "total_fats": "Fats",
+      "saturated_fats": "Saturated_fats",
+      "calcium": "Calcium",
+      "sodium": "Sodium"
+    }
   },
   "it": {
     "meals": "I tuoi pasti",
@@ -526,7 +551,19 @@ export default {
     "complete_meal": "Completa il pasto",
     "save_meal": "Se completi il pasto non potrai più modificarlo\nConfermare?",
     "yes": "Si",
-    "no": "No"
+    "no": "No",
+    "overrun": "Superamento del fabbisogno giornaliero %",
+    "nutritionFact": {
+      "energy_kj": "Energia_kj",
+      "energy_kcal": "Energia_kcal",
+      "carbohydrates": "Carboidrati",
+      "proteins": "Proteine",
+      "fibers": "Fibre",
+      "total_fats": "Grassi",
+      "saturated_fats": "Grassi_saturi",
+      "calcium": "Calcio",
+      "sodium": "Sodio"
+    }
   }
 }
 </i18n>
