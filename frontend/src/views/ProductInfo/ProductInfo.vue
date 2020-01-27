@@ -138,6 +138,7 @@ export default {
       productBaseUnitMeasure: '',
       nutriScore: '',
       nutriScoreImgPath: '',
+      novaGroup: '',
       novaGroupImgPath: '',
 
       fatLvl: '',
@@ -291,9 +292,9 @@ export default {
       this.saltLvlImgPath = imagesContext(`./nutrientLevels/${this.saltLvl}${imagesExt}`);
 
       // INGREDIENTS TAB
-      const novaGroup = product.nova_group;
+      this.novaGroup = product.nova_group;
       // TODO use placeholder if nova score is missing
-      this.novaGroupImgPath = novaGroup ? imagesContext(`./novaGroup/${novaGroup}${imagesExt}`) : '';
+      this.novaGroupImgPath = this.novaGroup ? imagesContext(`./novaGroup/${this.novaGroup}${imagesExt}`) : '';
 
       const { ingredients } = product;
       const ingredientsTexts = [];
@@ -317,26 +318,31 @@ export default {
         code: Number(this.ean),
         product_name: this.productName,
         image_url: this.imgPath,
-        quantity: '',
+        quantity: Number(this.productPortion),
         brands: this.productVendor,
         ingredients_text: this.ingredientsText,
         traces: '',
-        serving_size: this.productPortion,
+        origin: '',
+        packaging: '',
+        serving_size: Number(this.productPortion),
         allergens: '',
-        energy_100g: this.energyKcal,
-        carbohydrates_100g: this.carbohydrates,
-        sugars_100g: this.sugar,
-        fat_100g: this.fat,
-        saturated_fat_100g: this.saturatedFat,
-        proteins_100g: this.proteins,
-        fiber_100g: this.fiber,
-        salt_100g: this.salt,
-        sodium_100g: this.sodium,
-        alcohol_100g: 0,
-        calcium_100g: 0,
+        energy_kj_100g: Number(this.energyKj),
+        energy_kcal_100g: Number(this.energyKcal),
+        carbohydrates_100g: Number(this.carbohydrates),
+        sugars_100g: Number(this.sugar),
+        fat_100g: Number(this.fat),
+        saturated_fat_100g: Number(this.saturatedFat),
+        proteins_100g: Number(this.proteins),
+        fiber_100g: Number(this.fiber),
+        salt_100g: Number(this.salt),
+        sodium_100g: Number(this.sodium),
+        alcohol_100g: Number(0),
+        calcium_100g: Number(0),
         nutrition_score_uk_100g: this.nutriScore,
+        nova_group: this.nova_group,
         carbon_footprint_100g: 0,
         water_footprint_100g: 0,
+        measure_unit: this.productBaseUnitMeasure,
       };
       this.$store.state.http.post('api/product', body)
         .then((response) => {
