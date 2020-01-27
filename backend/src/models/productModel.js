@@ -12,11 +12,10 @@ const ProductSchema = new Schema({
   traces: String,
   origin: String, // new
   packaging: String, // new
-  nutri_score: String, // new
-  nova_score: String, // new
   serving_size: Number,
   allergens: String,
-  energy_100g: Number,
+  energy_kj_100g: Number,
+  energy_kcal_100g: Number, // new
   carbohydrates_100g: Number,
   sugars_100g: Number,
   fat_100g: Number,
@@ -28,6 +27,7 @@ const ProductSchema = new Schema({
   alcohol_100g: Number,
   calcium_100g: Number,
   nutrition_score_uk_100g: String,
+  nova_group: String, // new
   carbon_footprint_100g: Number,
   water_footprint_100g: Number,
   measure_unit: String, // new
