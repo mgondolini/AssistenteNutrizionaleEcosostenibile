@@ -9,7 +9,7 @@
           </template>
           <p>{{ productName }}</p>
           <p>{{ productVendor }}</p>
-          <p>{{ productPortion }} g</p>
+          <p>{{ productQuantityDisplay }}</p>
         </b-media>
       </b-card>
       <b-tabs content-class="mt-3" justified>
@@ -84,7 +84,7 @@
               TODO PARSE INT AND TRIM
                -->
               <template v-slot:head(value)="data">
-                Per {{ qty }} g
+                Per {{ qty }} {{ productBaseUnitMeasure }}
               </template>
               <!-- A virtual column for computing the quantity
               according to the portion inserted by the user -->
@@ -133,6 +133,9 @@ export default {
       productName: '',
       productVendor: '',
       productPortion: '',
+      productQuantityDisplay: '',
+      productUnitMeasure: '',
+      productBaseUnitMeasure: '',
       nutriScore: '',
       nutriScoreImgPath: '',
       novaGroupImgPath: '',
@@ -178,15 +181,6 @@ export default {
       aspectRatio: { min: 1, max: 2 },
       detecteds: [],
 
-      eanOptions: [
-        { value: '737628064502', text: 'Noodles' },
-        { value: '20969578', text: 'Sbrisolona' },
-        { value: '8001300240785', text: 'Tonno' },
-        { value: '5411188110835', text: 'Latte' },
-        { value: '4104420208629', text: 'Spaghetti' },
-        { value: '3560070240258', text: 'Chips' },
-        { value: '8001300500773', text: 'Lievito' },
-      ],
     };
   },
   created() {
@@ -218,6 +212,25 @@ export default {
       // Absurd way to access brands_tags[0]
       [this.productVendor] = product.brands_tags;
       this.productPortion = product.product_quantity;
+      // The table automatically displays nutritional values for the whole qantity of the package
+      // this.qty = product.product_quantity;
+
+      this.productQuantityDisplay = product.quantity;
+      const unitMeasureText = product.quantity.trim().toLowerCase();
+      if (unitMeasureText.endsWith('kg')) {
+        this.productUnitMeasure = 'Kg';
+        this.productBaseUnitMeasure = 'g';
+      } else if (unitMeasureText.endsWith('ml')) {
+        this.productBaseUnitMeasure = 'ml';
+      } else if (unitMeasureText.endsWith('g')) {
+        this.productBaseUnitMeasure = 'g';
+      } else if (unitMeasureText.endsWith('l')) {
+        this.productUnitMeasure = 'L';
+        this.productBaseUnitMeasure = 'ml';
+      } else {
+        this.productUnitMeasure = '';
+        this.productBaseUnitMeasure = '';
+      }
 
       // NUTRITION TAB
       this.nutriScore = product.nutriscore_grade;
@@ -253,15 +266,16 @@ export default {
       const saturatedFatUnit = product.nutriments['saturated-fat_unit'] || '';
       const sugarUnit = product.nutriments.sugars_unit || '';
       const saltUnit = product.nutriments.salt_unit || '';
-      const energyKjUnit = product.nutriments['energy-kj_unit'] || '';
-      const energyKcalUnit = product.nutriments['energy-kcal_unit'] || '';
+      // const energyKjUnit = product.nutriments['energy-kj_unit'] || '';
+      // const energyKcalUnit = product.nutriments['energy-kcal_unit'] || '';
       const carbohydratesUnit = product.nutriments.carbohydrates_unit || '';
       const proteinsUnit = product.nutriments.proteins_unit || '';
       const sodiumUnit = product.nutriments.sodium_unit || '';
       const fiberUnit = product.nutriments.fiber_unit || '';
 
-      this.nutritionTableItems.push({ nutriFact: 'energyKj', for100g: this.energyKj, unit: energyKjUnit });
-      this.nutritionTableItems.push({ nutriFact: 'energyKcal', for100g: this.energyKcal, unit: energyKcalUnit });
+      this.nutritionTableItems = [];
+      this.nutritionTableItems.push({ nutriFact: 'energyKj', for100g: this.energyKj, unit: 'Kj' });
+      this.nutritionTableItems.push({ nutriFact: 'energyKcal', for100g: this.energyKcal, unit: 'Kcal' });
       this.nutritionTableItems.push({ nutriFact: 'fat', for100g: this.fat, unit: fatUnit });
       this.nutritionTableItems.push({ nutriFact: 'saturatedFat', for100g: this.saturatedFat, unit: saturatedFatUnit });
       this.nutritionTableItems.push({ nutriFact: 'carbohydrates', for100g: this.carbohydrates, unit: carbohydratesUnit });
