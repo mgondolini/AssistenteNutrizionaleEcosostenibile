@@ -11,7 +11,8 @@ exports.initMealValues = (mealName, timestamp) => {
   const meal = new SingleMeal(); // SingleMeal compone l'array meals di UserMealSchema
   meal.meal_name = mealName;
   meal.components = [];
-  meal.energy_tot = 0;
+  meal.energy_kj_tot = 0;
+  meal.energy_kcal_tot = 0;
   meal.carbohydrates_tot = 0;
   meal.sugars_tot = 0;
   meal.fat_tot = 0;
@@ -110,11 +111,13 @@ exports.updateMeal = async (userMeals, mealUpdated, res) => {
 /** Init and add a new component with computed parameters */
 exports.addComponent = (components, values, meal) => {
   components.product_name = values.product_name;
-  components.energy_per_quantity = values.energy_tot;
+  components.energy_kj = values.energy_kj_tot;
+  components.energy_kcal = values.energy_kcal_tot;
   components.image_url = values.image_url;
   components.carbon_footprint = values.carbon_footprint_tot;
   components.water_footprint = values.water_footprint_tot;
   components.nutrition_score = values.nutrition_score;
+  components.measure_unit = values.measure_unit;
 
   // Add passed components to meal's components array
   meal.components.push(components);
@@ -143,7 +146,8 @@ exports.updateMealValues = async (components, timestamp, mealName, userMeals, re
           && meal.timestamp.getUTCFullYear() === new Date(timestamp).getUTCFullYear()) {
           if (meal.meal_name === mealName) {
           // Meal schema field update -> increment values by the found product values
-            meal.energy_tot += values.energy_tot;
+            meal.energy_kj_tot += values.energy_kj_tot;
+            meal.energy_kcal_tot += values.energy_kcal_tot;
             meal.carbohidrates_tot += values.carbohidrates_tot;
             meal.sugars_tot += values.sugars_tot;
             meal.fat_tot += values.fat_tot;
@@ -165,9 +169,11 @@ exports.updateMealValues = async (components, timestamp, mealName, userMeals, re
               meal.components.forEach((component) => {
                 if (component.barcode === barcode) {
                   component.quantity += quantity;
-                  component.energy_per_quantity += values.energy_tot;
+                  component.energy_kj += values.energy_kj_tot;
+                  component.energy_kcal += values.energy_kcal_tot;
                   component.carbon_footprint += values.carbon_footprint_tot;
                   component.water_footprint += values.water_footprint_tot;
+                  components.measure_unit = values.measure_unit;
                   exists = true;
                 }
               });
@@ -179,7 +185,7 @@ exports.updateMealValues = async (components, timestamp, mealName, userMeals, re
           }
         }
       });
-      if (updated === true) {
+      if (updated) {
         // salvo il pasto
         userMeals.save()
           .then((meals) => {
@@ -218,7 +224,7 @@ exports.pullComponent = async (userMeals, timestamp, mealName, barcode, res) => 
     }
   });
 
-  if (updated === true) {
+  if (updated) {
     userMeals.save()
       .then((meals) => res.status(200).send(meals))
       .catch((err) => {

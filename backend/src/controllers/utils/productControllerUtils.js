@@ -22,7 +22,8 @@ exports.valuePerPortion = (value, quantity) => {
 exports.computeProductValues = async (barcode, quantity, res) => {
   let productName;
   let imageUrl;
-  let energyTot;
+  let energyKjTot;
+  let energyKcalTot;
   let carbsTot;
   let sugarsTot;
   let fatTot;
@@ -36,6 +37,7 @@ exports.computeProductValues = async (barcode, quantity, res) => {
   let nutritionScore;
   let carbonFootprintTot;
   let waterFootprintTot;
+  let measureUnit;
 
   const query = { code: barcode };
 
@@ -44,7 +46,8 @@ exports.computeProductValues = async (barcode, quantity, res) => {
     .then((product) => {
       productName = product.product_name;
       imageUrl = product.image_url;
-      energyTot = this.valuePerPortion(product.energy_100g, quantity);
+      energyKjTot = this.valuePerPortion(product.energy_kj_100g, quantity);
+      energyKcalTot = this.valuePerPortion(product.energy_kcal_100g, quantity);
       carbsTot = this.valuePerPortion(product.carbohydrates_100g, quantity);
       sugarsTot = this.valuePerPortion(product.sugars_100g, quantity);
       fatTot = this.valuePerPortion(product.fat_100g, quantity);
@@ -58,6 +61,7 @@ exports.computeProductValues = async (barcode, quantity, res) => {
       nutritionScore = product.nutrition_score_uk_100g;
       carbonFootprintTot = this.valuePerPortion(product.carbon_footprint_100g, quantity);
       waterFootprintTot = this.valuePerPortion(product.water_footprint_100g, quantity);
+      measureUnit = product.measure_unit;
     })
     .catch((err) => {
       global.log(`Error while computing product values: ${err}`); // DEBUG
@@ -69,7 +73,8 @@ exports.computeProductValues = async (barcode, quantity, res) => {
   const values = {
     product_name: productName,
     image_url: imageUrl,
-    energy_tot: energyTot,
+    energy_kj_tot: energyKjTot,
+    energy_kcal_tot: energyKcalTot,
     carbohidrates_tot: carbsTot,
     sugars_tot: sugarsTot,
     fat_tot: fatTot,
@@ -83,6 +88,7 @@ exports.computeProductValues = async (barcode, quantity, res) => {
     nutrition_score: nutritionScore,
     carbon_footprint_tot: carbonFootprintTot,
     water_footprint_tot: waterFootprintTot,
+    measure_unit: measureUnit,
   };
 
   return values;
