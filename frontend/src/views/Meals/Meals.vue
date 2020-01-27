@@ -15,8 +15,10 @@
         class="meals-datepicker"
         @dp-change="setDateAndShow(calendar.value)"> </date-picker>
     </b-card>
+
     <b-tabs content-class="mt-3">
       <b-tab title="Meals" active>
+
         <b-card class="card-new-meal">
           <b-form-input
             id="input-new-meal"
@@ -32,24 +34,22 @@
             variant="link"
             class="button-add p-0"
             @click="addMeal(mealName)"
-          >
-          <img class="add-meal" src="../../assets/buttons/add.svg">
+          ><img class="add-meal" src="../../assets/buttons/add.svg">
           </b-button>
           <b-form-invalid-feedback id="input-live-feedback">
             {{ $t(inputCheckMessage) }}
           </b-form-invalid-feedback>
         </b-card>
+
         <div
           v-if="mealsListByDate.length > 0"
           class="card-last-meals"
           role="tablist"
-        >
-          <b-card
+        ><b-card
             no-body class="mb-1"
             v-for="(meal, index) in mealsListByDate.slice().reverse()"
             v-bind:key="index"
-          >
-            <b-card-header header-tag="header" class="p-0" role="tab">
+          ><b-card-header header-tag="header" class="p-0" role="tab">
               <b-button block href="#" v-b-toggle="'accordion-' + index" variant="info">
                 <p class="meal-name-p text-center m-0">{{ meal.meal_name }}</p>
                 <b-button
@@ -59,6 +59,7 @@
                 ><img class="trashcan" src="../../assets/buttons/trashcan.svg"></b-button>
               </b-button>
             </b-card-header>
+
             <b-collapse :id="'accordion-' + index" visible accordion="my-accordion" role="tabpanel">
               <b-card-body>
                 <b-button
@@ -67,8 +68,7 @@
                   variant="link"
                   class="add-component p-0"
                   @click="addComponent(meal.meal_name, meal.timestamp)"
-                >
-                  <img class="add mr-2" src="../../assets/buttons/plus.svg">
+                ><img class="add mr-2" src="../../assets/buttons/plus.svg">
                   {{ $t('add_component') }}
                 </b-button>
                 <div v-if="meal.components.length > 0">
@@ -77,8 +77,7 @@
                       :img-src="component.image_url"
                       img-alt="Card image" img-left
                       class="card-components mb-3"
-                    >
-                      <b-card-text align="center" class="card-components-text m-0 p-0">
+                    ><b-card-text align="center" class="card-components-text m-0 p-0">
                         <p class="component-p">
                           <b><a :href="'/info_prod?ean='+component.barcode">
                             {{ component.product_name }}
@@ -108,30 +107,31 @@
                   <b-button
                     variant="info"
                     @click="calculateMeal(meal.meal_name, meal.timestamp)"
-                  >
-                    {{ $t('calculate_meal') }}
+                  > {{ $t('calculate_meal') }}
                   </b-button>
                   <b-button
                     v-if="!meal.is_closed"
                     variant="info"
                     @click="completeMeal(meal)"
-                  >
-                    {{ $t('complete_meal') }}
+                  > {{ $t('complete_meal') }}
                   </b-button>
                 </div>
               </b-card-body>
             </b-collapse>
           </b-card>
         </div>
+
         <div v-else>
           <p>{{ $t(this.noMeals) }}</p>
         </div>
+
         <b-modal id="modal-error" :title="$t('error_meals')" hide-footer>
           <div class="d-block text-center">
             <img src="https://img.icons8.com/color/48/000000/restriction-shield.png">
             {{ $t(this.modalErrorMsg) }}
           </div>
         </b-modal>
+
         <b-modal ref="modal-save" :title="$t('complete_meal')" hide-footer>
           <div class="p-0 text-center">
             {{ $t('save_meal') }}
@@ -146,6 +146,7 @@
           </footer>
         </b-modal>
       </b-tab>
+
       <b-tab title="Graph">
         <div class="chart-box">
           <div id="chart-bar">
@@ -174,6 +175,10 @@ const imagesContext = require.context('@/assets/productInfo/', true, /\.svg$/);
 
 export default {
   name: 'meals',
+  components: {
+    datePicker,
+    apexchart: VueApexCharts,
+  },
   data() {
     return {
       // Meals
@@ -206,22 +211,22 @@ export default {
       },
 
       // Daily nutrition values
-      todayNutritionValues: {
-        // energy: 0,
-        calories: 0,
-        protein: 0,
-        carbohydrate: 0,
-        fiber: 0,
-        total_fat: 0,
-        saturated_fat: 0,
+      nutritionFact: {
+        energy_kj: 0,
+        energy_kcal: 0,
+        carbohydrates: 0,
+        proteins: 0,
+        fibers: 0,
+        total_fats: 0,
+        saturated_fats: 0,
         calcium: 0,
         sodium: 0,
       },
 
       // Graph data
       dailyRequirement: Object,
-      todayValues: [],
-      todayKeys: [],
+      nutritionValues: [],
+      nutritionKeys: [],
 
 
       // Graph
@@ -263,12 +268,12 @@ export default {
                 },
                 {
                   from: 25,
-                  to: 500,
+                  to: 1000,
                   color: '#F15B46', // rosso
                 },
               ],
             },
-            columnWidth: '80%',
+            columnWidth: '50%',
           },
         },
         dataLabels: {
@@ -276,28 +281,36 @@ export default {
         },
         yaxis: {
           title: {
-            text: 'Daily Value % Overrun',
+            text: this.$i18n.t('overrun'),
           },
+          // min: -100,
+          // max: 100,
           labels: {
             formatter(y) {
               let label = 0;
               if (y < 0) {
-                if (y === -100) label = `${0}%`;
-                else label = `${(y).toFixed(0)}%`;
+                // if (y === -100) label = `${0}%`;
+                label = `${(y).toFixed(0)}%`;
               } else label = `+${(y).toFixed(0)}%`;
               return label;
             },
           },
         },
         xaxis: {
-          categories: ['calories', 'protein', 'carbohydrate', 'fiber', 'total_fat', 'saturated_fat', 'calcium', 'sodium'],
+          categories: [
+            this.$i18n.t('nutritionFact.energy_kj'),
+            this.$i18n.t('nutritionFact.energy_kcal'),
+            this.$i18n.t('nutritionFact.carbohydrates'),
+            this.$i18n.t('nutritionFact.proteins'),
+            this.$i18n.t('nutritionFact.fibers'),
+            this.$i18n.t('nutritionFact.total_fats'),
+            this.$i18n.t('nutritionFact.saturated_fats'),
+            this.$i18n.t('nutritionFact.calcium'),
+            this.$i18n.t('nutritionFact.sodium'),
+          ],
         },
       },
     };
-  },
-  components: {
-    datePicker,
-    apexchart: VueApexCharts,
   },
   methods: {
     loadMealsList() {
@@ -459,33 +472,34 @@ export default {
         mealDate = new Date(meal.timestamp);
         if (this.checkDates(mealDate, date)) {
           // Sum the nutrition values of the meals eaten on a certain date
-          this.todayNutritionValues.calories += meal.calories_tot;
-          this.todayNutritionValues.carbohydrate += meal.carbohydrates_tot;
-          this.todayNutritionValues.protein += meal.protein_tot;
-          this.todayNutritionValues.fiber += meal.fiber_tot;
-          this.todayNutritionValues.total_fat += meal.fat_tot;
-          this.todayNutritionValues.saturated_fat += meal.saturated_fat_tot;
-          this.todayNutritionValues.calcium += meal.calcium_tot;
-          this.todayNutritionValues.sodium += meal.sodium_tot;
+          this.nutritionFact.energy_kj += meal.energy_kj_tot;
+          this.nutritionFact.energy_kcal += meal.energy_kcal_tot;
+          this.nutritionFact.carbohydrates += meal.carbohydrates_tot;
+          this.nutritionFact.proteins += meal.proteins_tot;
+          this.nutritionFact.fibers += meal.fiber_tot;
+          this.nutritionFact.total_fats += meal.fat_tot;
+          this.nutritionFact.saturated_fats += meal.saturated_fat_tot;
+          this.nutritionFact.calcium += meal.calcium_tot;
+          this.nutritionFact.sodium += meal.sodium_tot;
         }
       });
 
       let dailyRequirementValues = Object.values(this.dailyRequirement);
       dailyRequirementValues = dailyRequirementValues.splice(3, 10);
 
-      this.todayKeys = Object.keys(this.todayNutritionValues);
-      console.log('todayKeys');
-      console.log(this.todayKeys);
+      this.nutritionKeys = Object.keys(this.nutritionFact);
+      console.log('nutritionKeys');
+      console.log(this.nutritionKeys);
 
-      this.todayValues = Object.values(this.todayNutritionValues);
-      this.todayValues = this.todayValues
+      this.nutritionValues = Object.values(this.nutritionFact);
+      this.nutritionValues = this.nutritionValues
         .map((val, i) => this.getDailyNutritionRatio(val, dailyRequirementValues[i]))
         .map(val => (val - 100).toFixed(2));
 
-      console.log('todayValues mapped');
-      console.log(this.todayValues);
+      console.log('nutritionValues mapped');
+      console.log(this.nutritionValues);
 
-      this.series[0].data = this.todayValues;
+      this.series[0].data = this.nutritionValues;
     },
     getDailyNutritionRatio(value, dailyRequirement) {
       return (value / dailyRequirement) * 100;
@@ -512,7 +526,19 @@ export default {
     "complete_meal": "Complete meal",
     "save_meal": "If you complete the meal you will not be able to edit it again.\nConfirm?",
     "yes": "Yes",
-    "no": "No"
+    "no": "No",
+    "overrun": "Overrun Daily Value %",
+    "nutritionFact": {
+      "energy_kj": "Energy_kj",
+      "energy_kcal" : "Energy_kcal",
+      "carbohydrates": "Carbohydrates",
+      "proteins": "Proteins",
+      "fibers": "Fibers",
+      "total_fats": "Fats",
+      "saturated_fats": "Saturated_fats",
+      "calcium": "Calcium",
+      "sodium": "Sodium"
+    }
   },
   "it": {
     "meals": "I tuoi pasti",
@@ -526,7 +552,19 @@ export default {
     "complete_meal": "Completa il pasto",
     "save_meal": "Se completi il pasto non potrai più modificarlo\nConfermare?",
     "yes": "Si",
-    "no": "No"
+    "no": "No",
+    "overrun": "Superamento del fabbisogno giornaliero %",
+    "nutritionFact": {
+      "energy_kj": "Energia_kj",
+      "energy_kcal": "Energia_kcal",
+      "carbohydrates": "Carboidrati",
+      "proteins": "Proteine",
+      "fibers": "Fibre",
+      "total_fats": "Grassi",
+      "saturated_fats": "Grassi_saturi",
+      "calcium": "Calcio",
+      "sodium": "Sodio"
+    }
   }
 }
 </i18n>
