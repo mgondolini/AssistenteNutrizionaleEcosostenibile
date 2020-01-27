@@ -159,7 +159,6 @@
         </div>
       </b-tab>
     </b-tabs>
-    <addProduct ref="addProduct"></addProduct>
   </div>
 </template>
 
@@ -167,7 +166,6 @@
 import Vue from 'vue';
 import datePicker from 'vue-bootstrap-datetimepicker';
 import VueApexCharts from 'vue-apexcharts';
-import addProduct from '../../components/AddProduct/AddProduct.vue';
 
 Vue.use(VueApexCharts);
 
@@ -300,7 +298,6 @@ export default {
   components: {
     datePicker,
     apexchart: VueApexCharts,
-    addProduct,
   },
   methods: {
     loadMealsList() {
@@ -358,7 +355,7 @@ export default {
         .catch(error => this.checkError(error.response.data.description));
     },
     addComponent(mealName, timestamp) {
-      this.$refs.addProduct.open(mealName, timestamp);
+      this.$root.$emit('openProductSelection', mealName, timestamp);
     },
     removeComponent(barcode, mealName) {
       const params = {

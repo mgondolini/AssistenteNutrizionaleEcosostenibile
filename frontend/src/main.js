@@ -9,17 +9,13 @@ import router from './router';
 import './custom.sass';
 import i18n from './i18n';
 
-
-Vue.use(VueQuagga);
-
-Vue.use(VueCarousel);
-
-Vue.use(BootstrapVue);
-
-Vue.use(Vuex);
-
+global.config = require('../config.json');
 /* Set this to false to prevent the production tip on Vue startup */
 Vue.config.productionTip = false;
+Vue.use(VueQuagga);
+Vue.use(VueCarousel);
+Vue.use(BootstrapVue);
+Vue.use(Vuex);
 
 const store = new Vuex.Store({
   state: {
@@ -72,8 +68,6 @@ if (localStorage.ecoAssToken !== 'InvalidToken') {
 } else {
   store.commit('logout');
 }
-
-global.config = require('../config.json');
 
 new Vue({
   router,
