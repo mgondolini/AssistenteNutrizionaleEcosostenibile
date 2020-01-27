@@ -214,11 +214,11 @@ export default {
       nutritionFact: {
         energy_kj: 0,
         energy_kcal: 0,
-        carbohydrate: 0,
-        protein: 0,
-        fiber: 0,
-        total_fat: 0,
-        saturated_fat: 0,
+        carbohydrates: 0,
+        proteins: 0,
+        fibers: 0,
+        total_fats: 0,
+        saturated_fats: 0,
         calcium: 0,
         sodium: 0,
       },
@@ -474,11 +474,11 @@ export default {
           // Sum the nutrition values of the meals eaten on a certain date
           this.nutritionFact.energy_kj += meal.energy_kj_tot;
           this.nutritionFact.energy_kcal += meal.energy_kcal_tot;
-          this.nutritionFact.carbohydrate += meal.carbohydrates_tot;
-          this.nutritionFact.protein += meal.protein_tot;
-          this.nutritionFact.fiber += meal.fiber_tot;
-          this.nutritionFact.total_fat += meal.fat_tot;
-          this.nutritionFact.saturated_fat += meal.saturated_fat_tot;
+          this.nutritionFact.carbohydrates += meal.carbohydrates_tot;
+          this.nutritionFact.proteins += meal.proteins_tot;
+          this.nutritionFact.fibers += meal.fiber_tot;
+          this.nutritionFact.total_fats += meal.fat_tot;
+          this.nutritionFact.saturated_fats += meal.saturated_fat_tot;
           this.nutritionFact.calcium += meal.calcium_tot;
           this.nutritionFact.sodium += meal.sodium_tot;
         }
@@ -532,8 +532,8 @@ export default {
       "energy_kj": "Energy_kj",
       "energy_kcal" : "Energy_kcal",
       "carbohydrates": "Carbohydrates",
-      "proteins": "Protein",
-      "fibers": "Fiber",
+      "proteins": "Proteins",
+      "fibers": "Fibers",
       "total_fats": "Fats",
       "saturated_fats": "Saturated_fats",
       "calcium": "Calcium",
