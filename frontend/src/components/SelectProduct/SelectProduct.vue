@@ -71,6 +71,11 @@ export default {
         { value: '4104420208629', text: 'Spaghetti' },
         { value: '3560070240258', text: 'Chips' },
         { value: '8001300500773', text: 'Lievito' },
+        { value: '3421557502163', text: 'Farina 1Kg' },
+        { value: '3560070339587', text: 'Zucchero 1Kg' },
+        { value: '3564707000055', text: 'Farina 1000g' },
+        { value: '5449000000996', text: 'CocaCola 330ml' },
+        { value: '5411188110835', text: 'Latte 1L' },
       ],
     };
   },
@@ -102,6 +107,11 @@ export default {
       if (Object.prototype.hasOwnProperty.call(data, 'codeResult')
        && Object.prototype.hasOwnProperty.call(data.codeResult, 'code')
        && (data.codeResult.code.trim().length === 13 || data.codeResult.code.trim().length === 8)) {
+        // TODO implement major rule stabilizer
+        // store only well-formatted readings (of lenght 13) in a collection
+        // reached a threshold of readings stored, the most popular value is the correct ean
+        // if no majority is reached, keep storing until it does
+
         // alert(data.codeResult.code);
         // Quagga.stop();
         this.ean = data.codeResult.code.trim();
