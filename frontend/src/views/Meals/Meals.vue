@@ -94,6 +94,11 @@
                           {{ component.energy_kcal }} kcal
                         </p>
                       </b-card-text>
+                      <b-img v-if="component.nutrition_score"
+                        class="nutri-score-img"
+                        :src='getNutriScoreImage(component.nutrition_score)'
+                        alt="Nutri score image">
+                      </b-img>
                       <b-button
                         v-if="!meal.is_closed"
                         pill
@@ -102,10 +107,6 @@
                         @click="removeComponent(component.barcode, meal.meal_name)"
                       ><img class="remove" src="../../assets/buttons/remove.svg">
                       </b-button>
-                      <b-img v-if="component.nutrition_score"
-                        :src='getNutriScoreImage(component.nutrition_score)'
-                        alt="Nutri score image">
-                      </b-img>
                     </b-card>
                   </div>
                   <b-button
