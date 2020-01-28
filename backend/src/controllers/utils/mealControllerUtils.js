@@ -148,7 +148,7 @@ exports.updateMealValues = async (components, timestamp, mealName, userMeals, re
           // Meal schema field update -> increment values by the found product values
             meal.energy_kj_tot += values.energy_kj_tot;
             meal.energy_kcal_tot += values.energy_kcal_tot;
-            meal.carbohidrates_tot += values.carbohidrates_tot;
+            meal.carbohydrates_tot += values.carbohydrates_tot;
             meal.sugars_tot += values.sugars_tot;
             meal.fat_tot += values.fat_tot;
             meal.saturated_fat_tot += values.saturated_fat_tot;

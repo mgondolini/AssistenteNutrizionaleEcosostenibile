@@ -75,7 +75,7 @@ exports.computeProductValues = async (barcode, quantity, res) => {
     image_url: imageUrl,
     energy_kj_tot: energyKjTot,
     energy_kcal_tot: energyKcalTot,
-    carbohidrates_tot: carbsTot,
+    carbohydrates_tot: carbsTot,
     sugars_tot: sugarsTot,
     fat_tot: fatTot,
     saturated_fat_tot: saturatedFatTot,
