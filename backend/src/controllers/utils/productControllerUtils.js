@@ -4,7 +4,7 @@ const Products = mongoose.model('Product');
 
 
 /** Computes value in grams for a portion of a given quantity */
-exports.computeValuePerPortion = (value, quantity) => ((value / 100) * quantity);
+exports.computeValuePerPortion = (value, quantity) => ((value / 100) * quantity).toFixed(2);
 
 
 /** Checks the value before compute the expression */
