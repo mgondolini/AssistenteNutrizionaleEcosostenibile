@@ -53,6 +53,10 @@
               <b-button block href="#" v-b-toggle="'accordion-' + index" variant="info">
                 <p class="meal-name-p text-center m-0">{{ meal.meal_name }}</p>
                 <b-button
+                  variant="info"
+                  @click="calculateMeal(meal.meal_name, meal.timestamp)"
+                ><img class="trashcan" src="../../assets/buttons/statistics.svg"></b-button>
+                <b-button
                   class="p-0"
                   variant="outline-light p-0"
                   @click="removeMeal(meal.meal_name)"
@@ -87,7 +91,7 @@
                           {{ component.quantity }} g
                         </p>
                         <p class="component-p">
-                          {{ component.energy_per_quantity }} kcal
+                          {{ component.energy_kcal }} kcal
                         </p>
                       </b-card-text>
                       <b-button
@@ -104,11 +108,6 @@
                       </b-img>
                     </b-card>
                   </div>
-                  <b-button
-                    variant="info"
-                    @click="calculateMeal(meal.meal_name, meal.timestamp)"
-                  > {{ $t('calculate_meal') }}
-                  </b-button>
                   <b-button
                     v-if="!meal.is_closed"
                     variant="info"
@@ -466,7 +465,6 @@ export default {
       this.nutritionValues = Object.values(this.nutritionFact);
       console.log('nutritionValues');
       console.log(this.nutritionValues);
-
 
       this.nutritionValues = this.nutritionValues
         .map((val, i) => this.getDailyNutritionRatio(val, dailyRequirementValues[i]))
