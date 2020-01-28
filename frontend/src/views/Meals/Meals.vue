@@ -228,7 +228,6 @@ export default {
       nutritionValues: [],
       nutritionKeys: [],
 
-
       // Graph
       series: [
         {
@@ -314,7 +313,16 @@ export default {
   },
   methods: {
     loadMealsList() {
-      console.log(this.currentDate); // DEBUG
+      const dateFromProductInfo = this.$route.query.date;
+      console.log('dateFromProductInfo');
+      console.log(dateFromProductInfo);
+
+      if (dateFromProductInfo !== null) {
+        this.currentDate = new Date(dateFromProductInfo);
+        this.calendar.value = this.currentDate;
+      }
+
+      console.log(this.currentDate);
 
       this.$store.state.http.get(`api/meals/${this.currentDate}`)
         .then((response) => {
@@ -414,45 +422,9 @@ export default {
     },
     setDateAndShow(date) {
       this.currentDate = new Date(date);
+      console.log(`Current date: ${this.currentDate}`);
       this.showMealsByDate(this.currentDate);
-    },
-    checkDates(d1, d2) {
-      return (d1.getDate() === d2.getDate()
-            && d1.getMonth() === d2.getMonth()
-            && d1.getFullYear() === d2.getFullYear());
-    },
-    checkError(error) {
-      if (error === 'internal_server_error' || error === 'meal_not_found' || 'user_not_found') {
-        this.modalErrorMsg = error;
-        this.$bvModal.show('modal-error');
-      } else if (error === 'mealslist_not_found') {
-        this.noMeals = 'no_meals';
-      } else this.inputCheckMessage = error;
-    },
-    getNutriScoreImage(nutriScore) {
-      return nutriScore ? imagesContext(`./nutriScore/${nutriScore}${imagesExt}`) : '';
-    },
-    completeMeal(meal) {
-      this.mealToClose = meal;
-      this.$refs['modal-save'].show();
-    },
-    saveMeal() {
-      this.mealToClose.is_closed = true;
-      console.log(this.mealToClose.is_closed);
-      const body = this.mealToClose;
-
-      console.log(body); // DEBUG
-      this.$store.state.http.put(`api/meals/${body.meal_name}/${body.timestamp}`, body)
-        .then((response) => {
-          this.mealsList = [];
-          this.mealsList = response.data.meals;
-          this.showMealsByDate(this.currentDate);
-          this.hideModal();
-        })
-        .catch(error => this.checkError(error.response.data.description));
-    },
-    hideModal() {
-      this.$refs['modal-save'].hide();
+      this.getDayNutritionFact(this.currentDate);
     },
     getGraphData() {
       this.$store.state.http.get('/api/user')
@@ -503,6 +475,44 @@ export default {
     },
     getDailyNutritionRatio(value, dailyRequirement) {
       return (value / dailyRequirement) * 100;
+    },
+    checkDates(d1, d2) {
+      return (d1.getDate() === d2.getDate()
+            && d1.getMonth() === d2.getMonth()
+            && d1.getFullYear() === d2.getFullYear());
+    },
+    checkError(error) {
+      if (error === 'internal_server_error' || error === 'meal_not_found' || 'user_not_found') {
+        this.modalErrorMsg = error;
+        this.$bvModal.show('modal-error');
+      } else if (error === 'mealslist_not_found') {
+        this.noMeals = 'no_meals';
+      } else this.inputCheckMessage = error;
+    },
+    getNutriScoreImage(nutriScore) {
+      return nutriScore ? imagesContext(`./nutriScore/${nutriScore}${imagesExt}`) : '';
+    },
+    completeMeal(meal) {
+      this.mealToClose = meal;
+      this.$refs['modal-save'].show();
+    },
+    saveMeal() {
+      this.mealToClose.is_closed = true;
+      console.log(this.mealToClose.is_closed);
+      const body = this.mealToClose;
+
+      console.log(body); // DEBUG
+      this.$store.state.http.put(`api/meals/${body.meal_name}/${body.timestamp}`, body)
+        .then((response) => {
+          this.mealsList = [];
+          this.mealsList = response.data.meals;
+          this.showMealsByDate(this.currentDate);
+          this.hideModal();
+        })
+        .catch(error => this.checkError(error.response.data.description));
+    },
+    hideModal() {
+      this.$refs['modal-save'].hide();
     },
   },
   mounted() {
