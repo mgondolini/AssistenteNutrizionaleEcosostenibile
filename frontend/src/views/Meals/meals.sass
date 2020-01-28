@@ -20,8 +20,10 @@ $white: #fff
 
   .remove
     height: 1.25rem
-    margin-top: 2rem
+    margin-left: 8rem
+    margin-top: 3rem
     width: 1.25rem
+
 
   .add
     width: 10%
@@ -83,6 +85,9 @@ $white: #fff
       height: 8em
       max-width: 6em
 
+    .card-calendar
+      margin-bottom: 1rem
+
     .card-new-meal
       border: 0
 
@@ -90,8 +95,8 @@ $white: #fff
         padding-left: 1px
 
       .input-new-meal
-        width: 75%
         margin-left: 1.25rem
+        width: 75%
 
       .date-new-meal
         width: 30%
@@ -99,9 +104,10 @@ $white: #fff
       .input-live-feedback
         margin-left: 1.25rem
         max-width: 50%
-        
+
     .component-p
       font-size: small
+      margin-bottom: 0
 
     .card-text
       padding: 1em
@@ -112,14 +118,20 @@ $white: #fff
 
     .meal-name-p
       display: inline-block
-      width: 80%
+      width: 70%
 
+    .nutri-score-img
+      float: left
+      height: 4rem
 
   @media only screen and (max-width: 480px)
     .card-img-left
       align-self: center
       height: 8em
       max-width: 6em
+
+    .card-calendar
+      margin-bottom: 1rem
 
     .card-new-meal
       border: 0
@@ -140,6 +152,7 @@ $white: #fff
 
     .component-p
       font-size: small
+      margin-bottom: 0
 
     .card-text
       padding: .5em
@@ -150,7 +163,11 @@ $white: #fff
 
     .meal-name-p
       display: inline-block
-      width: 80%
+      width: 70%
+ 
+    .nutri-score-img
+      float: left
+      height: 4rem
 
 
   @media only screen and (min-width: 600px)
@@ -158,6 +175,9 @@ $white: #fff
       margin: 0 auto
       max-width: 90%
 
+    .card-calendar
+      margin-bottom: 2rem
+
     .card-new-meal
       margin: 10px auto
       max-width: 90%
@@ -173,16 +193,25 @@ $white: #fff
 
     .component-p
       font-size: medium
+      margin-bottom: 10px
 
     .card-text
       padding: 1.25em
 
     .card-components-text
-      width: 90%
+      width: 50%
+
+    .nutri-score-img
+      height: 6rem
+
+    .chart-box
+      margin: 0 auto
+      width: 80%
+
 
     .meal-name-p
       display: inline-block
-      width: 95%
+      width: 85%
 
 
   @media only screen and (min-width: 768px)
@@ -190,10 +219,13 @@ $white: #fff
       margin: 0 auto
       max-width: 70%
 
+    .card-calendar
+      margin-bottom: 2rem
+
     .card-new-meal
       margin: 10px auto
       max-width: 70%
-      
+
       .input-live-feedback
         display: flex
         margin-left: 1.5rem
@@ -205,15 +237,23 @@ $white: #fff
 
     .component-p
       font-size: medium
+      margin-bottom: 10px
 
     .card-text
       padding: 1.25em
 
     .card-components-text
-      width: 90%
+      width: 50%
+    
+    .nutri-score-img
+      height: 6rem
+
+    .chart-box
+      margin: 0 auto
+      width: 80%
 
     .meal-name-p
       display: inline-block
-      width: 95%
+      width: 85%
 
 

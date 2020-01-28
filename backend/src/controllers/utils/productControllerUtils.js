@@ -4,7 +4,7 @@ const Products = mongoose.model('Product');
 
 
 /** Computes value in grams for a portion of a given quantity */
-exports.computeValuePerPortion = (value, quantity) => ((value / 100) * quantity);
+exports.computeValuePerPortion = (value, quantity) => ((value / 100) * quantity).toFixed(2);
 
 
 /** Checks the value before compute the expression */
@@ -75,7 +75,7 @@ exports.computeProductValues = async (barcode, quantity, res) => {
     image_url: imageUrl,
     energy_kj_tot: energyKjTot,
     energy_kcal_tot: energyKcalTot,
-    carbohidrates_tot: carbsTot,
+    carbohydrates_tot: carbsTot,
     sugars_tot: sugarsTot,
     fat_tot: fatTot,
     saturated_fat_tot: saturatedFatTot,
