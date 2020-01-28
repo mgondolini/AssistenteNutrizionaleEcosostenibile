@@ -205,6 +205,7 @@ export default {
       },
       options: {
         format: 'YYYY-MM-DD',
+        maxDate: new Date(),
         useCurrent: false,
         showClear: false,
         showClose: true,
@@ -313,16 +314,17 @@ export default {
   },
   methods: {
     loadMealsList() {
-      const dateFromProductInfo = this.$route.query.date;
-      console.log('dateFromProductInfo');
-      console.log(dateFromProductInfo);
+      console.log(this.currentDate);
 
-      if (dateFromProductInfo !== null) {
+
+      const dateFromProductInfo = this.$route.query.date;
+      console.log(`dateFromProductInfo ${dateFromProductInfo}`);
+
+      if (dateFromProductInfo !== undefined) {
         this.currentDate = new Date(dateFromProductInfo);
         this.calendar.value = this.currentDate;
       }
 
-      console.log(this.currentDate);
 
       this.$store.state.http.get(`api/meals/${this.currentDate}`)
         .then((response) => {
