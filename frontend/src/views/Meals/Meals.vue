@@ -1,6 +1,6 @@
 <template>
   <div class="meals">
-    <h1> {{ $t('meals') }} </h1>
+    <h1> {{ $t('your_meals') }} </h1>
     <b-card class="card-calendar p-0">
       <p class="date-p text-center">{{ $d(currentDate, 'short') }}</p>
       <b-button
@@ -16,8 +16,8 @@
         @dp-change="setDateAndShow(calendar.value)"> </date-picker>
     </b-card>
 
-    <b-tabs content-class="mt-3">
-      <b-tab title="Meals" active>
+    <b-tabs content-class="mt-3" justified>
+      <b-tab :title="$t('meals')" active>
 
         <b-card class="card-new-meal">
           <b-form-input
@@ -147,7 +147,7 @@
         </b-modal>
       </b-tab>
 
-      <b-tab title="Graph">
+      <b-tab :title="$t('meals_graph')">
         <div class="chart-box">
           <div id="chart-bar">
             <apexchart
@@ -213,10 +213,9 @@ export default {
 
       // Daily nutrition values
       nutritionFact: {
-        energy_kj: 0,
         energy_kcal: 0,
-        carbohydrates: 0,
         proteins: 0,
+        carbohydrates: 0,
         fibers: 0,
         total_fats: 0,
         saturated_fats: 0,
@@ -298,10 +297,9 @@ export default {
         },
         xaxis: {
           categories: [
-            this.$i18n.t('nutritionFact.energy_kj'),
             this.$i18n.t('nutritionFact.energy_kcal'),
-            this.$i18n.t('nutritionFact.carbohydrates'),
             this.$i18n.t('nutritionFact.proteins'),
+            this.$i18n.t('nutritionFact.carbohydrates'),
             this.$i18n.t('nutritionFact.fibers'),
             this.$i18n.t('nutritionFact.total_fats'),
             this.$i18n.t('nutritionFact.saturated_fats'),
@@ -315,7 +313,6 @@ export default {
   methods: {
     loadMealsList() {
       console.log(this.currentDate);
-
 
       const dateFromProductInfo = this.$route.query.date;
       console.log(`dateFromProductInfo ${dateFromProductInfo}`);
@@ -446,10 +443,9 @@ export default {
         mealDate = new Date(meal.timestamp);
         if (this.checkDates(mealDate, date)) {
           // Sum the nutrition values of the meals eaten on a certain date
-          this.nutritionFact.energy_kj += meal.energy_kj_tot;
           this.nutritionFact.energy_kcal += meal.energy_kcal_tot;
-          this.nutritionFact.carbohydrates += meal.carbohydrates_tot;
           this.nutritionFact.proteins += meal.proteins_tot;
+          this.nutritionFact.carbohydrates += meal.carbohydrates_tot;
           this.nutritionFact.fibers += meal.fiber_tot;
           this.nutritionFact.total_fats += meal.fat_tot;
           this.nutritionFact.saturated_fats += meal.saturated_fat_tot;
@@ -460,12 +456,18 @@ export default {
 
       let dailyRequirementValues = Object.values(this.dailyRequirement);
       dailyRequirementValues = dailyRequirementValues.splice(3, 10);
+      console.log('dailyRequirementValues');
+      console.log(dailyRequirementValues);
 
       this.nutritionKeys = Object.keys(this.nutritionFact);
       console.log('nutritionKeys');
       console.log(this.nutritionKeys);
 
       this.nutritionValues = Object.values(this.nutritionFact);
+      console.log('nutritionValues');
+      console.log(this.nutritionValues);
+
+
       this.nutritionValues = this.nutritionValues
         .map((val, i) => this.getDailyNutritionRatio(val, dailyRequirementValues[i]))
         .map(val => (val - 100).toFixed(2));
@@ -527,7 +529,7 @@ export default {
 <i18n>
 {
   "en": {
-    "meals": "Your meals",
+    "your_meals": "Your meals",
     "add_component": "Add component",
     "meal_name_enter": "Enter meal name",
     "date": "Date",
@@ -540,6 +542,8 @@ export default {
     "yes": "Yes",
     "no": "No",
     "overrun": "Overrun Daily Value %",
+    "meals": "Meals",
+    "meals_graph": "Daily requirement",
     "nutritionFact": {
       "energy_kj": "Energy_kj",
       "energy_kcal" : "Energy_kcal",
@@ -553,7 +557,7 @@ export default {
     }
   },
   "it": {
-    "meals": "I tuoi pasti",
+    "your_meals": "I tuoi pasti",
     "meal_name_enter": "Inserire nome pasto",
     "add_component": "Aggiungi componente",
     "date": "Data",
@@ -566,6 +570,8 @@ export default {
     "yes": "Si",
     "no": "No",
     "overrun": "Superamento del fabbisogno giornaliero %",
+    "meals": "Pasti",
+    "meals_graph": "Fabbisogno giornaliero",
     "nutritionFact": {
       "energy_kj": "Energia_kj",
       "energy_kcal": "Energia_kcal",
