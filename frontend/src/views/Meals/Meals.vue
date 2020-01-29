@@ -3,10 +3,9 @@
     <h1> {{ $t('your_meals') }} </h1>
     <b-card class="card-calendar p-0">
       <p class="date-p text-center">{{ $d(currentDate, 'short') }}</p>
-      <b-button
-        variant="outline-info p-0"
+      <b-button variant="outline-info p-1"
         @click="$refs.calendar.dp.show()"
-      ><img class="calendar" src="../../assets/buttons/calendar.svg">
+      ><b-icon icon="calendar" font-scale="1"></b-icon>
       </b-button>
       <date-picker v-model="calendar.value"
         ref="calendar"
@@ -20,8 +19,7 @@
       <b-tab :title="$t('meals')" active>
 
         <b-card class="card-new-meal">
-          <b-form-input
-            id="input-new-meal"
+          <b-form-input id="input-new-meal"
             v-model="mealName"
             :state="mealNameState"
             aria-describedby="input-live-feedback"
@@ -29,56 +27,53 @@
             class="input-new-meal"
             trim
           ></b-form-input>
-          <b-button
-            pill
-            variant="link"
-            class="button-add p-0"
+          <b-button variant="outline-info"
+            class="button-add"
             @click="addMeal(mealName)"
-          ><img class="add-meal" src="../../assets/buttons/add.svg">
+          ><b-icon icon="plus" variant="info" scale="1.5"></b-icon>
           </b-button>
           <b-form-invalid-feedback id="input-live-feedback">
             {{ $t(inputCheckMessage) }}
           </b-form-invalid-feedback>
         </b-card>
 
-        <div
-          v-if="mealsListByDate.length > 0"
+        <div v-if="mealsListByDate.length > 0"
           class="card-last-meals"
           role="tablist"
-        ><b-card
-            no-body class="mb-1"
+        ><b-card no-body class="mb-1"
             v-for="(meal, index) in mealsListByDate.slice().reverse()"
             v-bind:key="index"
           ><b-card-header header-tag="header" class="p-0" role="tab">
               <b-button block href="#" v-b-toggle="'accordion-' + index" variant="info">
                 <p class="meal-name-p text-center m-0">{{ meal.meal_name }}</p>
-                <b-button
-                  variant="info"
+                <b-button class="p-0" variant="info"
                   @click="calculateMeal(meal.meal_name, meal.timestamp)"
-                ><img class="trashcan" src="../../assets/buttons/statistics.svg"></b-button>
-                <b-button
-                  class="p-0"
-                  variant="outline-light p-0"
+                ><b-icon icon="pie-chart-fill"
+                  class="border border-circle-light rounded-circle p-1"
+                  font-scale="2"></b-icon>
+                </b-button>
+                <b-button class="p-0" variant="info"
                   @click="removeMeal(meal.meal_name)"
-                ><img class="trashcan" src="../../assets/buttons/trashcan.svg"></b-button>
+                ><b-icon icon="trash-fill"
+                  class="border border-circle-light rounded-circle p-1"
+                  font-scale="2">
+                  ></b-icon>
+                </b-button>
               </b-button>
             </b-card-header>
 
             <b-collapse :id="'accordion-' + index" visible accordion="my-accordion" role="tabpanel">
               <b-card-body>
-                <b-button
-                  v-if="!meal.is_closed"
-                  pill
+                <b-button v-if="!meal.is_closed"
                   variant="link"
                   class="add-component p-0"
                   @click="addComponent(meal.meal_name, meal.timestamp)"
-                ><img class="add mr-2" src="../../assets/buttons/plus.svg">
+                ><b-icon icon="plus" variant="success" font-scale="2"></b-icon>
                   {{ $t('add_component') }}
                 </b-button>
                 <div v-if="meal.components.length > 0">
                   <div v-for="component in meal.components" v-bind:key="component.product_name">
-                    <b-card
-                      :img-src="component.image_url"
+                    <b-card :img-src="component.image_url"
                       img-alt="Card image" img-left
                       class="card-components mb-3"
                     ><b-card-text align="center" class="card-components-text m-0 p-0">
@@ -99,18 +94,15 @@
                         :src='getNutriScoreImage(component.nutrition_score)'
                         alt="Nutri score image">
                       </b-img>
-                      <b-button
-                        v-if="!meal.is_closed"
-                        pill
+                      <b-button v-if="!meal.is_closed"
+                        class="remove p-0"
                         variant="link"
-                        class="p-0"
                         @click="removeComponent(component.barcode, meal.meal_name)"
-                      ><img class="remove" src="../../assets/buttons/remove.svg">
+                      ><b-icon icon="x-circle" variant="danger"></b-icon>
                       </b-button>
                     </b-card>
                   </div>
-                  <b-button
-                    v-if="!meal.is_closed"
+                  <b-button v-if="!meal.is_closed"
                     variant="info"
                     @click="completeMeal(meal)"
                   > {{ $t('complete_meal') }}
@@ -120,14 +112,11 @@
             </b-collapse>
           </b-card>
         </div>
-
-        <div v-else>
-          <p>{{ $t(this.noMeals) }}</p>
-        </div>
+        <div v-else><p>{{ $t(this.noMeals) }}</p></div>
 
         <b-modal id="modal-error" :title="$t('error_meals')" hide-footer>
           <div class="d-block text-center">
-            <img src="https://img.icons8.com/color/48/000000/restriction-shield.png">
+            <b-icon icon="alert-triangle" variant="danger" scale="2"></b-icon>
             {{ $t(this.modalErrorMsg) }}
           </div>
         </b-modal>
