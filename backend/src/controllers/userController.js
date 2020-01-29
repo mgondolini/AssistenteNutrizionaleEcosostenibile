@@ -32,6 +32,15 @@ exports.createNewUser = function createNewUser(req, res) {
     keyLen,
     digest).toString();
 
+  const ach = [{ title: 'firstReg', count: 1 },
+    { title: 'firstMeal', count: 0 },
+    { title: 'greenMeal', count: 0 },
+    { title: 'waterSaverMeal', count: 0 },
+    { title: 'perfMeal', count: 0 },
+    { title: 'tenGreenMeal', count: 0 },
+    { title: 'tenWaterSaverMeal', count: 0 },
+    { title: 'tenPerfMeal', count: 0 }];
+
   Who.findOne(getFabbisognoQuery(new Date(b.birth_date).getTime(), b.sex)).exec().then((fab) => {
     const newUser = new User({
       username: b.username,
@@ -47,6 +56,7 @@ exports.createNewUser = function createNewUser(req, res) {
       height: parseInt(b.height, 10),
       allergens: b.allergens,
       fabbisogno: fab,
+      achievements: ach,
     });
     newUser.save()
       .then((user) => {
@@ -169,35 +179,6 @@ exports.delete_user = async (req, res) => {
     })
     .catch((err) => {
       global.log(`Error while deleting user: ${err}`); // DEBUG
-      res.status(500).send({ description: 'internal_server_error' });
-    });
-};
-
-exports.checkAchievements = function checkAchievements(username) {
-  // const username = auth.getUsername(req.headers.token);
-  User.findOne({ username })
-    .exec()
-    .then((user) => {
-      // check achievements
-      global.log(user);
-    })
-    .catch((err) => {
-      // manage errors
-      global.log(err);
-    });
-};
-
-exports.getAchievements = function getAchievements(req, res) {
-  const username = auth.getUsername(req.headers.token);
-  User.findOne({ username })
-    .exec()
-    .then((user) => {
-      const ach = user.achievements;
-      global.log(`${username} achievements: ${ach}`);
-      res.status(200).send({ achievements: ach });
-    })
-    .catch((err) => {
-      global.log(`Error while getting user achievements: ${err}`); // DEBUG
       res.status(500).send({ description: 'internal_server_error' });
     });
 };
