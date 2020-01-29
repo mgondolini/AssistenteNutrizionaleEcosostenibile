@@ -3,9 +3,9 @@
     <h1> {{ $t('your_meals') }} </h1>
     <b-card class="card-calendar p-0">
       <p class="date-p text-center">{{ $d(currentDate, 'short') }}</p>
-      <b-button variant="outline-info p-1"
+      <b-button variant="link"
         @click="$refs.calendar.dp.show()"
-      ><b-icon icon="calendar" font-scale="1"></b-icon>
+      ><b-icon icon="calendar" font-scale="1.5" variant="secondary"></b-icon>
       </b-button>
       <date-picker v-model="calendar.value"
         ref="calendar"
@@ -26,11 +26,13 @@
             :placeholder="$t('meal_name_enter')"
             class="input-new-meal"
             trim
+            @input="onMealNameChange"
           ></b-form-input>
-          <b-button variant="outline-info"
-            class="button-add"
+          <b-button variant="link"
+            class="button-add p-0"
             @click="addMeal(mealName)"
-          ><b-icon icon="plus" variant="info" scale="1.5"></b-icon>
+          ><b-icon icon="plus" variant="info" font-scale="2.25"
+          class="border border-info rounded p-1"></b-icon>
           </b-button>
           <b-form-invalid-feedback id="input-live-feedback">
             {{ $t(inputCheckMessage) }}
@@ -49,13 +51,13 @@
                 <b-button class="p-0" variant="info"
                   @click="calculateMeal(meal.meal_name, meal.timestamp)"
                 ><b-icon icon="pie-chart-fill"
-                  class="border border-circle-light rounded-circle p-1"
+                  class="border border-light rounded p-1"
                   font-scale="2"></b-icon>
                 </b-button>
                 <b-button class="p-0" variant="info"
                   @click="removeMeal(meal.meal_name)"
                 ><b-icon icon="trash-fill"
-                  class="border border-circle-light rounded-circle p-1"
+                  class="border border-light rounded p-1"
                   font-scale="2">
                   ></b-icon>
                 </b-button>
@@ -474,7 +476,7 @@ export default {
             && d1.getFullYear() === d2.getFullYear());
     },
     checkError(error) {
-      if (error === 'internal_server_error' || error === 'meal_not_found' || 'user_not_found') {
+      if (error === 'internal_server_error' || error === 'meal_not_found' || error === 'user_not_found') {
         this.modalErrorMsg = error;
         this.$bvModal.show('modal-error');
       } else if (error === 'mealslist_not_found') {
@@ -505,6 +507,9 @@ export default {
     },
     hideModal() {
       this.$refs['modal-save'].hide();
+    },
+    onMealNameChange() {
+      if (this.mealName.length === 0) this.mealNameState = null;
     },
   },
   mounted() {
