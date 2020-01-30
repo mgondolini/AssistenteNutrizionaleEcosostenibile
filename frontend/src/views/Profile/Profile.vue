@@ -95,7 +95,7 @@
   </div>
   <b-modal id="modal-error" title="Error" hide-footer>
     <div class="d-block text-center">
-      <img src="https://img.icons8.com/color/48/000000/restriction-shield.png">
+      <img src="../../assets/restrictionShield.png">
       {{ this.errorMsgModal }}
     </div>
     <b-button class="mt-3" block @click="hideModal">{{ $t('closeBtn')}}</b-button>

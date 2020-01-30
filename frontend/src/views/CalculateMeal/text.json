@@ -6,7 +6,9 @@
     "watergrams": "Water per grams",
     "info": "Meal Graph",
     "emission": "Emission Graph",
-    "closeBtn": "Close me!"
+    "closeBtn": "Close me!",
+    "h2o": "H2O consumption for your meal",
+    "co2": "CO2 consumption for your meal"
   },
   "it": {
     "intro": "Coposizione del tuo pasto",
@@ -15,6 +17,8 @@
     "watergrams": "Acqua per grammi",
     "info": "Grafici dei tuoi pasti",
     "emission": "Grafici Emissioni",
-    "closeBtn": "Chiudi!"
+    "closeBtn": "Chiudi!",
+    "h2o": "Consumo di H2O per il tuo pasto",
+    "co2": "Consumo di CO2 per il tuo pasto"
   }
 }
