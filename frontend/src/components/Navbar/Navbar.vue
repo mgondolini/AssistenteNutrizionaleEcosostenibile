@@ -1,15 +1,15 @@
 <template>
     <div>
-        <b-navbar toggleable="lg" type="dark" variant="info">
+      <b-navbar toggleable="lg" type="dark" variant="info">
         <b-navbar-brand class="home" to="/">
           <img src="../../assets/ecology_f.png">{{navhome}}
         </b-navbar-brand>
-
         <b-navbar-toggle target="nav-collapse"></b-navbar-toggle>
-
         <b-collapse id="nav-collapse" class="nav-router" is-nav>
           <b-navbar-nav>
-            <router-link class="info_prod" to="info_prod">{{ $t('prod_info') }}</router-link>
+            <b-nav-item class="info_prod" @click="productInfo()">
+              {{ $t('prod_info') }}
+            </b-nav-item>
           </b-navbar-nav>
 
           <!-- Right aligned nav items -->
@@ -71,6 +71,9 @@ export default {
       if (this.$route.path !== '/') {
         this.$router.push('/');
       }
+    },
+    productInfo() {
+      this.$root.$emit('openProductSelection');
     },
   },
 };

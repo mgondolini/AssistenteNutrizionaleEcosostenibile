@@ -7,7 +7,7 @@
     <div class="our_mission">
       <h3 class="mis">
         <span class="mission"> {{ $t('mission') }} </span><br/>
-        <img src="../../assets/Immagine.png">
+        <img src="../../assets/Immagine.png" alt="separator">
       </h3>
       <br/>
       <h5 class="missionText">
