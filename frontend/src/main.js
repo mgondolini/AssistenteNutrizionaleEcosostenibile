@@ -1,5 +1,5 @@
 import Vue from 'vue';
-import BootstrapVue from 'bootstrap-vue';
+import { BootstrapVue, BootstrapVueIcons } from 'bootstrap-vue';
 import Axios from 'axios';
 import Vuex from 'vuex';
 import VueCarousel from 'vue-carousel';
@@ -15,6 +15,7 @@ Vue.config.productionTip = false;
 Vue.use(VueQuagga);
 Vue.use(VueCarousel);
 Vue.use(BootstrapVue);
+Vue.use(BootstrapVueIcons);
 Vue.use(Vuex);
 
 const store = new Vuex.Store({
