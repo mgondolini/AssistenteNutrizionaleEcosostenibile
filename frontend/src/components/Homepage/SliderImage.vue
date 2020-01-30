@@ -4,63 +4,53 @@
   :loop="true"
   :perPage=1
   >
-
     <slide
         data-index="0"
-        data-name="Sostegno Ambiente"
-        @slideclick="handleSlideClick">
+        data-name="Sostegno Ambiente">
         <img v-if='$root.$i18n.locale === "it" '
-          class="homeImagesScroll" src="../../assets/home/img_sliding_ita.jpg">
+          class="homeImagesScroll" src="../../assets/home/img_sliding_ita.jpg" alt="intro">
         <img v-if='$root.$i18n.locale === "en" '
-          class="homeImagesScroll" src="../../assets/home/img_sliding_eng.jpg">
+          class="homeImagesScroll" src="../../assets/home/img_sliding_eng.jpg" alt="intro">
     </slide>
     <slide
         data-index="1"
-        data-name="Sostegno Ambiente"
-        @slideclick="handleSlideClick">
-        <img class="homeImagesScroll" src="../../assets/home/sostegno.png">
+        data-name="Sostegno Ambiente">
+        <img class="homeImagesScroll" src="../../assets/home/sostegno.png" alt="SostegnoAmbientale">
     </slide>
     <slide
         data-index="2"
-        data-name="Cheese"
-        @slideclick="handleSlideClick">
-        <img class="homeImagesScroll" src="../../assets/home/cheese.png">
+        data-name="Cheese">
+        <img class="homeImagesScroll" src="../../assets/home/cheese.png" alt="cheese">
     </slide>
     <slide
         data-index="3"
-        data-name="Rice"
-        @slideclick="handleSlideClick">
-        <img class="homeImagesScroll" src="../../assets/home/rice.png">
+        data-name="Rice">
+        <img class="homeImagesScroll" src="../../assets/home/rice.png" alt="rice">
     </slide>
     <slide
         data-index="4"
-        data-name="Carrots"
-        @slideclick="handleSlideClick">
-        <img class="homeImagesScroll" src="../../assets/home/carrots.jpg">
+        data-name="Carrots">
+        <img class="homeImagesScroll" src="../../assets/home/carrots.jpg" alt="Corrots">
     </slide>
     <slide
         data-index="5"
-        data-name="Bread"
-        @slideclick="handleSlideClick">
-        <img class="homeImagesScroll" src="../../assets/home/bread.jpg">
+        data-name="Bread">
+        <img class="homeImagesScroll" src="../../assets/home/bread.jpg" alt="bread">
     </slide>
     <slide
         data-index="6"
-        data-name="Legumes"
-        @slideclick="handleSlideClick">
-        <img class="homeImagesScroll" src="../../assets/home/chickpeas.jpg">
+        data-name="Chickpeas">
+        <img class="homeImagesScroll" src="../../assets/home/chickpeas.jpg" alt="chickpeas">
     </slide>
     <slide
         data-index="7"
-        data-name="Eggs"
-        @slideclick="handleSlideClick">
-        <img class="homeImagesScroll" src="../../assets/home/eggs.jpg">
+        data-name="Eggs">
+        <img class="homeImagesScroll" src="../../assets/home/eggs.jpg" alt="eggs">
     </slide>
     <slide
         data-index="8"
-        data-name="Soup"
-        @slideclick="handleSlideClick">
-        <img class="homeImagesScroll" src="../../assets/home/soup.jpg">
+        data-name="Soup">
+        <img class="homeImagesScroll" src="../../assets/home/soup.jpg" alt="soup">
     </slide>
   </carousel>
 </template>
@@ -72,11 +62,6 @@ export default {
   components: {
     Carousel,
     Slide,
-  },
-  methods: {
-    handleSlideClick(dataset) {
-      console.log(dataset.index, dataset.name);
-    },
   },
 };
 </script>

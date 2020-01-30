@@ -1,30 +1,43 @@
 <template>
   <div class="containerFather">
     <h3 class="chartTitle">{{ $t('intro') }}</h3>
-    <div class="buttonsDisposition">
-      <b-button id="button" class="sim-button button1 buttonCalculate"
-        v-on:click='changeGraphGlobal'>
-        Global
-      </b-button>
-      <b-button id="button" class="sim-button button1 buttonCalculate"
-        v-on:click='changeGraphComponent'>
-        Component
-      </b-button>
-    </div>
-    <div class="container">
-      <apexchart class="changeableGraph" type=pie height=450 width=800 :options="chartOptions"
-        :series="chart.av" />
-    </div>
-    <div class="emissionsGraphs container">
-      <apexchart type=bubble height=350 width=600 :options="chartBubbleCO2Options"
-      :series="series" />
-      <apexchart type=bubble height=350 width=600 :options="chartBubbleWaterOptions"
-      :series="series2" />
-    </div>
+    <b-tabs>
+      <b-tab :title="$t('info')">
+        <div class="buttonsDisposition">
+          <b-button id="button" class="sim-button button1 buttonCalculate"
+            v-on:click='changeGraphGlobal'>
+            Global
+          </b-button>
+          <b-button id="button" class="sim-button button1 buttonCalculate"
+            v-on:click='changeGraphComponent'>
+            Component
+          </b-button>
+        </div>
+        <div class="container">
+          <apexchart class="changeableGraph" type=pie height=450 width=800 :options="chartOptions"
+            :series="chart.av" />
+        </div>
+      </b-tab>
+      <b-tab :title="$t('emission')">
+        <div class="chart-box">
+          <div id="bubble-chart">
+            <span class="paddingTop chartTitle">{{$t('co2')}}</span>
+            <hr/>
+            <apexchart class="co2" type=bubble height=400 :options="chartBubbleCO2Options"
+              :series="series">
+            </apexchart>
+            <hr/>
+            <span class="paddingTop chartTitle">{{$t('h2o')}}</span>
+            <apexchart class="h2o" type=bubble height=400 :options="chartBubbleWaterOptions"
+            :series="series2" />
+          </div>
+        </div>
+      </b-tab>
+    </b-tabs>
     <b-modal id="modal-error" title="Error"
       hide-footer v-model="modalErrorShow">
       <div class="d-block text-center">
-        <img src="https://img.icons8.com/color/48/000000/restriction-shield.png">
+        <img src="../../assets/restrictionShield.png">
         {{ this.errorMsgModal }}
       </div>
       <b-button class="mt-3" block @click="hideModal">{{ $t('closeBtn')}}</b-button>
@@ -74,31 +87,9 @@ export default {
           options: {
             chart: {
               height: 350,
-              width: 350,
             },
             legend: {
               position: 'bottom',
-            },
-          },
-        },
-        {
-          breakpoint: 800,
-          options: {
-            chart: {
-              height: 350,
-              width: 500,
-            },
-            legend: {
-              position: 'bottom',
-            },
-          },
-        },
-        {
-          breakpoint: 850,
-          options: {
-            chart: {
-              height: 350,
-              width: 600,
             },
           },
         }],
@@ -150,34 +141,6 @@ export default {
             showDuplicates: false,
           },
         },
-        responsive: [{
-          breakpoint: 480,
-          options: {
-            chart: {
-              width: 400,
-              height: 350,
-            },
-          },
-        },
-        {
-          breakpoint: 780,
-          options: {
-            chart: {
-              width: 300,
-              height: 350,
-            },
-          },
-        },
-        {
-          breakpoint: 1200,
-          options: {
-            chart: {
-              width: 350,
-              height: 350,
-            },
-          },
-        },
-        ],
       };
     },
     chartBubbleWaterOptions() {
@@ -225,33 +188,6 @@ export default {
           },
           title: { text: this.$i18n.t('gCons') },
         },
-        responsive: [{
-          breakpoint: 480,
-          options: {
-            chart: {
-              width: 400,
-              height: 350,
-            },
-          },
-        },
-        {
-          breakpoint: 780,
-          options: {
-            chart: {
-              width: 300,
-              height: 350,
-            },
-          },
-        },
-        {
-          breakpoint: 1200,
-          options: {
-            chart: {
-              width: 350,
-              height: 350,
-            },
-          },
-        }],
       };
     },
   },
@@ -260,7 +196,6 @@ export default {
   },
   mounted() {
     const params = { mealName: this.$route.query.mealName, date: this.$route.query.date };
-    console.log(`Calculate_meal_comp mounted ${params.mealName}`);
     this.toLogin = false;
     this.$store.state.http.get('api/meal', { params })
       .then((response) => {
@@ -289,7 +224,11 @@ export default {
         });
 
         Object.values(response.data.meals[0]).forEach((v, i) => {
-          if (i > 2 && i < 13) { if (v > 0.0001) this.componentsMeal.av.push(v); }
+          if (i > 2 && i < 13) {
+            if (v > 0.0001) {
+              this.componentsMeal.av.push(v);
+            }
+          }
         });
         this.calculate();
       }).catch(error => this.checkError(error.response.data.description,
@@ -345,8 +284,8 @@ export default {
 </i18n>
 
 <style lang="sass">
-@import './calculateMeal'
-@import './bubbleChrartEmissions'
+@import './calculateMeal.sass'
+@import './bubbleChartEmissions.sass'
 .apexcharts-toolbar
   display: none
 </style>
