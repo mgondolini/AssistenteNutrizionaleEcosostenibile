@@ -88,7 +88,7 @@
                           {{ component.quantity }} g
                         </p>
                         <p class="component-p">
-                          {{ component.energy_kcal }} kcal
+                          {{ (component.energy_kcal).toFixed(2) }} kcal
                         </p>
                       </b-card-text>
                       <b-img v-if="component.nutrition_score"
