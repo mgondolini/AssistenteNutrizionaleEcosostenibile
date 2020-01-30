@@ -65,7 +65,7 @@
             </b-card-header>
 
             <b-collapse :id="'accordion-' + index" visible accordion="my-accordion" role="tabpanel">
-              <b-card-body>
+              <b-card-body class="components-card">
                 <b-button v-if="!meal.is_closed"
                   variant="link"
                   class="add-component p-0"
@@ -85,7 +85,7 @@
                           </a></b>
                         </p>
                         <p class="component-p">
-                          {{ component.quantity }} g
+                          {{ component.quantity }} {{component.measure_unit}}
                         </p>
                         <p class="component-p">
                           {{ (component.energy_kcal).toFixed(2) }} kcal
@@ -97,7 +97,7 @@
                         alt="Nutri score image">
                       </b-img>
                       <b-button v-if="!meal.is_closed"
-                        class="remove p-0"
+                        class="remove-btn p-0"
                         variant="link"
                         @click="removeComponent(component.barcode, meal.meal_name)"
                       ><b-icon icon="x-circle" variant="danger"></b-icon>
@@ -273,8 +273,8 @@ export default {
           title: {
             text: this.$i18n.t('overrun'),
           },
-          // min: -100,
-          // max: 100,
+          min: -100,
+          max: 100,
           labels: {
             formatter(y) {
               let label = 0;
@@ -399,8 +399,6 @@ export default {
         this.currentDate.getDate(),
       );
 
-      this.getDayNutritionFact(this.currentDate);
-
       this.mealsList.forEach((meal) => {
         mealDate = new Date(meal.timestamp);
 
@@ -416,6 +414,7 @@ export default {
       this.currentDate = new Date(date);
       console.log(`Current date: ${this.currentDate}`);
       this.showMealsByDate(this.currentDate);
+      this.getDayNutritionFact(this.currentDate);
     },
     getGraphData() {
       this.$store.state.http.get('/api/user')
@@ -430,8 +429,6 @@ export default {
     getDayNutritionFact(date) {
       console.log('Get nutrition fact'); // DEBUG
       let mealDate;
-
-      this.series[0].data = [];
 
       this.mealsList.forEach((meal) => {
         mealDate = new Date(meal.timestamp);
