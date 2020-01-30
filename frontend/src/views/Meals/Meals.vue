@@ -31,8 +31,8 @@
           <b-button variant="link"
             class="button-add p-0"
             @click="addMeal(mealName)"
-          ><b-icon icon="plus" variant="info" font-scale="2.25"
-          class="border border-info rounded p-1"></b-icon>
+          ><b-icon icon="plus" variant="info" font-scale="2.3"
+          class="border border-info rounded p-0"></b-icon>
           </b-button>
           <b-form-invalid-feedback id="input-live-feedback">
             {{ $t(inputCheckMessage) }}
@@ -48,7 +48,7 @@
           ><b-card-header header-tag="header" class="p-0" role="tab">
               <b-button block href="#" v-b-toggle="'accordion-' + index" variant="info">
                 <p class="meal-name-p text-center m-0">{{ meal.meal_name }}</p>
-                <b-button class="p-0" variant="info"
+                <b-button class="p-0 mr-2" variant="info"
                   @click="calculateMeal(meal.meal_name, meal.timestamp)"
                 ><b-icon icon="pie-chart-fill"
                   class="border border-light rounded p-1"
@@ -70,7 +70,7 @@
                   variant="link"
                   class="add-component p-0"
                   @click="addComponent(meal.meal_name, meal.timestamp)"
-                ><b-icon icon="plus" variant="success" font-scale="2"></b-icon>
+                ><b-icon icon="plus" variant="success" font-scale="2" shift-v="+2"></b-icon>
                   {{ $t('add_component') }}
                 </b-button>
                 <div v-if="meal.components.length > 0">
@@ -88,7 +88,7 @@
                           {{ component.quantity }} g
                         </p>
                         <p class="component-p">
-                          {{ component.energy_kcal }} kcal
+                          {{ (component.energy_kcal).toFixed(2) }} kcal
                         </p>
                       </b-card-text>
                       <b-img v-if="component.nutrition_score"
@@ -399,6 +399,8 @@ export default {
         this.currentDate.getDate(),
       );
 
+      this.getDayNutritionFact(this.currentDate);
+
       this.mealsList.forEach((meal) => {
         mealDate = new Date(meal.timestamp);
 
@@ -414,7 +416,6 @@ export default {
       this.currentDate = new Date(date);
       console.log(`Current date: ${this.currentDate}`);
       this.showMealsByDate(this.currentDate);
-      this.getDayNutritionFact(this.currentDate);
     },
     getGraphData() {
       this.$store.state.http.get('/api/user')
@@ -429,6 +430,8 @@ export default {
     getDayNutritionFact(date) {
       console.log('Get nutrition fact'); // DEBUG
       let mealDate;
+
+      this.series[0].data = [];
 
       this.mealsList.forEach((meal) => {
         mealDate = new Date(meal.timestamp);

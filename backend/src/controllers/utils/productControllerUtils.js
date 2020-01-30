@@ -4,7 +4,7 @@ const Products = mongoose.model('Product');
 
 
 /** Computes value in grams for a portion of a given quantity */
-exports.computeValuePerPortion = (value, quantity) => ((value / 100) * quantity).toFixed(2);
+exports.computeValuePerPortion = (value, quantity) => (value / 100) * quantity;
 
 
 /** Checks the value before compute the expression */
@@ -90,6 +90,9 @@ exports.computeProductValues = async (barcode, quantity, res) => {
     water_footprint_tot: waterFootprintTot,
     measure_unit: measureUnit,
   };
+
+  console.log('product found values');
+  console.log(values);
 
   return values;
 };
