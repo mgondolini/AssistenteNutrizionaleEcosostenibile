@@ -67,6 +67,7 @@
             <b-collapse :id="'accordion-' + index" visible accordion="my-accordion" role="tabpanel">
               <b-card-body class="components-card">
                 <b-button v-if="!meal.is_closed"
+                  variant="link"
                   class="add-component border-info"
                   @click="addComponent(meal.meal_name, meal.timestamp)"
                 ><b-icon icon="plus" variant="success" font-scale="2" shift-v="+2"></b-icon>
@@ -142,6 +143,7 @@
           <div id="chart-bar">
             <apexchart
               type="bar"
+              ref="barchart"
               height="400"
               :options="chartOptions"
               :series="series">
@@ -217,6 +219,7 @@ export default {
       dailyRequirement: Object,
       nutritionValues: [],
       nutritionKeys: [],
+      mealFound: Boolean,
 
       // Graph
       series: [
@@ -429,6 +432,8 @@ export default {
       console.log('Get nutrition fact'); // DEBUG
       let mealDate;
 
+      this.initNutritionFact();
+
       this.mealsList.forEach((meal) => {
         mealDate = new Date(meal.timestamp);
         if (this.checkDates(mealDate, date)) {
@@ -464,10 +469,23 @@ export default {
       console.log('nutritionValues mapped');
       console.log(this.nutritionValues);
 
-      this.series[0].data = this.nutritionValues;
+      this.$refs.barchart.updateSeries([{ name: '', data: this.nutritionValues }]);
     },
     getDailyNutritionRatio(value, dailyRequirement) {
       return (value / dailyRequirement) * 100;
+    },
+    initNutritionFact() {
+      this.nutritionFact = {
+        energy_kcal: 0,
+        proteins: 0,
+        carbohydrates: 0,
+        fibers: 0,
+        total_fats: 0,
+        saturated_fats: 0,
+        calcium: 0,
+        sodium: 0,
+      };
+      return this.nutritionFact;
     },
     checkDates(d1, d2) {
       return (d1.getDate() === d2.getDate()
