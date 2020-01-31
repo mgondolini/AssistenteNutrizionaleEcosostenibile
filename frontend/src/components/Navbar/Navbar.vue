@@ -1,6 +1,8 @@
 <template>
     <div>
       <b-navbar toggleable="lg" type="dark" variant="info">
+        <b-icon class="backIcon border rounded" icon="arrow-left-short"
+        font-scale="2.5" @click='back'></b-icon>
         <b-navbar-brand class="home" to="/">
           <img src="../../assets/ecology_f.png">{{navhome}}
         </b-navbar-brand>
@@ -11,6 +13,7 @@
               {{ $t('prod_info') }}
             </b-nav-item>
           </b-navbar-nav>
+
 
           <!-- Right aligned nav items -->
           <b-navbar-nav class="ml-auto">
@@ -24,7 +27,6 @@
               </template>
                 <b-dropdown-item href="profile">{{ $t('profile') }}</b-dropdown-item>
                 <b-dropdown-item href="meals">{{ $t('meals') }}</b-dropdown-item>
-                <b-dropdown-item href="new_meal">{{ $t('new_meal') }}</b-dropdown-item>
                 <b-dropdown-item @click.prevent="signout">{{ $t('signout') }}</b-dropdown-item>
             </b-nav-item-dropdown>
             <b-nav-item-dropdown class="localeID" v-bind:text="$root.$i18n.locale" right>
@@ -37,6 +39,10 @@
                 <span class="localeID"> {{ lang }} </span>
               </b-dropdown-item-button>
             </b-nav-item-dropdown>
+            <b-nav-item>
+              <b-icon class="backIcon border rounded" :icon="nameIcon"
+                font-scale="2" @click='changeIcon'></b-icon>
+            </b-nav-item>
           </b-navbar-nav>
         </b-collapse>
       </b-navbar>
@@ -55,6 +61,8 @@ export default {
     return {
       navhome: 'Eco-assistant',
       langs: ['en', 'it'],
+      nameIcon: 'sun',
+      darkMode: false,
     };
   },
   computed: {
@@ -65,6 +73,18 @@ export default {
   methods: {
     getLocaleFlagPath(lang) {
       return localeFlagsContext(`./${lang}${localeFlagsExt}`);
+    },
+    changeIcon() {
+      if (this.darkMode) this.nameIcon = 'sun';
+      else this.nameIcon = 'moon';
+      this.darkMode = !this.darkMode;
+    },
+    clickChange() {
+      console.log('ciao');
+      this.toggleVal = !this.toggleVal;
+    },
+    back() {
+      this.$router.go(-1);
     },
     signout() {
       this.$store.commit('logout');
@@ -86,7 +106,6 @@ export default {
     "user": "User",
     "profile": "My profile",
     "meals": "My last meals",
-    "new_meal": "Insert new meal",
     "signout": "Signout"
   },
   "it": {
@@ -94,7 +113,6 @@ export default {
     "user": "Utente",
     "profile": "Il mio profilo",
     "meals": "I miei ultimi pasti",
-    "new_meal": "Inserisci nuovo pasto",
     "signout": "Esci"
   }
 }
