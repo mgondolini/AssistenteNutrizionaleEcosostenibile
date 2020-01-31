@@ -67,11 +67,10 @@
             <b-collapse :id="'accordion-' + index" visible accordion="my-accordion" role="tabpanel">
               <b-card-body class="components-card">
                 <b-button v-if="!meal.is_closed"
-                  variant="link"
-                  class="add-component p-0"
+                  class="add-component border-info"
                   @click="addComponent(meal.meal_name, meal.timestamp)"
                 ><b-icon icon="plus" variant="success" font-scale="2" shift-v="+2"></b-icon>
-                  {{ $t('add_component') }}
+                  <p color="info">{{ $t('add_component') }}</p>
                 </b-button>
                 <div v-if="meal.components.length > 0">
                   <div v-for="component in meal.components" v-bind:key="component.product_name">
