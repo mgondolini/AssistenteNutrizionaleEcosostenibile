@@ -315,12 +315,11 @@ export default {
         this.calendar.value = this.currentDate;
       }
 
-
       this.$store.state.http.get(`api/meals/${this.currentDate}`)
         .then((response) => {
           this.mealsList = response.data.meals;
           this.showMealsByDate(this.currentDate);
-          this.getGraphData();
+          this.getUserDailyRequirement();
         })
         .catch(error => this.checkError(error.response.data.description));
     },
@@ -345,6 +344,7 @@ export default {
             this.mealsList = [];
             this.mealsList = response.data.meals;
             this.showMealsByDate(this.currentDate);
+            this.computeDayNutritionFact(this.currentDate);
           })
           .catch((error) => {
             this.mealNameState = false;
@@ -383,6 +383,7 @@ export default {
           this.mealsList = [];
           this.mealsList = response.data.meals;
           this.showMealsByDate(this.currentDate);
+          this.computeDayNutritionFact(this.currentDate);
           console.log(`component removed ${this.mealsList}`); // DEBUG
         })
         .catch(error => this.checkError(error.response.data.description));
@@ -416,19 +417,19 @@ export default {
       this.currentDate = new Date(date);
       console.log(`Current date: ${this.currentDate}`);
       this.showMealsByDate(this.currentDate);
-      this.getDayNutritionFact(this.currentDate);
+      this.computeDayNutritionFact(this.currentDate);
     },
-    getGraphData() {
+    getUserDailyRequirement() {
       this.$store.state.http.get('/api/user')
         .then((response) => {
           this.dailyRequirement = response.data.daily_requirement;
           console.log('Daily Requirement'); // DEBUG
           console.log(this.dailyRequirement); // DEBUG
-          this.getDayNutritionFact(this.currentDate);
+          this.computeDayNutritionFact(this.currentDate);
         })
         .catch(error => this.checkError(error.response.data.description));
     },
-    getDayNutritionFact(date) {
+    computeDayNutritionFact(date) {
       console.log('Get nutrition fact'); // DEBUG
       let mealDate;
 
