@@ -17,7 +17,8 @@
 
           <!-- Right aligned nav items -->
           <b-navbar-nav class="ml-auto">
-            <b-nav-item to="login" right v-if="this.$store.state.isLogged === false">
+            <b-nav-item class="loginSpan"
+            to="login" right v-if="this.$store.state.isLogged === false">
               Login
             </b-nav-item>
             <b-nav-item-dropdown right v-if="this.$store.state.isLogged === true">
