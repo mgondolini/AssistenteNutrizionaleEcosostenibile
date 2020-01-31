@@ -99,7 +99,10 @@
                       <b-button v-if="!meal.is_closed"
                         class="remove-btn p-0"
                         variant="link"
-                        @click="removeComponent(component.barcode, meal.meal_name)"
+                        @click="removeComponent(
+                          component.barcode,
+                          component.quantity,
+                          meal.meal_name)"
                       ><b-icon icon="x-circle" variant="danger"></b-icon>
                       </b-button>
                     </b-card>
@@ -370,9 +373,10 @@ export default {
     addComponent(mealName, timestamp) {
       this.$root.$emit('openProductSelection', mealName, timestamp);
     },
-    removeComponent(barcode, mealName) {
+    removeComponent(barcode, quantity, mealName) {
       const params = {
         barcode,
+        quantity,
         mealName,
         date: new Date(this.UTCDate),
       };
@@ -384,7 +388,7 @@ export default {
           this.mealsList = response.data.meals;
           this.showMealsByDate(this.currentDate);
           this.computeDayNutritionFact(this.currentDate);
-          console.log(`component removed ${this.mealsList}`); // DEBUG
+          // console.log(`component removed ${this.mealsList}`); // DEBUG
         })
         .catch(error => this.checkError(error.response.data.description));
     },
@@ -452,6 +456,7 @@ export default {
 
       let dailyRequirementValues = Object.values(this.dailyRequirement);
       dailyRequirementValues = dailyRequirementValues.splice(3, 10);
+      console.log(this.dailyRequirement);
       console.log('dailyRequirementValues');
       console.log(dailyRequirementValues);
 
