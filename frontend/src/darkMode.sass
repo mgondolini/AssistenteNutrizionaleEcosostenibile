@@ -1,20 +1,24 @@
 @import './custom.sass'
 //607D8B
 .dark
-  background-color: rgba($black, .9)
+  background-color: rgba($dark_bg, .9)
+  .msgTitle
+    color: $white
+  .our_mission
+    background-color: $bg_dark_mission
   //Start Login, Registration Style
-  .login, .registration
+  .login, .registration, .container
     .cardLogin, .cardR
-      background-color: #4f6975
+      background-color: $dark_bg_card
       .card-title
         color: $white
       .formIns, #myTabContent
         .grey-text
-          .form-group,
+          .form-group
             color: $white
             .text-muted
               color: $white !important
-        #basicInfo
+        #basicInfo, .tab-content-info
           .row
             .labelText
               color: $white
@@ -22,6 +26,17 @@
             color: $white !important
           .pers
             color: $white
+        .nav-tabs
+          .nav-link
+            background-color: $dark_bg_link
+            border-bottom: 1px solid $border_color
+            color: $white
+            font-weight: normal
+          .active
+            background-color: $dark_bg_link_not_active
+            color: $dark_bg_card
+            font-weight: bolder
+
       
   //End Login, Registration Style
 
@@ -30,3 +45,6 @@
   .buttonsDiv, .buttonsDisposition
     .button1
       background-color: $background_dark_color
+      &:hover
+        background-color: $background_color_1
+        color: $white

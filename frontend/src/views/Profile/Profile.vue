@@ -2,7 +2,7 @@
 <div class="container">
   <div class="row">
     <div class="col-12">
-      <div class="card">
+      <div class="card cardR">
         <div class="card-body">
           <!--save/create BUTTONS-->
           <button v-on:click="editContent" class="card-button card-edit">

@@ -1,4 +1,6 @@
 @import '../../custom.sass'
+@import '../../lightMode.sass'
+@import '../../darkMode.sass'
 
 #imgProfile
   width: 9em
@@ -32,7 +34,7 @@
 .card-edit
   background: transparent
   border-radius: .2em
-  color: #bbb
+  color: $white
   padding: .25em
   position: absolute
   right: .5em
@@ -40,7 +42,7 @@
 
   &:hover,
   &:focus
-    background: $white
+    background: transparent
     color: $coral
 
 .image-container
@@ -80,7 +82,7 @@
   height: 10em
 
 .nsError
-  border-color: #ff0000 !important
+  border-color: $error !important
 
 .card-input
   border-radius: .3em
