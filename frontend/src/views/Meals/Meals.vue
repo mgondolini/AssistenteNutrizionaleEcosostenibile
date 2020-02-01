@@ -12,7 +12,7 @@
         :config="options"
         value="calendar"
         class="meals-datepicker"
-        @dp-change="setDateAndShow(calendar.value)"> </date-picker>
+        @dp-change="setDateAndShowMeals(calendar.value)"> </date-picker>
     </b-card>
 
     <b-tabs content-class="mt-3" justified>
@@ -283,10 +283,13 @@ export default {
           labels: {
             formatter(y) {
               let label = 0;
-              if (y < 0) {
-                // if (y === -100) label = `${0}%`;
-                label = `${(y).toFixed(0)}%`;
-              } else label = `+${(y).toFixed(0)}%`;
+              if (y < 0) label = `${(y).toFixed(0)}%`;
+              else {
+                label = `+${(y).toFixed(0)}%`;
+                if (y > 100) {
+                  label = `Overrun 100% by +${(y - 100).toFixed(0)}%;`;
+                }
+              }
               return label;
             },
           },
@@ -307,6 +310,7 @@ export default {
     };
   },
   methods: {
+    // Main methods
     loadMealsList() {
       console.log(this.currentDate);
 
@@ -416,7 +420,7 @@ export default {
 
       if (!found) this.noMeals = 'no_meals';
     },
-    setDateAndShow(date) {
+    setDateAndShowMeals(date) {
       this.currentDate = new Date(date);
       console.log(`Current date: ${this.currentDate}`);
       this.showMealsByDate(this.currentDate);
@@ -475,10 +479,12 @@ export default {
       console.log(this.nutritionValues);
     },
     triggerChartTab() {
-      console.log('Tab triggered');
+      console.log('Chart tab triggered');
       this.$refs.barchart.refresh();
       this.$refs.barchart.updateSeries([{ name: '', data: this.nutritionValues }]);
     },
+
+    // Utils
     getDailyNutritionRatio(value, dailyRequirement) {
       return (value / dailyRequirement) * 100;
     },
