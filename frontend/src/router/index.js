@@ -1,7 +1,6 @@
 import Vue from 'vue';
 import VueRouter from 'vue-router';
 import Home from '../views/Home/Home.vue';
-import About from '../views/About.vue';
 import Login from '../views/Login/Login.vue';
 import Registration from '../views/Registration/Registration.vue';
 import ProductInfo from '../views/ProductInfo/ProductInfo.vue';
@@ -42,11 +41,6 @@ const routes = [
     path: '/meals',
     name: 'meals',
     component: Meals,
-  },
-  {
-    path: '/new_meal',
-    name: 'new_meal',
-    component: About,
   },
   {
     path: '/calculate_meal_composition',
