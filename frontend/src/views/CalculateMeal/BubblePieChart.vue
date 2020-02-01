@@ -22,41 +22,33 @@ export default {
       series: [
         {
           name: 'a',
-          data: [[100, 200, 300]],
+          type: 'bubble',
+          data: [[50, 200, 100]],
         },
         {
           name: 'b',
-          data: [[120, 300, 500]],
-        },
-        {
-          name: 'c',
-          data: [[50, 60, 70]],
+          type: 'pie',
+          data: [30, 25, 36, 30, 45, 35, 64, 52, 59, 36, 39],
         },
       ],
+      pieSeries: [44, 55, 13, 43, 22],
     };
   },
   computed: {
     bubbleChartOptions() {
       return {
+        chart: {
+          height: 350,
+          type: 'bubble',
+          stacked: false,
+        },
         dataLabels: {
           enabled: false,
-        },
-        fill: {
-          opacity: 0.8,
         },
         title: {
           text: 'Carbon Footprint',
         },
         xaxis: {
-          tickAmount: 10,
-          min: 0,
-          max: 150,
-
-          labels: {
-            showDuplicates: false,
-            rotate: -45,
-            rotateAlways: true,
-          },
           axisBorder: {
             show: true,
             color: 'red',
@@ -73,15 +65,67 @@ export default {
             offsetX: 0,
             offsetY: 0,
           },
-          title: { text: this.$i18n.t('CO2grams') },
         },
         yaxis: {
           max: 400,
-          title: { text: this.$i18n.t('gCons') },
+          title: { text: 'testo' },
           labels: {
             showDuplicates: false,
           },
         },
+        tooltip: {
+          shared: true,
+          intersect: false,
+        },
+      };
+    },
+    pieOptions() {
+      return {
+        chart: {
+          width: 1,
+          type: 'pie',
+        },
+        grid: {
+          show: true,
+          borderColor: '#90A4AE',
+          strokeDashArray: 0,
+          position: 'back',
+          xaxis: {
+            lines: {
+              show: false,
+            },
+          },
+          yaxis: {
+            lines: {
+              show: false,
+            },
+          },
+          row: {
+            colors: undefined,
+            opacity: 0.5,
+          },
+          column: {
+            colors: undefined,
+            opacity: 0.5,
+          },
+          padding: {
+            top: 0,
+            right: 0,
+            bottom: 0,
+            left: 0,
+          },
+        },
+        responsive: [{
+          breakpoint: 100,
+          options: {
+            chart: {
+              width: 100,
+            },
+            legend: {
+              position: 'bottom',
+            },
+          },
+        }],
       };
     },
   },
