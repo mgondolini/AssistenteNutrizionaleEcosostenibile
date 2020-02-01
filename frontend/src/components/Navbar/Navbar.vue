@@ -1,6 +1,6 @@
 <template>
     <div>
-      <b-navbar toggleable="lg" type="dark" variant="info">
+      <b-navbar class="navbarChangeColor" toggleable="lg" type="dark" :variant="this.variant">
         <b-icon class="backIcon border rounded" icon="arrow-left-short"
         font-scale="2.5" @click='back'></b-icon>
         <b-navbar-brand class="home" to="/">
@@ -64,6 +64,7 @@ export default {
       langs: ['en', 'it'],
       nameIcon: 'sun',
       darkMode: false,
+      variant: 'info',
     };
   },
   computed: {
@@ -76,9 +77,25 @@ export default {
       return localeFlagsContext(`./${lang}${localeFlagsExt}`);
     },
     changeIcon() {
-      if (this.darkMode) this.nameIcon = 'sun';
-      else this.nameIcon = 'moon';
+      const p = document.getElementById('app');
+      const p2 = document.getElementById('parentAll');
+      if (this.darkMode) {
+        this.nameIcon = 'sun';
+        this.variant = 'info';
+        p.classList.remove('dark');
+        p2.classList.remove('dark');
+        p.classList.add('light');
+        p2.classList.add('light');
+      } else {
+        this.nameIcon = 'moon';
+        this.variant = 'dark';
+        p.classList.add('dark');
+        p2.classList.add('dark');
+        p.classList.remove('light');
+        p2.classList.remove('light');
+      }
       this.darkMode = !this.darkMode;
+      this.$store.commit('switchMode');
     },
     clickChange() {
       console.log('ciao');

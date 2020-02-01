@@ -7,9 +7,11 @@
 $white: #fff
 $background_color_1: #17a2b8
 $background_color_3: #2EA968
+$background_dark_color: #055e6d
 $coral: coral  
 $text-color: #2c3e50
 $black: #000000
+$selectedText: antiquewhite
 
 #app 
   font-family: 'Avenir', Helvetica, Arial, sans-serif
@@ -34,7 +36,6 @@ $black: #000000
     cursor: pointer
 
   .button1
-    background-color: $background_color_1 !important
     color: $white
     -webkit-transition: all 0.5s !important
     -moz-transition: all 0.5s !important
@@ -45,11 +46,10 @@ $black: #000000
 
     &:hover
       background-color: $white
-      color: $white
+      color: $background_color_1
       -webkit-border-radius: 25px
       -moz-border-radius: 25px
       border-radius: 25px
-
 
 @media (min-width: 768px)
   .buttonsDiv

@@ -7,6 +7,8 @@ import VueQuagga from 'vue-quaggajs';
 import App from './App.vue';
 import router from './router';
 import './custom.sass';
+import './lightMode.sass';
+import './darkMode.sass';
 import i18n from './i18n';
 
 global.config = require('../config.json');
@@ -21,6 +23,7 @@ Vue.use(Vuex);
 const store = new Vuex.Store({
   state: {
     isLogged: false,
+    darkMode: false,
     username: '',
     http: Axios.create({
       baseURL: 'http://localhost:8081/',
@@ -50,6 +53,9 @@ const store = new Vuex.Store({
         timeout: 10000,
         headers: { token: 'InvalidToken' },
       });
+    },
+    switchMode(state) {
+      state.darkMode = !state.darkMode;
     },
   },
 });

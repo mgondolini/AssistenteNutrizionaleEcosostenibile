@@ -1,10 +1,10 @@
 <template>
-  <div>
-    <b-form @submit="onSubmit" class="formIns">
+  <div class="registration">
+    <b-form @submit="onSubmit" class="formInsR">
       <div class="container registrationContainer">
         <div class="row">
           <div class="col-12">
-            <div class="card">
+            <div class="card cardR">
               <div class="card-body">
                 <div class="card-title mb-4">
                   <h3 class="titleReg">{{ $t('reg') }}</h3>
