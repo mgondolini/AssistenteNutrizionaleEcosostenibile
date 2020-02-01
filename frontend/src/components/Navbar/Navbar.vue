@@ -63,9 +63,11 @@ export default {
       navhome: 'Eco-assistant',
       langs: ['en', 'it'],
       nameIcon: 'sun',
-      darkMode: false,
       variant: 'info',
     };
+  },
+  mounted() {
+    this.assignClass();
   },
   computed: {
     getUsername() {
@@ -76,30 +78,28 @@ export default {
     getLocaleFlagPath(lang) {
       return localeFlagsContext(`./${lang}${localeFlagsExt}`);
     },
-    changeIcon() {
+    assignClass() {
       const p = document.getElementById('app');
       const p2 = document.getElementById('parentAll');
-      if (this.darkMode) {
-        this.nameIcon = 'sun';
-        this.variant = 'info';
-        p.classList.remove('dark');
-        p2.classList.remove('dark');
-        p.classList.add('light');
-        p2.classList.add('light');
-      } else {
+      if (this.$store.state.darkMode) {
         this.nameIcon = 'moon';
         this.variant = 'dark';
         p.classList.add('dark');
         p2.classList.add('dark');
         p.classList.remove('light');
         p2.classList.remove('light');
+      } else {
+        this.nameIcon = 'sun';
+        this.variant = 'info';
+        p.classList.remove('dark');
+        p2.classList.remove('dark');
+        p.classList.add('light');
+        p2.classList.add('light');
       }
-      this.darkMode = !this.darkMode;
-      this.$store.commit('switchMode');
     },
-    clickChange() {
-      console.log('ciao');
-      this.toggleVal = !this.toggleVal;
+    changeIcon() {
+      this.$store.commit('switchMode');
+      this.assignClass();
     },
     back() {
       this.$router.go(-1);

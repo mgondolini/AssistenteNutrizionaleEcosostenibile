@@ -20,10 +20,15 @@ Vue.use(BootstrapVue);
 Vue.use(BootstrapVueIcons);
 Vue.use(Vuex);
 
+let tmpDark = false;
+if (localStorage.darkMode !== undefined) {
+  tmpDark = localStorage.darkMode === 'true';
+}
+
 const store = new Vuex.Store({
   state: {
     isLogged: false,
-    darkMode: false,
+    darkMode: tmpDark,
     username: '',
     http: Axios.create({
       baseURL: 'http://localhost:8081/',
@@ -56,6 +61,11 @@ const store = new Vuex.Store({
     },
     switchMode(state) {
       state.darkMode = !state.darkMode;
+      if (state.darkMode) {
+        localStorage.darkMode = 'true';
+      } else {
+        localStorage.darkMode = 'false';
+      }
     },
   },
 });
