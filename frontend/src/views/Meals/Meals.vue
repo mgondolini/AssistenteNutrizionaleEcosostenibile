@@ -2,9 +2,13 @@
   <div class="meals">
     <h1> {{ $t('your_meals') }} </h1>
     <b-card class="card-calendar p-0">
-      <b-button @click="decrementDate"> - </b-button>
+      <b-button @click="decrementDate" variant="link">
+        <b-icon icon="chevron-left" font-scale="1.5" variant="info"></b-icon>
+      </b-button>
       <p class="date-p text-center">{{ $d(currentDate, 'short') }}</p>
-      <b-button @click="incrementDate" v-if="!disableBtn"> + </b-button>
+      <b-button  v-if="!disableBtn" @click="incrementDate" variant="link">
+        <b-icon icon="chevron-right" font-scale="1.5" variant="info"></b-icon>
+      </b-button>
       <b-button variant="link"
         @click="$refs.calendar.dp.show()"
       ><b-icon icon="calendar" font-scale="1.5" variant="secondary"></b-icon>
@@ -14,7 +18,8 @@
         :config="options"
         value="calendar"
         class="meals-datepicker"
-        @dp-change="setDateAndShowMeals(calendar.value)"> </date-picker>
+        @dp-change="setDateAndShowMeals(calendar.value)">
+      </date-picker>
     </b-card>
 
     <b-tabs content-class="mt-3" justified>
