@@ -2,7 +2,9 @@
   <div class="meals">
     <h1> {{ $t('your_meals') }} </h1>
     <b-card class="card-calendar p-0">
+      <b-button @click="decrementDate"> - </b-button>
       <p class="date-p text-center">{{ $d(currentDate, 'short') }}</p>
+      <b-button @click="incrementDate" v-if="!disableBtn"> + </b-button>
       <b-button variant="link"
         @click="$refs.calendar.dp.show()"
       ><b-icon icon="calendar" font-scale="1.5" variant="secondary"></b-icon>
@@ -205,6 +207,7 @@ export default {
         showClear: false,
         showClose: true,
       },
+      disableBtn: false,
 
       // Daily nutrition values
       nutritionFact: {
@@ -222,7 +225,6 @@ export default {
       dailyRequirement: Object,
       nutritionValues: [],
       nutritionKeys: [],
-      mealFound: Boolean,
 
       // Graph
       series: [
@@ -403,6 +405,11 @@ export default {
       let found = false;
       this.mealsListByDate = [];
 
+      if (this.currentDate.getDate() === this.options.maxDate.getDate()
+        && this.currentDate.getMonth() === this.options.maxDate.getMonth()) {
+        this.disableBtn = true;
+      }
+
       this.UTCDate = Date.UTC(
         this.currentDate.getFullYear(),
         this.currentDate.getMonth(),
@@ -425,6 +432,23 @@ export default {
       console.log(`Current date: ${this.currentDate}`);
       this.showMealsByDate(this.currentDate);
       this.computeDayNutritionFact(this.currentDate);
+    },
+    incrementDate() {
+      if (this.currentDate.getDate() === this.options.maxDate.getDate()
+      && this.currentDate.getMonth() === this.options.maxDate.getMonth()) {
+        this.disableBtn = true;
+      } else {
+        this.currentDate.setDate(this.currentDate.getDate() + 1);
+        this.calendar.value = this.currentDate;
+        this.setDateAndShowMeals(this.currentDate);
+        this.disableBtn = false;
+      }
+    },
+    decrementDate() {
+      this.disableBtn = false;
+      this.currentDate.setDate(this.currentDate.getDate() - 1);
+      this.calendar.value = this.currentDate;
+      this.setDateAndShowMeals(this.currentDate);
     },
     getUserDailyRequirement() {
       this.$store.state.http.get('/api/user')
