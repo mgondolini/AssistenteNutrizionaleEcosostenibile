@@ -141,8 +141,7 @@
         </b-modal>
       </b-tab>
 
-      <b-tab :title="$t('meals_graph')">
-        <b-button @click="trigger()"></b-button>
+      <b-tab :title="$t('meals_graph')" @click="triggerChartTab">
         <div class="chart-box">
           <div id="chart-bar">
             <apexchart
@@ -389,7 +388,6 @@ export default {
           this.mealsList = response.data.meals;
           this.showMealsByDate(this.currentDate);
           this.computeDayNutritionFact(this.currentDate);
-          // console.log(`component removed ${this.mealsList}`); // DEBUG
         })
         .catch(error => this.checkError(error));
     },
@@ -475,11 +473,11 @@ export default {
 
       console.log('nutritionValues mapped');
       console.log(this.nutritionValues);
-
-      this.$refs.barchart.updateSeries([{ name: '', data: this.nutritionValues }]);
     },
-    trigger() {
-      this.computeDayNutritionFact(this.currentDate);
+    triggerChartTab() {
+      console.log('Tab triggered');
+      this.$refs.barchart.refresh();
+      this.$refs.barchart.updateSeries([{ name: '', data: this.nutritionValues }]);
     },
     getDailyNutritionRatio(value, dailyRequirement) {
       return (value / dailyRequirement) * 100;
@@ -503,20 +501,25 @@ export default {
             && d1.getFullYear() === d2.getFullYear());
     },
     checkError(error) {
-      const errorStatus = error.response.status;
-      console.log(`errorStatus ${errorStatus}`);
-      const errorDescription = error.response.data.description;
-      if (errorStatus === 401) {
-        this.modalErrorMsg = 'unauthorized';
-        this.$bvModal.show('modal-error');
-      } else if (errorDescription === 'internal_server_error'
+      let errorStatus;
+      let errorDescription;
+
+      if (error.response !== undefined) {
+        errorStatus = error.response.status;
+        errorDescription = error.response.data.description;
+
+        if (errorStatus === 401) {
+          this.modalErrorMsg = 'unauthorized';
+          this.$bvModal.show('modal-error');
+        } else if (errorDescription === 'internal_server_error'
           || errorDescription === 'meal_not_found'
           || errorDescription === 'user_not_found') {
-        this.modalErrorMsg = errorDescription;
-        this.$bvModal.show('modal-error');
-      } else if (errorDescription === 'mealslist_not_found') {
-        this.noMeals = 'no_meals';
-      } else this.inputCheckMessage = errorDescription;
+          this.modalErrorMsg = errorDescription;
+          this.$bvModal.show('modal-error');
+        } else if (errorDescription === 'mealslist_not_found') {
+          this.noMeals = 'no_meals';
+        } else this.inputCheckMessage = errorDescription;
+      }
     },
     getNutriScoreImage(nutriScore) {
       return nutriScore ? imagesContext(`./nutriScore/${nutriScore}${imagesExt}`) : '';
