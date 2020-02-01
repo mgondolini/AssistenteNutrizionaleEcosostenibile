@@ -65,13 +65,13 @@
             </b-card-header>
 
             <b-collapse :id="'accordion-' + index" visible accordion="my-accordion" role="tabpanel">
-              <b-card-body>
+              <b-card-body class="components-card">
                 <b-button v-if="!meal.is_closed"
                   variant="link"
-                  class="add-component p-0"
+                  class="add-component border-info"
                   @click="addComponent(meal.meal_name, meal.timestamp)"
                 ><b-icon icon="plus" variant="success" font-scale="2" shift-v="+2"></b-icon>
-                  {{ $t('add_component') }}
+                  <p color="info">{{ $t('add_component') }}</p>
                 </b-button>
                 <div v-if="meal.components.length > 0">
                   <div v-for="component in meal.components" v-bind:key="component.product_name">
@@ -85,7 +85,7 @@
                           </a></b>
                         </p>
                         <p class="component-p">
-                          {{ component.quantity }} g
+                          {{ component.quantity }} {{component.measure_unit}}
                         </p>
                         <p class="component-p">
                           {{ (component.energy_kcal).toFixed(2) }} kcal
@@ -97,9 +97,12 @@
                         alt="Nutri score image">
                       </b-img>
                       <b-button v-if="!meal.is_closed"
-                        class="remove p-0"
+                        class="remove-btn p-0"
                         variant="link"
-                        @click="removeComponent(component.barcode, meal.meal_name)"
+                        @click="removeComponent(
+                          component.barcode,
+                          component.quantity,
+                          meal.meal_name)"
                       ><b-icon icon="x-circle" variant="danger"></b-icon>
                       </b-button>
                     </b-card>
@@ -138,11 +141,12 @@
         </b-modal>
       </b-tab>
 
-      <b-tab :title="$t('meals_graph')">
+      <b-tab :title="$t('meals_graph')" @click="triggerChartTab">
         <div class="chart-box">
           <div id="chart-bar">
             <apexchart
               type="bar"
+              ref="barchart"
               height="400"
               :options="chartOptions"
               :series="series">
@@ -218,6 +222,7 @@ export default {
       dailyRequirement: Object,
       nutritionValues: [],
       nutritionKeys: [],
+      mealFound: Boolean,
 
       // Graph
       series: [
@@ -273,8 +278,8 @@ export default {
           title: {
             text: this.$i18n.t('overrun'),
           },
-          // min: -100,
-          // max: 100,
+          min: -100,
+          max: 100,
           labels: {
             formatter(y) {
               let label = 0;
@@ -313,14 +318,13 @@ export default {
         this.calendar.value = this.currentDate;
       }
 
-
       this.$store.state.http.get(`api/meals/${this.currentDate}`)
         .then((response) => {
           this.mealsList = response.data.meals;
           this.showMealsByDate(this.currentDate);
-          this.getGraphData();
+          this.getUserDailyRequirement();
         })
-        .catch(error => this.checkError(error.response.data.description));
+        .catch(error => this.checkError(error));
     },
     addMeal(mealName) {
       this.UTCDate = Date.UTC(
@@ -343,10 +347,11 @@ export default {
             this.mealsList = [];
             this.mealsList = response.data.meals;
             this.showMealsByDate(this.currentDate);
+            this.computeDayNutritionFact(this.currentDate);
           })
           .catch((error) => {
             this.mealNameState = false;
-            this.checkError(error.response.data.description);
+            this.checkError(error);
           });
       } else {
         this.mealNameState = false;
@@ -363,14 +368,15 @@ export default {
 
       this.$store.state.http.delete(`api/meals/${params.mealName}/${params.date}`, { params })
         .then(() => this.loadMealsList())
-        .catch(error => this.checkError(error.response.data.description));
+        .catch(error => this.checkError(error));
     },
     addComponent(mealName, timestamp) {
       this.$root.$emit('openProductSelection', mealName, timestamp);
     },
-    removeComponent(barcode, mealName) {
+    removeComponent(barcode, quantity, mealName) {
       const params = {
         barcode,
+        quantity,
         mealName,
         date: new Date(this.UTCDate),
       };
@@ -381,9 +387,9 @@ export default {
           this.mealsList = [];
           this.mealsList = response.data.meals;
           this.showMealsByDate(this.currentDate);
-          console.log(`component removed ${this.mealsList}`); // DEBUG
+          this.computeDayNutritionFact(this.currentDate);
         })
-        .catch(error => this.checkError(error.response.data.description));
+        .catch(error => this.checkError(error));
     },
     calculateMeal(mealName, timestamp) {
       this.$router.push({ path: '/calculate_meal_composition', query: { mealName, date: timestamp } });
@@ -398,8 +404,6 @@ export default {
         this.currentDate.getMonth(),
         this.currentDate.getDate(),
       );
-
-      this.getDayNutritionFact(this.currentDate);
 
       this.mealsList.forEach((meal) => {
         mealDate = new Date(meal.timestamp);
@@ -416,22 +420,23 @@ export default {
       this.currentDate = new Date(date);
       console.log(`Current date: ${this.currentDate}`);
       this.showMealsByDate(this.currentDate);
+      this.computeDayNutritionFact(this.currentDate);
     },
-    getGraphData() {
+    getUserDailyRequirement() {
       this.$store.state.http.get('/api/user')
         .then((response) => {
           this.dailyRequirement = response.data.daily_requirement;
           console.log('Daily Requirement'); // DEBUG
           console.log(this.dailyRequirement); // DEBUG
-          this.getDayNutritionFact(this.currentDate);
+          this.computeDayNutritionFact(this.currentDate);
         })
-        .catch(error => this.checkError(error.response.data.description));
+        .catch(error => this.checkError(error));
     },
-    getDayNutritionFact(date) {
+    computeDayNutritionFact(date) {
       console.log('Get nutrition fact'); // DEBUG
       let mealDate;
 
-      this.series[0].data = [];
+      this.initNutritionFact();
 
       this.mealsList.forEach((meal) => {
         mealDate = new Date(meal.timestamp);
@@ -450,6 +455,7 @@ export default {
 
       let dailyRequirementValues = Object.values(this.dailyRequirement);
       dailyRequirementValues = dailyRequirementValues.splice(3, 10);
+      console.log(this.dailyRequirement);
       console.log('dailyRequirementValues');
       console.log(dailyRequirementValues);
 
@@ -467,11 +473,27 @@ export default {
 
       console.log('nutritionValues mapped');
       console.log(this.nutritionValues);
-
-      this.series[0].data = this.nutritionValues;
+    },
+    triggerChartTab() {
+      console.log('Tab triggered');
+      this.$refs.barchart.refresh();
+      this.$refs.barchart.updateSeries([{ name: '', data: this.nutritionValues }]);
     },
     getDailyNutritionRatio(value, dailyRequirement) {
       return (value / dailyRequirement) * 100;
+    },
+    initNutritionFact() {
+      this.nutritionFact = {
+        energy_kcal: 0,
+        proteins: 0,
+        carbohydrates: 0,
+        fibers: 0,
+        total_fats: 0,
+        saturated_fats: 0,
+        calcium: 0,
+        sodium: 0,
+      };
+      return this.nutritionFact;
     },
     checkDates(d1, d2) {
       return (d1.getDate() === d2.getDate()
@@ -479,12 +501,25 @@ export default {
             && d1.getFullYear() === d2.getFullYear());
     },
     checkError(error) {
-      if (error === 'internal_server_error' || error === 'meal_not_found' || error === 'user_not_found') {
-        this.modalErrorMsg = error;
-        this.$bvModal.show('modal-error');
-      } else if (error === 'mealslist_not_found') {
-        this.noMeals = 'no_meals';
-      } else this.inputCheckMessage = error;
+      let errorStatus;
+      let errorDescription;
+
+      if (error.response !== undefined) {
+        errorStatus = error.response.status;
+        errorDescription = error.response.data.description;
+
+        if (errorStatus === 401) {
+          this.modalErrorMsg = 'unauthorized';
+          this.$bvModal.show('modal-error');
+        } else if (errorDescription === 'internal_server_error'
+          || errorDescription === 'meal_not_found'
+          || errorDescription === 'user_not_found') {
+          this.modalErrorMsg = errorDescription;
+          this.$bvModal.show('modal-error');
+        } else if (errorDescription === 'mealslist_not_found') {
+          this.noMeals = 'no_meals';
+        } else this.inputCheckMessage = errorDescription;
+      }
     },
     getNutriScoreImage(nutriScore) {
       return nutriScore ? imagesContext(`./nutriScore/${nutriScore}${imagesExt}`) : '';

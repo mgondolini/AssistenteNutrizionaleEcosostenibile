@@ -210,6 +210,7 @@ exports.delete_component = async (req, res) => {
   const { mealName } = req.query;
   const { date } = req.query;
   const { barcode } = req.query;
+  const { quantity } = req.query;
 
   const query = { username };
 
@@ -223,7 +224,7 @@ exports.delete_component = async (req, res) => {
       } else {
         // Se esistono pasti chiamo questa funzione che: cerca il pasto corrispondente al nome dato,
         // cerca il componente e lo elimina
-        mealControllerUtils.pullComponent(userMeals, date, mealName, barcode, res);
+        mealControllerUtils.pullComponent(userMeals, date, mealName, barcode, quantity, res);
       }
     })
     .catch((err) => {
