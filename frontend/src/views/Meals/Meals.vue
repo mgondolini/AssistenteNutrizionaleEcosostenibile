@@ -243,6 +243,19 @@ export default {
         chart: {
           type: 'bar',
           height: 500,
+          animations: {
+            enabled: true,
+            easing: 'easeinout',
+            speed: 800,
+            animateGradually: {
+              enabled: true,
+              delay: 150,
+            },
+            dynamicAnimation: {
+              enabled: true,
+              speed: 350,
+            },
+          },
         },
         plotOptions: {
           bar: {
@@ -437,6 +450,7 @@ export default {
       console.log(`Current date: ${this.currentDate}`);
       this.showMealsByDate(this.currentDate);
       this.computeDayNutritionFact(this.currentDate);
+      this.triggerChartTab();
     },
     incrementDate() {
       if (this.currentDate.getDate() === this.options.maxDate.getDate()
