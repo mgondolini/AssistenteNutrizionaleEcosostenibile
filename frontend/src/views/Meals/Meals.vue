@@ -6,7 +6,7 @@
         <b-icon icon="chevron-left" font-scale="1.5" variant="info"></b-icon>
       </b-button>
       <p class="date-p text-center">{{ $d(currentDate, 'short') }}</p>
-      <b-button  :disabled="disableBtn" @click="incrementDate" variant="link">
+      <b-button v-if="!disableBtn" @click="incrementDate" variant="link">
         <b-icon icon="chevron-right" font-scale="1.5" variant="info"></b-icon>
       </b-button>
       <b-button variant="link"
