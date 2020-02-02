@@ -11,9 +11,6 @@ module.exports = function (app) {
     .get(userController.load_user)
     .put(userController.update_user);
 
-  app.route('/api/achievements')
-    .get(userController.getAchievements);
-
   app.route('/api/user/:username')
     .delete(userController.delete_user);
 

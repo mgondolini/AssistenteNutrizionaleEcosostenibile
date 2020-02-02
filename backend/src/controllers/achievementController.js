@@ -3,8 +3,8 @@ const auth = require('./authController');
 
 const User = mongoose.model('User');
 
-const carbonMax = 100;
-const waterMax = 100;
+const carbonThreshold = 100;
+const waterThreshold = 100;
 
 /* get user's achievements */
 exports.getAchievements = function getAchievements(req, res) {
@@ -23,28 +23,72 @@ exports.getAchievements = function getAchievements(req, res) {
 };
 
 /* check achievements, maybe this is useless */
-exports.checkAchievements = function checkAchievements(username, carbon, water) {
-  // const username = auth.getUsername(req.headers.token);
-  // firstReg
-  // firstMeal
-  // greenMeal
-  // waterSaverMeal
-  // perfMeal
-  // tenGreenMeal
-  // tenWaterSaverMeal
-  // tenPerfMeal
+exports.checkAchievements = function checkAchievements(meal, first, userMeals, res) {
+  /*
+  const ach = [{ title: 'firstReg', count: 1 },
+    { title: 'firstMeal', count: 0 },
+    { title: 'greenMeal', count: 0 },
+    { title: 'waterSaverMeal', count: 0 },
+    { title: 'perfMeal', count: 0 },
+    { title: 'tenGreenMeal', count: 0 },
+    { title: 'tenWaterSaverMeal', count: 0 },
+    { title: 'tenPerfMeal', count: 0 }];
+  */
+  const carbon = meal.carbon_footprint_tot;
+  const water = meal.water_footprint_tot;
+  const { username } = userMeals;
   User.findOne({ username })
     .exec()
     .then((user) => {
       // check achievements
-      const ach = user.achievements;
-      if (carbon <= carbonMax) {
-        //
+      const newAch = user.achievements;
+      let cNewAch = 0;
+      if (first) {
+        newAch[1].count = 1;
+        cNewAch += 1;
       }
-      global.log(user);
+      if (carbon <= carbonThreshold) {
+        newAch[2].count += 1;
+        if (newAch[2].count === 1) cNewAch += 1;
+        if (newAch[2].count % 10 === 0) {
+          newAch[5] += 1;
+          if (newAch[5].count === 1) cNewAch += 1;
+        }
+      }
+      if (water <= waterThreshold) {
+        newAch[3].count += 1;
+        if (newAch[3].count === 1) cNewAch += 1;
+        if (newAch[3].count % 10 === 0) {
+          newAch[6].count += 1;
+          if (newAch[6].count === 1) cNewAch += 1;
+        }
+      }
+      if (carbon <= carbonThreshold && water <= waterThreshold) {
+        newAch[4].count += 1;
+        if (newAch[4].count === 1) cNewAch += 1;
+        if (newAch[4].count % 10 === 0) {
+          newAch[7].count += 1;
+          if (newAch[7].count === 1) cNewAch += 1;
+        }
+      }
+      const updateUser = user;
+      updateUser.achievements = newAch;
+      User.findOneAndUpdate({ username }, updateUser, { new: true })
+        .exec()
+        .then(() => {
+          // Ok
+          global.log(`Achievements updated: ${newAch}`);
+          res.status(200).send({ userMeals, countNewAch: cNewAch });
+        })
+        .catch((err) => {
+          // Error
+          global.log(`Error while updating user achievements ${err}`); // DEBUG
+          res.status(500).send({ description: 'internal_server_error' });
+        });
     })
     .catch((err) => {
-      // manage errors
-      global.log(err);
+      // Errors
+      global.log(`Error while reading user achievements ${err}`);
+      res.status(500).send({ description: 'internal_server_error' });
     });
 };
