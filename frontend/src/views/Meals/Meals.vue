@@ -6,7 +6,7 @@
         <b-icon icon="chevron-left" font-scale="1.5" variant="info"></b-icon>
       </b-button>
       <p class="date-p text-center">{{ $d(currentDate, 'short') }}</p>
-      <b-button  v-if="!disableBtn" @click="incrementDate" variant="link">
+      <b-button  :disabled="disableBtn" @click="incrementDate" variant="link">
         <b-icon icon="chevron-right" font-scale="1.5" variant="info"></b-icon>
       </b-button>
       <b-button variant="link"
@@ -235,7 +235,7 @@ export default {
       series: [
         {
           name: '',
-          data: [],
+          data: [0, 0, 0, 0, 0, 0, 0, 0],
         },
       ],
 
@@ -245,11 +245,11 @@ export default {
           height: 500,
           animations: {
             enabled: true,
-            easing: 'easeinout',
+            easing: 'linear',
             speed: 800,
             animateGradually: {
               enabled: true,
-              delay: 150,
+              delay: 300,
             },
             dynamicAnimation: {
               enabled: true,
