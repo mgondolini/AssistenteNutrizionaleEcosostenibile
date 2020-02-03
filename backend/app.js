@@ -65,6 +65,15 @@ app.use((req, res) => {
   res.status(404).send({ url: `${req.originalUrl} not found` });
 });
 
+// Handle production
+if(process.env.NODE_ENV === 'production') {
+  // Static folder
+  app.use(express.static(__dirname + '/public/'));
+
+  // Handle SPA
+  app.get(/.*/, (req, res) => res.sendFile(__dirname + '/public/index.html'));
+}
+
 app.listen(config.port, () => {
   global.log(`Node API server started on port ${config.port}`);
 });
