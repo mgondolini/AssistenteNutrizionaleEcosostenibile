@@ -16,6 +16,7 @@
     "apexcharts": "^3.10.1",
     "axios": "^0.19.0",
     "bootstrap-vue": "^2.3.0",
+    "d3": "^5.15.0",
     "quagga": "^0.12.1",
     "vue": "^2.6.10",
     "vue-apexcharts": "^1.5.1",
@@ -36,7 +37,7 @@
     "eslint": "^5.16.0",
     "eslint-plugin-vue": "^5.0.0",
     "lint-staged": "^9.4.2",
-    "node-sass": "^4.13.0",
+    "node-sass": "^4.13.1",
     "sass-loader": "^8.0.0",
     "vue-cli-plugin-i18n": "^0.6.0",
     "vue-template-compiler": "^2.6.10"
