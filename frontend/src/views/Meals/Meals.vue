@@ -528,7 +528,9 @@ export default {
     triggerChartTab() {
       console.log('Chart tab triggered');
       this.$refs.barchart.refresh();
-      this.$refs.barchart.updateSeries([{ name: '', data: this.nutritionValues }]);
+      setTimeout(() => {
+        this.$refs.barchart.updateSeries([{ name: '', data: this.nutritionValues }]);
+      }, 200);
     },
 
     // Utils
