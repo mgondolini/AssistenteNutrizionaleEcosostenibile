@@ -148,6 +148,12 @@
             </b-button>
           </footer>
         </b-modal>
+        <b-modal id="modal-ach" title="New achievement" hide-footer>
+          <div class="d-block text-center">
+            {{ this.achMsgModal }}
+          </div>
+          <b-button class="mt-3" block @click="hideAchModal">{{ $t('achModalBtn')}}</b-button>
+        </b-modal>
       </b-tab>
 
       <b-tab :title="$t('meals_graph')" @click="triggerChartTab">
@@ -185,6 +191,8 @@ export default {
   },
   data() {
     return {
+      achMsgModal: '',
+
       // Meals
       mealsList: [],
       mealsListByDate: [],
@@ -597,14 +605,25 @@ export default {
       this.$store.state.http.put(`api/meals/${body.meal_name}/${body.timestamp}`, body)
         .then((response) => {
           this.mealsList = [];
-          this.mealsList = response.data.meals;
+          console.log('saveMeal resposnse: ');
+          console.log(response.data);
+          this.mealsList = response.data.userMeals.meals;
           this.showMealsByDate(this.currentDate);
           this.hideModal();
+          const c = response.data.countNewAch;
+          if (c > 0) {
+            // new achievements, show modal
+            this.achMsgModal = `${c} ${this.$i18n.t('newAchTxt')}`;
+            this.$bvModal.show('modal-ach');
+          }
         })
         .catch(error => this.checkError(error.response.data.description));
     },
     hideModal() {
       this.$refs['modal-save'].hide();
+    },
+    hideAchModal() {
+      this.$bvModal.hide('modal-ach');
     },
     onMealNameChange() {
       if (this.mealName.length === 0) this.mealNameState = null;
@@ -645,7 +664,9 @@ export default {
       "saturated_fats": "Saturated_fats",
       "calcium": "Calcium",
       "sodium": "Sodium"
-    }
+    },
+    "newAchTxt": "new achievements!",
+    "achModalBtn": "Great!"
   },
   "it": {
     "your_meals": "I tuoi pasti",
@@ -673,7 +694,9 @@ export default {
       "saturated_fats": "Grassi_saturi",
       "calcium": "Calcio",
       "sodium": "Sodio"
-    }
+    },
+    "newAchTxt": "nuovi obiettivi raggiunti!",
+    "achModalBtn": "Fantastico!"
   }
 }
 </i18n>
