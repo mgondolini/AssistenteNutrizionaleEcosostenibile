@@ -87,9 +87,11 @@
                       class="card-components mb-3"
                     ><b-card-text align="center" class="card-components-text m-0 p-0">
                         <p class="component-p">
-                          <b><a :href="'/info_prod?ean='+component.barcode">
-                            {{ component.product_name }}
-                          </a></b>
+                          <b>
+                            <b-link href="#" @click="goToInfoProd(component.barcode)">
+                              {{ component.product_name }}
+                            </b-link>
+                          </b>
                         </p>
                         <p class="component-p">
                           {{ component.quantity }} {{component.measure_unit}}
@@ -531,6 +533,9 @@ export default {
       setTimeout(() => {
         this.$refs.barchart.updateSeries([{ name: '', data: this.nutritionValues }]);
       }, 200);
+    },
+    goToInfoProd(barcode) {
+      this.$root.$emit('selectProduct', barcode);
     },
 
     // Utils
