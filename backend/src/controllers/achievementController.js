@@ -51,7 +51,7 @@ exports.checkAchievements = function checkAchievements(meal, first, userMeals, r
         newAch[2].count += 1;
         if (newAch[2].count === 1) cNewAch += 1;
         if (newAch[2].count % 10 === 0) {
-          newAch[5] += 1;
+          newAch[5].count += 1;
           if (newAch[5].count === 1) cNewAch += 1;
         }
       }
@@ -107,7 +107,7 @@ exports.deleteAchievements = async (meal, username, first) => {
       if (carbon <= carbonThreshold) {
         if (newAch[2].count > 0) newAch[2].count -= 1;
         if (newAch[2].count % 10 === 9) {
-          newAch[5] -= 1;
+          newAch[5].count -= 1;
         }
       }
       if (water <= waterThreshold) {
