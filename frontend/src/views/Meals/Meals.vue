@@ -2,7 +2,13 @@
   <div class="meals">
     <h1> {{ $t('your_meals') }} </h1>
     <b-card class="card-calendar p-0">
+      <b-button @click="decrementDate" variant="link">
+        <b-icon icon="chevron-left" font-scale="1.5" variant="info"></b-icon>
+      </b-button>
       <p class="date-p text-center">{{ $d(currentDate, 'short') }}</p>
+      <b-button :disabled="disableBtn" @click="incrementDate" variant="link">
+        <b-icon icon="chevron-right" font-scale="1.5" :variant="arrowRightVariant"></b-icon>
+      </b-button>
       <b-button variant="link"
         @click="$refs.calendar.dp.show()"
       ><b-icon icon="calendar" font-scale="1.5" variant="secondary"></b-icon>
@@ -12,7 +18,8 @@
         :config="options"
         value="calendar"
         class="meals-datepicker"
-        @dp-change="setDateAndShow(calendar.value)"> </date-picker>
+        @dp-change="setDateAndShowMeals(calendar.value)">
+      </date-picker>
     </b-card>
 
     <b-tabs content-class="mt-3" justified>
@@ -205,6 +212,8 @@ export default {
         showClear: false,
         showClose: true,
       },
+      disableBtn: false,
+      arrowRightVariant: 'info',
 
       // Daily nutrition values
       nutritionFact: {
@@ -222,13 +231,12 @@ export default {
       dailyRequirement: Object,
       nutritionValues: [],
       nutritionKeys: [],
-      mealFound: Boolean,
 
       // Graph
       series: [
         {
           name: '',
-          data: [],
+          data: [0, 0, 0, 0, 0, 0, 0, 0],
         },
       ],
 
@@ -236,6 +244,19 @@ export default {
         chart: {
           type: 'bar',
           height: 500,
+          animations: {
+            enabled: true,
+            easing: 'linear',
+            speed: 800,
+            animateGradually: {
+              enabled: true,
+              delay: 300,
+            },
+            dynamicAnimation: {
+              enabled: true,
+              speed: 350,
+            },
+          },
         },
         plotOptions: {
           bar: {
@@ -283,10 +304,13 @@ export default {
           labels: {
             formatter(y) {
               let label = 0;
-              if (y < 0) {
-                // if (y === -100) label = `${0}%`;
-                label = `${(y).toFixed(0)}%`;
-              } else label = `+${(y).toFixed(0)}%`;
+              if (y < 0) label = `${(y).toFixed(0)}%`;
+              else {
+                label = `+${(y).toFixed(0)}%`;
+                if (y > 100) {
+                  label = `Overrun 100% by +${(y - 100).toFixed(0)}%;`;
+                }
+              }
               return label;
             },
           },
@@ -307,6 +331,7 @@ export default {
     };
   },
   methods: {
+    // Main methods
     loadMealsList() {
       console.log(this.currentDate);
 
@@ -399,6 +424,14 @@ export default {
       let found = false;
       this.mealsListByDate = [];
 
+      if (this.currentDate.getDate() === this.options.maxDate.getDate()
+        && this.currentDate.getMonth() === this.options.maxDate.getMonth()) {
+        this.disableBtn = true;
+        this.arrowRightVariant = 'light';
+      } else {
+        this.arrowRightVariant = 'info';
+      }
+
       this.UTCDate = Date.UTC(
         this.currentDate.getFullYear(),
         this.currentDate.getMonth(),
@@ -416,11 +449,29 @@ export default {
 
       if (!found) this.noMeals = 'no_meals';
     },
-    setDateAndShow(date) {
+    setDateAndShowMeals(date) {
       this.currentDate = new Date(date);
       console.log(`Current date: ${this.currentDate}`);
       this.showMealsByDate(this.currentDate);
       this.computeDayNutritionFact(this.currentDate);
+      this.triggerChartTab();
+    },
+    incrementDate() {
+      if (this.currentDate.getDate() === this.options.maxDate.getDate()
+      && this.currentDate.getMonth() === this.options.maxDate.getMonth()) {
+        this.disableBtn = true;
+      } else {
+        this.currentDate.setDate(this.currentDate.getDate() + 1);
+        this.calendar.value = this.currentDate;
+        this.setDateAndShowMeals(this.currentDate);
+        this.disableBtn = false;
+      }
+    },
+    decrementDate() {
+      this.disableBtn = false;
+      this.currentDate.setDate(this.currentDate.getDate() - 1);
+      this.calendar.value = this.currentDate;
+      this.setDateAndShowMeals(this.currentDate);
     },
     getUserDailyRequirement() {
       this.$store.state.http.get('/api/user')
@@ -475,10 +526,14 @@ export default {
       console.log(this.nutritionValues);
     },
     triggerChartTab() {
-      console.log('Tab triggered');
+      console.log('Chart tab triggered');
       this.$refs.barchart.refresh();
-      this.$refs.barchart.updateSeries([{ name: '', data: this.nutritionValues }]);
+      setTimeout(() => {
+        this.$refs.barchart.updateSeries([{ name: '', data: this.nutritionValues }]);
+      }, 200);
     },
+
+    // Utils
     getDailyNutritionRatio(value, dailyRequirement) {
       return (value / dailyRequirement) * 100;
     },
