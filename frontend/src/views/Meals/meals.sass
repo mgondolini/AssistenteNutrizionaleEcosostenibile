@@ -2,6 +2,7 @@ $header-color: #17a2b8
 $border-color: #d3d3d3
 $black: #000
 $white: #fff
+$components-card-background: #17a2b80a
 
 .meals
   h1
@@ -11,12 +12,6 @@ $white: #fff
     margin-right: 3%
     margin-top: 3%
     padding-bottom: 0
-
-  .remove
-    height: 1.25rem
-    margin-left: 8rem
-    margin-top: 3rem
-    width: 1.25rem
 
   .add
     width: 10%
@@ -30,7 +25,7 @@ $white: #fff
 
     .date-p
       display: inline-block
-      width: 75%
+      width: 30%
 
     .calendar
       float: left
@@ -74,6 +69,8 @@ $white: #fff
   .add-component
     display: flex
 
+  .components-card
+    background-color: $components-card-background
 
   @media only screen and (min-width: 380px)
     .card-img-left
@@ -120,6 +117,12 @@ $white: #fff
       float: left
       height: 4rem
 
+    .remove-btn
+      float: right
+      height: 1.25rem
+      margin: 0
+      width: 1.25rem
+
   @media only screen and (max-width: 480px)
     .card-img-left
       align-self: center
@@ -164,6 +167,13 @@ $white: #fff
     .nutri-score-img
       float: left
       height: 4rem
+
+
+    .remove-btn
+      float: right
+      height: 1.25rem
+      margin: 0
+      width: 1.25rem
 
 
   @media only screen and (min-width: 600px)
@@ -251,4 +261,14 @@ $white: #fff
       display: inline-block
       width: 85%
 
+    .remove
+      height: 1.25rem
+      margin-left: 8rem
+      margin-top: 3rem
+      width: 1.25rem
 
+
+  @media only screen and (min-width: 1000px)
+    .chart-box
+      margin: 0 auto
+      width: 60%

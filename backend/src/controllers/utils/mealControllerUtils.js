@@ -216,36 +216,63 @@ exports.updateMealValues = async (components, timestamp, mealName, userMeals, re
     });
 };
 
+exports.decreaseMealValues = (meal, values) => {
+  console.log('decreaseMealValues');
+  meal.energy_kj_tot -= values.energy_kj_tot;
+  meal.energy_kcal_tot -= values.energy_kcal_tot;
+  meal.carbohydrates_tot -= values.carbohydrates_tot;
+  meal.sugars_tot -= values.sugars_tot;
+  meal.fat_tot -= values.fat_tot;
+  meal.saturated_fat_tot -= values.saturated_fat_tot;
+  meal.proteins_tot -= values.proteins_tot;
+  meal.salt_tot -= values.salt_tot;
+  meal.sodium_tot -= values.sodium_tot;
+  meal.calcium_tot -= values.calcium_tot;
+  meal.alcohol_tot -= values.alcohol_tot;
+  meal.fiber_tot -= values.fiber_tot;
+  meal.carbon_footprint_tot -= values.carbon_footprint_tot;
+  meal.water_footprint_tot -= values.water_footprint_tot;
+};
+
 /** Pulls a component from components array of a meal */
-exports.pullComponent = async (userMeals, timestamp, mealName, barcode, res) => {
+exports.pullComponent = async (userMeals, timestamp, mealName, barcode, quantity, res) => {
   // Controllo se esiste un pasto con il nome passato
   // e tolgo il componente corrispondente la barcode
   let updated = false;
-  userMeals.meals.forEach((meal) => {
-    if (meal.timestamp.getUTCDate() === new Date(timestamp).getUTCDate()
-      && meal.timestamp.getUTCMonth() === new Date(timestamp).getUTCMonth()
-      && meal.timestamp.getUTCFullYear() === new Date(timestamp).getUTCFullYear()) {
-      if (meal.meal_name === mealName) {
-        meal.components.forEach((component) => {
-          // eslint-disable-next-line eqeqeq
-          if (component.barcode == barcode) {
-            meal.components = meal.components.pull(component);
-            updated = true;
+  productControllerUtils.computeProductValues(barcode, quantity, res)
+    .then((values) => {
+      userMeals.meals.forEach((meal) => {
+        if (meal.timestamp.getUTCDate() === new Date(timestamp).getUTCDate()
+        && meal.timestamp.getUTCMonth() === new Date(timestamp).getUTCMonth()
+        && meal.timestamp.getUTCFullYear() === new Date(timestamp).getUTCFullYear()) {
+          if (meal.meal_name === mealName) {
+            meal.components.forEach((component) => {
+            // eslint-disable-next-line eqeqeq
+              if (component.barcode == barcode) {
+                console.log(`original meal ${meal}`);
+                meal.components = meal.components.pull(component);
+                this.decreaseMealValues(meal, values);
+                console.log(`meal decreased ${meal}`);
+                updated = true;
+              }
+            });
           }
-        });
-      }
-    }
-  });
-
-  if (updated) {
-    userMeals.save()
-      .then((meals) => res.status(200).send(meals))
-      .catch((err) => {
-        global.log(`Error while deleting component: ${err}`);
-        res.status(500).send({ description: 'internal_server_error' });
+        }
       });
-  } else {
-    // Se non ho trovato il pasto mando un messaggio di errore
-    res.status(400).send({ description: 'meal_not_found' });
-  }
+      console.log(`updated ${updated}`);
+      if (updated) {
+        userMeals.save()
+          .then((meals) => {
+            global.log(meals);
+            res.status(200).send(meals);
+          })
+          .catch((err) => {
+            global.log(`Error while deleting component: ${err}`);
+            res.status(500).send({ description: 'internal_server_error' });
+          });
+      } else {
+      // Se non ho trovato il pasto mando un messaggio di errore
+        res.status(400).send({ description: 'meal_not_found' });
+      }
+    });
 };
