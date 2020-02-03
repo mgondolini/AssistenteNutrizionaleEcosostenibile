@@ -1,6 +1,6 @@
 import datePicker from 'vue-bootstrap-datetimepicker';
-import Achievements from './Achievements.vue';
 
+const aContext = require.context('@/assets/achievement/', false);
 export default {
   data() {
     return {
@@ -51,6 +51,7 @@ export default {
           placeholder: 'Enter your allergens',
         },
       },
+      achievements: [],
       errors: false,
       options: {
         format: 'YYYY-MM-DD',
@@ -62,7 +63,6 @@ export default {
   },
   components: {
     datePicker,
-    Achievements,
   },
   computed: {
     cardStates() {
@@ -194,6 +194,17 @@ export default {
         if (response.data.height) this.campi.height.value = response.data.height;
 
         if (response.data.allergens != null) this.campi.allergens.value = response.data.allergens;
+
+        const ach = response.data.achievements;
+        // ach
+        ach.forEach((a) => {
+          this.achievements.push({
+            title: this.$i18n.t(a.title),
+            count: a.count,
+            img: aContext(`./${a.title}.svg`),
+            style: a.count > 0 ? 'border-color reached' : 'border-color notReached',
+          });
+        });
       })
       .catch(error => this.checkError(error,
         error.response.status));
