@@ -13,7 +13,7 @@
         </b-media>
       </b-card>
       <div class="containerProd">
-        <b-tabs class="tab-content mt-3" justified id="myTabContent">
+        <b-tabs content-class="mt-3" justified id="myTabContent">
           <b-tab class="tab-content-info" :title="$t('tab_nutrition_title')" active>
             <div class="firstInfo">
               <b-img center :src="nutriScoreImgPath" alt="Nutri score image"></b-img>
@@ -33,7 +33,7 @@
                     <td>
                       <b-img center :src="fatLvlImgPath" alt="Fat level indicator"></b-img>
                     </td>
-                    <td>
+                    <td class="infoNutrTable">
                       {{ fat }} g Fat in {{ fatLvl }} quantity
                     </td>
                   </tr>
@@ -41,7 +41,7 @@
                     <td>
                       <b-img center :src="satFatLvlImgPath" alt="Fat level indicator"></b-img>
                     </td>
-                    <td>
+                    <td class="infoNutrTable">
                       {{ saturatedFat }} g Saturated fat in {{ satFatLvl }} quantity
                     </td>
                   </tr>
@@ -49,7 +49,7 @@
                     <td>
                       <b-img center :src="sugarLvlImgPath" alt="Fat level indicator"></b-img>
                     </td>
-                    <td>
+                    <td class="infoNutrTable">
                       {{ sugar }} g Sugar in {{ sugarLvl }} quantity
                     </td>
                   </tr>
@@ -57,46 +57,46 @@
                     <td>
                       <b-img center :src="saltLvlImgPath" alt="Fat level indicator"></b-img>
                     </td>
-                    <td>
+                    <td class="infoNutrTable">
                       {{ salt }} g Salt in {{ saltLvl }} quantity
                     </td>
                   </tr>
 
                 </table>
               </div>
-              <div class="nutritionTable">
-                <div>
-                  <p>
-                    <label for="qty"> {{ $t('portion') }} </label>
-                    <input
-                      id="qty"
-                      v-model="qty"
-                    >
-                  </p>
-                </div>
-                <b-table striped hover :fields="nutritionTableFields"
-                :items="nutritionTableItems">
-                  <!-- A custom formatted header cell for field 'nutriFactLocalized' -->
-                  <template v-slot:head(nutriFactLocalized)="data">
-                    {{ $t('nutriFacts') }}
-                  </template>
-                  <!-- A virtual column for computing the localization of the word -->
-                  <template v-slot:cell(nutriFactLocalized)="data">
-                    {{ $t(data.item.nutriFact) }}
-                  </template>
-                  <!-- A custom formatted header cell for field 'value'
-                  TODO PARSE INT AND TRIM
-                  -->
-                  <template v-slot:head(value)="data">
-                    Per {{ qty }} {{ productBaseUnitMeasure }}
-                  </template>
-                  <!-- A virtual column for computing the quantity
-                  according to the portion inserted by the user -->
-                  <template v-slot:cell(value)="data">
-                    {{ ((data.item.for100g * qty / 100) || 0).toFixed(2) + ' ' + data.item.unit }}
-                  </template>
-                </b-table>
+            </div>
+            <div class="nutritionTable">
+              <div class="portion">
+                <p>
+                  <label class="labelPortion" for="qty"> {{ $t('portion') }} </label>
+                  <input
+                    id="qty"
+                    v-model="qty"
+                  >
+                </p>
               </div>
+              <b-table class="tableNutri" striped hover :fields="nutritionTableFields"
+              :items="nutritionTableItems">
+                <!-- A custom formatted header cell for field 'nutriFactLocalized' -->
+                <template class="headerTable" v-slot:head(nutriFactLocalized)="data">
+                  {{ $t('nutriFacts') }}
+                </template>
+                <!-- A virtual column for computing the localization of the word -->
+                <template v-slot:cell(nutriFactLocalized)="data">
+                  {{ $t(data.item.nutriFact) }}
+                </template>
+                <!-- A custom formatted header cell for field 'value'
+                TODO PARSE INT AND TRIM
+                -->
+                <template v-slot:head(value)="data">
+                  Per {{ qty }} {{ productBaseUnitMeasure }}
+                </template>
+                <!-- A virtual column for computing the quantity
+                according to the portion inserted by the user -->
+                <template v-slot:cell(value)="data">
+                  {{ ((data.item.for100g * qty / 100) || 0).toFixed(2) + ' ' + data.item.unit }}
+                </template>
+              </b-table>
             </div>
           </b-tab>
           <b-tab class="tab-content-info"  :title="$t('tab_ingredients_title')">

@@ -1,14 +1,15 @@
 @import './custom.sass'
 .dark
   background-color: rgba($dark_bg, .9)
-  .meals
+  // Meals & infoProd page DarkMode
+  .meals, .productInfo
     .mealTitle
       color: $white
     .card-calendar
       background-color: transparent
       .date-p
         color: $white
-    .containerMeal
+    .containerMeal, .containerProd
       background-color: $dark_bg_card
       #myTabContent
         .nav-justified
@@ -39,13 +40,30 @@
               .component-p
                 color: $white
                 a
-                  color: $white   
-
+                  color: $white
+      .firstInfo
+        .nutritionIndicators
+          .infoNutrTable
+            color: $white
+      .nutritionTable
+        .portion
+          .labelPortion
+            color: $white
+        .tableNutri
+          thead, tbody
+            color: $white
+          tbody
+            text-align: center
+            tr:hover
+              td
+                background-color: $dark_bg_link
+  // Home darkeMode
   .msgTitle
     color: $white
   .our_mission
     background-color: $bg_dark_mission
-  
+
+  // Other pages darkMode
   .login, .registration, .container, .productInfo, .containerFather
     .cardLogin, .cardR
       background-color: $dark_bg_card
@@ -77,12 +95,13 @@
             font-weight: bolder
   
   .vc_custom_1548165107261
-    background-color: #0D6B54 !important
+    background-color: $card_mission_dark !important
     .textBlock
       color: $white
+  // Modal DarkMode
   #modal-error, #modal-selectProduct
     .modal-content
-      background-color: #bbb
+      background-color: $modal_bg
   .productInfo
     .productData
       .productCard
@@ -90,6 +109,7 @@
         .media
           .media-body
             color: $white
+  // Custom sass darkMode
   span
     color: $white
   .buttonsDiv, .buttonsDisposition
