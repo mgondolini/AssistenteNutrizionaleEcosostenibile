@@ -2,6 +2,7 @@
 const mongoose = require('mongoose');
 const authController = require('./authController');
 const mealControllerUtils = require('./utils/mealControllerUtils.js');
+const achievementController = require('./achievementController.js');
 
 const Meals = mongoose.model('Meals');
 
@@ -164,6 +165,26 @@ exports.delete_meal = async (req, res) => {
   };
 
   global.log(`UPDATE QUERY -> ${JSON.stringify(update)}`); // DEBUG
+
+  await Meals.findOne(query)
+    .exec()
+    .then((uMeal) => {
+      const first = uMeal.meals.length === 1;
+      const myDate = new Date(date);
+      uMeal.meals.forEach((m) => {
+        if ((m.meal_name === mealName)
+          && (m.timestamp.getUTCDate() === myDate.getUTCDate())
+          && (m.timestamp.getUTCMonth() === myDate.getUTCMonth())
+          && (m.timestamp.getUTCFullYear() === myDate.getUTCFullYear())) {
+          if (m.is_closed) {
+            achievementController.deleteAchievements(m, username, first);
+          }
+        }
+      });
+    })
+    .catch((err) => {
+      global.log(err);
+    });
 
   await Meals.updateOne(query, update)
     .exec()

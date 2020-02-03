@@ -22,7 +22,7 @@ exports.getAchievements = function getAchievements(req, res) {
     });
 };
 
-/* check achievements, maybe this is useless */
+/* check achievements on meal close */
 exports.checkAchievements = function checkAchievements(meal, first, userMeals, res) {
   /*
   const ach = [{ title: 'firstReg', count: 1 },
@@ -91,4 +91,43 @@ exports.checkAchievements = function checkAchievements(meal, first, userMeals, r
       global.log(`Error while reading user achievements ${err}`);
       res.status(500).send({ description: 'internal_server_error' });
     });
+};
+
+exports.deleteAchievements = async (meal, username, first) => {
+  const carbon = meal.carbon_footprint_tot;
+  const water = meal.water_footprint_tot;
+  await User.findOne({ username })
+    .exec()
+    .then(async (user) => {
+      // check achievements
+      const newAch = user.achievements;
+      if (first) {
+        newAch[1].count = 0;
+      }
+      if (carbon <= carbonThreshold) {
+        if (newAch[2].count > 0) newAch[2].count -= 1;
+        if (newAch[2].count % 10 === 9) {
+          newAch[5] -= 1;
+        }
+      }
+      if (water <= waterThreshold) {
+        if (newAch[3].count > 0) newAch[3].count -= 1;
+        if (newAch[3].count % 10 === 9) {
+          newAch[6].count -= 1;
+        }
+      }
+      if (carbon <= carbonThreshold && water <= waterThreshold) {
+        if (newAch[4].count > 0) newAch[4].count -= 1;
+        if (newAch[4].count % 10 === 9) {
+          newAch[7].count -= 1;
+        }
+      }
+      const updateUser = user;
+      updateUser.achievements = newAch;
+      await User.findOneAndUpdate({ username }, updateUser, { new: true })
+        .exec()
+        .then()
+        .catch();
+    })
+    .catch();
 };

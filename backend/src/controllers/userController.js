@@ -9,11 +9,12 @@ const Who = mongoose.model('who');
 function getDailyRequirementQuery(dataN, sex) {
   const ageDiffMs = new Date().getTime() - dataN;
   const ageDate = new Date(ageDiffMs);
-  const age = Math.abs(ageDate.getFullYear() - 1970);
+  let age = Math.abs(ageDate.getFullYear() - 1970);
   const s = sex === 'm' ? 'male' : 'female';
+  age = age === 0 ? 1 : age;
   return {
-    age_min: { $lt: age },
-    age_max: { $gt: age },
+    age_min: { $lte: age },
+    age_max: { $gte: age },
     sex: s,
   };
 }

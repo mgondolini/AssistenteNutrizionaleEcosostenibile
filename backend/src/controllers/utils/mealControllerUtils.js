@@ -40,11 +40,13 @@ exports.addMeal = (req, userMeals, res) => {
   const { timestamp } = req.body.meals;
   const updateMeal = new Meals(userMeals);
 
+  const myDate = new Date(timestamp);
+
   // controllo se ci sono pasti per lo stesso utente con lo stesso nome che voglio inserire
   userMeals.meals.forEach((m) => {
-    if (m.timestamp.getUTCDate() === new Date(timestamp).getUTCDate()
-      && m.timestamp.getUTCMonth() === new Date(timestamp).getUTCMonth()
-      && m.timestamp.getUTCFullYear() === new Date(timestamp).getUTCFullYear()) {
+    if (m.timestamp.getUTCDate() === myDate.getUTCDate()
+      && m.timestamp.getUTCMonth() === myDate.getUTCMonth()
+      && m.timestamp.getUTCFullYear() === myDate.getUTCFullYear()) {
       if (m.meal_name === mealName) {
         exists = true;
       }
