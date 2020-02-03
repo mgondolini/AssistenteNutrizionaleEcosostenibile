@@ -23,7 +23,7 @@
       </div>
       <b-form-select v-model="ean" :options="eanOptions"></b-form-select>
       <div>
-        <b-button v-on:click="loadProductInfo()">{{$t('lookup')}}</b-button>
+        <b-button v-on:click="loadProductInfo(ean)">{{$t('lookup')}}</b-button>
         <b-button v-on:click="inputMode = 'SELECT'">{{$t('back')}}</b-button>
       </div>
     </div>
