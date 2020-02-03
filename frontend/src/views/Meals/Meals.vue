@@ -6,8 +6,8 @@
         <b-icon icon="chevron-left" font-scale="1.5" variant="info"></b-icon>
       </b-button>
       <p class="date-p text-center">{{ $d(currentDate, 'short') }}</p>
-      <b-button v-if="!disableBtn" @click="incrementDate" variant="link">
-        <b-icon icon="chevron-right" font-scale="1.5" variant="info"></b-icon>
+      <b-button :disabled="disableBtn" @click="incrementDate" variant="link">
+        <b-icon icon="chevron-right" font-scale="1.5" :variant="arrowRightVariant"></b-icon>
       </b-button>
       <b-button variant="link"
         @click="$refs.calendar.dp.show()"
@@ -213,6 +213,7 @@ export default {
         showClose: true,
       },
       disableBtn: false,
+      arrowRightVariant: 'info',
 
       // Daily nutrition values
       nutritionFact: {
@@ -426,6 +427,9 @@ export default {
       if (this.currentDate.getDate() === this.options.maxDate.getDate()
         && this.currentDate.getMonth() === this.options.maxDate.getMonth()) {
         this.disableBtn = true;
+        this.arrowRightVariant = 'light';
+      } else {
+        this.arrowRightVariant = 'info';
       }
 
       this.UTCDate = Date.UTC(
