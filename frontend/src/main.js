@@ -51,6 +51,9 @@ const store = new Vuex.Store({
   },
 });
 
+if (localStorage.ecoAssToken === undefined) {
+  localStorage.ecoAssToken = 'InvalidToken';
+}
 if (localStorage.ecoAssToken !== 'InvalidToken') {
   const t = localStorage.ecoAssToken;
   const u = localStorage.ecoAssUser;

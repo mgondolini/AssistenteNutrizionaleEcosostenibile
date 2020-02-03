@@ -220,6 +220,12 @@
       </div>
       <b-button class="mt-3" block @click="hideModal">{{ $t('closeBtn')}}</b-button>
     </b-modal>
+    <b-modal id="modal-ach" :title="$i18n.t('achModalTitle')" hide-footer>
+      <div class="d-block text-center">
+        {{ $t('achMsgModal') }}
+      </div>
+      <b-button class="mt-3" block @click="hideModalAch">{{ $t('achBtnModal')}}</b-button>
+    </b-modal>
   </div>
 </template>
 

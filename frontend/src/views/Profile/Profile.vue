@@ -84,7 +84,23 @@
                   </div>
                 </b-tab>
                 <b-tab class="tab-content-info" :title="$t('achievements')">
-                    <Achievements />
+                    <div>
+                      <div :id="tmp.title" :class="tmp.style"
+                        v-for="tmp in achievements"
+                        v-bind:key="tmp.title" >
+                        <div class="row">
+                          <div class="col-2">
+                            <img class="ach-img1" :src="tmp.img">
+                          </div>
+                          <div class="col-md-8 col-6">
+                            <p class="textTitle"> {{`${tmp.title}`}}</p>
+                          </div>
+                          <div class="col-md-2 col-2">
+                            <p class="textCounter"> {{`${tmp.count}`}}</p>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
                 </b-tab>
               </b-tabs>
             </div>
