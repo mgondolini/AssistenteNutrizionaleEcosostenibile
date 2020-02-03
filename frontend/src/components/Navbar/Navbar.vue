@@ -4,7 +4,7 @@
         <b-icon class="backIcon border rounded" icon="arrow-left-short"
         font-scale="2.5" @click='back'></b-icon>
         <b-navbar-brand class="home" to="/">
-          <img src="../../assets/ecology_f.png">{{navhome}}
+          <img src="../../assets/ecology_f.png" alt="imageLogo">{{navhome}}
         </b-navbar-brand>
         <b-navbar-toggle target="nav-collapse"></b-navbar-toggle>
         <b-collapse id="nav-collapse" class="nav-router" is-nav>
@@ -36,7 +36,7 @@
                 :key="`Lang${i}`"
                 :value="lang"
                 @click="$root.$i18n.locale = lang">
-                <img class="localeFlag" :src="getLocaleFlagPath(lang)">
+                <img class="localeFlag" :src="getLocaleFlagPath(lang)" alt="flag">
                 <span class="localeID"> {{ lang }} </span>
               </b-dropdown-item-button>
             </b-nav-item-dropdown>

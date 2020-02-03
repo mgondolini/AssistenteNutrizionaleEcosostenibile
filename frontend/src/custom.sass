@@ -19,6 +19,8 @@ $black: #000000
 $error: #ff0000
 $bg_dark_mission: #177f48
 $selectedText: antiquewhite
+$components-card-background: #17a2b80a
+$color_bg_card: #343434
 
 #app 
   font-family: 'Avenir', Helvetica, Arial, sans-serif
@@ -57,6 +59,15 @@ $selectedText: antiquewhite
       -webkit-border-radius: 25px
       -moz-border-radius: 25px
       border-radius: 25px
+
+  .disabled
+    pointer-events: none
+    cursor: default
+    text-decoration: none
+    display: inline-block
+  .loginBtn
+    margin: 1% auto
+  
 
 @media (min-width: 768px)
   .buttonsDiv

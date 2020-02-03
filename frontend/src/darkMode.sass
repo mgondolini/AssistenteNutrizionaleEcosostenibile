@@ -1,18 +1,57 @@
 @import './custom.sass'
-//607D8B
 .dark
   background-color: rgba($dark_bg, .9)
+  .meals
+    .mealTitle
+      color: $white
+    .card-calendar
+      background-color: transparent
+      .date-p
+        color: $white
+    .containerMeal
+      background-color: $dark_bg_card
+      #myTabContent
+        .nav-justified
+          .nav-link
+            background-color: $dark_bg_link
+            border-bottom: 1px solid $border_color
+            color: $white
+            font-weight: normal
+          .active
+            background-color: $dark_bg_link_not_active
+            color: $dark_bg_card
+            font-weight: bolder
+        .card-new-meal
+          background-color: transparent
+        .card-last-meals
+          .headerTitle
+            background-color: $dark_bg_card
+            .p-0
+              background-color: transparent
+              border-color: transparent
+          .components-card
+            background-color: $color_bg_card
+            .contentCard
+              color: $white
+          .card-components
+            background-color: $dark_bg_card
+            .card-body
+              .component-p
+                color: $white
+                a
+                  color: $white   
+
   .msgTitle
     color: $white
   .our_mission
     background-color: $bg_dark_mission
-  //Start Login, Registration Style
-  .login, .registration, .container
+  
+  .login, .registration, .container, .productInfo, .containerFather
     .cardLogin, .cardR
       background-color: $dark_bg_card
       .card-title
         color: $white
-      .formIns, #myTabContent
+      .formIns, #myTabContent, .tabsContainer
         .grey-text
           .form-group
             color: $white
@@ -36,11 +75,21 @@
             background-color: $dark_bg_link_not_active
             color: $dark_bg_card
             font-weight: bolder
-  //End Login, Registration Style
+  
   .vc_custom_1548165107261
     background-color: #0D6B54 !important
     .textBlock
       color: $white
+  #modal-error, #modal-selectProduct
+    .modal-content
+      background-color: #bbb
+  .productInfo
+    .productData
+      .productCard
+        background-color: transparent
+        .media
+          .media-body
+            color: $white
   span
     color: $white
   .buttonsDiv, .buttonsDisposition
@@ -49,3 +98,5 @@
       &:hover
         background-color: $background_color_1
         color: $white
+    .disabled
+      color: $white

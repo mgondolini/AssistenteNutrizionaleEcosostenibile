@@ -1,5 +1,5 @@
 <template>
-<div class="container">
+<div class="container profileIntro">
   <div class="row">
     <div class="col-12">
       <div class="card cardR">

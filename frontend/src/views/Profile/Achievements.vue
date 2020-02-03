@@ -58,13 +58,13 @@ export default {
       achievement: [
         {
           key: 1,
-          img: aContext('./first_reg.svg'),
+          img: aContext('./firstReg.svg'),
           title: this.$i18n.t('first_reg'),
           counter: 0,
         },
         {
           key: 2,
-          img: aContext('./first_meal.svg'),
+          img: aContext('./firstMeal.svg'),
           title: this.$i18n.t('first_meal'),
           counter: 1,
         },
