@@ -29,133 +29,72 @@ export default {
   },
   methods: {
     createGraph() {
-      /* eslint-disable no-unused-vars */
-      /* eslint-disable no-multi-assign */
-      /* eslint-disable max-len */
+      const data = [
+        ['bubble1', [10, 20]],
+        ['bubble2', [5, 7]],
+        ['bubble3', [6, 6, 10]],
+        ['bubble4', [12, 14]],
+        ['bubble5', [14, 4]],
+        ['bubble6', [15, 5, 10]],
+        ['bubble7', [10, 10]],
+        ['bubble8', [25, 10]],
+        ['bubble9', [10, 25, 10, 10]],
+        ['bubble10', [55, 10]],
+        ['bubble11', [10, 80, 10, 10]],
+        ['bubble12', [50, 50]],
+      ];
 
-      const width = 500;
-      const height = 500;
-      const padding = 1.5; // separation between same-color circles
-      const clusterPadding = 6; // separation between different-color circles
-      const maxRadius = 25;
+      const color = d3.scale.ordinal().range(['#f1eef6', '#bdc9e1', '#74a9cf', '#0570b0']);
+      const diameter = 500;
 
-      const n = 50; // total number of circles
-      const m = 1; // number of distinct clusters
-
-      const color = d3.scale.category10()
-        .domain(d3.range(m));
-
-      console.log(color);
-
-      // The largest node for each cluster.
-      const clusters = new Array(m);
-
-      const nodes = d3.range(n).map(() => {
-        const i = Math.floor(Math.random() * m);
-        const r = Math.sqrt((i + 1) / m * -Math.log(Math.random())) * maxRadius;
-        const d = { cluster: i, radius: r };
-        if (!clusters[i] || (r > clusters[i].radius)) clusters[i] = d;
-        return d;
-      });
-
-      let tick = null;
-
-      const force = d3.layout.force()
-        .nodes(nodes)
-        .size([width, height])
-        .gravity(0.02)
-        .charge(0)
-        .on('tick', tick)
-        .start();
+      const bubble = d3.layout.pack()
+        .value(d => d3.sum(d[1]))
+        .sort(null)
+        .size([diameter, diameter])
+        .padding(1.5);
+      const arc = d3.svg.arc().innerRadius(0);
+      const pie = d3.layout.pie();
 
       const svg = d3.select('body').append('svg')
-        .attr('width', width)
-        .attr('height', height);
+        .attr('width', diameter)
+        .attr('height', diameter)
+        .attr('class', 'bubble');
 
-      const pies = svg.selectAll('.pie')
-        .data(nodes)
-        .enter().append('g')
-        .attr('class', 'pie')
-        .call(force.drag);
+      const nodes = svg.selectAll('g.node')
+        .data(bubble.nodes({ children: data }).filter(d => !d.children));
+      nodes.enter().append('g')
+        .attr('class', 'node')
+        .attr('transform', d => `translate(${d.x},${d.y})`);
 
-      const colors = d3.scale.category20();
+      const arcGs = nodes.selectAll('g.arc')
+        .data(d => pie(d[1]).map((m) => { m.r = d.r; return m; }));
+      const arcEnter = arcGs.enter().append('g').attr('class', 'arc');
 
-      pies.each(function (d, i) {
-        const pieG = d3.select(this);
+      arcEnter.append('path')
+        .attr('d', (d) => {
+          arc.outerRadius(d.r);
+          return arc(d);
+        })
+        .style('fill', (d, i) => color(i));
 
-        const arc = d3.svg.arc()
-          .outerRadius(d.radius)
-          .innerRadius(0);
+      arcEnter.append('text')
+        .attr({
+          x(d) { arc.outerRadius(d.r); return arc.centroid(d)[0]; },
+          y(d) { arc.outerRadius(d.r); return arc.centroid(d)[1]; },
+          dy: '0.35em',
+        })
+        .style('text-anchor', 'middle')
+        .text(d => d.value);
 
-        const pie = d3.layout.pie()
-          .sort(null)
-          .value(d2 => d2);
-
-        const data = [Math.random(), Math.random(), Math.random(), Math.random()];
-
-        const g = pieG.selectAll('.arc')
-          .data(pie(data))
-          .enter().append('g')
-          .attr('class', 'arc');
-
-        g.append('path')
-          .attr('d', arc)
-          .attr('fill', (d2, i2) => colors(i2));
-      });
-
-      // Move d to be adjacent to the cluster node.
-      function cluster(alpha) {
-        return function (d) {
-          const cluster2 = clusters[d.cluster];
-          if (cluster2 === d) return;
-          let x = d.x - cluster2.x;
-          let y = d.y - cluster2.y;
-          let l = Math.sqrt(x * x + y * y);
-          const r = d.radius + cluster2.radius;
-          if (l !== r) {
-            l = (l - r) / l * alpha;
-            d.x -= x *= l;
-            d.y -= y *= l;
-            cluster2.x += x;
-            cluster2.y += y;
-          }
-        };
-      }
-
-      // Resolves collisions between d and all other circles.
-      function collide(alpha) {
-        const quadtree = d3.geom.quadtree(nodes);
-        return function (d) {
-          const r = d.radius + maxRadius + Math.max(padding, clusterPadding);
-          const nx1 = d.x - r;
-          const nx2 = d.x + r;
-          const ny1 = d.y - r;
-          const ny2 = d.y + r;
-          quadtree.visit((quad, x1, y1, x2, y2) => {
-            if (quad.point && (quad.point !== d)) {
-              let x = d.x - quad.point.x;
-              let y = d.y - quad.point.y;
-              let l = Math.sqrt(x * x + y * y);
-              const r2 = d.radius + quad.point.radius + (d.cluster === quad.point.cluster ? padding : clusterPadding);
-              if (l < r2) {
-                l = (l - r2) / l * alpha;
-                d.x -= x *= l;
-                d.y -= y *= l;
-                quad.point.x += x;
-                quad.point.y += y;
-              }
-            }
-            return x1 > nx2 || x2 < nx1 || y1 > ny2 || y2 < ny1;
-          });
-        };
-      }
-
-      tick = (e) => {
-        pies
-          .each(cluster(10 * e.alpha * e.alpha))
-          .each(collide(0.5))
-          .attr('transform', d => `translate(${d.x},${d.y})`);
-      };
+      const labels = nodes.selectAll('text.label')
+        .data((d) => { console.log(d); return [d[0]]; });
+      labels.enter().append('text')
+        .attr({
+          class: 'label',
+          dy: '0.35em',
+        })
+        .style('text-anchor', 'middle')
+        .text(String);
     },
   },
   mounted() {
@@ -165,5 +104,11 @@ export default {
 </script>
 
 <style>
-
+  g.arc path {
+    stroke: #828282;
+    stroke-width: 0.5;
+  }
+  g.arc text {
+    font-size: 10px;
+  }
 </style>
