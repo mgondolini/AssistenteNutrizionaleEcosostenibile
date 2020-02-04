@@ -1,6 +1,6 @@
 <template>
   <div class="meals">
-    <h1> {{ $t('your_meals') }} </h1>
+    <h1 class="mealTitle"> {{ $t('your_meals') }} </h1>
     <b-card class="card-calendar p-0">
       <b-button @click="decrementDate" variant="link">
         <b-icon icon="chevron-left" font-scale="1.5" variant="info"></b-icon>
@@ -21,55 +21,55 @@
         @dp-change="setDateAndShowMeals(calendar.value)">
       </date-picker>
     </b-card>
+    <div class="containerMeal">
+      <b-tabs content-class="mt-3" id="myTabContent" justified>
+        <b-tab :title="$t('meals')" class="tab-content-info" active>
+          <b-card class="card-new-meal">
+            <b-form-input id="input-new-meal"
+              v-model="mealName"
+              :state="mealNameState"
+              aria-describedby="input-live-feedback"
+              :placeholder="$t('meal_name_enter')"
+              class="input-new-meal"
+              trim
+              @input="onMealNameChange"
+            ></b-form-input>
+            <b-button variant="link"
+              class="button-add p-0"
+              @click="addMeal(mealName)"
+            ><b-icon icon="plus" variant="info" font-scale="2.3"
+            class="border border-info rounded p-0"></b-icon>
+            </b-button>
+            <b-form-invalid-feedback id="input-live-feedback">
+              {{ $t(inputCheckMessage) }}
+            </b-form-invalid-feedback>
+          </b-card>
 
-    <b-tabs content-class="mt-3" justified>
-      <b-tab :title="$t('meals')" active>
-
-        <b-card class="card-new-meal">
-          <b-form-input id="input-new-meal"
-            v-model="mealName"
-            :state="mealNameState"
-            aria-describedby="input-live-feedback"
-            :placeholder="$t('meal_name_enter')"
-            class="input-new-meal"
-            trim
-            @input="onMealNameChange"
-          ></b-form-input>
-          <b-button variant="link"
-            class="button-add p-0"
-            @click="addMeal(mealName)"
-          ><b-icon icon="plus" variant="info" font-scale="2.3"
-          class="border border-info rounded p-0"></b-icon>
-          </b-button>
-          <b-form-invalid-feedback id="input-live-feedback">
-            {{ $t(inputCheckMessage) }}
-          </b-form-invalid-feedback>
-        </b-card>
-
-        <div v-if="mealsListByDate.length > 0"
-          class="card-last-meals"
-          role="tablist"
-        ><b-card no-body class="mb-1"
-            v-for="(meal, index) in mealsListByDate.slice().reverse()"
-            v-bind:key="index"
-          ><b-card-header header-tag="header" class="p-0" role="tab">
-              <b-button block href="#" v-b-toggle="'accordion-' + index" variant="info">
-                <p class="meal-name-p text-center m-0">{{ meal.meal_name }}</p>
-                <b-button class="p-0 mr-2" variant="info"
-                  @click="calculateMeal(meal.meal_name, meal.timestamp)"
-                ><b-icon icon="pie-chart-fill"
-                  class="border border-light rounded p-1"
-                  font-scale="2"></b-icon>
+          <div v-if="mealsListByDate.length > 0"
+            class="card-last-meals"
+            role="tablist"
+          ><b-card no-body class="mb-1"
+              v-for="(meal, index) in mealsListByDate.slice().reverse()"
+              v-bind:key="index"
+            ><b-card-header header-tag="header" class="p-0" role="tab">
+                <b-button class="headerTitle" block href="#"
+                v-b-toggle="'accordion-' + index" variant="info">
+                  <p class="meal-name-p text-center m-0">{{ meal.meal_name }}</p>
+                  <b-button class="p-0 mr-2" variant="info"
+                    @click="calculateMeal(meal.meal_name, meal.timestamp)"
+                  ><b-icon icon="pie-chart-fill"
+                    class="border border-light rounded p-1"
+                    font-scale="2"></b-icon>
+                  </b-button>
+                  <b-button class="p-0" variant="info"
+                    @click="removeMeal(meal.meal_name)"
+                  ><b-icon icon="trash-fill"
+                    class="border border-light rounded p-1"
+                    font-scale="2">
+                    ></b-icon>
+                  </b-button>
                 </b-button>
-                <b-button class="p-0" variant="info"
-                  @click="removeMeal(meal.meal_name)"
-                ><b-icon icon="trash-fill"
-                  class="border border-light rounded p-1"
-                  font-scale="2">
-                  ></b-icon>
-                </b-button>
-              </b-button>
-            </b-card-header>
+              </b-card-header>
 
             <b-collapse :id="'accordion-' + index" visible accordion="my-accordion" role="tabpanel">
               <b-card-body class="components-card">
@@ -126,15 +126,13 @@
             </b-collapse>
           </b-card>
         </div>
-        <div v-else><p>{{ $t(this.noMeals) }}</p></div>
-
+        <div v-else><p class="noMeals">{{ $t(this.noMeals) }}</p></div>
         <b-modal id="modal-error" :title="$t('error_meals')" hide-footer>
           <div class="d-block text-center">
             <b-icon icon="alert-triangle" variant="danger" scale="2"></b-icon>
             {{ $t(this.modalErrorMsg) }}
           </div>
         </b-modal>
-
         <b-modal ref="modal-save" :title="$t('complete_meal')" hide-footer>
           <div class="p-0 text-center">
             {{ $t('save_meal') }}
@@ -148,28 +146,28 @@
             </b-button>
           </footer>
         </b-modal>
-        <b-modal id="modal-ach" title="New achievement" hide-footer>
+        <b-modal id="modal-ach" :title="$i18n.t('newAchievement')" hide-footer>
           <div class="d-block text-center">
             {{ this.achMsgModal }}
           </div>
           <b-button class="mt-3" block @click="hideAchModal">{{ $t('achModalBtn')}}</b-button>
         </b-modal>
       </b-tab>
-
-      <b-tab :title="$t('meals_graph')" @click="triggerChartTab">
-        <div class="chart-box">
-          <div id="chart-bar">
-            <apexchart
-              type="bar"
-              ref="barchart"
-              height="400"
-              :options="chartOptions"
-              :series="series">
-            </apexchart>
+      <b-tab :title="$t('meals_graph')" class="tab-content-info" @click="triggerChartTab">
+          <div class="chart-box">
+            <div id="chart-bar">
+              <apexchart
+                type="bar"
+                ref="barchart"
+                height="400"
+                :options="chartOptions"
+                :series="series">
+              </apexchart>
+            </div>
           </div>
-        </div>
-      </b-tab>
-    </b-tabs>
+        </b-tab>
+      </b-tabs>
+    </div>
   </div>
 </template>
 
@@ -666,7 +664,8 @@ export default {
       "sodium": "Sodium"
     },
     "newAchTxt": "new achievements!",
-    "achModalBtn": "Great!"
+    "achModalBtn": "Great!",
+    "newAchievement": "New achievement"
   },
   "it": {
     "your_meals": "I tuoi pasti",
@@ -696,7 +695,8 @@ export default {
       "sodium": "Sodio"
     },
     "newAchTxt": "nuovi obiettivi raggiunti!",
-    "achModalBtn": "Fantastico!"
+    "achModalBtn": "Fantastico!",
+    "newAchievement": "Nuovi obiettivi raggiunti"
   }
 }
 </i18n>
