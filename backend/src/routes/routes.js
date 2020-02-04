@@ -18,6 +18,9 @@ module.exports = function (app) {
     .get(productController.load_product)
     .post(productController.insert_product);
 
+  app.route('/api/product/:barcode/:quantity')
+    .get(productController.load_product_quantity);
+
   app.route('/api/meals/:date')
     .get(mealController.load_meals_list)
     .post(mealController.new_meal);

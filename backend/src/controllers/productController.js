@@ -1,6 +1,7 @@
 const mongoose = require('mongoose');
 
 const Product = mongoose.model('Product');
+const productControllerUtils = require('./utils/productControllerUtils.js');
 
 /** Loads a product given its barcode */
 exports.load_product = async (req, res) => {
@@ -17,6 +18,33 @@ exports.load_product = async (req, res) => {
       } else {
         res.status(200).send(product);
         global.log(`Product found ->${product.barcode}`); // DEBUG
+      }
+    })
+    .catch((err) => {
+      global.log(`Error while loading product: ${err}`); // DEBUG
+      res.status(500).send({ description: 'internal_server_error' });
+    });
+};
+
+/** Loads a product given its barcode and quantity */
+exports.load_product_quantity = async (req, res) => {
+  global.log(`Looking for barcode: ${req.query.barcode}...`); // DEBUG
+  const { barcode } = req.query;
+  const { quantity } = req.query;
+
+  const query = { code: barcode };
+
+  await Product.findOne(query)
+    .exec()
+    .then((product) => {
+      if (product == null) {
+        res.status(400).send({ description: 'product_not_found' });
+        global.log(`Product${req.query.barcode} not found`); // DEBUG
+      } else {
+        global.log(`Product found ->${product.barcode}`); // DEBUG
+        const values = productControllerUtils.computeProductValues(barcode, quantity, res);
+        if (values !== null || values !== undefined) res.status(200).send(values);
+        else res.status(500).send({ description: 'internal_server_error' });
       }
     })
     .catch((err) => {

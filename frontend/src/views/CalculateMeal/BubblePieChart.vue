@@ -14,6 +14,18 @@ import * as d3 from 'd3';
 console.log(d3);
 /* eslint-disable no-param-reassign */
 
+/* bubble chart dove ogni bolla è un ingrediente,
+quindi il raggio della bolla è dato dalla quantità in grammi dell’ingrediente
+(o dalla percentuale di grammi sul totale del pasto.
+Ogni bolla è poi un pie chart con la composizione, in termini di componenti,
+di quell’ingrediente (es.: 30% grassi, 10% zuccheri).
+In pratica ogni bolla è il grafico descritto subito qui sotto.
+Per ogni INGREDIENTE del pasto (da mettere in info prodotto)
+Pie chart con la composizione in termini di componenti
+(es.: il dolce è 30% grassi, 10% zuccheri)
+*/
+
+
 export default {
   name: 'BubblePieChart',
   components: {
@@ -21,13 +33,39 @@ export default {
   },
   data() {
     return {
-
+      graphData: [
+        ['', []],
+      ],
+      diameter: 0,
+      meal: [],
+      ingredientName: '',
+      ingredientComposition: { },
     };
   },
   computed: {
 
   },
   methods: {
+    loadMeal() {
+      const params = { mealName: this.$route.query.mealName, date: this.$route.query.date };
+      this.$store.state.http.post('api/meal', { params })
+        .then((response) => {
+          [this.meal] = response.data.meals;
+          console.log(this.meal);
+        })
+        .catch((error) => { console.log(error.response); });
+    },
+    loadProductValues(barcode, quantity) {
+      const params = {
+        barcode,
+        quantity,
+      };
+      this.$store.state.http.post(`api/product/${barcode}/${quantity}`, { params })
+        .then((response) => {
+          console.log(response.data);
+        })
+        .catch((error) => { console.log(error.response); });
+    },
     createGraph() {
       const data = [
         ['bubble1', [10, 20]],
@@ -62,12 +100,19 @@ export default {
 
       const nodes = svg.selectAll('g.node')
         .data(bubble.nodes({ children: data }).filter(d => !d.children));
+
+
       nodes.enter().append('g')
         .attr('class', 'node')
         .attr('transform', d => `translate(${d.x},${d.y})`);
 
+      d3.select('#chart-box')
+        .transition()
+        .duration(2000);
+
       const arcGs = nodes.selectAll('g.arc')
         .data(d => pie(d[1]).map((m) => { m.r = d.r; return m; }));
+
       const arcEnter = arcGs.enter().append('g').attr('class', 'arc');
 
       arcEnter.append('path')
@@ -98,7 +143,7 @@ export default {
     },
   },
   mounted() {
-    this.createGraph();
+    this.loadMeal();
   },
 };
 </script>
