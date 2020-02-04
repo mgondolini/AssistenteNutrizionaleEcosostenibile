@@ -83,7 +83,7 @@ export default {
               const t = response.data.token.toString();
               const u = response.data.user;
               this.$store.commit('login', { token: t, user: u });
-              this.$router.push('/meals');
+              this.$bvModal.show('modal-ach');
             }).catch((error) => {
               if (error.response) {
                 this.errorMsgModal = this.$i18n.t('internal_server_error');
@@ -205,6 +205,10 @@ export default {
     },
     hideModal() {
       this.$bvModal.hide('modal-error');
+    },
+    hideModalAch() {
+      this.$bvModal.hide('modal-ach');
+      this.$router.push('/meals');
     },
   },
 };

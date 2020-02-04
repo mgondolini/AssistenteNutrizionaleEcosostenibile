@@ -3,7 +3,7 @@ import Multiselect from 'vue-multiselect';
 import Achievements from './Achievements.vue';
 import allergensList from '../../allergens.json';
 
-
+const aContext = require.context('@/assets/achievement/', false);
 export default {
   data() {
     return {
@@ -54,6 +54,7 @@ export default {
           value: [],
         },
       },
+      achievements: [],
       errors: false,
       options: {
         format: 'YYYY-MM-DD',
@@ -220,6 +221,16 @@ export default {
             i += 1;
           });
         }
+        const ach = response.data.achievements;
+        // ach
+        ach.forEach((a) => {
+          this.achievements.push({
+            title: this.$i18n.t(a.title),
+            count: a.count,
+            img: aContext(`./${a.title}.svg`),
+            style: a.count > 0 ? 'border-color reached' : 'border-color notReached',
+          });
+        });
       })
       .catch(error => this.checkError(error,
         error.response.status));

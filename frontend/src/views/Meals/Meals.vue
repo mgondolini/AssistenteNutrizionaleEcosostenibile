@@ -2,7 +2,13 @@
   <div class="meals">
     <h1 class="mealTitle"> {{ $t('your_meals') }} </h1>
     <b-card class="card-calendar p-0">
+      <b-button @click="decrementDate" variant="link">
+        <b-icon icon="chevron-left" font-scale="1.5" variant="info"></b-icon>
+      </b-button>
       <p class="date-p text-center">{{ $d(currentDate, 'short') }}</p>
+      <b-button :disabled="disableBtn" @click="incrementDate" variant="link">
+        <b-icon icon="chevron-right" font-scale="1.5" :variant="arrowRightVariant"></b-icon>
+      </b-button>
       <b-button variant="link"
         @click="$refs.calendar.dp.show()"
       ><b-icon icon="calendar" font-scale="1.5" variant="secondary"></b-icon>
@@ -12,7 +18,8 @@
         :config="options"
         value="calendar"
         class="meals-datepicker"
-        @dp-change="setDateAndShow(calendar.value)"> </date-picker>
+        @dp-change="setDateAndShowMeals(calendar.value)">
+      </date-picker>
     </b-card>
     <div class="containerMeal">
       <b-tabs content-class="mt-3" id="myTabContent" justified>
@@ -64,9 +71,51 @@
                 </b-button>
               </b-card-header>
 
-              <b-collapse :id="'accordion-' + index" visible
-                accordion="my-accordion" role="tabpanel">
-                <b-card-body class="components-card">
+            <b-collapse :id="'accordion-' + index" visible accordion="my-accordion" role="tabpanel">
+              <b-card-body class="components-card">
+                <b-button v-if="!meal.is_closed"
+                  variant="link"
+                  class="add-component border-info"
+                  @click="addComponent(meal.meal_name, meal.timestamp)"
+                ><b-icon icon="plus" variant="success" font-scale="2" shift-v="+2"></b-icon>
+                  <p color="info">{{ $t('add_component') }}</p>
+                </b-button>
+                <div v-if="meal.components.length > 0">
+                  <div v-for="component in meal.components" v-bind:key="component.product_name">
+                    <b-card :img-src="component.image_url"
+                      img-alt="Card image" img-left
+                      class="card-components mb-3"
+                    ><b-card-text align="center" class="card-components-text m-0 p-0">
+                        <p class="component-p">
+                          <b>
+                            <b-link href="#" @click="goToInfoProd(component.barcode)">
+                              {{ component.product_name }}
+                            </b-link>
+                          </b>
+                        </p>
+                        <p class="component-p">
+                          {{ component.quantity }} {{component.measure_unit}}
+                        </p>
+                        <p class="component-p">
+                          {{ (component.energy_kcal).toFixed(2) }} kcal
+                        </p>
+                      </b-card-text>
+                      <b-img v-if="component.nutrition_score"
+                        class="nutri-score-img"
+                        :src='getNutriScoreImage(component.nutrition_score)'
+                        alt="Nutri score image">
+                      </b-img>
+                      <b-button v-if="!meal.is_closed"
+                        class="remove-btn p-0"
+                        variant="link"
+                        @click="removeComponent(
+                          component.barcode,
+                          component.quantity,
+                          meal.meal_name)"
+                      ><b-icon icon="x-circle" variant="danger"></b-icon>
+                      </b-button>
+                    </b-card>
+                  </div>
                   <b-button v-if="!meal.is_closed"
                     variant="link"
                     class="add-component border-info"
@@ -121,12 +170,26 @@
           </div>
           <div v-else><p class="noMeals">{{ $t(this.noMeals) }}</p></div>
 
-          <b-modal id="modal-error" :title="$t('error_meals')" hide-footer>
-            <div class="d-block text-center">
-              <b-icon icon="alert-triangle" variant="danger" scale="2"></b-icon>
-              {{ $t(this.modalErrorMsg) }}
-            </div>
-          </b-modal>
+        <b-modal ref="modal-save" :title="$t('complete_meal')" hide-footer>
+          <div class="p-0 text-center">
+            {{ $t('save_meal') }}
+          </div>
+          <footer class="modal-footer p-0">
+            <b-button variant="secondary" @click="hideModal">
+              {{$t('no')}}
+            </b-button>
+            <b-button variant="primary" @click="saveMeal()">
+              {{$t('yes')}}
+            </b-button>
+          </footer>
+        </b-modal>
+        <b-modal id="modal-ach" title="New achievement" hide-footer>
+          <div class="d-block text-center">
+            {{ this.achMsgModal }}
+          </div>
+          <b-button class="mt-3" block @click="hideAchModal">{{ $t('achModalBtn')}}</b-button>
+        </b-modal>
+      </b-tab>
 
           <b-modal ref="modal-save" :title="$t('complete_meal')" hide-footer>
             <div class="p-0 text-center">
@@ -179,6 +242,8 @@ export default {
   },
   data() {
     return {
+      achMsgModal: '',
+
       // Meals
       mealsList: [],
       mealsListByDate: [],
@@ -208,6 +273,8 @@ export default {
         showClear: false,
         showClose: true,
       },
+      disableBtn: false,
+      arrowRightVariant: 'info',
 
       // Daily nutrition values
       nutritionFact: {
@@ -225,13 +292,12 @@ export default {
       dailyRequirement: Object,
       nutritionValues: [],
       nutritionKeys: [],
-      mealFound: Boolean,
 
       // Graph
       series: [
         {
           name: '',
-          data: [],
+          data: [0, 0, 0, 0, 0, 0, 0, 0],
         },
       ],
 
@@ -239,6 +305,19 @@ export default {
         chart: {
           type: 'bar',
           height: 500,
+          animations: {
+            enabled: true,
+            easing: 'linear',
+            speed: 800,
+            animateGradually: {
+              enabled: true,
+              delay: 300,
+            },
+            dynamicAnimation: {
+              enabled: true,
+              speed: 350,
+            },
+          },
         },
         plotOptions: {
           bar: {
@@ -286,10 +365,13 @@ export default {
           labels: {
             formatter(y) {
               let label = 0;
-              if (y < 0) {
-                // if (y === -100) label = `${0}%`;
-                label = `${(y).toFixed(0)}%`;
-              } else label = `+${(y).toFixed(0)}%`;
+              if (y < 0) label = `${(y).toFixed(0)}%`;
+              else {
+                label = `+${(y).toFixed(0)}%`;
+                if (y > 100) {
+                  label = `Overrun 100% by +${(y - 100).toFixed(0)}%;`;
+                }
+              }
               return label;
             },
           },
@@ -310,6 +392,7 @@ export default {
     };
   },
   methods: {
+    // Main methods
     loadMealsList() {
       console.log(this.currentDate);
 
@@ -402,6 +485,14 @@ export default {
       let found = false;
       this.mealsListByDate = [];
 
+      if (this.currentDate.getDate() === this.options.maxDate.getDate()
+        && this.currentDate.getMonth() === this.options.maxDate.getMonth()) {
+        this.disableBtn = true;
+        this.arrowRightVariant = 'light';
+      } else {
+        this.arrowRightVariant = 'info';
+      }
+
       this.UTCDate = Date.UTC(
         this.currentDate.getFullYear(),
         this.currentDate.getMonth(),
@@ -419,11 +510,29 @@ export default {
 
       if (!found) this.noMeals = 'no_meals';
     },
-    setDateAndShow(date) {
+    setDateAndShowMeals(date) {
       this.currentDate = new Date(date);
       console.log(`Current date: ${this.currentDate}`);
       this.showMealsByDate(this.currentDate);
       this.computeDayNutritionFact(this.currentDate);
+      this.triggerChartTab();
+    },
+    incrementDate() {
+      if (this.currentDate.getDate() === this.options.maxDate.getDate()
+      && this.currentDate.getMonth() === this.options.maxDate.getMonth()) {
+        this.disableBtn = true;
+      } else {
+        this.currentDate.setDate(this.currentDate.getDate() + 1);
+        this.calendar.value = this.currentDate;
+        this.setDateAndShowMeals(this.currentDate);
+        this.disableBtn = false;
+      }
+    },
+    decrementDate() {
+      this.disableBtn = false;
+      this.currentDate.setDate(this.currentDate.getDate() - 1);
+      this.calendar.value = this.currentDate;
+      this.setDateAndShowMeals(this.currentDate);
     },
     getUserDailyRequirement() {
       this.$store.state.http.get('/api/user')
@@ -478,10 +587,17 @@ export default {
       console.log(this.nutritionValues);
     },
     triggerChartTab() {
-      console.log('Tab triggered');
+      console.log('Chart tab triggered');
       this.$refs.barchart.refresh();
-      this.$refs.barchart.updateSeries([{ name: '', data: this.nutritionValues }]);
+      setTimeout(() => {
+        this.$refs.barchart.updateSeries([{ name: '', data: this.nutritionValues }]);
+      }, 200);
     },
+    goToInfoProd(barcode) {
+      this.$root.$emit('selectProduct', barcode);
+    },
+
+    // Utils
     getDailyNutritionRatio(value, dailyRequirement) {
       return (value / dailyRequirement) * 100;
     },
@@ -540,14 +656,25 @@ export default {
       this.$store.state.http.put(`api/meals/${body.meal_name}/${body.timestamp}`, body)
         .then((response) => {
           this.mealsList = [];
-          this.mealsList = response.data.meals;
+          console.log('saveMeal resposnse: ');
+          console.log(response.data);
+          this.mealsList = response.data.userMeals.meals;
           this.showMealsByDate(this.currentDate);
           this.hideModal();
+          const c = response.data.countNewAch;
+          if (c > 0) {
+            // new achievements, show modal
+            this.achMsgModal = `${c} ${this.$i18n.t('newAchTxt')}`;
+            this.$bvModal.show('modal-ach');
+          }
         })
         .catch(error => this.checkError(error.response.data.description));
     },
     hideModal() {
       this.$refs['modal-save'].hide();
+    },
+    hideAchModal() {
+      this.$bvModal.hide('modal-ach');
     },
     onMealNameChange() {
       if (this.mealName.length === 0) this.mealNameState = null;
@@ -588,7 +715,9 @@ export default {
       "saturated_fats": "Saturated_fats",
       "calcium": "Calcium",
       "sodium": "Sodium"
-    }
+    },
+    "newAchTxt": "new achievements!",
+    "achModalBtn": "Great!"
   },
   "it": {
     "your_meals": "I tuoi pasti",
@@ -616,7 +745,9 @@ export default {
       "saturated_fats": "Grassi_saturi",
       "calcium": "Calcio",
       "sodium": "Sodio"
-    }
+    },
+    "newAchTxt": "nuovi obiettivi raggiunti!",
+    "achModalBtn": "Fantastico!"
   }
 }
 </i18n>

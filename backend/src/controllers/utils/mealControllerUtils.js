@@ -1,6 +1,7 @@
 /* eslint-disable no-param-reassign */
 const mongoose = require('mongoose');
 const productControllerUtils = require('./productControllerUtils.js');
+const achievementController = require('../achievementController.js');
 
 const SingleMeal = mongoose.model('SingleMeal');
 const Meals = mongoose.model('Meals');
@@ -39,11 +40,13 @@ exports.addMeal = (req, userMeals, res) => {
   const { timestamp } = req.body.meals;
   const updateMeal = new Meals(userMeals);
 
+  const myDate = new Date(timestamp);
+
   // controllo se ci sono pasti per lo stesso utente con lo stesso nome che voglio inserire
   userMeals.meals.forEach((m) => {
-    if (m.timestamp.getUTCDate() === new Date(timestamp).getUTCDate()
-      && m.timestamp.getUTCMonth() === new Date(timestamp).getUTCMonth()
-      && m.timestamp.getUTCFullYear() === new Date(timestamp).getUTCFullYear()) {
+    if (m.timestamp.getUTCDate() === myDate.getUTCDate()
+      && m.timestamp.getUTCMonth() === myDate.getUTCMonth()
+      && m.timestamp.getUTCFullYear() === myDate.getUTCFullYear()) {
       if (m.meal_name === mealName) {
         exists = true;
       }
@@ -76,6 +79,7 @@ exports.addMeal = (req, userMeals, res) => {
 
 exports.updateMeal = async (userMeals, mealUpdated, res) => {
   let updated = false;
+  let closed = false;
   const mealName = mealUpdated.meal_name;
   const { timestamp } = mealUpdated;
   console.log(mealName);
@@ -87,6 +91,9 @@ exports.updateMeal = async (userMeals, mealUpdated, res) => {
       && m.timestamp.getUTCMonth() === new Date(timestamp).getUTCMonth()
       && m.timestamp.getUTCFullYear() === new Date(timestamp).getUTCFullYear()) {
       if (m.meal_name === mealName) {
+        if ((userMeals.meals[i].is_closed === false) && (mealUpdated.is_closed === true)) {
+          closed = true;
+        }
         userMeals.meals[i] = mealUpdated;
         updated = true;
       }
@@ -97,7 +104,13 @@ exports.updateMeal = async (userMeals, mealUpdated, res) => {
     userMeals.save()
       .then((meal) => {
         global.log(`Meal updated -> ${meal}`); // DEBUG
-        res.status(200).send(meal);
+        if (closed) {
+          const f = meal.meals.length === 1;
+          achievementController.checkAchievements(mealUpdated, f, meal, res);
+        } else {
+          // TODO check if changes are need {meals, countAch: 0}
+          res.status(200).send(meal);
+        }
       })
       .catch((err) => {
         global.log(`Error while updating meal${err}`); // DEBUG
