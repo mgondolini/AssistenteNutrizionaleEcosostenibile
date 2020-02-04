@@ -49,14 +49,17 @@ export default {
         .then((response) => {
           [this.meal] = response.data.meals;
           this.meal.components.forEach((c) => {
-            this.loadProductValues(c.barcode, c.quantity)
-              .then((res) => {
-                this.ingredients.push(res.data);
-              })
-              .catch(err => console.log(err));
-            this.promises.push(this.loadProductValues);
+            this.loadProductValues(c.barcode, c.quantity);
+            this.promises.push(this.loadProductValues(c.barcode, c.quantity));
+            console.log(this.promises);
           });
-          this.createGraphData();
+
+          this.$store.state.http.all(this.promises)
+            .then((values) => {
+              console.log('libero');
+              console.log(values);
+              // this.createGraphData();
+            });
         })
         .catch((error) => { console.log(error.response); });
     },
