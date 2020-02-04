@@ -1,6 +1,7 @@
 /* eslint-disable no-param-reassign */
 const mongoose = require('mongoose');
 const productControllerUtils = require('./productControllerUtils.js');
+const achievementController = require('../achievementController.js');
 
 const SingleMeal = mongoose.model('SingleMeal');
 const Meals = mongoose.model('Meals');
@@ -39,11 +40,13 @@ exports.addMeal = (req, userMeals, res) => {
   const { timestamp } = req.body.meals;
   const updateMeal = new Meals(userMeals);
 
+  const myDate = new Date(timestamp);
+
   // controllo se ci sono pasti per lo stesso utente con lo stesso nome che voglio inserire
   userMeals.meals.forEach((m) => {
-    if (m.timestamp.getUTCDate() === new Date(timestamp).getUTCDate()
-      && m.timestamp.getUTCMonth() === new Date(timestamp).getUTCMonth()
-      && m.timestamp.getUTCFullYear() === new Date(timestamp).getUTCFullYear()) {
+    if (m.timestamp.getUTCDate() === myDate.getUTCDate()
+      && m.timestamp.getUTCMonth() === myDate.getUTCMonth()
+      && m.timestamp.getUTCFullYear() === myDate.getUTCFullYear()) {
       if (m.meal_name === mealName) {
         exists = true;
       }
@@ -76,6 +79,7 @@ exports.addMeal = (req, userMeals, res) => {
 
 exports.updateMeal = async (userMeals, mealUpdated, res) => {
   let updated = false;
+  let closed = false;
   const mealName = mealUpdated.meal_name;
   const { timestamp } = mealUpdated;
   console.log(mealName);
@@ -87,6 +91,9 @@ exports.updateMeal = async (userMeals, mealUpdated, res) => {
       && m.timestamp.getUTCMonth() === new Date(timestamp).getUTCMonth()
       && m.timestamp.getUTCFullYear() === new Date(timestamp).getUTCFullYear()) {
       if (m.meal_name === mealName) {
+        if ((userMeals.meals[i].is_closed === false) && (mealUpdated.is_closed === true)) {
+          closed = true;
+        }
         userMeals.meals[i] = mealUpdated;
         updated = true;
       }
@@ -97,7 +104,13 @@ exports.updateMeal = async (userMeals, mealUpdated, res) => {
     userMeals.save()
       .then((meal) => {
         global.log(`Meal updated -> ${meal}`); // DEBUG
-        res.status(200).send(meal);
+        if (closed) {
+          const f = meal.meals.length === 1;
+          achievementController.checkAchievements(mealUpdated, f, meal, res);
+        } else {
+          // TODO check if changes are need {meals, countAch: 0}
+          res.status(200).send(meal);
+        }
       })
       .catch((err) => {
         global.log(`Error while updating meal${err}`); // DEBUG
@@ -203,36 +216,63 @@ exports.updateMealValues = async (components, timestamp, mealName, userMeals, re
     });
 };
 
+exports.decreaseMealValues = (meal, values) => {
+  console.log('decreaseMealValues');
+  meal.energy_kj_tot -= values.energy_kj_tot;
+  meal.energy_kcal_tot -= values.energy_kcal_tot;
+  meal.carbohydrates_tot -= values.carbohydrates_tot;
+  meal.sugars_tot -= values.sugars_tot;
+  meal.fat_tot -= values.fat_tot;
+  meal.saturated_fat_tot -= values.saturated_fat_tot;
+  meal.proteins_tot -= values.proteins_tot;
+  meal.salt_tot -= values.salt_tot;
+  meal.sodium_tot -= values.sodium_tot;
+  meal.calcium_tot -= values.calcium_tot;
+  meal.alcohol_tot -= values.alcohol_tot;
+  meal.fiber_tot -= values.fiber_tot;
+  meal.carbon_footprint_tot -= values.carbon_footprint_tot;
+  meal.water_footprint_tot -= values.water_footprint_tot;
+};
+
 /** Pulls a component from components array of a meal */
-exports.pullComponent = async (userMeals, timestamp, mealName, barcode, res) => {
+exports.pullComponent = async (userMeals, timestamp, mealName, barcode, quantity, res) => {
   // Controllo se esiste un pasto con il nome passato
   // e tolgo il componente corrispondente la barcode
   let updated = false;
-  userMeals.meals.forEach((meal) => {
-    if (meal.timestamp.getUTCDate() === new Date(timestamp).getUTCDate()
-      && meal.timestamp.getUTCMonth() === new Date(timestamp).getUTCMonth()
-      && meal.timestamp.getUTCFullYear() === new Date(timestamp).getUTCFullYear()) {
-      if (meal.meal_name === mealName) {
-        meal.components.forEach((component) => {
-          // eslint-disable-next-line eqeqeq
-          if (component.barcode == barcode) {
-            meal.components = meal.components.pull(component);
-            updated = true;
+  productControllerUtils.computeProductValues(barcode, quantity, res)
+    .then((values) => {
+      userMeals.meals.forEach((meal) => {
+        if (meal.timestamp.getUTCDate() === new Date(timestamp).getUTCDate()
+        && meal.timestamp.getUTCMonth() === new Date(timestamp).getUTCMonth()
+        && meal.timestamp.getUTCFullYear() === new Date(timestamp).getUTCFullYear()) {
+          if (meal.meal_name === mealName) {
+            meal.components.forEach((component) => {
+            // eslint-disable-next-line eqeqeq
+              if (component.barcode == barcode) {
+                console.log(`original meal ${meal}`);
+                meal.components = meal.components.pull(component);
+                this.decreaseMealValues(meal, values);
+                console.log(`meal decreased ${meal}`);
+                updated = true;
+              }
+            });
           }
-        });
-      }
-    }
-  });
-
-  if (updated) {
-    userMeals.save()
-      .then((meals) => res.status(200).send(meals))
-      .catch((err) => {
-        global.log(`Error while deleting component: ${err}`);
-        res.status(500).send({ description: 'internal_server_error' });
+        }
       });
-  } else {
-    // Se non ho trovato il pasto mando un messaggio di errore
-    res.status(400).send({ description: 'meal_not_found' });
-  }
+      console.log(`updated ${updated}`);
+      if (updated) {
+        userMeals.save()
+          .then((meals) => {
+            global.log(meals);
+            res.status(200).send(meals);
+          })
+          .catch((err) => {
+            global.log(`Error while deleting component: ${err}`);
+            res.status(500).send({ description: 'internal_server_error' });
+          });
+      } else {
+      // Se non ho trovato il pasto mando un messaggio di errore
+        res.status(400).send({ description: 'meal_not_found' });
+      }
+    });
 };

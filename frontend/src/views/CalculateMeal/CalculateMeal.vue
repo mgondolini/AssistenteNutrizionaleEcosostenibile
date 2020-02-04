@@ -1,7 +1,7 @@
 <template>
   <div class="containerFather">
     <h3 class="chartTitle">{{ $t('intro') }}</h3>
-    <b-tabs>
+    <b-tabs class="tabsContainer">
       <b-tab :title="$t('info')">
         <div class="buttonsDisposition">
           <b-button id="button" class="sim-button button1 buttonCalculate"

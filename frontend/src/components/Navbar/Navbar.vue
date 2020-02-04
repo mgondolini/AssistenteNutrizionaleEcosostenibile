@@ -1,10 +1,10 @@
 <template>
     <div>
-      <b-navbar toggleable="lg" type="dark" variant="info">
+      <b-navbar class="navbarChangeColor" toggleable="lg" type="dark" :variant="this.variant">
         <b-icon class="backIcon border rounded" icon="arrow-left-short"
         font-scale="2.5" @click='back'></b-icon>
         <b-navbar-brand class="home" to="/">
-          <img src="../../assets/ecology_f.png">{{navhome}}
+          <img src="../../assets/ecology_f.png" alt="imageLogo">{{navhome}}
         </b-navbar-brand>
         <b-navbar-toggle target="nav-collapse"></b-navbar-toggle>
         <b-collapse id="nav-collapse" class="nav-router" is-nav>
@@ -36,7 +36,7 @@
                 :key="`Lang${i}`"
                 :value="lang"
                 @click="$root.$i18n.locale = lang">
-                <img class="localeFlag" :src="getLocaleFlagPath(lang)">
+                <img class="localeFlag" :src="getLocaleFlagPath(lang)" alt="flag">
                 <span class="localeID"> {{ lang }} </span>
               </b-dropdown-item-button>
             </b-nav-item-dropdown>
@@ -63,8 +63,11 @@ export default {
       navhome: 'Eco-assistant',
       langs: ['en', 'it'],
       nameIcon: 'sun',
-      darkMode: false,
+      variant: 'info',
     };
+  },
+  mounted() {
+    this.assignClass();
   },
   computed: {
     getUsername() {
@@ -75,14 +78,28 @@ export default {
     getLocaleFlagPath(lang) {
       return localeFlagsContext(`./${lang}${localeFlagsExt}`);
     },
-    changeIcon() {
-      if (this.darkMode) this.nameIcon = 'sun';
-      else this.nameIcon = 'moon';
-      this.darkMode = !this.darkMode;
+    assignClass() {
+      const p = document.getElementById('app');
+      const p2 = document.getElementById('parentAll');
+      if (this.$store.state.darkMode) {
+        this.nameIcon = 'moon';
+        this.variant = 'dark';
+        p.classList.add('dark');
+        p2.classList.add('dark');
+        p.classList.remove('light');
+        p2.classList.remove('light');
+      } else {
+        this.nameIcon = 'sun';
+        this.variant = 'info';
+        p.classList.remove('dark');
+        p2.classList.remove('dark');
+        p.classList.add('light');
+        p2.classList.add('light');
+      }
     },
-    clickChange() {
-      console.log('ciao');
-      this.toggleVal = !this.toggleVal;
+    changeIcon() {
+      this.$store.commit('switchMode');
+      this.assignClass();
     },
     back() {
       this.$router.go(-1);

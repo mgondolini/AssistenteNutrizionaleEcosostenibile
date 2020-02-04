@@ -29,8 +29,9 @@ const UserSchema = new Schema({
   user_img_url: String,
   weight: Number,
   height: Number,
-  allergens: String,
+  allergens: Array,
   daily_requirement: WhoSchema,
+  achievements: [],
 });
 
 module.exports = mongoose.model('User', UserSchema, 'Users');

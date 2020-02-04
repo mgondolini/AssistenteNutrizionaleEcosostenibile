@@ -1,3 +1,6 @@
+@import '../../custom.sass'
+@import '../../darkMode.sass'
+
 .productInfo
 
   .buttonContainer
@@ -29,17 +32,33 @@
       max-width: inherit
       max-height: inherit
 
+  .containerProd
+    max-width: 95%
+    margin: 0 auto
+    .firstInfo
+      padding: 10px 0 30px 0
+      .nutritionIndicators
+        margin: 0 auto
+        line-height: 1.8em
+        padding-top: 1em
+        display: flex
+        justify-content: center
   .productData
-
     table
       margin-inline: auto
 
-    td
+    td, th
       text-align: left
       padding-inline: .5em
 
       img
         height: 1em
+    th
+      font-size: 1.2em
 
-
-
+  .table-hover 
+    tbody 
+      tr:hover 
+        td 
+          font-weight: bold
+          background-color: $background_color_1  

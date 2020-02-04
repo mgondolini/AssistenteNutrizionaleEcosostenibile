@@ -1,24 +1,27 @@
 @import '../../custom.sass'
+
 .nav-bar 
+  .navbarChangeColor
+    .backIcon
+      display: black
+      cursor: pointer
+      color: $white
+      margin-right: 2%
+    .nav-router
+      .navbar-nav
+        .info_prod, .dropdown, .loginSpan
+          margin: auto 0
+          .nav-link
+            color: rgba($white, 0.8) !important   
+  .bg-info
+    background-color: $background_color_1 !important
+  .bg-dark
+    background-color: #474748 !important
   a
-    &.info_prod
-      color:white !important
-    
     &.router-link-exact-active 
-      color: antiquewhite !important
-    
+      color: $selectedText !important
   img.localeFlag 
     width: 25px
     margin-right: 5%
-  
   .localeID
     text-transform: uppercase
-  
-.backIcon
-  display: black
-  cursor: pointer
-  color: $white
-  margin-right: 2%
-
-.b-nav-dropdown, .loginSpan
-  margin: auto 0

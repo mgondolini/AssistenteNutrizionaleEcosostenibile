@@ -9,11 +9,12 @@ const Who = mongoose.model('who');
 function getDailyRequirementQuery(dataN, sex) {
   const ageDiffMs = new Date().getTime() - dataN;
   const ageDate = new Date(ageDiffMs);
-  const age = Math.abs(ageDate.getFullYear() - 1970);
+  let age = Math.abs(ageDate.getFullYear() - 1970);
   const s = sex === 'm' ? 'male' : 'female';
+  age = age === 0 ? 1 : age;
   return {
-    age_min: { $lt: age },
-    age_max: { $gt: age },
+    age_min: { $lte: age },
+    age_max: { $gte: age },
     sex: s,
   };
 }
@@ -32,6 +33,15 @@ exports.createNewUser = function createNewUser(req, res) {
     keyLen,
     digest).toString();
 
+  const ach = [{ title: 'firstReg', count: 1 },
+    { title: 'firstMeal', count: 0 },
+    { title: 'greenMeal', count: 0 },
+    { title: 'waterSaverMeal', count: 0 },
+    { title: 'perfMeal', count: 0 },
+    { title: 'tenGreenMeal', count: 0 },
+    { title: 'tenWaterSaverMeal', count: 0 },
+    { title: 'tenPerfMeal', count: 0 }];
+
   Who.findOne(getDailyRequirementQuery(new Date(b.birth_date).getTime(), b.sex))
     .exec()
     .then((dailyreq) => {
@@ -49,6 +59,7 @@ exports.createNewUser = function createNewUser(req, res) {
         height: parseInt(b.height, 10),
         allergens: b.allergens,
         daily_requirement: dailyreq,
+        achievements: ach,
       });
       newUser.save()
         .then((user) => {

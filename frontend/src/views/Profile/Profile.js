@@ -1,12 +1,15 @@
 import datePicker from 'vue-bootstrap-datetimepicker';
-import Achievements from './Achievements.vue';
+import Multiselect from 'vue-multiselect';
+import allergensList from '../../allergens.json';
 
+const aContext = require.context('@/assets/achievement/', false);
 export default {
   data() {
     return {
       username: '',
       avatar: '',
       genderSelected: '',
+      selectedAllergens: [],
       isEditing: false,
       errorMsgModal: '',
 
@@ -47,10 +50,10 @@ export default {
         },
         allergens: {
           key: 'allergen',
-          value: '',
-          placeholder: 'Enter your allergens',
+          value: [],
         },
       },
+      achievements: [],
       errors: false,
       options: {
         format: 'YYYY-MM-DD',
@@ -58,11 +61,12 @@ export default {
         showClear: false,
         showClose: false,
       },
+      optionsMS: [],
     };
   },
   components: {
     datePicker,
-    Achievements,
+    Multiselect,
   },
   computed: {
     cardStates() {
@@ -72,6 +76,9 @@ export default {
     },
   },
   methods: {
+    allT(all) {
+      return this.$i18n.t(all.name);
+    },
     checkError(error, status) {
       if (error === 'internal_server_error' || error === 'user_not_found') {
         this.errorMsgModal = error;
@@ -136,6 +143,13 @@ export default {
       } else {
         document.getElementById('height').classList.remove('nsError');
       }
+
+      const tmp = [];
+      this.campi.allergens.value = [];
+      this.selectedAllergens.forEach((el) => {
+        tmp.push(el.name);
+        this.campi.allergens.value.push(el.name);
+      });
       if (!this.errors) {
         const dataNew = {
           name: this.campi.name.value,
@@ -144,14 +158,12 @@ export default {
           user_img_url: this.avatar,
           weight: this.campi.weight.value,
           height: this.campi.height.value,
-          allergens: this.campi.allergens.value,
+          allergens: tmp,
           birth_date: this.campi.dateOfBirth.value,
         };
 
         this.$store.state.http.put('api/user', dataNew)
-          .then(() => {
-          })
-          .catch(error => this.checkError(error.response.data.description,
+          .then().catch(error => this.checkError(error.response.data.description,
             error.response.status));
       }
     },
@@ -193,7 +205,30 @@ export default {
 
         if (response.data.height) this.campi.height.value = response.data.height;
 
-        if (response.data.allergens != null) this.campi.allergens.value = response.data.allergens;
+        if (response.data.allergens != null) {
+          const tmp = response.data.allergens;
+          let k = 0;
+          tmp.forEach((element) => {
+            this.selectedAllergens.push({ name: element, code: k });
+            this.campi.allergens.value.push(element);
+            k += 1;
+          });
+          let i = 0;
+          allergensList.name.forEach((elem) => {
+            this.optionsMS.push({ name: elem, code: i });
+            i += 1;
+          });
+        }
+        const ach = response.data.achievements;
+        // ach
+        ach.forEach((a) => {
+          this.achievements.push({
+            title: this.$i18n.t(a.title),
+            count: a.count,
+            img: aContext(`./${a.title}.svg`),
+            style: a.count > 0 ? 'border-color reached' : 'border-color notReached',
+          });
+        });
       })
       .catch(error => this.checkError(error,
         error.response.status));
