@@ -17,12 +17,12 @@ export default {
         name: {
           key: 'name',
           value: '',
-          placeholder: 'Enter your name',
+          placeholder: this.$i18n.t('enterN'),
         },
         surname: {
           key: 'surname',
           value: '',
-          placeholder: 'Enter your surname',
+          placeholder: this.$i18n.t('enterS'),
         },
         dateOfBirth: {
           key: 'dateOfBirth',
@@ -31,7 +31,7 @@ export default {
         email: {
           key: 'email',
           value: '',
-          placeholder: 'Enter your email',
+          placeholder: this.$i18n.t('enterE'),
         },
         gender: {
           key: 'gender',
@@ -41,12 +41,12 @@ export default {
         weight: {
           key: 'weight',
           value: '',
-          placeholder: 'Enter your weight',
+          placeholder: this.$i18n.t('enterW'),
         },
         height: {
           key: 'height',
           value: '',
-          placeholder: 'Enter your height',
+          placeholder: this.$i18n.t('enterH'),
         },
         allergens: {
           key: 'allergen',

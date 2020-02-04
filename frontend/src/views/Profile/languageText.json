@@ -35,7 +35,12 @@
     "Lupin": "Lupin",
     "Molluscs": "Molluscs",
     "allergensPlaceholder": "Select your allergens",
-    "selectLabel": "Click to select"
+    "selectLabel": "Click to select",
+    "enterW": "Enter your weight",
+    "enterN": "Enter your name",
+    "enterS": "Enter your surname",
+    "enterE": "Enter your email",
+    "enterH": "Enter your height"
 
   },
   "it": {
@@ -74,6 +79,11 @@
     "Lupin": "Lupini",
     "Molluscs": "Molluschi",
     "allergensPlaceholder": "Seleziona i tuoi allergeni",
-    "selectLabel": "Clicca per selezionare"
+    "selectLabel": "Clicca per selezionare",
+    "enterW": "Inserisci il tuo peso",
+    "enterN": "Inserisci il tuo nome",
+    "enterS": "Inserisci il tuo cognome",
+    "enterE": "Inserisci la tua email",
+    "enterH": "Inserisci la tua altezza"
   }
 }

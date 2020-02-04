@@ -27,7 +27,7 @@
                                 required
                                 type="text"
                                 @focusout="onBlurUser"
-                                placeholder="Inserisci username"
+                                :placeholder="$t('enterU')"
                                 aria-describedby="user-help-block"
                               ></b-form-input>
                               <b-form-text id="user-help-block" v-show="!correctUser">
@@ -47,7 +47,7 @@
                                 type="email"
                                 required
                                 @focusout="onBlurEmail"
-                                placeholder="Inserisci email"
+                                :placeholder="$t('enterE')"
                                 aria-describedby="email-help-block"
                               ></b-form-input>
                               <b-form-text id="email-help-block" v-show="!correctEmail">
@@ -67,7 +67,7 @@
                                 type="password"
                                 required
                                 @focusout="onBlurPsw"
-                                placeholder="Inserisci password"
+                                :placeholder="$t('enterP')"
                                 aria-describedby="password-help-block"
                               ></b-form-input>
                               <button id="buttonHideShowPsw" title="Hold down to show password"
@@ -88,7 +88,7 @@
                                 type="password"
                                 required
                                 @focusout="onBlurRePsw"
-                                placeholder="Inserisci password"
+                                :placeholder="$t('enterRP')"
                                 aria-describedby="password-help-block"
                               ></b-form-input>
                               <button id="buttonHideShowRePsw" title="Hold down to show password"
@@ -106,7 +106,7 @@
                                   id="input-name"
                                   v-model="form.name"
                                   required
-                                  placeholder="Inserisci nome"
+                                  :placeholder="$t('enterN')"
                                 ></b-form-input>
                             </div>
                           </div>
@@ -120,7 +120,7 @@
                                   id="input-surname"
                                   v-model="form.surname"
                                   required
-                                  placeholder="Inserisci cognome"
+                                  :placeholder="$t('enterS')"
                                 ></b-form-input>
                             </div>
                           </div>
@@ -135,7 +135,7 @@
                                 type="number"
                                 v-model="form.height"
                                 required
-                                placeholder="Inserisci altezza"
+                                :placeholder="$t('enterH')"
                               ></b-form-input>
                             </div>
                           </div>
@@ -150,7 +150,7 @@
                                 type="number"
                                 v-model="form.weight"
                                 required
-                                placeholder="Inserisci peso"
+                                :placeholder="$t('enterW')"
                               ></b-form-input>
                             </div>
                           </div>
@@ -175,7 +175,7 @@
                             </div>
                             <div class="col-md-8 col-6">
                               <b-form-select id="input-sex" required v-model="form.sex.value">
-                                <option disabled value=""> {{ form.sex.key }}</option>
+                                <option disabled value=""> {{ $t(`${form.sex.key}`) }}</option>
                                 <option v-for="opt in form.sex.ar"
                                   :key="opt" :value="opt">
                                   {{ opt.toUpperCase() }}
