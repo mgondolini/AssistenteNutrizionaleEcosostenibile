@@ -3,7 +3,6 @@
   <div class="BubblePieChart">
     <h3>BubblePieChart</h3>
     <div class="chart-box" id="chart-box">
-
     </div>
   </div>
 </template>
@@ -101,7 +100,6 @@ export default {
       const nodes = svg.selectAll('g.node')
         .data(bubble.nodes({ children: data }).filter(d => !d.children));
 
-
       nodes.enter().append('g')
         .attr('class', 'node')
         .attr('transform', d => `translate(${d.x},${d.y})`);
@@ -133,6 +131,7 @@ export default {
 
       const labels = nodes.selectAll('text.label')
         .data((d) => { console.log(d); return [d[0]]; });
+
       labels.enter().append('text')
         .attr({
           class: 'label',
