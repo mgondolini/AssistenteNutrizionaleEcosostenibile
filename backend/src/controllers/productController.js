@@ -32,25 +32,11 @@ exports.load_product_quantity = async (req, res) => {
   const { barcode } = req.query;
   const { quantity } = req.query;
 
-  const query = { code: barcode };
-
-  await Product.findOne(query)
-    .exec()
-    .then((product) => {
-      if (product == null) {
-        res.status(400).send({ description: 'product_not_found' });
-        global.log(`Product${req.query.barcode} not found`); // DEBUG
-      } else {
-        global.log(`Product found ->${product.barcode}`); // DEBUG
-        const values = productControllerUtils.computeProductValues(barcode, quantity, res);
-        if (values !== null || values !== undefined) res.status(200).send(values);
-        else res.status(500).send({ description: 'internal_server_error' });
-      }
-    })
-    .catch((err) => {
-      global.log(`Error while loading product: ${err}`); // DEBUG
-      res.status(500).send({ description: 'internal_server_error' });
-    });
+  const values = await productControllerUtils.computeProductValues(barcode, quantity, res);
+  console.log('product controller values');
+  console.log(values);
+  if (values !== null || values !== undefined) res.status(200).send(values);
+  else res.status(500).send({ description: 'internal_server_error' });
 };
 
 /** Inserts a new product if not found in the database */
