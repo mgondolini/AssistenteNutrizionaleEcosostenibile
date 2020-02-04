@@ -21,7 +21,10 @@
     "mail": "Email already in use",
     "pwd": "The password must be between 8 and 20 characters long, may contain special characters but not white spaces.",
     "dataError": "There are some empty or wrong data.",
-    "closeBtn": "Ok"
+    "closeBtn": "Ok",
+    "achMsgModal": "Registration done!",
+    "achModalTitle": "New Achievement!",
+    "achBtnModal": "Great!"
   },
   "it": {
     "reg": "Registrazione",
@@ -45,6 +48,9 @@
     "mail": "Questa email è già in uso",
     "pwd": "La password deve avere lunghezza compresa tra 8 e 20 caratteri, può contenere caratteri speciali ma non spazi.",
     "dataError": "Ci sono dati errati o vuoti.",
-    "closeBtn": "Ok"
+    "closeBtn": "Ok",
+    "achMsgModal": "Registrazione effettuata!",
+    "achModalTitle": "Un nuovo obiettivo raggiunto!",
+    "achBtnModal": "Fantastico!"
   }
 }
