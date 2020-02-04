@@ -23,7 +23,7 @@
       </div>
       <b-form-select v-model="ean" :options="eanOptions"></b-form-select>
       <div>
-        <b-button v-on:click="loadProductInfo()">{{$t('lookup')}}</b-button>
+        <b-button v-on:click="loadProductInfo(ean)">{{$t('lookup')}}</b-button>
         <b-button v-on:click="inputMode = 'SELECT'">{{$t('back')}}</b-button>
       </div>
     </div>
@@ -86,6 +86,9 @@ export default {
       console.log(`${this.mealName} ${this.mealDate}`);
       this.openModal();
     });
+    this.$root.$on('selectProduct', (ean) => {
+      this.loadProductInfo(ean);
+    });
   },
   mounted() {
     localStorage.removeItem('product');
@@ -115,19 +118,18 @@ export default {
         // alert(data.codeResult.code);
         // Quagga.stop();
         this.ean = data.codeResult.code.trim();
-        this.loadProductInfo();
+        this.loadProductInfo(this.ean);
       }
     },
-    loadProductInfo() {
-      console.log(`Requesting infos about ean ${this.ean}`);
-      console.log(offApiPath + this.ean + offApiSuffix);
-      axios.get(offApiPath + this.ean + offApiSuffix)
+    loadProductInfo(ean) {
+      console.log(`Requesting infos about ean ${ean}`);
+      console.log(offApiPath + ean + offApiSuffix);
+      axios.get(offApiPath + ean + offApiSuffix)
         .then((response) => {
           console.log(response);
 
           // Status === 1 means the product has been found
           // some random EANs can also return a status 1 so we check the code not to be empty
-
           const status = (response.data.status === 1)
                         && (response.data.code !== '')
                         && (Object.prototype.hasOwnProperty.call(response.data, 'product'));

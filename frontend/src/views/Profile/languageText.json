@@ -12,7 +12,15 @@
     "profile": "Profile of ",
     "operation": "Information updated successfully!!",
     "closeBtn": "Close me!",
-    "achievements": "Achievements"
+    "achievements": "Achievements",
+    "firstReg": "Your first registration!",
+    "firstMeal": "Your first meal insertion!",
+    "greenMeal": "Green meal! Very well",
+    "waterSaverMeal": "Your meal is water saver!",
+    "perfMeal": "Your meal is perfect",
+    "tenGreenMeal": "10 Green meals! Very well",
+    "tenWaterSaverMeal": "10 meals water saver!",
+    "tenPerfMeal": "10 perfect meals!"
 
   },
   "it": {
@@ -28,6 +36,14 @@
     "profile": "Profilo di ",
     "operation": "Informazioni aggiornate con successo!!",
     "closeBtn": "Chiudi!",
-    "achievements": "I tuoi obiettivi"
+    "achievements": "I tuoi obiettivi",
+    "firstReg": "La tua prima registrazione!",
+    "firstMeal": "Il tuo primo pasto insterito",
+    "greenMeal": "Pasto ecologico! Molto bene",
+    "waterSaverMeal": "Con il tuo pasto hai risparmiato acqua!",
+    "perfMeal": "Il tuo pasto è perfetto!",
+    "tenGreenMeal": "10 pasti ecologici! Wow, sei un grande!!",
+    "tenWaterSaverMeal": "10 pasti water-saver!",
+    "tenPerfMeal": "10 pasti perfetti!"
   }
 }

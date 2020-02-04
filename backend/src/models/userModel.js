@@ -31,6 +31,7 @@ const UserSchema = new Schema({
   height: Number,
   allergens: String,
   daily_requirement: WhoSchema,
+  achievements: [],
 });
 
 module.exports = mongoose.model('User', UserSchema, 'Users');
