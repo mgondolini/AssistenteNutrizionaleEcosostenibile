@@ -8,7 +8,6 @@
 </template>
 
 <script>
-import Axios from 'axios';
 import * as d3 from 'd3';
 
 console.log(d3);
@@ -61,21 +60,20 @@ export default {
           }); // End of the iteration over components
 
           // Will be triggered when ALL the promises ar fullfilled or rejected
-          Axios.all(promises)
-          // Spread( ()=>{} ) will execute the callback {} on a varargs
-          // with args[i].data containing the response of one particular request
-            .then(Axios.spread((...args) => {
-              for (let i = 0; i < args.length; i += 1) {
-                this.ingredients.push(args[i].data);
-              }
-            }))
-          // The execution is chained immediately after the completion of the for, not before
-            .then(() => {
+          Promise.all(promises)
+            // "responses" is an iterable array of all the promises' responses
+            .then((responses) => {
+              responses.forEach((res) => {
+                this.ingredients.push(res.data);
+              });
               this.createGraphData();
             })
-            .catch(() => { console.log('ERROR IN SPREAD'); });
+            .catch(err => console.log(err));
         })
-        .catch(() => { console.log('ERROR IN ALL'); });
+        .catch((err) => {
+          console.log('Error in fetching api/meals');
+          console.log(err);
+        });
     },
     loadProductValues(barcode, quantity) {
       const params = {
