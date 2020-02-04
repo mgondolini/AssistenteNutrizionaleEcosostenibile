@@ -126,7 +126,7 @@
       </div>
     </div>
   </div>
-  <b-modal id="modal-error" title="Error" hide-footer>
+  <b-modal id="modal-error" :title="$i18n.t('errorModalTitle')" hide-footer>
     <div class="d-block text-center">
       <img src="../../assets/restrictionShield.png">
       {{ this.errorMsgModal }}

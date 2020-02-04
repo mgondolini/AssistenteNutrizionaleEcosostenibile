@@ -59,7 +59,8 @@
         <b-button class="sim-button button1 loginBtn">{{ $t('reg') }}</b-button>
       </router-link>
     </b-card>
-    <b-modal id="modal-error" title="Error" hide-footer v-model="modalErrorShow">
+    <b-modal id="modal-error" :title="$i18n.t('errorModalTitle')"
+      hide-footer v-model="modalErrorShow">
       <div class="d-block text-center">
         <img src="../../assets/restrictionShield.png" alt="errorImg">
         {{ this.errorMsgModal }}
@@ -135,14 +136,16 @@ export default {
     "info-psw": "Password must be 8 to 20 characters long. It cannot contain spaces.",
     "not-reg": "Not registered?",
     "reg": "Sign in",
-    "closeBtn": "Ok"
+    "closeBtn": "Ok",
+    "errorModalTitle": "Error"
   },
   "it": {
     "info": "Non condivideremo mai la tua email con terze parti.",
     "info-psw": "La password deve essere lunga tra 8 e 20 caratteri. Non può contenere spazi.",
     "not-reg":"Non sei ancora registrato?",
     "reg": "Registrati",
-    "closeBtn": "Ok"
+    "closeBtn": "Ok",
+    "errorModalTitle": "Errore"
   }
 }
 </i18n>

@@ -146,7 +146,7 @@
             </b-button>
           </footer>
         </b-modal>
-        <b-modal id="modal-ach" title="New achievement" hide-footer>
+        <b-modal id="modal-ach" :title="$i18n.t('newAchievement')" hide-footer>
           <div class="d-block text-center">
             {{ this.achMsgModal }}
           </div>
@@ -664,7 +664,8 @@ export default {
       "sodium": "Sodium"
     },
     "newAchTxt": "new achievements!",
-    "achModalBtn": "Great!"
+    "achModalBtn": "Great!",
+    "newAchievement": "New achievement"
   },
   "it": {
     "your_meals": "I tuoi pasti",
@@ -694,7 +695,8 @@ export default {
       "sodium": "Sodio"
     },
     "newAchTxt": "nuovi obiettivi raggiunti!",
-    "achModalBtn": "Fantastico!"
+    "achModalBtn": "Fantastico!",
+    "newAchievement": "Nuovi obiettivi raggiunti"
   }
 }
 </i18n>

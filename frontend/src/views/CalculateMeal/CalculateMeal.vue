@@ -34,7 +34,7 @@
         </div>
       </b-tab>
     </b-tabs>
-    <b-modal id="modal-error" title="Error"
+    <b-modal id="modal-error" :title="$i18n.t('errorModalTitle')"
       hide-footer v-model="modalErrorShow">
       <div class="d-block text-center">
         <img src="../../assets/restrictionShield.png">

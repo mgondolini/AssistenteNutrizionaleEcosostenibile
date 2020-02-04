@@ -40,7 +40,8 @@
     "enterN": "Enter your name",
     "enterS": "Enter your surname",
     "enterE": "Enter your email",
-    "enterH": "Enter your height"
+    "enterH": "Enter your height",
+    "errorModalTitle": "Error"
 
   },
   "it": {
@@ -84,6 +85,7 @@
     "enterN": "Inserisci il tuo nome",
     "enterS": "Inserisci il tuo cognome",
     "enterE": "Inserisci la tua email",
-    "enterH": "Inserisci la tua altezza"
+    "enterH": "Inserisci la tua altezza",
+    "errorModalTitle": "Errore"
   }
 }
