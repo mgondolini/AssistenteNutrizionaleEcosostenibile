@@ -1,6 +1,5 @@
 import datePicker from 'vue-bootstrap-datetimepicker';
 import Multiselect from 'vue-multiselect';
-import Achievements from './Achievements.vue';
 import allergensList from '../../allergens.json';
 
 const aContext = require.context('@/assets/achievement/', false);
@@ -67,7 +66,6 @@ export default {
   },
   components: {
     datePicker,
-    Achievements,
     Multiselect,
   },
   computed: {

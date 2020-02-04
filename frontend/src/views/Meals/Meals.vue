@@ -117,59 +117,22 @@
                     </b-card>
                   </div>
                   <b-button v-if="!meal.is_closed"
-                    variant="link"
-                    class="add-component border-info"
-                    @click="addComponent(meal.meal_name, meal.timestamp)"
-                  ><b-icon class="contentCard plusIcon" icon="plus" variant="success"
-                    font-scale="2" shift-v="+2"></b-icon>
-                    <p class="contentCard" color="info">{{ $t('add_component') }}</p>
+                    variant="info"
+                    @click="completeMeal(meal)"
+                  > {{ $t('complete_meal') }}
                   </b-button>
-                  <div v-if="meal.components.length > 0">
-                    <div v-for="component in meal.components" v-bind:key="component.product_name">
-                      <b-card :img-src="component.image_url"
-                        img-alt="Card image" img-left
-                        class="card-components mb-3"
-                      ><b-card-text align="center" class="card-components-text m-0 p-0">
-                          <p class="component-p">
-                            <b><a :href="'/info_prod?ean='+component.barcode">
-                              {{ component.product_name }}
-                            </a></b>
-                          </p>
-                          <p class="component-p">
-                            {{ component.quantity }} {{component.measure_unit}}
-                          </p>
-                          <p class="component-p">
-                            {{ (component.energy_kcal).toFixed(2) }} kcal
-                          </p>
-                        </b-card-text>
-                        <b-img v-if="component.nutrition_score"
-                          class="nutri-score-img"
-                          :src='getNutriScoreImage(component.nutrition_score)'
-                          alt="Nutri score image">
-                        </b-img>
-                        <b-button v-if="!meal.is_closed"
-                          class="remove-btn p-0"
-                          variant="link"
-                          @click="removeComponent(
-                            component.barcode,
-                            component.quantity,
-                            meal.meal_name)"
-                        ><b-icon icon="x-circle" variant="danger"></b-icon>
-                        </b-button>
-                      </b-card>
-                    </div>
-                    <b-button v-if="!meal.is_closed"
-                      variant="info"
-                      @click="completeMeal(meal)"
-                    > {{ $t('complete_meal') }}
-                    </b-button>
-                  </div>
-                </b-card-body>
-              </b-collapse>
-            </b-card>
+                </div>
+              </b-card-body>
+            </b-collapse>
+          </b-card>
+        </div>
+        <div v-else><p class="noMeals">{{ $t(this.noMeals) }}</p></div>
+        <b-modal id="modal-error" :title="$t('error_meals')" hide-footer>
+          <div class="d-block text-center">
+            <b-icon icon="alert-triangle" variant="danger" scale="2"></b-icon>
+            {{ $t(this.modalErrorMsg) }}
           </div>
-          <div v-else><p class="noMeals">{{ $t(this.noMeals) }}</p></div>
-
+        </b-modal>
         <b-modal ref="modal-save" :title="$t('complete_meal')" hide-footer>
           <div class="p-0 text-center">
             {{ $t('save_meal') }}
@@ -190,23 +153,7 @@
           <b-button class="mt-3" block @click="hideAchModal">{{ $t('achModalBtn')}}</b-button>
         </b-modal>
       </b-tab>
-
-          <b-modal ref="modal-save" :title="$t('complete_meal')" hide-footer>
-            <div class="p-0 text-center">
-              {{ $t('save_meal') }}
-            </div>
-            <footer class="modal-footer p-0">
-              <b-button variant="secondary" @click="hideModal">
-                {{$t('no')}}
-              </b-button>
-              <b-button variant="primary" @click="saveMeal()">
-                {{$t('yes')}}
-              </b-button>
-            </footer>
-          </b-modal>
-        </b-tab>
-
-        <b-tab :title="$t('meals_graph')" class="tab-content-info" @click="triggerChartTab">
+      <b-tab :title="$t('meals_graph')" class="tab-content-info" @click="triggerChartTab">
           <div class="chart-box">
             <div id="chart-bar">
               <apexchart
