@@ -32,13 +32,11 @@ export default {
   },
   data() {
     return {
-      graphData: [
-        ['', []],
-      ],
+      graphData: [],
       diameter: 0,
-      meal: [],
-      ingredientName: '',
-      ingredientComposition: { },
+      meal: { },
+      ingredients: [],
+      promises: [],
     };
   },
   computed: {
@@ -47,10 +45,18 @@ export default {
   methods: {
     loadMeal() {
       const params = { mealName: this.$route.query.mealName, date: this.$route.query.date };
-      this.$store.state.http.post('api/meal', { params })
+      this.$store.state.http.get('api/meal', { params })
         .then((response) => {
           [this.meal] = response.data.meals;
-          console.log(this.meal);
+          this.meal.components.forEach((c) => {
+            this.loadProductValues(c.barcode, c.quantity)
+              .then((res) => {
+                this.ingredients.push(res.data);
+              })
+              .catch(err => console.log(err));
+            this.promises.push(this.loadProductValues);
+          });
+          this.createGraphData();
         })
         .catch((error) => { console.log(error.response); });
     },
@@ -59,27 +65,38 @@ export default {
         barcode,
         quantity,
       };
-      this.$store.state.http.post(`api/product/${barcode}/${quantity}`, { params })
-        .then((response) => {
-          console.log(response.data);
-        })
-        .catch((error) => { console.log(error.response); });
+      return this.$store.state.http.get(`api/product/${params.barcode}/${params.quantity}`, { params });
+    },
+    createGraphData() {
+      this.ingredients.forEach((i) => {
+        this.graphData.push([i.product_name, this.getIngredientComposition(i)]);
+      });
+      console.log('graphData');
+      console.log(this.graphData);
+    },
+    getIngredientComposition(i) {
+      return [i.energy_kj_tot, i.energy_kj_tot, i.carbohydrates_tot, i.sugars_tot,
+        i.fat_tot, i.saturated_fat_tot, i.proteins_tot, i.salt_tot,
+        i.sodium_tot, i.calcium_tot, i.alcohol_tot, i.fiber_tot];
     },
     createGraph() {
-      const data = [
-        ['bubble1', [10, 20]],
-        ['bubble2', [5, 7]],
-        ['bubble3', [6, 6, 10]],
-        ['bubble4', [12, 14]],
-        ['bubble5', [14, 4]],
-        ['bubble6', [15, 5, 10]],
-        ['bubble7', [10, 10]],
-        ['bubble8', [25, 10]],
-        ['bubble9', [10, 25, 10, 10]],
-        ['bubble10', [55, 10]],
-        ['bubble11', [10, 80, 10, 10]],
-        ['bubble12', [50, 50]],
-      ];
+      console.log('graphData');
+      console.log(this.graphData);
+      // const data = [
+      //   ['bubble1', [10, 20]],
+      //   ['bubble2', [5, 7]],
+      //   ['bubble3', [6, 6, 10]],
+      //   ['bubble4', [12, 14]],
+      //   ['bubble5', [14, 4]],
+      //   ['bubble6', [15, 5, 10]],
+      //   ['bubble7', [10, 10]],
+      //   ['bubble8', [25, 10]],
+      //   ['bubble9', [10, 25, 10, 10]],
+      //   ['bubble10', [55, 10]],
+      //   ['bubble11', [10, 80, 10, 10]],
+      //   ['bubble12', [50, 50]],
+      // ];
+
 
       const color = d3.scale.ordinal().range(['#f1eef6', '#bdc9e1', '#74a9cf', '#0570b0']);
       const diameter = 500;
@@ -98,7 +115,7 @@ export default {
         .attr('class', 'bubble');
 
       const nodes = svg.selectAll('g.node')
-        .data(bubble.nodes({ children: data }).filter(d => !d.children));
+        .data(bubble.nodes({ children: this.graphData }).filter(d => !d.children));
 
       nodes.enter().append('g')
         .attr('class', 'node')
