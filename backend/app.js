@@ -41,11 +41,13 @@ require('./src/models/mealModel');
 
 global.appRoot = path.resolve(__dirname);
 
+const port = process.env.PORT || config.port || 3001;
 const publicRoutes = require('./src/routes/publicRoutes');
+const routes = require('./src/routes/routes');
 
 publicRoutes(app);
 
-app.use((req, res, next) => {
+app.use('/api/*', (req, res, next) => {
   try {
     // check token validity
     jwt.verify(req.headers.token, config.tokenKey);
@@ -57,23 +59,17 @@ app.use((req, res, next) => {
   }
 });
 
-const routes = require('./src/routes/routes');
-
 routes(app);
+
+if (process.env.NODE_ENV === 'production') {
+  app.use(express.static(`${__dirname}/public/`));
+  app.get(/.*/, (req, res) => res.sendFile(`${__dirname}/public/index.html`));
+}
 
 app.use((req, res) => {
   res.status(404).send({ url: `${req.originalUrl} not found` });
 });
 
-// Handle production
-if (process.env.NODE_ENV === 'production') {
-  // Static folder
-  app.use(express.static(`${__dirname}/public/`));
-
-  // Handle SPA
-  app.get(/.*/, (req, res) => res.sendFile(`${__dirname}/public/index.html`));
-}
-
-app.listen(config.port, () => {
-  global.log(`Node API server started on port ${config.port}`);
+app.listen(port, () => {
+  global.log(`Node API server started on port ${port}`);
 });
