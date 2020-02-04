@@ -1,12 +1,9 @@
 const express = require('express');
 const mongoose = require('mongoose');
-
 const bodyParser = require('body-parser');
 const cors = require('cors');
 const morgan = require('morgan');
-
 const path = require('path');
-const jwt = require('jsonwebtoken');
 const config = require('./config.json');
 
 const app = express();
@@ -46,19 +43,6 @@ const publicRoutes = require('./src/routes/publicRoutes');
 const routes = require('./src/routes/routes');
 
 publicRoutes(app);
-
-app.use('/api/*', (req, res, next) => {
-  try {
-    // check token validity
-    jwt.verify(req.headers.token, config.tokenKey);
-    // valid token
-    next();
-  } catch (err) {
-    // invavild token
-    res.status(401).send('Invalid token: '.concat(err));
-  }
-});
-
 routes(app);
 
 if (process.env.NODE_ENV === 'production') {
