@@ -1,8 +1,8 @@
 <template>
-<div class="container">
+<div class="container profileIntro">
   <div class="row">
     <div class="col-12">
-      <div class="card">
+      <div class="card cardR">
         <div class="card-body">
           <!--save/create BUTTONS-->
           <button v-on:click="editContent" class="card-button card-edit">
@@ -39,6 +39,11 @@
                       </div>
                       <div v-show="!isEditing" class="col-md-8 col-6">
                         <span v-if="tmp.key == 'gender'"> {{`${tmp.value.toUpperCase()}`}}</span>
+                        <div class="col-md-4 col-4 listAll" v-else-if="tmp.key == 'allergen'">
+                          <ul v-for="a in tmp.value" v-bind:key="a">
+                            <li class="elemList">{{$t(`${a}`)}}</li>
+                          </ul>
+                        </div>
                         <span v-else> {{`${tmp.value}`}}</span>
                       </div>
 
@@ -57,6 +62,18 @@
                             :id="tmp.key"
                             value="dateOfBirth"></date-picker>
                         </div>
+
+
+                        <div class="allergensDiv" v-else-if="tmp.key == 'allergen'">
+                          <multiselect v-model="selectedAllergens"
+                            :placeholder="$t('allergensPlaceholder')"
+                            :select-label="$t('selectLabel')"
+                            :custom-label="allT" open-direction="top" :hide-selected="true"
+                            track-by="code" :options="optionsMS" :multiple="true"
+                            :taggable="false" :max-height="200"></multiselect>
+                        </div>
+
+
                         <div v-else-if="tmp.key == 'gender'">
                           <!--check che sia selezionato-->
                           <b-select class="card-input-g" :id="tmp.key"
@@ -128,3 +145,4 @@
 <style lang="sass">
 @import './Profile.sass'
 </style>
+<style src="vue-multiselect/dist/vue-multiselect.min.css"></style>

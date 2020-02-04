@@ -20,7 +20,22 @@
     "perfMeal": "Your meal is perfect",
     "tenGreenMeal": "10 Green meals! Very well",
     "tenWaterSaverMeal": "10 meals water saver!",
-    "tenPerfMeal": "10 perfect meals!"
+    "tenPerfMeal": "10 perfect meals!",
+    "Gluten": "Gluten",
+    "Crustaceans": "Crustaceans",
+    "Eggs": "Eggs",
+    "Fish": "Fish",
+    "Peanuts": "Peanuts",
+    "Soybeans": "Soybeans",
+    "Milk": "Milk",
+    "Nuts": "Nuts",
+    "Celery": "Celery",
+    "Mustard": "Mustard",
+    "Sesame seeds": "Sesame seeds",
+    "Lupin": "Lupin",
+    "Molluscs": "Molluscs",
+    "allergensPlaceholder": "Select your allergens",
+    "selectLabel": "Click to select"
 
   },
   "it": {
@@ -44,6 +59,21 @@
     "perfMeal": "Il tuo pasto è perfetto!",
     "tenGreenMeal": "10 pasti ecologici! Wow, sei un grande!!",
     "tenWaterSaverMeal": "10 pasti water-saver!",
-    "tenPerfMeal": "10 pasti perfetti!"
+    "tenPerfMeal": "10 pasti perfetti!",
+    "Gluten": "Glutine",
+    "Crustaceans": "Crostacei",
+    "Eggs": "Uova",
+    "Fish": "Pesce",
+    "Peanuts": "Arachidi",
+    "Soybeans": "Soia",
+    "Milk": "Latte",
+    "Nuts": "Noci",
+    "Celery": "Sedano",
+    "Mustard": "Mostarda",
+    "Sesame seeds": "Semi di sesamo",
+    "Lupin": "Lupini",
+    "Molluscs": "Molluschi",
+    "allergensPlaceholder": "Seleziona i tuoi allergeni",
+    "selectLabel": "Clicca per selezionare"
   }
 }

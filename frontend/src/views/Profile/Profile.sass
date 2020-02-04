@@ -1,6 +1,17 @@
 @import '../../custom.sass'
+@import '../../lightMode.sass'
+@import '../../darkMode.sass'
 @import './achievement.sass'
 
+.profileIntro
+  padding-bottom: 30px
+
+.listAll
+  margin: 0 auto
+  line-height: .8em
+  .elemList
+    list-style: circle
+  
 #imgProfile
   width: 9em
   height: 10em
@@ -33,7 +44,6 @@
 .card-edit
   background: transparent
   border-radius: .2em
-  color: #bbb
   padding: .25em
   position: absolute
   right: .5em
@@ -41,7 +51,7 @@
 
   &:hover,
   &:focus
-    background: $white
+    background: transparent
     color: $coral
 
 .image-container
@@ -81,7 +91,7 @@
   height: 10em
 
 .nsError
-  border-color: #ff0000 !important
+  border-color: $error !important
 
 .card-input
   border-radius: .3em

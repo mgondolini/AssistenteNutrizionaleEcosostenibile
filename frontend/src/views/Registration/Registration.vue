@@ -1,10 +1,10 @@
 <template>
-  <div>
-    <b-form @submit="onSubmit" class="formIns">
+  <div class="registration">
+    <b-form @submit="onSubmit" class="formInsR">
       <div class="container registrationContainer">
         <div class="row">
           <div class="col-12">
-            <div class="card">
+            <div class="card cardR">
               <div class="card-body">
                 <div class="card-title mb-4">
                   <h3 class="titleReg">{{ $t('reg') }}</h3>
@@ -160,15 +160,12 @@
                               <label class="labelText">{{ $t('allergens') }}</label>
                             </div>
                             <div class="col-md-8 col-6">
-                              <b-form-input
-                                  id="input-allergens"
-                                  v-model="form.allergens"
-                                  placeholder="Inserisci allergeni"
-                                  aria-describedby="allergens-help-block"
-                                ></b-form-input>
-                                <b-form-text id="allergens-help-block">
-                                  {{ $t("allergens-info")}}
-                                </b-form-text>
+                              <multiselect v-model="selectedAllergens"
+                                :placeholder="$t('allergensPlaceholder')"
+                                :select-label="$t('selectLabel')"
+                                :custom-label="allT" open-direction="top" :hide-selected="true"
+                                track-by="code" :options="optionsMS" :multiple="true"
+                                :taggable="false" :max-height="200"></multiselect>
                             </div>
                           </div>
                           <hr/>
@@ -234,6 +231,7 @@
 </script>
 
 <i18n  src="./languageText.json"></i18n>
+<i18n  src="../Profile/languageText.json"></i18n>
 <i18n src='../../locales/errorMessages.json'></i18n>
 
 <style lang="sass">

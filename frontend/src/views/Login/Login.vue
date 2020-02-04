@@ -7,7 +7,7 @@
       tag="article"
       class="cardLogin"
     >
-      <img class="loginImg" src="../../assets/ecology.png"/>
+      <img src="../../assets/ecology.png" class="loginImg" alt="logo"/>
       <b-form @submit="onSubmit" class="formIns">
         <div class="grey-text">
           <b-form-group
@@ -52,15 +52,16 @@
         </div>
       </b-form>
       <hr />
-      <span style="margin-right: 10px">{{ $t('not-reg') }}</span>
+      <span class="disabled">{{ $t('not-reg') }}</span>
       <router-link to='registration'
         class="text-center buttonsDiv" style="text-decoration:none; margin-bottom:30px;">
-        <b-button class="sim-button button1">{{ $t('reg') }}</b-button>
+
+        <b-button class="sim-button button1 loginBtn">{{ $t('reg') }}</b-button>
       </router-link>
     </b-card>
     <b-modal id="modal-error" title="Error" hide-footer v-model="modalErrorShow">
       <div class="d-block text-center">
-        <img src="../../assets/restrictionShield.png">
+        <img src="../../assets/restrictionShield.png" alt="errorImg">
         {{ this.errorMsgModal }}
       </div>
       <b-button class="mt-3" block @click="hideModal">{{ $t('closeBtn')}}</b-button>
