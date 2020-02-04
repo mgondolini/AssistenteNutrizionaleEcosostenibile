@@ -8,6 +8,7 @@
 </template>
 
 <script>
+import Axios from 'axios';
 import * as d3 from 'd3';
 
 console.log(d3);
@@ -45,20 +46,36 @@ export default {
   methods: {
     loadMeal() {
       const params = { mealName: this.$route.query.mealName, date: this.$route.query.date };
-      this.$store.state.http.get('api/meal', { params })
+      // Array to store pending promises
+      const promises = [];
+      const { http } = this.$store.state;
+
+      http.get('api/meal', { params })
         .then((response) => {
           [this.meal] = response.data.meals;
           this.meal.components.forEach((c) => {
-            this.loadProductValues(c.barcode, c.quantity)
-              .then((res) => {
-                this.ingredients.push(res.data);
-              })
-              .catch(err => console.log(err));
-            this.promises.push(this.loadProductValues);
-          });
-          this.createGraphData();
+            // Make a get and store the pending promise returned by axios through loadProductValues
+            const promise = this.loadProductValues(c.barcode, c.quantity);
+            // Store the pending promise
+            promises.push(promise);
+          }); // End of the iteration over components
+
+          // Will be triggered when ALL the promises ar fullfilled or rejected
+          Axios.all(promises)
+          // Spread( ()=>{} ) will execute the callback {} on a varargs
+          // with args[i].data containing the response of one particular request
+            .then(Axios.spread((...args) => {
+              for (let i = 0; i < args.length; i += 1) {
+                this.ingredients.push(args[i].data);
+              }
+            }))
+          // The execution is chained immediately after the completion of the for, not before
+            .then(() => {
+              this.createGraphData();
+            })
+            .catch(() => { console.log('ERROR IN SPREAD'); });
         })
-        .catch((error) => { console.log(error.response); });
+        .catch(() => { console.log('ERROR IN ALL'); });
     },
     loadProductValues(barcode, quantity) {
       const params = {
