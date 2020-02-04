@@ -9,6 +9,8 @@ import router from './router';
 import './custom.sass';
 import './lightMode.sass';
 import './darkMode.sass';
+import 'bootstrap/dist/css/bootstrap.css';
+import 'pc-bootstrap4-datetimepicker/build/css/bootstrap-datetimepicker.css';
 import i18n from './i18n';
 
 global.config = require('../config.json');

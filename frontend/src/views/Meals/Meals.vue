@@ -119,7 +119,7 @@
               </b-collapse>
             </b-card>
           </div>
-          <div v-else><p>{{ $t(this.noMeals) }}</p></div>
+          <div v-else><p class="noMeals">{{ $t(this.noMeals) }}</p></div>
 
           <b-modal id="modal-error" :title="$t('error_meals')" hide-footer>
             <div class="d-block text-center">

@@ -1,4 +1,6 @@
 import datePicker from 'vue-bootstrap-datetimepicker';
+import Multiselect from 'vue-multiselect';
+import allergensList from '../../allergens.json';
 
 export default {
   name: 'registration',
@@ -23,7 +25,7 @@ export default {
           ar: ['m', 'f'],
         },
         img: '',
-        allergens: '',
+
       },
       options: {
         format: 'YYYY-MM-DD',
@@ -31,6 +33,8 @@ export default {
         showClear: false,
         showClose: true,
       },
+      selectedAllergens: [],
+      optionsMS: [],
       correctUser: true,
       correctEmail: true,
       correctPsw: false,
@@ -39,12 +43,27 @@ export default {
   },
   components: {
     datePicker,
+    Multiselect,
+  },
+  mounted() {
+    let i = 0;
+    allergensList.name.forEach((elem) => {
+      this.optionsMS.push({ name: elem, code: i });
+      i += 1;
+    });
   },
   methods: {
+    allT(all) {
+      return this.$i18n.t(all.name);
+    },
     onSubmit(evt) {
       this.modalErrorShow = false;
       evt.preventDefault();
       if (this.correctPsw && this.correctRePsw) {
+        const tmp = [];
+        this.selectedAllergens.forEach((e) => {
+          tmp.push(e.name);
+        });
         const b = {
           username: this.form.username,
           email: this.form.email,
@@ -55,7 +74,7 @@ export default {
           sex: this.form.sex.value,
           weight: this.form.weight,
           height: this.form.height,
-          allergens: this.form.allergens,
+          allergens: tmp,
         };
         this.$store.state.http.post('api/user', b).then(() => {
           // console.log(res);
