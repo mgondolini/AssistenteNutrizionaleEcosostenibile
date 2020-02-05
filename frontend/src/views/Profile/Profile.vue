@@ -6,7 +6,7 @@
         <div class="card-body">
           <!--save/create BUTTONS-->
           <button v-on:click="editContent" class="card-button card-edit">
-            <b-icon icon="pencil" font-scale="1"
+            <b-icon icon="pencil" font-scale="2"
               v-show="!isEditing" aria-hidden="true">create</b-icon>
             <i v-show="isEditing" class="material-icons save"
               aria-hidden="true" v-on:click="update">save</i>
