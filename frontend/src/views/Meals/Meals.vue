@@ -127,19 +127,6 @@
           </b-card>
         </div>
         <div v-else><p class="noMeals">{{ $t(this.noMeals) }}</p></div>
-        <b-modal ref="modal-save" :title="$t('complete_meal')" hide-footer>
-          <div class="p-0 text-center">
-            {{ $t('save_meal') }}
-          </div>
-          <footer class="modal-footer p-0">
-            <b-button variant="secondary" @click="hideModal">
-              {{$t('no')}}
-            </b-button>
-            <b-button variant="primary" @click="saveMeal()">
-              {{$t('yes')}}
-            </b-button>
-          </footer>
-        </b-modal>
         <b-modal id="modal-ach" :title="$i18n.t('newAchievement')" hide-footer>
           <div class="d-block text-center">
             {{ this.achMsgModal }}
@@ -544,7 +531,7 @@ export default {
     },
     deleteMealModal(meal) {
       this.$bvModal.msgBoxConfirm(this.$i18n.t('confirm_meal_deletion'), {
-        title: this.$i18n.t('delete_meal'),
+        title: this.$i18n.t('complete_meal'),
         okVariant: 'primary',
         okTitle: this.$i18n.t('yes'),
         cancelTitle: this.$i18n.t('no'),
@@ -607,11 +594,26 @@ export default {
     getNutriScoreImage(nutriScore) {
       return nutriScore ? imagesContext(`./nutriScore/${nutriScore}${imagesExt}`) : '';
     },
-    completeMeal(meal) {
-      this.mealToClose = meal;
-      this.$refs['modal-save'].show();
+    completeMealModal(meal) {
+      this.$bvModal.msgBoxConfirm(this.$i18n.t('save_meal'), {
+        title: this.$i18n.t('delete_meal'),
+        okVariant: 'primary',
+        okTitle: this.$i18n.t('yes'),
+        cancelTitle: this.$i18n.t('no'),
+        footerClass: 'p-2',
+        hideHeaderClose: false,
+      })
+        .then((value) => {
+          if (value === true) this.saveMeal(meal);
+          else console.log('pasto non salvato');
+        })
+        .catch((err) => {
+          console.log(err);
+          // An error occurred
+        });
     },
-    saveMeal() {
+    saveMeal(meal) {
+      this.mealToClose = meal;
       this.mealToClose.is_closed = true;
       console.log(this.mealToClose.is_closed);
       const body = this.mealToClose;
