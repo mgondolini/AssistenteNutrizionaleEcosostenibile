@@ -17,10 +17,10 @@
                       <div class="tab-pane fade show active" id="basicInfo"
                         role="tabpanel" aria-labelledby="basicInfo-tab">
                           <div class="row">
-                            <div class="col-sm-3 col-md-3 col-5">
+                            <div class="col-sm-2 col-md-2 col-4">
                               <label class="labelText">{{ $t('user-name') }}</label>
                             </div>
-                            <div class="col-md-8 col-6">
+                            <div class="col-md-8 col-8">
                               <b-form-input
                                 id="input-username"
                                 v-model="form.username"
@@ -37,10 +37,10 @@
                           </div>
                           <hr/>
                           <div class="row">
-                            <div class="col-sm-3 col-md-3 col-5">
+                            <div class="col-sm-2 col-md-2 col-4">
                               <label class="labelText">{{ $t('mail1') }}</label>
                             </div>
-                            <div class="col-md-8 col-6">
+                            <div class="col-md-8 col-8">
                               <b-form-input
                                 id="input-email"
                                 v-model="form.email"
@@ -57,10 +57,10 @@
                           </div>
                           <hr/>
                           <div class="row">
-                            <div class="col-sm-3 col-md-3 col-5">
+                            <div class="col-sm-2 col-md-2 col-4">
                               <label class="labelText">{{ $t('pwd1') }}</label>
                             </div>
-                            <div class="col-md-8 col-6">
+                            <div class="col-md-8 col-8">
                               <b-form-input
                                 id="input-password"
                                 v-model="form.password"
@@ -78,10 +78,10 @@
                             </div>
                           </div>
                           <div class="row pers">
-                            <div class="col-sm-3 col-md-3 col-5">
+                            <div class="col-sm-2 col-md-2 col-4">
                               <label class="labelText">{{ $t('reinsert') }}</label>
                             </div>
-                            <div class="col-md-8 col-6">
+                            <div class="col-md-8 col-8">
                               <b-form-input
                                 id="re-input-password"
                                 v-model="form.repassword"
@@ -98,10 +98,10 @@
                           <h4 class="pers">{{ $t('pers') }}</h4>
                           <hr/>
                           <div class="row">
-                            <div class="col-sm-3 col-md-3 col-5">
+                            <div class="col-sm-2 col-md-2 col-4">
                               <label class="labelText">{{ $t('name') }}</label>
                             </div>
-                            <div class="col-md-8 col-6">
+                            <div class="col-md-8 col-8">
                               <b-form-input
                                   id="input-name"
                                   v-model="form.name"
@@ -112,10 +112,10 @@
                           </div>
                           <hr/>
                           <div class="row">
-                            <div class="col-sm-3 col-md-3 col-5">
+                            <div class="col-sm-2 col-md-2 col-4">
                               <label class="labelText">{{ $t('surname') }}</label>
                             </div>
-                            <div class="col-md-8 col-6">
+                            <div class="col-md-8 col-8">
                               <b-form-input
                                   id="input-surname"
                                   v-model="form.surname"
@@ -126,10 +126,10 @@
                           </div>
                           <hr/>
                           <div class="row">
-                            <div class="col-sm-3 col-md-3 col-5">
+                            <div class="col-sm-2 col-md-2 col-4">
                               <label class="labelText">{{ $t('height') }}</label>
                             </div>
-                            <div class="col-md-8 col-6">
+                            <div class="col-md-8 col-8">
                               <b-form-input
                                 id="input-height"
                                 type="number"
@@ -141,10 +141,10 @@
                           </div>
                           <hr/>
                           <div class="row">
-                            <div class="col-sm-3 col-md-3 col-5">
+                            <div class="col-sm-2 col-md-2 col-4">
                               <label class="labelText">{{ $t('weight') }}</label>
                             </div>
-                            <div class="col-md-8 col-6">
+                            <div class="col-md-8 col-8">
                               <b-form-input
                                 id="input-weight"
                                 type="number"
@@ -156,24 +156,24 @@
                           </div>
                           <hr/>
                           <div class="row">
-                            <div class="col-sm-3 col-md-3 col-5">
+                            <div class="col-sm-2 col-md-2 col-4">
                               <label class="labelText">{{ $t('allergens') }}</label>
                             </div>
-                            <div class="col-md-8 col-6">
+                            <div class="col-md-8 col-8">
                               <multiselect v-model="selectedAllergens"
                                 :placeholder="$t('allergensPlaceholder')"
                                 :select-label="$t('selectLabel')"
-                                :custom-label="allT" open-direction="top" :hide-selected="true"
+                                :custom-label="allT" open-direction="bottom" :hide-selected="true"
                                 track-by="code" :options="optionsMS" :multiple="true"
                                 :taggable="false" :max-height="200"></multiselect>
                             </div>
                           </div>
                           <hr/>
                           <div class="row">
-                            <div class="col-sm-3 col-md-3 col-5">
+                            <div class="col-sm-2 col-md-2 col-4">
                               <label class="labelText">{{ $t('sex') }}</label>
                             </div>
-                            <div class="col-md-8 col-6">
+                            <div class="col-md-8 col-8">
                               <b-form-select id="input-sex" required v-model="form.sex.value">
                                 <option disabled value=""> {{ $t(`${form.sex.key}`) }}</option>
                                 <option v-for="opt in form.sex.ar"
@@ -185,10 +185,10 @@
                           </div>
                           <hr/>
                           <div class="row">
-                            <div class="col-sm-3 col-md-3 col-5">
+                            <div class="col-sm-2 col-md-2 col-4">
                               <label class="labelText">{{ $t('DOB') }}</label>
                             </div>
-                            <div class="col-md-8 col-6">
+                            <div class="col-md-8 col-8">
                               <date-picker name="date"
                                 required v-model="form.dateOfBirth"
                                 :config="options"
