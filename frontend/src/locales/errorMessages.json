@@ -7,6 +7,7 @@
         "user_not_found": "User not found.",
         "unauthorized": "Unauthorized access",
         "internal_server_error": "Something went wrong. Try later",
+        "noAnswerTitle": "Unreachable server",
         "noAnswer": "No answer from server. Try again later"
     },
     "it": {
@@ -17,6 +18,7 @@
         "user_not_found": "Utente non trovato",
         "unauthorized": "Accesso non autorizzato",
         "internal_server_error": "Qualcosa è andato storto. Riprova più tardi",
+        "noAnswerTitle": "Server irraggiungibile",
         "noAnswer": "Nessuna risposta dal server. Riprova più tardi"
     }
 }
