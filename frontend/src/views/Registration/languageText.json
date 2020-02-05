@@ -25,8 +25,8 @@
     "achModalTitle": "New Achievement!",
     "achBtnModal": "Great!",
     "enterU": "Enter your username",
-    "enterP": "Enter your password",
-    "enterRP": "Re-enter your password",
+    "enterP": "Enter password",
+    "enterRP": "Re-enter password",
     "errorModalTitle": "Error"
   },
   "it": {
@@ -55,8 +55,8 @@
     "achModalTitle": "Un nuovo obiettivo raggiunto!",
     "achBtnModal": "Fantastico!",
     "enterU": "Inserisci il tuo username",
-    "enterP": "Inserisci la tua password",
-    "enterRP": "Reinserisci la tua password",
+    "enterP": "Inserisci password",
+    "enterRP": "Reinserisci password",
     "errorModalTitle": "Errore"
   }
 }

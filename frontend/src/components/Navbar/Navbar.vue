@@ -3,13 +3,13 @@
       <b-navbar class="navbarChangeColor" toggleable="lg" type="dark" :variant="this.variant">
         <b-icon class="backIcon border rounded" icon="arrow-left-short"
         font-scale="2.5" @click='back'></b-icon>
-        <b-navbar-brand class="home" to="/">
+        <b-navbar-brand class="home" to="/" aria-label="home">
           <img src="../../assets/ecology_f.png" alt="imageLogo">{{navhome}}
         </b-navbar-brand>
         <b-navbar-toggle target="nav-collapse"></b-navbar-toggle>
         <b-collapse id="nav-collapse" class="nav-router" is-nav>
           <b-navbar-nav>
-            <b-nav-item class="info_prod" @click="productInfo()">
+            <b-nav-item to="" class="info_prod" @click="productInfo()">
               {{ $t('prod_info') }}
             </b-nav-item>
           </b-navbar-nav>

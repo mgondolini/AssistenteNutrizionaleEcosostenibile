@@ -6,9 +6,10 @@
         <div class="card-body">
           <!--save/create BUTTONS-->
           <button v-on:click="editContent" class="card-button card-edit">
-            <i v-show="!isEditing" class="material-icons" aria-hidden="true">create</i>
-            <i v-show="isEditing" class="material-icons" aria-hidden="true"
-            v-on:click="update">save</i>
+            <b-icon icon="pencil" font-scale="1"
+              v-show="!isEditing" aria-hidden="true">create</b-icon>
+            <i v-show="isEditing" class="material-icons save"
+              aria-hidden="true" v-on:click="update">save</i>
           </button>
           <!--IMAGE PROFILE-->
           <div class="card-title mb-4">
@@ -17,8 +18,9 @@
                   <img v-bind:src= "avatar" id="imgProfile"
                   class="card-avatar card-avatar--circle" />
                   <div class="middle">
-                    <input v-show="isEditing" type="button" class="btn btn-secondary"
-                    id="btnChangePicture" value="Change" v-on:click="activateBtn"/>
+                    <i v-show="isEditing" class="btn btn-secondary material-icons camera "
+                      id="btnChangePicture" value="Change" v-on:click="activateBtn">
+                    photo_camera</i>
                     <input type="file" id="profilePicture" @change="uploadImgNew" name="file" />
                   </div>
               </div>

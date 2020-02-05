@@ -11,6 +11,7 @@ import './lightMode.sass';
 import './darkMode.sass';
 import 'bootstrap/dist/css/bootstrap.css';
 import 'pc-bootstrap4-datetimepicker/build/css/bootstrap-datetimepicker.css';
+import '@fortawesome/fontawesome-free/css/all.css';
 import i18n from './i18n';
 
 global.config = require('../config.json');
