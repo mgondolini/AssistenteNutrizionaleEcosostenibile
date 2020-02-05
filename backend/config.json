@@ -1,0 +1,8 @@
+{
+  "debugmode": "emptyMeIfNotInDebugMode",
+  "port": "8081",
+  "privateKeyPass": "TKsWaveBestWeaponEver!",
+  "publicKeyFile": "publicKey.txt",
+  "privateKeyFile": "privateKey.txt",
+  "tokenKey": "!!WurmBe5tGam3Ever"
+}

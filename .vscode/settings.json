@@ -1,0 +1,9 @@
+{
+    "eslint.run": "onSave",
+    "eslint.autoFixOnSave": true,
+    "eslint.lintTask.enable": true,
+    "eslint.alwaysShowStatus": true,
+    "editor.codeActionsOnSave": {
+        "source.fixAll.eslint": true
+    },
+}

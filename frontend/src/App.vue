@@ -1,32 +1,24 @@
 <template>
   <div id="app">
-    <div id="nav">
-      <router-link to="/">Home</router-link> |
-      <router-link to="/about">About</router-link>
-    </div>
+    <navbar class="nav-bar"></navbar>
     <router-view/>
+    <selectProduct></selectProduct>
   </div>
 </template>
 
-<style lang="scss">
-#app {
-  font-family: 'Avenir', Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-}
+<script>
+import Navbar from './components/Navbar/Navbar.vue';
+import SelectProduct from './components/SelectProduct/SelectProduct.vue';
 
-#nav {
-  padding: 30px;
+export default {
+  name: 'app',
+  components: {
+    navbar: Navbar,
+    selectProduct: SelectProduct,
+  },
+};
+</script>
 
-  a {
-    font-weight: bold;
-    color: #2c3e50;
-
-    &.router-link-exact-active {
-      color: #42b983;
-    }
-  }
-}
+<style lang="sass">
+  @import './components/Navbar/navbar.sass'
 </style>

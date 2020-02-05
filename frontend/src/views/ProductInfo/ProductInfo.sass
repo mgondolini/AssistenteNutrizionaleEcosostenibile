@@ -1,0 +1,64 @@
+@import '../../custom.sass'
+@import '../../darkMode.sass'
+
+.productInfo
+
+  .buttonContainer
+    padding: 10px
+
+  input
+    margin: 10px
+
+  button
+    margin: 10px
+
+  .productCard
+    margin: 10px 
+    padding: 10px  //TODO only for desktop
+
+    .media
+      align-items: center
+    p
+
+      text-align: left   
+
+    // TODO prevent the image to expand further vertically once the max-width is reached, breaking the proportions
+    img 
+      //height: 250px  
+      height: 30vh
+      max-width: 40vw
+
+    div
+      max-width: inherit
+      max-height: inherit
+
+  .containerProd
+    max-width: 95%
+    margin: 0 auto
+    .firstInfo
+      padding: 10px 0 30px 0
+      .nutritionIndicators
+        margin: 0 auto
+        line-height: 1.8em
+        padding-top: 1em
+        display: flex
+        justify-content: center
+  .productData
+    table
+      margin-inline: auto
+
+    td, th
+      text-align: left
+      padding-inline: .5em
+
+      img
+        height: 1em
+    th
+      font-size: 1.2em
+
+  .table-hover 
+    tbody 
+      tr:hover 
+        td 
+          font-weight: bold
+          background-color: $background_color_1  
