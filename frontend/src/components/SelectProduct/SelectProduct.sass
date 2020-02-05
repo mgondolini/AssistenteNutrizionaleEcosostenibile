@@ -11,11 +11,18 @@
     display: block
 
 .scanning
-  height: 400px
+  height: 300px
   .buttonContainer
     .viewport
       video, canvas
         width: -webkit-fill-available
+        width: -moz-available
+        width: fill-available
+        max-width: 450px
     #btnBack
       position: absolute
       bottom: 0
+@media screen and ( min-width: 760px )
+  .scanning
+    height: 400px
+  
