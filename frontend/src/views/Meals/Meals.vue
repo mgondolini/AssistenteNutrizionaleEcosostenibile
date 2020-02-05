@@ -62,7 +62,7 @@
                     font-scale="2"></b-icon>
                   </b-button>
                   <b-button class="p-0" variant="info"
-                    @click="removeMeal(meal.meal_name)"
+                    @click="deleteMealModal(meal.meal_name)"
                   ><b-icon icon="trash-fill"
                     class="border border-light rounded p-1"
                     font-scale="2">
@@ -199,6 +199,8 @@ export default {
       // Meal state
       noMeals: '',
       mealNameState: null,
+
+      mealToClose: {},
 
       // Error messages
       inputCheckMessage: '',
@@ -543,6 +545,24 @@ export default {
     goToInfoProd(barcode) {
       this.$root.$emit('selectProduct', barcode);
     },
+    deleteMealModal(meal) {
+      this.$bvModal.msgBoxConfirm(this.$i18n.t('confirm_meal_deletion'), {
+        title: this.$i18n.t('delete_meal'),
+        okVariant: 'primary',
+        okTitle: this.$i18n.t('yes'),
+        cancelTitle: this.$i18n.t('no'),
+        footerClass: 'p-2',
+        hideHeaderClose: false,
+      })
+        .then((value) => {
+          if (value === true) this.removeMeal(meal);
+          else console.log('pasto non cancellato');
+        })
+        .catch((err) => {
+          console.log(err);
+          // An error occurred
+        });
+    },
 
     // Utils
     getDailyNutritionRatio(value, dailyRequirement) {
@@ -647,6 +667,8 @@ export default {
     "error_meals": "Error!",
     "complete_meal": "Complete meal",
     "save_meal": "If you complete the meal you will not be able to edit it again.\nConfirm?",
+    "delete_meal": "Delete meal?",
+    "confirm_meal_deletion": "If you complete the meal you you can no longer recover it.\nConfirm?",
     "yes": "Yes",
     "no": "No",
     "overrun": "Overrun Daily Value %",
@@ -677,7 +699,9 @@ export default {
     "no_meals": "Non sono ancora stati inseriti pasti in questa data",
     "error_meals": "Errore!",
     "complete_meal": "Completa il pasto",
-    "save_meal": "Se completi il pasto non potrai più modificarlo\nConfermare?",
+    "save_meal": "Se completi il pasto non potrai più modificarlo\nConfermi?",
+    "delete_meal": "Eliminare pasto?",
+    "confirm_meal_deletion": "Se elimini il pasto non lo potrai più recuperare\n Confermi?",
     "yes": "Si",
     "no": "No",
     "overrun": "Superamento del fabbisogno giornaliero %",
