@@ -127,12 +127,6 @@
           </b-card>
         </div>
         <div v-else><p class="noMeals">{{ $t(this.noMeals) }}</p></div>
-        <b-modal id="modal-error" :title="$t('error_meals')" hide-footer>
-          <div class="d-block text-center">
-            <b-icon icon="alert-triangle" variant="danger" scale="2"></b-icon>
-            {{ $t(this.modalErrorMsg) }}
-          </div>
-        </b-modal>
         <b-modal ref="modal-save" :title="$t('complete_meal')" hide-footer>
           <div class="p-0 text-center">
             {{ $t('save_meal') }}
@@ -168,6 +162,7 @@
         </b-tab>
       </b-tabs>
     </div>
+    <ModalError></ModalError>
   </div>
 </template>
 
@@ -175,6 +170,7 @@
 import Vue from 'vue';
 import datePicker from 'vue-bootstrap-datetimepicker';
 import VueApexCharts from 'vue-apexcharts';
+import ModalError from '../../components/ModalError/ModalError.vue';
 
 Vue.use(VueApexCharts);
 
@@ -186,6 +182,7 @@ export default {
   components: {
     datePicker,
     apexchart: VueApexCharts,
+    ModalError,
   },
   data() {
     return {
@@ -596,12 +593,12 @@ export default {
 
         if (errorStatus === 401) {
           this.modalErrorMsg = 'unauthorized';
-          this.$bvModal.show('modal-error');
+          this.$root.$emit('openModalError', 'DefaultTitle', this.modalErrorMsg);
         } else if (errorDescription === 'internal_server_error'
           || errorDescription === 'meal_not_found'
           || errorDescription === 'user_not_found') {
           this.modalErrorMsg = errorDescription;
-          this.$bvModal.show('modal-error');
+          this.$root.$emit('openModalError', 'DefaultTitle', this.modalErrorMsg);
         } else if (errorDescription === 'mealslist_not_found') {
           this.noMeals = 'no_meals';
         } else this.inputCheckMessage = errorDescription;
