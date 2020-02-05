@@ -14,7 +14,6 @@
     "weight": "Weight",
     "allergens": "Allergens",
     "sex": "Gender",
-    "allergens-info": "Allergens must be separated by a space.",
     "DOB": "Date of Birth",
     "reg-me":"Sign in",
     "username": "Username already in use",
@@ -24,7 +23,11 @@
     "closeBtn": "Ok",
     "achMsgModal": "Registration done!",
     "achModalTitle": "New Achievement!",
-    "achBtnModal": "Great!"
+    "achBtnModal": "Great!",
+    "enterU": "Enter your username",
+    "enterP": "Enter your password",
+    "enterRP": "Re-enter your password",
+    "errorModalTitle": "Error"
   },
   "it": {
     "reg": "Registrazione",
@@ -40,7 +43,6 @@
     "height": "Altezza",
     "weight": "Peso",
     "allergens": "Allergeni",
-    "allergens-info": "Gli allergeni devono essere separati da uno spazio",
     "sex": "Genere",
     "DOB": "Data di Nascita",
     "reg-me":"Registrami",
@@ -51,6 +53,10 @@
     "closeBtn": "Ok",
     "achMsgModal": "Registrazione effettuata!",
     "achModalTitle": "Un nuovo obiettivo raggiunto!",
-    "achBtnModal": "Fantastico!"
+    "achBtnModal": "Fantastico!",
+    "enterU": "Inserisci il tuo username",
+    "enterP": "Inserisci la tua password",
+    "enterRP": "Reinserisci la tua password",
+    "errorModalTitle": "Errore"
   }
 }

@@ -6,35 +6,39 @@
     hide-footer
     @hidden="inputMode = 'SELECT'"
     >
-    <div v-if="inputMode === 'SELECT'" class="buttonContainerVertical">
-        <b-button v-on:click="inputMode = 'MANUAL'">{{$t('input_btn_manual')}}</b-button>
-        <b-button v-on:click="inputMode = 'STREAM'">{{$t('input_btn_scan_barcode')}}</b-button>
-        <b-button v-on:click="uploadFile()">{{$t('input_btn_upload')}}</b-button>
-        <b-button v-on:click="scanNutriTable()">{{$t('input_btn_scan_nutri')}}</b-button>
-    </div>
-    <div v-else-if="inputMode === 'MANUAL'" id="insertEAN" class="buttonContainer">
-      <div>
-        <label for="ean">{{$t('ean_code')}}</label>
-        <input
-          id="ean"
-          v-model="ean"
-          value=""
-        >
+    <div id="selectionInputMode">
+      <div v-if="inputMode === 'SELECT'" class="buttonContainerVertical">
+          <b-button v-on:click="inputMode = 'MANUAL'">{{$t('input_btn_manual')}}</b-button>
+          <b-button id="buttonScanner" class="btnAR" v-on:click="addRemoveClass">
+            {{$t('input_btn_scan_barcode')}}</b-button>
+          <b-button v-on:click="uploadFile()">{{$t('input_btn_upload')}}</b-button>
+          <b-button v-on:click="scanNutriTable()">{{$t('input_btn_scan_nutri')}}</b-button>
       </div>
-      <b-form-select v-model="ean" :options="eanOptions"></b-form-select>
-      <div>
-        <b-button v-on:click="loadProductInfo(ean)">{{$t('lookup')}}</b-button>
-        <b-button v-on:click="inputMode = 'SELECT'">{{$t('back')}}</b-button>
+      <div v-else-if="inputMode === 'MANUAL'" id="insertEAN" class="buttonContainer">
+        <div>
+          <label for="ean">{{$t('ean_code')}}</label>
+          <input
+            id="ean"
+            v-model="ean"
+            value=""
+          >
+        </div>
+        <b-form-select v-model="ean" :options="eanOptions"></b-form-select>
+        <div>
+          <b-button v-on:click="loadProductInfo(ean)">{{$t('lookup')}}</b-button>
+          <b-button v-on:click="inputMode = 'SELECT'">{{$t('back')}}</b-button>
+        </div>
       </div>
-    </div>
-    <div v-else-if="inputMode === 'STREAM'" id="videoStream" class="buttonContainer">
-      <v-quagga
-        :onDetected="barcodeDetected"
-        :readerSize="readerSize"
-        :readerTypes="['ean_reader']"
-        :aspectRatio="aspectRatio"
-      ></v-quagga>
-      <b-button v-on:click="inputMode = 'SELECT'">{{$t('back')}}</b-button>
+      <div v-else-if="inputMode === 'STREAM'" id="videoStream" class="buttonContainer">
+        <v-quagga
+          :onDetected="barcodeDetected"
+          :readerSize="readerSize"
+          :readerTypes="['ean_reader']"
+          :aspectRatio="aspectRatio"
+        ></v-quagga>
+        <b-button id="btnBack" class="btnAR" v-on:click="addRemoveClass">{{$t('back')}}</b-button>
+
+      </div>
     </div>
   </b-modal>
 </template>
@@ -157,6 +161,16 @@ export default {
         centered: true,
       });
     },
+    addRemoveClass() {
+      const x = document.getElementsByClassName('btnAR')[0].id;
+      if (x === 'buttonScanner') {
+        document.getElementById('selectionInputMode').classList.add('scanning');
+        this.inputMode = 'STREAM';
+      } else if (x === 'btnBack') {
+        document.getElementById('selectionInputMode').classList.remove('scanning');
+        this.inputMode = 'SELECT';
+      }
+    },
   },
 };
 </script>
@@ -193,5 +207,5 @@ export default {
 </i18n>
 
 <style lang="sass">
-  @import './SelectProduct.sass';
+  @import './SelectProduct.sass'
 </style>
