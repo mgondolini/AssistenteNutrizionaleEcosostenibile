@@ -538,7 +538,7 @@ export default {
       this.$refs.barchart.refresh();
       setTimeout(() => {
         this.$refs.barchart.updateSeries([{ name: '', data: this.nutritionValues }]);
-      }, 200);
+      }, 500);
     },
     goToInfoProd(barcode) {
       this.$root.$emit('selectProduct', barcode);
