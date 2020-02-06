@@ -5,10 +5,14 @@
         "mealslist_not_found": "Meals list not found.",
         "product_not_found": "Product not found.",
         "user_not_found": "User not found.",
+        "unauthorizedTitle": "Unauthorized",
         "unauthorized": "Unauthorized access",
+        "internal_server_errorTitle": "Internal server error",
         "internal_server_error": "Something went wrong. Try later",
         "noAnswerTitle": "Unreachable server",
-        "noAnswer": "No answer from server. Try again later"
+        "noAnswer": "No answer from server. Try again later",
+        "dataErrorTitle": "Wrong data",
+        "dataError": "There are some empty or wrong data"
     },
     "it": {
         "meal_name_exists": "Nome pasto già esistente.",
@@ -16,9 +20,13 @@
         "mealslist_not_found": "Lista pasti non trovata.",
         "product_not_found": "Prodotto non trovato.",
         "user_not_found": "Utente non trovato",
+        "unauthorizedTitle": "Accesso negato",
         "unauthorized": "Accesso non autorizzato",
+        "internal_server_errorTitle": "Errore interno al server",
         "internal_server_error": "Qualcosa è andato storto. Riprova più tardi",
         "noAnswerTitle": "Server irraggiungibile",
-        "noAnswer": "Nessuna risposta dal server. Riprova più tardi"
+        "noAnswer": "Nessuna risposta dal server. Riprova più tardi",
+        "dataErrorTitle": "Dati errati",
+        "dataError": "Ci sono dati errati o mancanti"
     }
 }

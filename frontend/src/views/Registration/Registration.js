@@ -6,8 +6,6 @@ export default {
   name: 'registration',
   data() {
     return {
-      errorMsgModal: '',
-      modalErrorShow: false,
       datePlaceholder: new Date().toISOString().split('T')[0],
       form: {
         email: '',
@@ -57,9 +55,10 @@ export default {
       return this.$i18n.t(all.name);
     },
     onSubmit(evt) {
-      this.modalErrorShow = false;
+      if (this.form.email.trim().length === 0) this.correctEmail = false;
+      if (this.form.username.trim().length === 0) this.correctUser = false;
       evt.preventDefault();
-      if (this.correctPsw && this.correctRePsw) {
+      if (this.correctEmail && this.correctUser && this.correctPsw && this.correctRePsw) {
         const tmp = [];
         this.selectedAllergens.forEach((e) => {
           tmp.push(e.name);
@@ -86,38 +85,25 @@ export default {
               this.$bvModal.show('modal-ach');
             }).catch((error) => {
               if (error.response) {
-                this.errorMsgModal = this.$i18n.t('internal_server_error');
-                this.modalErrorShow = true;
+                this.$root.$emit('openModalError', 'internal_server_errorTitle', 'internal_server_error');
               } else {
-                this.errorMsgModal = this.$i18n.t('noAnswer');
-                this.modalErrorShow = true;
+                this.$root.$emit('openModalError', 'noAnswerTitle', 'noAnswer');
               }
             });
         }).catch((err) => {
           if (err.response) {
-            this.errorMsgModal = this.$i18n.t('internal_server_error');
-            this.modalErrorShow = true;
+            this.$root.$emit('openModalError', 'internal_server_errorTitle', 'internal_server_error');
           } else {
-            this.errorMsgModal = this.$i18n.t('noAnswer');
-            this.modalErrorShow = true;
+            this.$root.$emit('openModalError', 'noAnswerTitle', 'noAnswer');
           }
         });
       } else {
-        this.errorMsgModal = this.$i18n.t('dataError');
-        this.modalErrorShow = true;
+        this.$root.$emit('openModalError', 'dataErrorTitle', 'dataError');
       }
     },
     onBlurUser() {
       // check if User already exist
       const u = this.form.username.trim();
-      /*
-      if (/[^a-z|\u002D|0-9]/i.test(u) || u.length === 0) {
-        // invalid username
-        this.correctUser = false;
-        this.noUniqueUser = false;
-        document.getElementById('input-username').className = 'form-control regUserError';
-      } else {
-      */
       if (u.length > 0) {
         this.$store.state.http.get(`api/checkUser/${u}`).then((response) => {
           if (!response.data.match('ok')) {
@@ -202,9 +188,6 @@ export default {
         document.getElementById('re-input-password').type = 'text';
         document.getElementById('buttonHideShowRePsw').style = 'background-position: -44px 0px';
       }
-    },
-    hideModal() {
-      this.$bvModal.hide('modal-error');
     },
     hideModalAch() {
       this.$bvModal.hide('modal-ach');
