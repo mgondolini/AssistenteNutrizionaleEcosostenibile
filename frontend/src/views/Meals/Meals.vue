@@ -62,7 +62,7 @@
                     font-scale="2"></b-icon>
                   </b-button>
                   <b-button class="p-0" variant="info"
-                    @click="removeMeal(meal.meal_name)"
+                    @click="deleteMealModal(meal.meal_name)"
                   ><b-icon icon="trash-fill"
                     class="border border-light rounded p-1"
                     font-scale="2">
@@ -127,25 +127,6 @@
           </b-card>
         </div>
         <div v-else><p class="noMeals">{{ $t(this.noMeals) }}</p></div>
-        <b-modal id="modal-error" :title="$t('error_meals')" hide-footer>
-          <div class="d-block text-center">
-            <b-icon icon="alert-triangle" variant="danger" scale="2"></b-icon>
-            {{ $t(this.modalErrorMsg) }}
-          </div>
-        </b-modal>
-        <b-modal ref="modal-save" :title="$t('complete_meal')" hide-footer>
-          <div class="p-0 text-center">
-            {{ $t('save_meal') }}
-          </div>
-          <footer class="modal-footer p-0">
-            <b-button variant="secondary" @click="hideModal">
-              {{$t('no')}}
-            </b-button>
-            <b-button variant="primary" @click="saveMeal()">
-              {{$t('yes')}}
-            </b-button>
-          </footer>
-        </b-modal>
         <b-modal id="modal-ach" :title="$i18n.t('newAchievement')" hide-footer>
           <div class="d-block text-center">
             {{ this.achMsgModal }}
@@ -168,6 +149,7 @@
         </b-tab>
       </b-tabs>
     </div>
+    <ModalError></ModalError>
   </div>
 </template>
 
@@ -175,6 +157,7 @@
 import Vue from 'vue';
 import datePicker from 'vue-bootstrap-datetimepicker';
 import VueApexCharts from 'vue-apexcharts';
+import ModalError from '../../components/ModalError/ModalError.vue';
 
 Vue.use(VueApexCharts);
 
@@ -186,6 +169,7 @@ export default {
   components: {
     datePicker,
     apexchart: VueApexCharts,
+    ModalError,
   },
   data() {
     return {
@@ -199,6 +183,8 @@ export default {
       // Meal state
       noMeals: '',
       mealNameState: null,
+
+      mealToClose: {},
 
       // Error messages
       inputCheckMessage: '',
@@ -538,10 +524,28 @@ export default {
       this.$refs.barchart.refresh();
       setTimeout(() => {
         this.$refs.barchart.updateSeries([{ name: '', data: this.nutritionValues }]);
-      }, 200);
+      }, 500);
     },
     goToInfoProd(barcode) {
       this.$root.$emit('selectProduct', barcode);
+    },
+    deleteMealModal(meal) {
+      this.$bvModal.msgBoxConfirm(this.$i18n.t('confirm_meal_deletion'), {
+        title: this.$i18n.t('complete_meal'),
+        okVariant: 'primary',
+        okTitle: this.$i18n.t('yes'),
+        cancelTitle: this.$i18n.t('no'),
+        footerClass: 'p-2',
+        hideHeaderClose: false,
+      })
+        .then((value) => {
+          if (value === true) this.removeMeal(meal);
+          else console.log('pasto non cancellato');
+        })
+        .catch((err) => {
+          console.log(err);
+          // An error occurred
+        });
     },
 
     // Utils
@@ -576,12 +580,12 @@ export default {
 
         if (errorStatus === 401) {
           this.modalErrorMsg = 'unauthorized';
-          this.$bvModal.show('modal-error');
+          this.$root.$emit('openModalError', 'DefaultTitle', this.modalErrorMsg);
         } else if (errorDescription === 'internal_server_error'
           || errorDescription === 'meal_not_found'
           || errorDescription === 'user_not_found') {
           this.modalErrorMsg = errorDescription;
-          this.$bvModal.show('modal-error');
+          this.$root.$emit('openModalError', 'DefaultTitle', this.modalErrorMsg);
         } else if (errorDescription === 'mealslist_not_found') {
           this.noMeals = 'no_meals';
         } else this.inputCheckMessage = errorDescription;
@@ -590,11 +594,26 @@ export default {
     getNutriScoreImage(nutriScore) {
       return nutriScore ? imagesContext(`./nutriScore/${nutriScore}${imagesExt}`) : '';
     },
-    completeMeal(meal) {
-      this.mealToClose = meal;
-      this.$refs['modal-save'].show();
+    completeMealModal(meal) {
+      this.$bvModal.msgBoxConfirm(this.$i18n.t('save_meal'), {
+        title: this.$i18n.t('delete_meal'),
+        okVariant: 'primary',
+        okTitle: this.$i18n.t('yes'),
+        cancelTitle: this.$i18n.t('no'),
+        footerClass: 'p-2',
+        hideHeaderClose: false,
+      })
+        .then((value) => {
+          if (value === true) this.saveMeal(meal);
+          else console.log('pasto non salvato');
+        })
+        .catch((err) => {
+          console.log(err);
+          // An error occurred
+        });
     },
-    saveMeal() {
+    saveMeal(meal) {
+      this.mealToClose = meal;
       this.mealToClose.is_closed = true;
       console.log(this.mealToClose.is_closed);
       const body = this.mealToClose;
@@ -647,6 +666,8 @@ export default {
     "error_meals": "Error!",
     "complete_meal": "Complete meal",
     "save_meal": "If you complete the meal you will not be able to edit it again.\nConfirm?",
+    "delete_meal": "Delete meal?",
+    "confirm_meal_deletion": "If you complete the meal you you can no longer recover it.\nConfirm?",
     "yes": "Yes",
     "no": "No",
     "overrun": "Overrun Daily Value %",
@@ -677,7 +698,9 @@ export default {
     "no_meals": "Non sono ancora stati inseriti pasti in questa data",
     "error_meals": "Errore!",
     "complete_meal": "Completa il pasto",
-    "save_meal": "Se completi il pasto non potrai più modificarlo\nConfermare?",
+    "save_meal": "Se completi il pasto non potrai più modificarlo\nConfermi?",
+    "delete_meal": "Eliminare pasto?",
+    "confirm_meal_deletion": "Se elimini il pasto non lo potrai più recuperare\n Confermi?",
     "yes": "Si",
     "no": "No",
     "overrun": "Superamento del fabbisogno giornaliero %",
