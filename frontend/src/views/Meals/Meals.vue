@@ -636,9 +636,6 @@ export default {
         })
         .catch(error => this.checkError(error.response.data.description));
     },
-    hideModal() {
-      this.$refs['modal-save'].hide();
-    },
     hideAchModal() {
       this.$bvModal.hide('modal-ach');
     },
