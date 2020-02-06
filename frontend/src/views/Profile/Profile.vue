@@ -24,7 +24,7 @@
                     <input type="file" id="profilePicture" @change="uploadImgNew" name="file" />
                   </div>
               </div>
-              <div class="userData ml-3">
+              <div class="userData mb-3">
                 <h2 class="d-block"> {{ $t('profile') }} <br/><i>{{username}}</i></h2>
               </div>
             </div>
