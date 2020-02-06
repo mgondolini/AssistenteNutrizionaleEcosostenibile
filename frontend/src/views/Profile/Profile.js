@@ -11,7 +11,6 @@ export default {
       genderSelected: '',
       selectedAllergens: [],
       isEditing: false,
-      errorMsgModal: '',
 
       campi: {
         name: {
@@ -80,14 +79,17 @@ export default {
       return this.$i18n.t(all.name);
     },
     checkError(error, status) {
-      if (error === 'internal_server_error' || error === 'user_not_found') {
-        this.errorMsgModal = error;
-        this.$bvModal.show('modal-error');
+      if (error === 'internal_server_error') {
+        this.$root.$emit('openModalError', 'internal_server_errorTitle', 'internal_server_error');
+      } else if (error === 'user_not_found') {
+        this.$root.$emit('openModalError', 'user_not_foundTitle', 'user_not_found');
       } else if (status === 401) {
-        this.errorMsgModal = this.$i18n.t('unauthorized');
-        this.$bvModal.show('modal-error');
+        this.$root.$emit('openModalError', 'unauthorizedTitle', 'unauthorized',
+          () => this.$router.push('/login'));
+      } else if (error === undefined) {
+        this.$root.$emit('openModalError', 'noAnswerTitle', 'noAnswer');
       } else {
-        this.errorMsgModal = this.$i18n.t('internal_server_error');
+        this.$root.$emit('openModalError', 'internal_server_errorTitle', 'internal_server_error');
       }
     },
     editContent() {
@@ -95,13 +97,8 @@ export default {
         this.isEditing = !this.isEditing;
       }
     },
-    hideModal() {
-      this.$bvModal.hide('modal-error');
-      this.$router.push('/login');
-    },
     update() {
       this.errors = false;
-      this.$bvModal.hide('modal-error');
       if (!this.campi.name.value) {
         document.getElementById('name').classList.add('nsError');
         this.errors = true;
@@ -180,9 +177,6 @@ export default {
     },
   },
   mounted() {
-    this.modalShow = false;
-    this.$bvModal.hide('modal-error');
-
     this.$store.state.http.get('api/user')
       .then((response) => {
         if (response.data.username != null) this.username = response.data.username;
@@ -230,7 +224,7 @@ export default {
           });
         });
       })
-      .catch(error => this.checkError(error,
+      .catch(error => this.checkError(error.response.data.description,
         error.response.status));
   },
 };
