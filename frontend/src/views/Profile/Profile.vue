@@ -128,13 +128,6 @@
       </div>
     </div>
   </div>
-  <b-modal id="modal-error" :title="$i18n.t('errorModalTitle')" hide-footer>
-    <div class="d-block text-center">
-      <img src="../../assets/restrictionShield.png">
-      {{ this.errorMsgModal }}
-    </div>
-    <b-button class="mt-3" block @click="hideModal">{{ $t('closeBtn')}}</b-button>
-  </b-modal>
 </div>
 </template>
 
@@ -142,7 +135,6 @@
 </script>
 
 <i18n src="./languageText.json"></i18n>
-<i18n src="../../locales/errorMessages.json"></i18n>
 
 <style lang="sass">
 @import './Profile.sass'
