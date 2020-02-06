@@ -149,7 +149,6 @@
         </b-tab>
       </b-tabs>
     </div>
-    <ModalError></ModalError>
   </div>
 </template>
 
@@ -157,7 +156,6 @@
 import Vue from 'vue';
 import datePicker from 'vue-bootstrap-datetimepicker';
 import VueApexCharts from 'vue-apexcharts';
-import ModalError from '../../components/ModalError/ModalError.vue';
 
 Vue.use(VueApexCharts);
 
@@ -169,7 +167,6 @@ export default {
   components: {
     datePicker,
     apexchart: VueApexCharts,
-    ModalError,
   },
   data() {
     return {
