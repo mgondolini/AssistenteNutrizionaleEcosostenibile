@@ -89,6 +89,19 @@ if (localStorage.ecoAssToken !== 'InvalidToken') {
   store.commit('logout');
 }
 
+router.beforeEach((to, from, next) => {
+  const realRoute = ['/', '/login', '/info_prod', '/profile', '/meals', '/calculate_meal_composition', '/registration'];
+  const loggedRoute = ['/profile', '/meals', '/calculate_meal_composition'];
+  const p = to.path;
+  if (!realRoute.includes(p)) {
+    next('/');
+  } else if (loggedRoute.includes(p) && !store.state.isLogged) {
+    next('/login');
+  } else {
+    next();
+  }
+});
+
 new Vue({
   router,
   i18n,
