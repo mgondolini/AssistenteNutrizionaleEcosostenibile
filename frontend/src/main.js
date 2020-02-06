@@ -4,6 +4,7 @@ import Axios from 'axios';
 import Vuex from 'vuex';
 import VueCarousel from 'vue-carousel';
 import VueQuagga from 'vue-quaggajs';
+import VCalendar from 'v-calendar';
 import App from './App.vue';
 import router from './router';
 import './custom.sass';
@@ -22,6 +23,7 @@ Vue.use(VueCarousel);
 Vue.use(BootstrapVue);
 Vue.use(BootstrapVueIcons);
 Vue.use(Vuex);
+Vue.use(VCalendar);
 
 let tmpDark = false;
 if (localStorage.darkMode !== undefined) {
