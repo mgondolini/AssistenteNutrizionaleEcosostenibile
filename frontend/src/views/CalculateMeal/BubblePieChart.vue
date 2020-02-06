@@ -3,14 +3,18 @@
   <div class="BubblePieChart">
     <h3>BubblePieChart</h3>
     <div class="chart-box" id="chart-box">
+      <zingchart :data="chartData" :series="series"></zingchart>
     </div>
   </div>
 </template>
 
 <script>
-import * as d3 from 'd3';
+import Vue from 'vue';
+import zingchartVue from 'zingchart-vue';
 
-console.log(d3);
+Vue.component('zingchart', zingchartVue);
+
+
 /* eslint-disable no-param-reassign */
 
 /* bubble chart dove ogni bolla è un ingrediente,
@@ -28,15 +32,52 @@ Pie chart con la composizione in termini di componenti
 export default {
   name: 'BubblePieChart',
   components: {
-
+    zingchart: zingchartVue,
   },
   data() {
     return {
-      graphData: [],
-      diameter: 0,
-      meal: { },
+      chartData: {
+        type: 'bubble-pie',
+        scaleX: {
+          lineColor: 'none',
+          guide: {
+            lineColor: 'none',
+          },
+        },
+        scaleY: {
+          lineColor: 'none',
+          guide: {
+            lineColor: 'none',
+          },
+        },
+        plot: {
+          values: [
+            [3, 3, 34],
+            [5, 12, 101],
+            [4, 3, 34],
+            [6, 12, 101],
+            [8, 12, 101],
+          ],
+        },
+      },
+      series: [
+        { 'data-v': [15, 37, 7, 3, 14] },
+        { 'data-v': [13, 34, 21, 7, 8] },
+        { 'data-v': [6, 30, 31, 5, 8] },
+        { 'data-v': [5, 29, null, 3, 13] },
+        { 'data-v': [3, 25, 19, 3, null] },
+      ],
+
+      //       { 'Tonno all olio di oliva': [811, 811, null] },
+      // { 'Mandel Original': [102, 102, 3] },
+
       ingredients: [],
-      promises: [],
+
+      // { 'data-v': [15, 37, 7, 3, 14] },
+      // { 'data-v': [13, 34, 21, 7, 8] },
+      // { 'data-v': [6, 30, 31, 5, 8] },
+      // { 'data-v': [5, 29, null, 3, 13] },
+      // { 'data-v': [3, 25, 19, 3, null] },
     };
   },
   computed: {
@@ -66,7 +107,7 @@ export default {
               responses.forEach((res) => {
                 this.ingredients.push(res.data);
               });
-              this.createGraphData();
+              // this.createGraphData();
             })
             .catch(err => console.log(err));
         })
@@ -84,10 +125,10 @@ export default {
     },
     createGraphData() {
       this.ingredients.forEach((i) => {
-        this.graphData.push([i.product_name, this.getIngredientComposition(i)]);
+        this.series.push({ [i.product_name]: this.getIngredientComposition(i) });
       });
-      console.log('graphData');
-      console.log(this.graphData);
+      console.log(`series${JSON.stringify(this.series)}`);
+      console.log(this.series);
     },
     getIngredientComposition(i) {
       return [i.energy_kj_tot, i.energy_kj_tot, i.carbohydrates_tot, i.sugars_tot,
@@ -112,65 +153,7 @@ export default {
       //   ['bubble12', [50, 50]],
       // ];
 
-
-      const color = d3.scale.ordinal().range(['#f1eef6', '#bdc9e1', '#74a9cf', '#0570b0']);
-      const diameter = 500;
-
-      const bubble = d3.layout.pack()
-        .value(d => d3.sum(d[1]))
-        .sort(null)
-        .size([diameter, diameter])
-        .padding(1.5);
-      const arc = d3.svg.arc().innerRadius(0);
-      const pie = d3.layout.pie();
-
-      const svg = d3.select('body').append('svg')
-        .attr('width', diameter)
-        .attr('height', diameter)
-        .attr('class', 'bubble');
-
-      const nodes = svg.selectAll('g.node')
-        .data(bubble.nodes({ children: this.graphData }).filter(d => !d.children));
-
-      nodes.enter().append('g')
-        .attr('class', 'node')
-        .attr('transform', d => `translate(${d.x},${d.y})`);
-
-      d3.select('#chart-box')
-        .transition()
-        .duration(2000);
-
-      const arcGs = nodes.selectAll('g.arc')
-        .data(d => pie(d[1]).map((m) => { m.r = d.r; return m; }));
-
-      const arcEnter = arcGs.enter().append('g').attr('class', 'arc');
-
-      arcEnter.append('path')
-        .attr('d', (d) => {
-          arc.outerRadius(d.r);
-          return arc(d);
-        })
-        .style('fill', (d, i) => color(i));
-
-      arcEnter.append('text')
-        .attr({
-          x(d) { arc.outerRadius(d.r); return arc.centroid(d)[0]; },
-          y(d) { arc.outerRadius(d.r); return arc.centroid(d)[1]; },
-          dy: '0.35em',
-        })
-        .style('text-anchor', 'middle')
-        .text(d => d.value);
-
-      const labels = nodes.selectAll('text.label')
-        .data((d) => { console.log(d); return [d[0]]; });
-
-      labels.enter().append('text')
-        .attr({
-          class: 'label',
-          dy: '0.35em',
-        })
-        .style('text-anchor', 'middle')
-        .text(String);
+      this.createGraphData();
     },
   },
   mounted() {
@@ -180,11 +163,4 @@ export default {
 </script>
 
 <style>
-  g.arc path {
-    stroke: #828282;
-    stroke-width: 0.5;
-  }
-  g.arc text {
-    font-size: 10px;
-  }
 </style>
