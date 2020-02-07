@@ -1,4 +1,3 @@
-import datePicker from 'vue-bootstrap-datetimepicker';
 import Multiselect from 'vue-multiselect';
 import allergensList from '../../allergens.json';
 
@@ -11,7 +10,15 @@ export default {
       genderSelected: '',
       selectedAllergens: [],
       isEditing: false,
-
+      attributes: [
+        {
+          key: 'today',
+          dot: {
+            color: 'red',
+            contentClass: 'italic',
+          },
+        },
+      ],
       campi: {
         name: {
           key: 'name',
@@ -64,7 +71,6 @@ export default {
     };
   },
   components: {
-    datePicker,
     Multiselect,
   },
   computed: {
@@ -75,6 +81,9 @@ export default {
     },
   },
   methods: {
+    test(day) {
+      console.log(day);
+    },
     allT(all) {
       return this.$i18n.t(all.name);
     },
@@ -186,7 +195,7 @@ export default {
         if (response.data.surname != null) this.campi.surname.value = response.data.surname;
 
         if (response.data.birth_date != null) {
-          this.campi.dateOfBirth.value = response.data.birth_date;
+          this.campi.dateOfBirth.value = new Date(response.data.birth_date);
         }
 
         if (response.data.email != null) this.campi.email.value = response.data.email;
