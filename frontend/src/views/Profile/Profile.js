@@ -1,4 +1,3 @@
-import datePicker from 'vue-bootstrap-datetimepicker';
 import Multiselect from 'vue-multiselect';
 import allergensList from '../../allergens.json';
 
@@ -11,8 +10,15 @@ export default {
       genderSelected: '',
       selectedAllergens: [],
       isEditing: false,
-      errorMsgModal: '',
-
+      attributes: [
+        {
+          key: 'today',
+          dot: {
+            color: 'red',
+            contentClass: 'italic',
+          },
+        },
+      ],
       campi: {
         name: {
           key: 'name',
@@ -65,7 +71,6 @@ export default {
     };
   },
   components: {
-    datePicker,
     Multiselect,
   },
   computed: {
@@ -76,18 +81,24 @@ export default {
     },
   },
   methods: {
+    test(day) {
+      console.log(day);
+    },
     allT(all) {
       return this.$i18n.t(all.name);
     },
     checkError(error, status) {
-      if (error === 'internal_server_error' || error === 'user_not_found') {
-        this.errorMsgModal = error;
-        this.$bvModal.show('modal-error');
+      if (error === 'internal_server_error') {
+        this.$root.$emit('openModalError', 'internal_server_errorTitle', 'internal_server_error');
+      } else if (error === 'user_not_found') {
+        this.$root.$emit('openModalError', 'user_not_foundTitle', 'user_not_found');
       } else if (status === 401) {
-        this.errorMsgModal = this.$i18n.t('unauthorized');
-        this.$bvModal.show('modal-error');
+        this.$root.$emit('openModalError', 'unauthorizedTitle', 'unauthorized',
+          () => this.$router.push('/login'));
+      } else if (error === undefined) {
+        this.$root.$emit('openModalError', 'noAnswerTitle', 'noAnswer');
       } else {
-        this.errorMsgModal = this.$i18n.t('internal_server_error');
+        this.$root.$emit('openModalError', 'internal_server_errorTitle', 'internal_server_error');
       }
     },
     editContent() {
@@ -95,13 +106,8 @@ export default {
         this.isEditing = !this.isEditing;
       }
     },
-    hideModal() {
-      this.$bvModal.hide('modal-error');
-      this.$router.push('/login');
-    },
     update() {
       this.errors = false;
-      this.$bvModal.hide('modal-error');
       if (!this.campi.name.value) {
         document.getElementById('name').classList.add('nsError');
         this.errors = true;
@@ -180,9 +186,6 @@ export default {
     },
   },
   mounted() {
-    this.modalShow = false;
-    this.$bvModal.hide('modal-error');
-
     this.$store.state.http.get('api/user')
       .then((response) => {
         if (response.data.username != null) this.username = response.data.username;
@@ -192,7 +195,7 @@ export default {
         if (response.data.surname != null) this.campi.surname.value = response.data.surname;
 
         if (response.data.birth_date != null) {
-          this.campi.dateOfBirth.value = response.data.birth_date;
+          this.campi.dateOfBirth.value = new Date(response.data.birth_date);
         }
 
         if (response.data.email != null) this.campi.email.value = response.data.email;
@@ -230,7 +233,7 @@ export default {
           });
         });
       })
-      .catch(error => this.checkError(error,
+      .catch(error => this.checkError(error.response.data.description,
         error.response.status));
   },
 };

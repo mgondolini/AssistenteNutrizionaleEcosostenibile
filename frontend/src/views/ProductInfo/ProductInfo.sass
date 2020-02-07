@@ -14,7 +14,9 @@
 
   .productCard
     margin: 10px 
-    padding: 10px  //TODO only for desktop
+    padding: 0px
+    max-width: 95%
+    margin: 2% auto
 
     .media
       align-items: center
@@ -62,3 +64,7 @@
         td 
           font-weight: bold
           background-color: $background_color_1  
+
+  @media screen and ( min-width: 760px  )
+    .productCard
+      padding: 10px !important

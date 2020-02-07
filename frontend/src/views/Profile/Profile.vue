@@ -24,7 +24,7 @@
                     <input type="file" id="profilePicture" @change="uploadImgNew" name="file" />
                   </div>
               </div>
-              <div class="userData ml-3">
+              <div class="userData mb-3">
                 <h2 class="d-block"> {{ $t('profile') }} <br/><i>{{username}}</i></h2>
               </div>
             </div>
@@ -40,16 +40,21 @@
                         <label class="labelText">{{ $t(`${tmp.key}`) }}</label>
                       </div>
                       <div v-show="!isEditing" class="col-md-8 col-6">
-                        <span v-if="tmp.key == 'gender'"> {{`${tmp.value.toUpperCase()}`}}</span>
+                        <span v-if="tmp.key == 'gender'" class="profileSpan">
+                          {{`${tmp.value.toUpperCase()}`}}
+                        </span>
+                        <span v-else-if="tmp.key == 'dateOfBirth'" class="profileSpan">
+                          {{ $d(tmp.value, 'short')}}
+                        </span>
                         <div class="col-md-4 col-4 listAll" v-else-if="tmp.key == 'allergen'">
                           <ul v-for="a in tmp.value" v-bind:key="a">
                             <li class="elemList">{{$t(`${a}`)}}</li>
                           </ul>
                         </div>
-                        <span v-else> {{`${tmp.value}`}}</span>
+                        <span v-else class="profileSpan"> {{`${tmp.value}`}}</span>
                       </div>
 
-                      <div v-show="isEditing" class="col-md-8 col-6">
+                      <div v-show="isEditing" class="col-md-8 col-6 transp">
                         <div v-if="tmp.key == 'weight' || tmp.key == 'height'">
                           <b-input size="sm" v-model="tmp.value"
                             type="number"
@@ -58,13 +63,22 @@
                             :placeholder= "tmp.placeholder" ></b-input>
                         </div>
                         <div v-else-if="tmp.key == 'dateOfBirth'">
-                          <date-picker class="card-input-date"
-                            name="date" v-model="tmp.value"
-                            :config="options"
+                          <v-date-picker v-model="tmp.value"
+                            class="card-input-date"
+                            :popover="{ placement: 'top', visibility: 'click' }"
+                            :masks="{ title: 'YYYY MMM' }"
+                            :locale='$root.$i18n.locale'
+                            :max-date="new Date()"
+                            :is-dark="$store.state.darkMode"
+                            :attributes="attributes"
                             :id="tmp.key"
-                            value="dateOfBirth"></date-picker>
+                            :is-required="true">
+                            <p class="date-picker buttonCalendar">
+                              <b-icon icon="calendar" class="calIco"  font-scale="1.5"></b-icon>
+                                <span class="trasp">{{ $d(tmp.value, 'short') }}</span>
+                            </p>
+                          </v-date-picker>
                         </div>
-
 
                         <div class="allergensDiv" v-else-if="tmp.key == 'allergen'">
                           <multiselect v-model="selectedAllergens"
@@ -75,20 +89,20 @@
                             :taggable="false" :max-height="200"></multiselect>
                         </div>
 
-
                         <div v-else-if="tmp.key == 'gender'">
                           <!--check che sia selezionato-->
-                          <b-select class="card-input-g" :id="tmp.key"
+                          <b-select class="card-input-g colorSelectGender" :id="tmp.key"
                             size="sm" v-model="tmp.value">
                             <option disabled value=""> {{ $t(`${tmp.key}`) }}</option>
-                            <option v-for="opt in tmp.ar"
+                            <option class="optgender" v-for="opt in tmp.ar"
                             v-bind:key="opt" v-bind:value="opt">
                               {{ opt.toUpperCase() }}
                             </option>
                           </b-select>
                         </div>
+
                         <div v-else-if="tmp.key == 'email'">
-                          <span> {{`${tmp.value}`}}</span>
+                          <span class="profileSpan"> {{`${tmp.value}`}}</span>
                         </div>
                         <div v-else>
                           <b-input size="sm" v-model="tmp.value"
@@ -128,13 +142,6 @@
       </div>
     </div>
   </div>
-  <b-modal id="modal-error" :title="$i18n.t('errorModalTitle')" hide-footer>
-    <div class="d-block text-center">
-      <img src="../../assets/restrictionShield.png">
-      {{ this.errorMsgModal }}
-    </div>
-    <b-button class="mt-3" block @click="hideModal">{{ $t('closeBtn')}}</b-button>
-  </b-modal>
 </div>
 </template>
 
@@ -142,7 +149,6 @@
 </script>
 
 <i18n src="./languageText.json"></i18n>
-<i18n src="../../locales/errorMessages.json"></i18n>
 
 <style lang="sass">
 @import './Profile.sass'
