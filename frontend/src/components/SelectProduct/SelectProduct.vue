@@ -9,7 +9,7 @@
     <div id="selectionInputMode">
       <div v-if="inputMode === 'SELECT'" class="buttonContainerVertical">
           <b-button v-on:click="inputMode = 'MANUAL'">{{$t('input_btn_manual')}}</b-button>
-          <b-button id="buttonScanner" class="btnAR" v-on:click="addRemoveClass">
+          <b-button id="buttonScanner" class="btnAR" v-on:click="toggleScannerStream">
             {{$t('input_btn_scan_barcode')}}</b-button>
           <b-button v-on:click="uploadFile()">{{$t('input_btn_upload')}}</b-button>
           <b-button v-on:click="scanNutriTable()">{{$t('input_btn_scan_nutri')}}</b-button>
@@ -36,7 +36,7 @@
           :readerTypes="['ean_reader']"
           :aspectRatio="aspectRatio"
         ></v-quagga>
-        <b-button id="btnBack" class="btnAR" v-on:click="addRemoveClass">{{$t('back')}}</b-button>
+        <b-button id="btnBack" class="btnAR" v-on:click="toggleScannerStream">{{$t('back')}}</b-button>
 
       </div>
     </div>
@@ -160,8 +160,9 @@ export default {
         okVariant: 'danger',
         centered: true,
       });
+      this.toggleScannerStream();
     },
-    addRemoveClass() {
+    toggleScannerStream() {
       const x = document.getElementsByClassName('btnAR')[0].id;
       if (x === 'buttonScanner') {
         document.getElementById('selectionInputMode').classList.add('scanning');
