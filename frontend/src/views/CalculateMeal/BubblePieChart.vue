@@ -78,11 +78,7 @@ export default {
         },
         plot: {
           values: [
-            [3, 3, 34],
-            [5, 12, 101],
-            [9, 7, 59],
-            [11, 5, 15],
-            [14, 14, 30],
+            [0, 0, 0],
           ],
           dataBubble: null,
           tooltip: {
@@ -98,13 +94,7 @@ export default {
           sizeFactor: 4,
         },
       },
-      series: [
-        { 'data-v': [15, 37, 7, 3, 14] },
-        { 'data-v': [13, 34, 21, 7, 8] },
-        { 'data-v': [6, 30, 31, 5, 8] },
-        { 'data-v': [5, 29, null, 3, 13] },
-        { 'data-v': [3, 25, 19, 3, null] },
-      ],
+      series: [],
     };
   },
   computed: {
@@ -162,7 +152,7 @@ export default {
       console.log(this.values);
       console.log('OLD SERIES');
       console.log(this.series);
-      alert('REPLACING STUBS WITH REAL VALUES IN GRAPH');
+      // alert('REPLACING STUBS WITH REAL VALUES IN GRAPH');
       this.chartData.plot.values = [];
       this.series = null;
 
@@ -211,6 +201,7 @@ export default {
       this.series = this.populateSeries();
       */
       // this.$refs.bubblepie.reload();
+
 
       // non funziona così
       // this.chartData.plot.dataBubble = this.bubbleLabels;
