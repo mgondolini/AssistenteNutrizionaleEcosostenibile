@@ -24,7 +24,12 @@
     "achBtnModal": "Great!",
     "enterU": "Enter your username",
     "enterP": "Enter password",
-    "enterRP": "Re-enter password"
+    "enterRP": "Re-enter password",
+    "cannotDeselect": "Can't deselect",
+    "selectedOpt": "Selected",
+    "female": "Female",
+    "male": "Male",
+    "sexPlaceholder": "Select your gender"
   },
   "it": {
     "reg": "Registrazione",
@@ -51,6 +56,11 @@
     "achBtnModal": "Fantastico!",
     "enterU": "Inserisci il tuo username",
     "enterP": "Inserisci password",
-    "enterRP": "Reinserisci password"
+    "enterRP": "Reinserisci password",
+    "cannotDeselect": "Non puoi deselezionare",
+    "selectedOpt": "Selezionato",
+    "female": "Femmina",
+    "male": "Maschio",
+    "sexPlaceholder": "Seleziona il tuo genere"
   }
 }

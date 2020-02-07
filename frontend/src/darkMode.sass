@@ -21,13 +21,13 @@
                     background-color: transparent
   .listAll
     color: $white
-  .multiselect__option
+  .multiselect__option, .multiselect__single
     span
       color: $black
     &--highlight
       background-color: $modal_bg
     &::after
-      background-color: $modal_bg
+      background-color: transparent
       color: $black
   .noMeals
     color: $white
@@ -39,6 +39,9 @@
       background-color: transparent
       .date-p
         color: $white
+      .datePicker
+        .buttonCalendar
+          color: $white
     .containerMeal, .containerProd
       background-color: $dark_bg_card
       #myTabContent
@@ -92,7 +95,8 @@
     color: $white
   .our_mission
     background-color: $bg_dark_mission
-
+    .homeMission
+      color: $white
   // Other pages darkMode
   .login, .registration, .container, .productInfo, .containerFather
     .card-edit
@@ -111,14 +115,29 @@
           .row
             .labelText
               color: $white
-            .col-md-8, .col-6
-              .card-input-ns, .card-input-date, 
+            .col-md-8, .col-6, .col-8
+              .profileSpan
+                color: $white
+              .card-input-ns, .card-input-date, .form-control,
               .form-control-sm, .custom-select-sm, .multiselect__tags
                 background-color: rgba($dark_bg_link_not_active, .2)
                 color: $white
-                text-align: center
+                .multiselect--active
+                  background-color: transparent
                 .multiselect__placeholder
                   color: $white
+                  background-color: transparent
+                .multiselect__single
+                  background-color: transparent
+              .colorSelectGender
+                .optgender
+                  color: $black
+                  &:hover
+                    background-color: red
+            .card-input-ns, .card-input-date, .form-control
+            .form-control-sm, .custom-select-sm, .multiselect__tags
+              background-color: rgba($dark_bg_link_not_active, .2)
+              color: $white
           .text-muted
             color: $white !important
           .pers
@@ -133,7 +152,8 @@
             background-color: $dark_bg_link_not_active
             color: $dark_bg_card
             font-weight: bolder
-  
+      .disabled
+        color: $white
   .vc_custom_1548165107261
     background-color: $card_mission_dark !important
     .textBlock
@@ -156,8 +176,7 @@
           .media-body
             color: $white
   // Custom sass darkMode
-  span
-    color: $white
+  
   .localeID
     color: $black
   .buttonsDiv, .buttonsDisposition
@@ -169,3 +188,13 @@
         color: $white
     .disabled
       color: $white
+  
+  .buttonCalendar
+    border: 1px solid lightgrey
+    background-color: rgba($dark_bg_link_not_active, .2)
+    margin: 0
+  .date-picker
+    color: $white
+    .calIco
+      color: $white
+      
