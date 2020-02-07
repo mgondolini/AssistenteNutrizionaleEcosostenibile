@@ -2,7 +2,8 @@
 <template>
   <div class="BubblePieChart">
     <h3>BubblePieChart</h3>
-    <div class="chart-box" id="chart-box">
+
+    <div v-if="ready" class="chart-box" id="chart-box">
       <zingchart ref="bubblepie" :data="chartData" :series="series"></zingchart>
     </div>
   </div>
@@ -79,10 +80,6 @@ export default {
         plot: {
           values: [
             [3, 3, 34],
-            [5, 12, 101],
-            [9, 7, 59],
-            [11, 5, 15],
-            [14, 14, 30],
           ],
           dataBubble: null,
           tooltip: {
@@ -100,11 +97,9 @@ export default {
       },
       series: [
         { 'data-v': [15, 37, 7, 3, 14] },
-        { 'data-v': [13, 34, 21, 7, 8] },
-        { 'data-v': [6, 30, 31, 5, 8] },
-        { 'data-v': [5, 29, null, 3, 13] },
-        { 'data-v': [3, 25, 19, 3, null] },
       ],
+
+      ready: false,
     };
   },
   computed: {
@@ -159,7 +154,7 @@ export default {
       let j = 0;
 
       console.log('OLD VALUES');
-      console.log(this.values);
+      console.log(this.chartData.plot.values);
       console.log('OLD SERIES');
       console.log(this.series);
       alert('REPLACING STUBS WITH REAL VALUES IN GRAPH');
@@ -189,7 +184,7 @@ export default {
 
 
       console.log('NEW VALUES');
-      console.log(this.values);
+      console.log(this.chartData.plot.values);
       console.log('NEW SERIES');
       this.series = this.populateSeries();
       console.log(this.series);
@@ -210,7 +205,9 @@ export default {
 
       this.series = this.populateSeries();
       */
-      // this.$refs.bubblepie.reload();
+      // this.$refs.bubblepie.update();
+
+      this.ready = true;
 
       // non funziona così
       // this.chartData.plot.dataBubble = this.bubbleLabels;
