@@ -30,6 +30,7 @@
     "pc-bootstrap4-datetimepicker": "^4.17.50",
     "quagga": "^0.12.1",
     "sass-loader": "^8.0.0",
+    "v-calendar": "^1.0.0-beta.23",
     "vue": "^2.6.10",
     "vue-apexcharts": "^1.5.1",
     "vue-bootstrap-datetimepicker": "^5.0.1",

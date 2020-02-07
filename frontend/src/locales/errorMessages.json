@@ -4,21 +4,31 @@
         "meal_not_found": "Meal not found.",
         "mealslist_not_found": "Meals list not found.",
         "product_not_found": "Product not found.",
-        "user_not_found": "User not found.",
+        "user_not_foundTitle": "User not found",
+        "user_not_found": "User not found in our database",
+        "unauthorizedTitle": "Unauthorized",
         "unauthorized": "Unauthorized access",
+        "internal_server_errorTitle": "Internal server error",
         "internal_server_error": "Something went wrong. Try later",
         "noAnswerTitle": "Unreachable server",
-        "noAnswer": "No answer from server. Try again later"
+        "noAnswer": "No answer from server. Try again later",
+        "dataErrorTitle": "Wrong data",
+        "dataError": "There are some empty or wrong data"
     },
     "it": {
         "meal_name_exists": "Nome pasto già esistente.",
         "meal_not_found": "Pasto non trovato.",
         "mealslist_not_found": "Lista pasti non trovata.",
         "product_not_found": "Prodotto non trovato.",
-        "user_not_found": "Utente non trovato",
+        "user_not_foundTitle": "Utente non trovato",
+        "user_not_found": "Utente non trovato nel nostro database",
+        "unauthorizedTitle": "Accesso negato",
         "unauthorized": "Accesso non autorizzato",
+        "internal_server_errorTitle": "Errore interno al server",
         "internal_server_error": "Qualcosa è andato storto. Riprova più tardi",
         "noAnswerTitle": "Server irraggiungibile",
-        "noAnswer": "Nessuna risposta dal server. Riprova più tardi"
+        "noAnswer": "Nessuna risposta dal server. Riprova più tardi",
+        "dataErrorTitle": "Dati errati",
+        "dataError": "Ci sono dati errati o mancanti"
     }
 }
