@@ -109,17 +109,13 @@ export default {
       // Keep this AFTER the router push
       this.$bvModal.hide('modal-selectProduct');
     },
-    barcodeDetected2(data) {
-      this.barcodeDetected(data);
-    },
     barcodeDetected(data) {
       if (this.barcodeFound === Boolean(true)) return;
 
       // console.log('EAN detected', data);
       console.log(data.codeResult.code.trim());
 
-      if (!this.barcodeFound
-       && Object.prototype.hasOwnProperty.call(data, 'codeResult')
+      if (Object.prototype.hasOwnProperty.call(data, 'codeResult')
        && Object.prototype.hasOwnProperty.call(data.codeResult, 'code')
        && (data.codeResult.code.trim().length === 13 || data.codeResult.code.trim().length === 8)) {
         // TODO implement major rule stabilizer
@@ -127,11 +123,19 @@ export default {
         // reached a threshold of readings stored, the most popular value is the correct ean
         // if no majority is reached, keep storing until it does
 
-        this.barcodeFound = Boolean(true);
+        const ean = data.codeResult.code.trim();
+        this.detecteds.push(ean);
 
-        this.ean = data.codeResult.code.trim();
-        this.loadProductInfo(this.ean);
-        this.toggleScannerStream();
+        console.log(this.detecteds.length);
+
+        if (this.detecteds.length >= this.readerQuorum) {
+          this.barcodeFound = Boolean(true);
+          this.ean = this.mostFrequentElement(this.detecteds);
+          console.log('REACHED QUORUM');
+          console.log(this.detecteds);
+          this.loadProductInfo(this.ean);
+          // this.toggleScannerStream();
+        }
       }
     },
     loadProductInfo(ean) {
@@ -173,14 +177,31 @@ export default {
     },
     toggleScannerStream() {
       const x = document.getElementsByClassName('btnAR')[0].id;
-      this.detecteds = [];
       if (x === 'buttonScanner') {
         document.getElementById('selectionInputMode').classList.add('scanning');
         this.inputMode = 'STREAM';
         this.barcodeFound = false;
+        this.detecteds = [];
+        this.ean = '';
+        this.testQuorum();
       } else if (x === 'btnBack') {
         document.getElementById('selectionInputMode').classList.remove('scanning');
         this.inputMode = 'SELECT';
+      }
+    },
+    testQuorum() {
+      const data = { codeResult: { code: '0199541230790' } };
+
+      this.barcodeDetected(data);
+      this.barcodeDetected(data);
+      this.barcodeDetected(data);
+
+      let value = Number(1234567890123);
+      for (let i = 0; i < 5; i += Number(1)) {
+        value += i;
+        console.log(value);
+        data.codeResult.code = String(value);
+        this.barcodeDetected(data);
       }
     },
     mostFrequentElement(arr) {
@@ -190,6 +211,7 @@ export default {
       return arr.sort((a, b) => arr.filter(v => v === a).length
             - arr.filter(v => v === b).length).pop();
     },
+  },
 };
 </script>
 
