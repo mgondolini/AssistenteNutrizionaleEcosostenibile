@@ -14,7 +14,11 @@
           .nav-link
             color: rgba($white, 0.8) !important   
           .dropdown-menu-right
-            background-color: lightgreen
+            background-color: $white
+            li
+              a, span
+                &:hover
+                  background-color: $lightgreen
   .bg-info
     background-color: $background_color_1 !important
   .bg-dark

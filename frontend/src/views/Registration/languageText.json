@@ -19,15 +19,17 @@
     "username": "Username already in use",
     "mail": "Email already in use",
     "pwd": "The password must be between 8 and 20 characters long, may contain special characters but not white spaces.",
-    "dataError": "There are some empty or wrong data.",
-    "closeBtn": "Ok",
     "achMsgModal": "Registration done!",
     "achModalTitle": "New Achievement!",
     "achBtnModal": "Great!",
     "enterU": "Enter your username",
     "enterP": "Enter password",
     "enterRP": "Re-enter password",
-    "errorModalTitle": "Error"
+    "cannotDeselect": "Can't deselect",
+    "selectedOpt": "Selected",
+    "female": "Female",
+    "male": "Male",
+    "sexPlaceholder": "Select your gender"
   },
   "it": {
     "reg": "Registrazione",
@@ -49,14 +51,16 @@
     "username": "Questo username è già in uso",
     "mail": "Questa email è già in uso",
     "pwd": "La password deve avere lunghezza compresa tra 8 e 20 caratteri, può contenere caratteri speciali ma non spazi.",
-    "dataError": "Ci sono dati errati o vuoti.",
-    "closeBtn": "Ok",
     "achMsgModal": "Registrazione effettuata!",
     "achModalTitle": "Un nuovo obiettivo raggiunto!",
     "achBtnModal": "Fantastico!",
     "enterU": "Inserisci il tuo username",
     "enterP": "Inserisci password",
     "enterRP": "Reinserisci password",
-    "errorModalTitle": "Errore"
+    "cannotDeselect": "Non puoi deselezionare",
+    "selectedOpt": "Selezionato",
+    "female": "Femmina",
+    "male": "Maschio",
+    "sexPlaceholder": "Seleziona il tuo genere"
   }
 }
