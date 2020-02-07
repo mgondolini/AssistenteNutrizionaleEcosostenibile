@@ -19,6 +19,11 @@ export default {
           },
         },
       ],
+      optionSex: [
+        { name: 'Gender', label: 'gender', $isDisabled: true },
+        { name: 'f', label: 'female' },
+        { name: 'm', label: 'male' },
+      ],
       campi: {
         name: {
           key: 'name',
@@ -41,8 +46,10 @@ export default {
         },
         gender: {
           key: 'gender',
-          value: '',
-          ar: ['m', 'f'],
+          value: {
+            name: 'm',
+            label: 'male',
+          },
         },
         weight: {
           key: 'weight',
@@ -81,11 +88,11 @@ export default {
     },
   },
   methods: {
-    test(day) {
-      console.log(day);
-    },
     allT(all) {
       return this.$i18n.t(all.name);
+    },
+    sexLabel(sex) {
+      return this.$i18n.t(sex.label);
     },
     checkError(error, status) {
       if (error === 'internal_server_error') {
@@ -122,7 +129,7 @@ export default {
         document.getElementById('surname').classList.remove('nsError');
       }
 
-      if (!this.campi.gender.value) {
+      if (!this.campi.gender.value.name) {
         document.getElementById('gender').classList.add('nsError');
         this.errors = true;
       } else {
@@ -152,6 +159,7 @@ export default {
 
       const tmp = [];
       this.campi.allergens.value = [];
+
       this.selectedAllergens.forEach((el) => {
         tmp.push(el.name);
         this.campi.allergens.value.push(el.name);
@@ -160,7 +168,7 @@ export default {
         const dataNew = {
           name: this.campi.name.value,
           surname: this.campi.surname.value,
-          sex: this.campi.gender.value,
+          sex: this.campi.gender.value.name,
           user_img_url: this.avatar,
           weight: this.campi.weight.value,
           height: this.campi.height.value,
@@ -202,7 +210,12 @@ export default {
 
         if (response.data.user_img_url != null) this.avatar = response.data.user_img_url;
 
-        if (response.data.sex != null) this.campi.gender.value = response.data.sex;
+        if (response.data.sex != null) {
+          this.campi.gender.value = {
+            name: response.data.sex,
+            label: response.data.sex === 'f' ? 'female' : 'male',
+          };
+        }
 
         if (response.data.weight != null) this.campi.weight.value = response.data.weight;
 
