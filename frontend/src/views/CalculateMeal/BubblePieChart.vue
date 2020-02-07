@@ -77,7 +77,13 @@ export default {
           },
         },
         plot: {
-          values: null,
+          values: [
+            [3, 3, 34],
+            [5, 12, 101],
+            [9, 7, 59],
+            [11, 5, 15],
+            [14, 14, 30],
+          ],
           dataBubble: null,
           tooltip: {
             text: '%data-pie: %data-v',
@@ -92,7 +98,13 @@ export default {
           sizeFactor: 4,
         },
       },
-      series: [],
+      series: [
+        { 'data-v': [15, 37, 7, 3, 14] },
+        { 'data-v': [13, 34, 21, 7, 8] },
+        { 'data-v': [6, 30, 31, 5, 8] },
+        { 'data-v': [5, 29, null, 3, 13] },
+        { 'data-v': [3, 25, 19, 3, null] },
+      ],
     };
   },
   computed: {
@@ -145,6 +157,15 @@ export default {
       let y = 20;
 
       let j = 0;
+
+      console.log('OLD VALUES');
+      console.log(this.values);
+      console.log('OLD SERIES');
+      console.log(this.series);
+      alert('REPLACING STUBS WITH REAL VALUES IN GRAPH');
+      this.chartData.plot.values = [];
+      this.series = null;
+
       this.ingredients.forEach((i) => {
         this.carbohydrates.push(Number((i.carbohydrates_tot).toFixed(2)));
         this.sugars.push(Number((i.sugars_tot).toFixed(2)));
@@ -157,7 +178,8 @@ export default {
         this.alcohol.push(Number((i.alcohol_tot).toFixed(2)));
         this.fibers.push(Number((i.fiber_tot).toFixed(2)));
 
-        this.values.push([x, y, this.radius[j]]);
+        // this.values.push([x, y, this.radius[j]]);
+        this.chartData.plot.values.push([x, y, this.radius[j]]);
         this.bubbleLabels.push(i.product_name);
 
         x += 10;
@@ -165,19 +187,30 @@ export default {
         j += 1;
       });
 
-      console.log('values');
-      console.log(this.values);
 
+      console.log('NEW VALUES');
+      console.log(this.values);
+      console.log('NEW SERIES');
+      this.series = this.populateSeries();
+      console.log(this.series);
+
+      /*
       this.$refs.bubblepie.modifyplot({
         graphid: 0,
         plotindex: 1,
         data: { chartData: { plot: { values: this.values } } },
       });
+      */
+      /*
+      this.$refs.bubblepie.setdata({
+        data: { plot: { values: this.values } },
+      });
+      this.$refs.bubblepie.reload();
       console.log(this.$refs.bubblepie.chartData.plot);
 
       this.series = this.populateSeries();
-      console.log('series');
-      console.log(this.series);
+      */
+      // this.$refs.bubblepie.reload();
 
       // non funziona così
       // this.chartData.plot.dataBubble = this.bubbleLabels;
@@ -204,8 +237,11 @@ export default {
       };
     },
   },
-  mounted() {
+  created() {
     this.loadMeal();
+  },
+  mounted() {
+    // this.loadMeal();
   },
 };
 </script>
