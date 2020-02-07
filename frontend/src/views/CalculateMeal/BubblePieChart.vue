@@ -78,9 +78,13 @@ export default {
         },
         plot: {
           values: [
-            [0, 0, 0],
+            [3, 3, 34], // for bubble-pie 1
+            [5, 12, 101], // for bubble-pie 2
+            [9, 7, 59], // for bubble-pie 3
+            [11, 5, 15], // for bubble-pie 4
+            [14, 14, 30],
           ],
-          dataBubble: null,
+          dataBubble: ['a', 'b', 'c', 'd', 'e'],
           tooltip: {
             text: '%data-pie: %data-v',
             'font-color': 'blue',
@@ -94,7 +98,13 @@ export default {
           sizeFactor: 4,
         },
       },
-      series: [],
+      series: [ // (2) Provide your pie chart data.
+        { 'data-v': [null, null, null, null, null] }, // slice1
+        { 'data-v': [13, 34, 21, 7, 8] }, // slice2
+        { 'data-v': [6, 30, 31, 5, 8] }, // slice3
+        { 'data-v': [5, 29, null, 3, 13] }, // slice4
+        { 'data-v': [3, 25, 19, 3, null] }, // slice5
+      ],
     };
   },
   computed: {
@@ -152,8 +162,9 @@ export default {
       console.log(this.values);
       console.log('OLD SERIES');
       console.log(this.series);
-      // alert('REPLACING STUBS WITH REAL VALUES IN GRAPH');
+      alert('REPLACING STUBS WITH REAL VALUES IN GRAPH');
       this.chartData.plot.values = [];
+      this.chartData.plot.dataBubble = [];
       this.series = null;
 
       this.ingredients.forEach((i) => {
@@ -170,7 +181,7 @@ export default {
 
         // this.values.push([x, y, this.radius[j]]);
         this.chartData.plot.values.push([x, y, this.radius[j]]);
-        this.bubbleLabels.push(i.product_name);
+        this.chartData.plot.dataBubble.push(i.product_name);
 
         x += 10;
         y += 10;
