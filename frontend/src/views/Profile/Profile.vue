@@ -41,7 +41,7 @@
                       </div>
                       <div v-show="!isEditing" class="col-md-8 col-6">
                         <span v-if="tmp.key == 'gender'" class="profileSpan">
-                          {{`${tmp.value.toUpperCase()}`}}
+                          {{$t(tmp.value.label)}}
                         </span>
                         <span v-else-if="tmp.key == 'dateOfBirth'" class="profileSpan">
                           {{ $d(tmp.value, 'short')}}
@@ -89,16 +89,17 @@
                             :taggable="false" :max-height="200"></multiselect>
                         </div>
 
-                        <div v-else-if="tmp.key == 'gender'">
-                          <!--check che sia selezionato-->
-                          <b-select class="card-input-g colorSelectGender" :id="tmp.key"
-                            size="sm" v-model="tmp.value">
-                            <option disabled value=""> {{ $t(`${tmp.key}`) }}</option>
-                            <option class="optgender" v-for="opt in tmp.ar"
-                            v-bind:key="opt" v-bind:value="opt">
-                              {{ opt.toUpperCase() }}
-                            </option>
-                          </b-select>
+                        <div :id="tmp.key" v-else-if="tmp.key == 'gender'">
+                          <multiselect
+                            v-model="tmp.value"
+                            track-by="name" :placeholder="$t('sexPlaceholder')"
+                            :deselect-label="$t('cannotDeselect')"
+                            :custom-label="sexLabel"
+                            :selected-label="$t('selectedOpt')"
+                            :select-label="$t('selectLabel')"
+                            :options="optionSex" :searchable="false"
+                            :allow-empty="false">
+                          </multiselect>
                         </div>
 
                         <div v-else-if="tmp.key == 'email'">
