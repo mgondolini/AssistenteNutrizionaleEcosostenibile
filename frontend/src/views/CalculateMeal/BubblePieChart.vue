@@ -3,7 +3,7 @@
   <div class="BubblePieChart">
     <h3>BubblePieChart</h3>
     <div class="chart-box" id="chart-box">
-      <zingchart :data="chartData" :series="series"></zingchart>
+      <zingchart ref="bubblepie" :data="chartData" :series="series"></zingchart>
     </div>
   </div>
 </template>
@@ -48,9 +48,10 @@ export default {
       calcium: [],
       alcohol: [],
       fibers: [],
+      values: [],
 
       // Bubble dimension
-      redius: [],
+      radius: [],
 
       // Labels
       bubbleLabels: [],
@@ -70,14 +71,13 @@ export default {
             lineColor: 'none',
           },
         },
+        legend: {
+          item: {
+            text: '%data-pie',
+          },
+        },
         plot: {
-          values: [
-            [3, 3, 34],
-            [5, 12, 101],
-            [4, 3, 34],
-            [6, 12, 101],
-            [8, 12, 101],
-          ],
+          values: null,
           dataBubble: null,
           tooltip: {
             text: '%data-pie: %data-v',
@@ -111,6 +111,7 @@ export default {
           this.meal.components.forEach((c) => {
             // Make a get and store the pending promise returned by axios through loadProductValues
             const promise = this.loadProductValues(c.barcode, c.quantity);
+            this.radius.push(c.quantity);
             // Store the pending promise
             promises.push(promise);
           }); // End of the iteration over components
@@ -140,8 +141,10 @@ export default {
       return http.get(`api/product/${params.barcode}/${params.quantity}`, { params });
     },
     createGraphData() {
-      console.log(this.ingredients);
+      let x = 20;
+      let y = 20;
 
+      let j = 0;
       this.ingredients.forEach((i) => {
         this.carbohydrates.push(Number((i.carbohydrates_tot).toFixed(2)));
         this.sugars.push(Number((i.sugars_tot).toFixed(2)));
@@ -154,15 +157,31 @@ export default {
         this.alcohol.push(Number((i.alcohol_tot).toFixed(2)));
         this.fibers.push(Number((i.fiber_tot).toFixed(2)));
 
+        this.values.push([x, y, this.radius[j]]);
         this.bubbleLabels.push(i.product_name);
+
+        x += 10;
+        y += 10;
+        j += 1;
       });
 
-      this.series = this.populateSeries();
-      this.chartData.plot.dataBubble = this.bubbleLabels;
-      console.log(this.chartData.plot.dataBubble);
+      console.log('values');
+      console.log(this.values);
 
+      this.$refs.bubblepie.modifyplot({
+        graphid: 0,
+        plotindex: 1,
+        data: { chartData: { plot: { values: this.values } } },
+      });
+      console.log(this.$refs.bubblepie.chartData.plot);
+
+      this.series = this.populateSeries();
       console.log('series');
       console.log(this.series);
+
+      // non funziona così
+      // this.chartData.plot.dataBubble = this.bubbleLabels;
+      // console.log(this.chartData.plot.dataBubble);
     },
     populateSeries() {
       return [
@@ -183,31 +202,6 @@ export default {
         'data-v': values,
         'data-pie': name,
       };
-    },
-    // getIngredientComposition(i) {
-    //   return [i.energy_kj_tot, i.energy_kj_tot, i.carbohydrates_tot, i.sugars_tot,
-    //     i.fat_tot, i.saturated_fat_tot, i.proteins_tot, i.salt_tot,
-    //     i.sodium_tot, i.calcium_tot, i.alcohol_tot, i.fiber_tot];
-    // },
-    createGraph() {
-      console.log('graphData');
-      console.log(this.graphData);
-      // const data = [
-      //   ['bubble1', [10, 20]],
-      //   ['bubble2', [5, 7]],
-      //   ['bubble3', [6, 6, 10]],
-      //   ['bubble4', [12, 14]],
-      //   ['bubble5', [14, 4]],
-      //   ['bubble6', [15, 5, 10]],
-      //   ['bubble7', [10, 10]],
-      //   ['bubble8', [25, 10]],
-      //   ['bubble9', [10, 25, 10, 10]],
-      //   ['bubble10', [55, 10]],
-      //   ['bubble11', [10, 80, 10, 10]],
-      //   ['bubble12', [50, 50]],
-      // ];
-
-      this.createGraphData();
     },
   },
   mounted() {
