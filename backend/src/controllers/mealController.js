@@ -2,6 +2,7 @@
 const mongoose = require('mongoose');
 const authController = require('./authController');
 const mealControllerUtils = require('./utils/mealControllerUtils.js');
+const achievementController = require('./achievementController.js');
 
 const Meals = mongoose.model('Meals');
 
@@ -121,6 +122,30 @@ exports.new_meal = async (req, res) => {
     });
 };
 
+/** Updates a meal with a given property */
+exports.update_meal = async (req, res) => {
+  const username = authController.getUsername(req.headers.token);
+  const mealUpdated = req.body;
+  const query = { username };
+  console.log(mealUpdated);
+
+  await Meals.findOne(query)
+    .exec()
+    .then((userMeals) => {
+      if (userMeals === null) {
+        res.status(500).send({ description: 'internal_server_error' });
+        global.log(`UserMeals not found for user ${username}\n`); // DEBUG
+      } else {
+        global.log(`Meal found for user ${username}:\n${userMeals}`); // DEBUG
+        mealControllerUtils.updateMeal(userMeals, mealUpdated, res);
+      }
+    })
+    .catch((err) => {
+      global.log(`Error while updating meal: ${err}`); // DEBUG
+      res.status(500).send({ description: 'internal_server_error' });
+    });
+};
+
 /** Deletes a meal */
 exports.delete_meal = async (req, res) => {
   const username = authController.getUsername(req.headers.token);
@@ -140,6 +165,26 @@ exports.delete_meal = async (req, res) => {
   };
 
   global.log(`UPDATE QUERY -> ${JSON.stringify(update)}`); // DEBUG
+
+  await Meals.findOne(query)
+    .exec()
+    .then((uMeal) => {
+      const first = uMeal.meals.length === 1;
+      const myDate = new Date(date);
+      uMeal.meals.forEach((m) => {
+        if ((m.meal_name === mealName)
+          && (m.timestamp.getUTCDate() === myDate.getUTCDate())
+          && (m.timestamp.getUTCMonth() === myDate.getUTCMonth())
+          && (m.timestamp.getUTCFullYear() === myDate.getUTCFullYear())) {
+          if (m.is_closed) {
+            achievementController.deleteAchievements(m, username, first);
+          }
+        }
+      });
+    })
+    .catch((err) => {
+      global.log(err);
+    });
 
   await Meals.updateOne(query, update)
     .exec()
@@ -186,6 +231,7 @@ exports.delete_component = async (req, res) => {
   const { mealName } = req.query;
   const { date } = req.query;
   const { barcode } = req.query;
+  const { quantity } = req.query;
 
   const query = { username };
 
@@ -199,7 +245,7 @@ exports.delete_component = async (req, res) => {
       } else {
         // Se esistono pasti chiamo questa funzione che: cerca il pasto corrispondente al nome dato,
         // cerca il componente e lo elimina
-        mealControllerUtils.pullComponent(userMeals, date, mealName, barcode, res);
+        mealControllerUtils.pullComponent(userMeals, date, mealName, barcode, quantity, res);
       }
     })
     .catch((err) => {

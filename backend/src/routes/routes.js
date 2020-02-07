@@ -1,9 +1,23 @@
+const jwt = require('jsonwebtoken');
+const config = require('../../config.json');
 const userController = require('../controllers/userController');
 const productController = require('../controllers/productController');
 const mealController = require('../controllers/mealController');
 const keyController = require('../controllers/keyController');
 
 module.exports = function (app) {
+  app.use('/api/*', (req, res, next) => {
+    try {
+      // check token validity
+      jwt.verify(req.headers.token, config.tokenKey);
+      // valid token
+      next();
+    } catch (err) {
+      // invavild token
+      res.status(401).send('Invalid token: '.concat(err));
+    }
+  });
+
   app.route('/api/publickey')
     .get(keyController.getPublicKey);
 
@@ -23,7 +37,8 @@ module.exports = function (app) {
     .post(mealController.new_meal);
 
   app.route('/api/meals/:mealName/:date')
-    .delete(mealController.delete_meal);
+    .delete(mealController.delete_meal)
+    .put(mealController.update_meal);
 
   app.route('/api/meal')
     .get(mealController.load_meal);

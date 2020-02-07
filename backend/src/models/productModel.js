@@ -2,12 +2,6 @@ const mongoose = require('mongoose');
 
 const { Schema } = mongoose;
 
-// TODO: aggiungere i seguenti campi una volta che frontend/info_prod è pronta
-// origin: String,
-// packaging: String,
-// nutri_score: String,
-// nova_score: String,
-
 const ProductSchema = new Schema({
   code: Number,
   product_name: String,
@@ -16,9 +10,12 @@ const ProductSchema = new Schema({
   brands: String,
   ingredients_text: String,
   traces: String,
+  origin: String, // new
+  packaging: String, // new
   serving_size: Number,
   allergens: String,
-  energy_100g: Number,
+  energy_kj_100g: Number,
+  energy_kcal_100g: Number, // new
   carbohydrates_100g: Number,
   sugars_100g: Number,
   fat_100g: Number,
@@ -30,8 +27,10 @@ const ProductSchema = new Schema({
   alcohol_100g: Number,
   calcium_100g: Number,
   nutrition_score_uk_100g: String,
+  nova_group: String, // new
   carbon_footprint_100g: Number,
   water_footprint_100g: Number,
+  measure_unit: String, // new
 });
 
 module.exports = mongoose.model('Product', ProductSchema, 'Products');

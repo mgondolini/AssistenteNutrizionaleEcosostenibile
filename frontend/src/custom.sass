@@ -5,16 +5,33 @@
 @import url('https://fonts.googleapis.com/css?family=Open+Sans:400,300')
 
 $white: #fff
-$background_color_1: #17a2b8
-$background_color_3: #2EA968
+$background_color_1: #2EA968
+$bg_light_mission: #2EA968
+$background_dark_color: #055e6d
+$dark_bg: #1E1E1E
+$dark_bg_card: #474748
+$dark_bg_link: #636363
+$border_color: #DEE2E6
+$dark_bg_link_not_active: #949494
+$lightgreen: lightgreen
 $coral: coral  
+$text-color: #2c3e50
+$black: #000000
+$error: #ff0000
+$bg_dark_mission: #177f48
+$selectedText: antiquewhite
+$components-card-background: #17a2b80a
+$color_bg_card: #343434
+$modal_bg: #bbb
+$card_mission_dark: #0D6B54
+$text_color: #495057
 
 #app 
   font-family: 'Avenir', Helvetica, Arial, sans-serif
   -webkit-font-smoothing: antialiased
   -moz-osx-font-smoothing: grayscale
   text-align: center
-  color: #2c3e50
+  color: $text-color
 
 .buttonsDiv, .buttonsDisposition
   margin: 0 auto
@@ -32,7 +49,6 @@ $coral: coral
     cursor: pointer
 
   .button1
-    background-color: $background_color_1 !important
     color: $white
     -webkit-transition: all 0.5s !important
     -moz-transition: all 0.5s !important
@@ -43,11 +59,19 @@ $coral: coral
 
     &:hover
       background-color: $white
-      color: $white
+      color: $background_color_1
       -webkit-border-radius: 25px
       -moz-border-radius: 25px
       border-radius: 25px
 
+  .disabled
+    pointer-events: none
+    cursor: default
+    text-decoration: none
+    display: inline-block
+  .loginBtn
+    margin: 1% auto
+  
 
 @media (min-width: 768px)
   .buttonsDiv

@@ -7,7 +7,7 @@
       tag="article"
       class="cardLogin"
     >
-      <img class="loginImg" src="../../assets/ecology.png"/>
+      <img src="../../assets/ecology.png" class="loginImg" alt="logo"/>
       <b-form @submit="onSubmit" class="formIns">
         <div class="grey-text">
           <b-form-group
@@ -52,19 +52,13 @@
         </div>
       </b-form>
       <hr />
-      <span style="margin-right: 10px">{{ $t('not-reg') }}</span>
+      <span class="disabled">{{ $t('not-reg') }}</span>
       <router-link to='registration'
         class="text-center buttonsDiv" style="text-decoration:none; margin-bottom:30px;">
-        <b-button class="sim-button button1">{{ $t('reg') }}</b-button>
+
+        <b-button class="sim-button button1 loginBtn">{{ $t('reg') }}</b-button>
       </router-link>
     </b-card>
-    <b-modal id="modal-error" title="Error" hide-footer v-model="modalErrorShow">
-      <div class="d-block text-center">
-        <img src="https://img.icons8.com/color/48/000000/restriction-shield.png">
-        {{ this.errorMsgModal }}
-      </div>
-      <b-button class="mt-3" block @click="hideModal">{{ $t('closeBtn')}}</b-button>
-    </b-modal>
   </div>
 </template>
 
@@ -73,8 +67,6 @@ export default {
   name: 'login',
   data() {
     return {
-      errorMsgModal: '',
-      modalErrorShow: false,
       form: {
         email: '',
         password: '',
@@ -83,7 +75,6 @@ export default {
   },
   methods: {
     onSubmit(evt) {
-      this.modalErrorShow = false;
       evt.preventDefault();
       const mail = this.form.email;
       const psw = this.form.password;
@@ -97,20 +88,14 @@ export default {
         }).catch((error) => {
           if (error.response) {
             if (error.response.status === 401) {
-              this.errorMsgModal = this.$i18n.t('unauthorized');
-              this.modalErrorShow = true;
+              this.$root.$emit('openModalError', 'unauthorizedTitle', 'unauthorized');
             } else {
-              this.errorMsgModal = this.$i18n.t('internal_server_error');
-              this.modalErrorShow = true;
+              this.$root.$emit('openModalError', 'internal_server_errorTitle', 'internal_server_error');
             }
           } else {
-            this.errorMsgModal = this.$i18n.t('noAnswer');
-            this.modalErrorShow = true;
+            this.$root.$emit('openModalError', 'noAnswerTitle', 'noAnswer');
           }
         });
-    },
-    hideModal() {
-      this.$bvModal.hide('modal-error');
     },
     changeType() {
       const t = document.getElementById('input-password').type;
@@ -126,22 +111,19 @@ export default {
 };
 </script>
 
-<i18n src='../../locales/errorMessages.json'></i18n>
 <i18n>
 {
   "en": {
     "info": "We'll never share your email with third parties.",
     "info-psw": "Password must be 8 to 20 characters long. It cannot contain spaces.",
     "not-reg": "Not registered?",
-    "reg": "Sign in",
-    "closeBtn": "Ok"
+    "reg": "Sign in"
   },
   "it": {
     "info": "Non condivideremo mai la tua email con terze parti.",
     "info-psw": "La password deve essere lunga tra 8 e 20 caratteri. Non può contenere spazi.",
     "not-reg":"Non sei ancora registrato?",
-    "reg": "Registrati",
-    "closeBtn": "Ok"
+    "reg": "Registrati"
   }
 }
 </i18n>

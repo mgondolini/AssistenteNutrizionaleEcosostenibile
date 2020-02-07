@@ -5,9 +5,10 @@
   "main": "app.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "prestart": "eslint --ignore-path ../.gitignore .",
+    "prestart": "eslint .",
     "start": "nodemon app.js",
-    "lint": "./node_modules/.bin/eslint --fix --ignore-path .gitignore ."
+    "lint": "./node_modules/.bin/eslint --fix --ignore-path .gitignore .",
+    "deploy": "set NODE_ENV=production&& node app.js"
   },
   "author": "",
   "license": "ISC",

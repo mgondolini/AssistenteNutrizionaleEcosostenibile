@@ -1,0 +1,171 @@
+@import './custom.sass'
+.dark
+  background-color: rgba($dark_bg, .9)
+  .multiselect__placeholder
+    color: $text_color
+    font-size: 16px
+  // Darkmode navbar
+  .nav-bar 
+    .navbarChangeColor
+      .nav-router
+        .navbar-nav
+          .info_prod, .dropdown, .loginSpan
+            .nav-link
+            .dropdown-menu-right
+              background-color: $dark_bg_card
+              li
+                a, span
+                  font-weight: 500
+                  color: $white
+                  &:hover
+                    background-color: transparent
+  .listAll
+    color: $white
+  .multiselect__option
+    span
+      color: $black
+    &--highlight
+      background-color: $modal_bg
+    &::after
+      background-color: $modal_bg
+      color: $black
+  .noMeals
+    color: $white
+  // Meals & infoProd page DarkMode
+  .meals, .productInfo
+    .mealTitle
+      color: $white
+    .card-calendar
+      background-color: transparent
+      .date-p
+        color: $white
+    .containerMeal, .containerProd
+      background-color: $dark_bg_card
+      #myTabContent
+        .nav-justified
+          .nav-link
+            background-color: $dark_bg_link
+            border-bottom: 1px solid $border_color
+            color: $white
+            font-weight: normal
+          .active
+            background-color: $dark_bg_link_not_active
+            color: $dark_bg_card
+            font-weight: bolder
+        .card-new-meal
+          background-color: transparent
+        .card-last-meals
+          .headerTitle
+            background-color: $dark_bg_card
+            .p-0
+              background-color: transparent
+              border-color: transparent
+          .components-card
+            background-color: $color_bg_card
+            .contentCard
+              color: $white
+          .card-components
+            background-color: $dark_bg_card
+            .card-body
+              .component-p
+                color: $white
+                a
+                  color: $white
+      .firstInfo
+        .nutritionIndicators
+          .infoNutrTable
+            color: $white
+      .nutritionTable
+        .portion
+          .labelPortion
+            color: $white
+        .tableNutri
+          thead, tbody
+            color: $white
+          tbody
+            text-align: center
+            tr:hover
+              td
+                background-color: $dark_bg_link
+  // Home darkeMode
+  .msgTitle
+    color: $white
+  .our_mission
+    background-color: $bg_dark_mission
+
+  // Other pages darkMode
+  .login, .registration, .container, .productInfo, .containerFather
+    .card-edit
+      color: $white
+    .cardLogin, .cardR
+      background-color: $dark_bg_card
+      .card-title
+        color: $white
+      .formIns, #myTabContent, .tabsContainer
+        .grey-text
+          .form-group
+            color: $white
+            .text-muted
+              color: $white !important
+        #basicInfo, .tab-content-info
+          .row
+            .labelText
+              color: $white
+            .col-md-8, .col-6
+              .card-input-ns, .card-input-date, 
+              .form-control-sm, .custom-select-sm, .multiselect__tags
+                background-color: rgba($dark_bg_link_not_active, .2)
+                color: $white
+                text-align: center
+                .multiselect__placeholder
+                  color: $white
+          .text-muted
+            color: $white !important
+          .pers
+            color: $white
+        .nav-tabs
+          .nav-link
+            background-color: $dark_bg_link
+            border-bottom: 1px solid $border_color
+            color: $white
+            font-weight: normal
+          .active
+            background-color: $dark_bg_link_not_active
+            color: $dark_bg_card
+            font-weight: bolder
+  
+  .vc_custom_1548165107261
+    background-color: $card_mission_dark !important
+    .textBlock
+      color: $white
+  // Modal DarkMode
+  #modal-error, #modal-selectProduct
+    .modal-content
+      background-color: $dark_bg_card
+      .modal-header
+        .modal-title
+          color: $white
+        .close
+          color: $white
+
+  .productInfo
+    .productData
+      .productCard
+        background-color: transparent
+        .media
+          .media-body
+            color: $white
+  // Custom sass darkMode
+  span
+    color: $white
+  .localeID
+    color: $black
+  .buttonsDiv, .buttonsDisposition
+    .button1
+      background-color: $background_dark_color
+      border: 1px solid $background_dark_color !important
+      &:hover
+        background-color: $background_color_1
+        color: $white
+    .disabled
+      color: $white

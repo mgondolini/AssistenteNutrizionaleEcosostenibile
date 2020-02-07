@@ -7,7 +7,7 @@
     <div class="our_mission">
       <h3 class="mis">
         <span class="mission"> {{ $t('mission') }} </span><br/>
-        <img src="../../assets/Immagine.png">
+        <img src="../../assets/Immagine.png" alt="separator">
       </h3>
       <br/>
       <h5 class="missionText">
@@ -35,7 +35,7 @@
                   <h1 style="text-align: center;">
                     <span class="titleBanner">{{ $t('educate') }} </span>
                   </h1>
-                  <p style="text-align: center;">
+                  <p class="textBlock" style="text-align: center;">
                     {{ $t('educapop') }}
                   </p>
                 </div>
@@ -61,7 +61,7 @@
                   <h1 style="text-align: center;">
                     <span class="titleBanner">{{ $t('save') }}</span>
                   </h1>
-                  <p style="text-align: center;">
+                  <p class="textBlock" style="text-align: center;">
                     {{ $t('saveplanet') }}
                   </p>
                 </div>
@@ -87,7 +87,7 @@
                   <h1 style="text-align: center;">
                     <span class="titleBanner">{{ $t('respect') }}</span>
                   </h1>
-                  <p style="text-align: center;">
+                  <p class="textBlock" style="text-align: center;">
                    {{ $t('respEarth') }}
                   </p>
                 </div>
