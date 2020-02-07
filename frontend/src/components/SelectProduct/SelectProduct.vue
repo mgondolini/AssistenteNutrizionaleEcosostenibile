@@ -67,6 +67,7 @@ export default {
       aspectRatio: { min: 1, max: 100 },
       detecteds: [],
       barcodeFound: Boolean(false),
+      readerQuorum: 7,
 
       // ean dropdown selector facility
       eanOptions: [
@@ -83,10 +84,6 @@ export default {
         { value: '5449000000996', text: 'CocaCola 330ml' },
         { value: '5411188110835', text: 'Latte 1L' },
       ],
-
-      counter: 0,
-      lastFunctionExecuted: 'none',
-      EANfound: 0,
     };
   },
   created() {
@@ -116,24 +113,8 @@ export default {
       this.barcodeDetected(data);
     },
     barcodeDetected(data) {
-      this.counter += 1;
-      const i = this.counter - 1;
-      console.log(`entering reading n: ${i} \n`, this.barcodeFound);
-      console.log(this.barcodeFound);
-      console.log(`last fun executed: ${this.lastFunctionExecuted}`);
-      this.lastFunctionExecuted = `reading n: ${i} \n`;
-      console.log(`last fun executed: ${this.lastFunctionExecuted}`);
-      // alert(`entering reading n: ${i}`);
-      /*
-      if (this.EANfound > 0) {
-        console.log(`killing reading n: ${i}`);
-        return;
-      }
-      */
-      if (this.barcodeFound === Boolean(true)) {
-        console.log(`killing reading n: ${i} by bool`);
-        return;
-      }
+      if (this.barcodeFound === Boolean(true)) return;
+
       // console.log('EAN detected', data);
       console.log(data.codeResult.code.trim());
 
@@ -146,18 +127,12 @@ export default {
         // reached a threshold of readings stored, the most popular value is the correct ean
         // if no majority is reached, keep storing until it does
 
-        // alert(data.codeResult.code);
-        // Quagga.stop();
-        console.log('BARCODE FOUND!');
         this.barcodeFound = Boolean(true);
-        this.EANfound = this.EANfound + 1;
-        // alert(`barcode found reading n: ${i} ${this.barcodeFound}`);
-        console.log(this.barcodeFound);
-        this.toggleScannerStream();
+
         this.ean = data.codeResult.code.trim();
         this.loadProductInfo(this.ean);
+        this.toggleScannerStream();
       }
-      console.log(`exiting reading n: ${i}`);
     },
     loadProductInfo(ean) {
       console.log(`Requesting infos about ean ${ean}`);
