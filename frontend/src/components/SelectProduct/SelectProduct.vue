@@ -36,8 +36,9 @@
           :readerTypes="['ean_reader']"
           :aspectRatio="aspectRatio"
         ></v-quagga>
-        <b-button id="btnBack" class="btnAR" v-on:click="toggleScannerStream">{{$t('back')}}</b-button>
-
+        <b-button id="btnBack" class="btnAR" v-on:click="toggleScannerStream">
+          {{$t('back')}}
+        </b-button>
       </div>
     </div>
   </b-modal>
@@ -65,6 +66,7 @@ export default {
       },
       aspectRatio: { min: 1, max: 100 },
       detecteds: [],
+      barcodeFound: Boolean(false),
 
       // ean dropdown selector facility
       eanOptions: [
@@ -81,6 +83,10 @@ export default {
         { value: '5449000000996', text: 'CocaCola 330ml' },
         { value: '5411188110835', text: 'Latte 1L' },
       ],
+
+      counter: 0,
+      lastFunctionExecuted: 'none',
+      EANfound: 0,
     };
   },
   created() {
@@ -106,12 +112,33 @@ export default {
       // Keep this AFTER the router push
       this.$bvModal.hide('modal-selectProduct');
     },
+    barcodeDetected2(data) {
+      this.barcodeDetected(data);
+    },
     barcodeDetected(data) {
-      console.log('EAN detected', data);
+      this.counter += 1;
+      const i = this.counter - 1;
+      console.log(`entering reading n: ${i} \n`, this.barcodeFound);
+      console.log(this.barcodeFound);
+      console.log(`last fun executed: ${this.lastFunctionExecuted}`);
+      this.lastFunctionExecuted = `reading n: ${i} \n`;
+      console.log(`last fun executed: ${this.lastFunctionExecuted}`);
+      // alert(`entering reading n: ${i}`);
+      /*
+      if (this.EANfound > 0) {
+        console.log(`killing reading n: ${i}`);
+        return;
+      }
+      */
+      if (this.barcodeFound === Boolean(true)) {
+        console.log(`killing reading n: ${i} by bool`);
+        return;
+      }
+      // console.log('EAN detected', data);
       console.log(data.codeResult.code.trim());
-      console.log(data.codeResult.code.trim().length);
 
-      if (Object.prototype.hasOwnProperty.call(data, 'codeResult')
+      if (!this.barcodeFound
+       && Object.prototype.hasOwnProperty.call(data, 'codeResult')
        && Object.prototype.hasOwnProperty.call(data.codeResult, 'code')
        && (data.codeResult.code.trim().length === 13 || data.codeResult.code.trim().length === 8)) {
         // TODO implement major rule stabilizer
@@ -121,9 +148,16 @@ export default {
 
         // alert(data.codeResult.code);
         // Quagga.stop();
+        console.log('BARCODE FOUND!');
+        this.barcodeFound = Boolean(true);
+        this.EANfound = this.EANfound + 1;
+        // alert(`barcode found reading n: ${i} ${this.barcodeFound}`);
+        console.log(this.barcodeFound);
+        this.toggleScannerStream();
         this.ean = data.codeResult.code.trim();
         this.loadProductInfo(this.ean);
       }
+      console.log(`exiting reading n: ${i}`);
     },
     loadProductInfo(ean) {
       console.log(`Requesting infos about ean ${ean}`);
@@ -160,13 +194,15 @@ export default {
         okVariant: 'danger',
         centered: true,
       });
-      this.toggleScannerStream();
+      // this.toggleScannerStream();
     },
     toggleScannerStream() {
       const x = document.getElementsByClassName('btnAR')[0].id;
+      this.detecteds = [];
       if (x === 'buttonScanner') {
         document.getElementById('selectionInputMode').classList.add('scanning');
         this.inputMode = 'STREAM';
+        this.barcodeFound = false;
       } else if (x === 'btnBack') {
         document.getElementById('selectionInputMode').classList.remove('scanning');
         this.inputMode = 'SELECT';
