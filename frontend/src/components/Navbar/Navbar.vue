@@ -37,7 +37,7 @@
                 v-for="(lang, i) in langs"
                 :key="`Lang${i}`"
                 :value="lang"
-                @click="$root.$i18n.locale = lang">
+                @click="changeLang(lang)">
                 <img class="localeFlag" :src="getLocaleFlagPath(lang)" alt="flag">
                 <span class="localeID"> {{ lang }} </span>
               </b-dropdown-item-button>
@@ -77,6 +77,10 @@ export default {
     },
   },
   methods: {
+    changeLang(l) {
+      this.$root.$i18n.locale = l;
+      localStorage.lang = l;
+    },
     getLocaleFlagPath(lang) {
       return localeFlagsContext(`./${lang}${localeFlagsExt}`);
     },

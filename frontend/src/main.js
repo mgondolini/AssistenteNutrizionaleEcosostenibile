@@ -25,10 +25,9 @@ Vue.use(BootstrapVueIcons);
 Vue.use(Vuex);
 Vue.use(VCalendar);
 
-let tmpDark = false;
-if (localStorage.darkMode !== undefined) {
-  tmpDark = localStorage.darkMode === 'true';
-}
+const tmpDark = localStorage.darkMode !== undefined ? localStorage.darkMode === 'true' : false;
+
+i18n.locale = localStorage.lang !== undefined ? localStorage.lang : 'en';
 
 const store = new Vuex.Store({
   state: {
