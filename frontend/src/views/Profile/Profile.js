@@ -1,4 +1,3 @@
-import datePicker from 'vue-bootstrap-datetimepicker';
 import Multiselect from 'vue-multiselect';
 import allergensList from '../../allergens.json';
 
@@ -11,7 +10,20 @@ export default {
       genderSelected: '',
       selectedAllergens: [],
       isEditing: false,
-
+      attributes: [
+        {
+          key: 'today',
+          dot: {
+            color: 'red',
+            contentClass: 'italic',
+          },
+        },
+      ],
+      optionSex: [
+        { name: 'Gender', label: 'gender', $isDisabled: true },
+        { name: 'f', label: 'female' },
+        { name: 'm', label: 'male' },
+      ],
       campi: {
         name: {
           key: 'name',
@@ -34,8 +46,10 @@ export default {
         },
         gender: {
           key: 'gender',
-          value: '',
-          ar: ['m', 'f'],
+          value: {
+            name: 'm',
+            label: 'male',
+          },
         },
         weight: {
           key: 'weight',
@@ -64,7 +78,6 @@ export default {
     };
   },
   components: {
-    datePicker,
     Multiselect,
   },
   computed: {
@@ -77,6 +90,9 @@ export default {
   methods: {
     allT(all) {
       return this.$i18n.t(all.name);
+    },
+    sexLabel(sex) {
+      return this.$i18n.t(sex.label);
     },
     checkError(error, status) {
       if (error === 'internal_server_error') {
@@ -113,7 +129,7 @@ export default {
         document.getElementById('surname').classList.remove('nsError');
       }
 
-      if (!this.campi.gender.value) {
+      if (!this.campi.gender.value.name) {
         document.getElementById('gender').classList.add('nsError');
         this.errors = true;
       } else {
@@ -143,6 +159,7 @@ export default {
 
       const tmp = [];
       this.campi.allergens.value = [];
+
       this.selectedAllergens.forEach((el) => {
         tmp.push(el.name);
         this.campi.allergens.value.push(el.name);
@@ -151,7 +168,7 @@ export default {
         const dataNew = {
           name: this.campi.name.value,
           surname: this.campi.surname.value,
-          sex: this.campi.gender.value,
+          sex: this.campi.gender.value.name,
           user_img_url: this.avatar,
           weight: this.campi.weight.value,
           height: this.campi.height.value,
@@ -186,14 +203,19 @@ export default {
         if (response.data.surname != null) this.campi.surname.value = response.data.surname;
 
         if (response.data.birth_date != null) {
-          this.campi.dateOfBirth.value = response.data.birth_date;
+          this.campi.dateOfBirth.value = new Date(response.data.birth_date);
         }
 
         if (response.data.email != null) this.campi.email.value = response.data.email;
 
         if (response.data.user_img_url != null) this.avatar = response.data.user_img_url;
 
-        if (response.data.sex != null) this.campi.gender.value = response.data.sex;
+        if (response.data.sex != null) {
+          this.campi.gender.value = {
+            name: response.data.sex,
+            label: response.data.sex === 'f' ? 'female' : 'male',
+          };
+        }
 
         if (response.data.weight != null) this.campi.weight.value = response.data.weight;
 

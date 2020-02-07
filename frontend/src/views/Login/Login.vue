@@ -40,7 +40,8 @@
               placeholder="Inserisci password"
               aria-describedby="password-help-block"
             ></b-form-input>
-            <button id="buttonHideShow" title="Hold down to show password"
+            <button id="buttonHideShow"
+              role="button" :title="this.$i18n.t('hold')"
               @click="changeType" type = "button"></button>
             <b-form-text id="password-help-block">
               {{ $t('info-psw') }}
@@ -48,15 +49,16 @@
           </b-form-group>
         </div>
         <div class="text-center buttonsDiv block">
-          <b-button class="sim-button button1" type="submit">Login</b-button>
+          <b-button role="button" class="sim-button button1" type="submit">Login</b-button>
         </div>
       </b-form>
       <hr />
       <span class="disabled">{{ $t('not-reg') }}</span>
-      <router-link to='registration'
+      <router-link to='registration' aria-label="registration"
         class="text-center buttonsDiv" style="text-decoration:none; margin-bottom:30px;">
-
-        <b-button class="sim-button button1 loginBtn">{{ $t('reg') }}</b-button>
+        <b-button role="button" id="loginBtn" class="sim-button button1 loginBtn">
+          {{ $t('reg') }}
+        </b-button>
       </router-link>
     </b-card>
   </div>
@@ -117,12 +119,14 @@ export default {
     "info": "We'll never share your email with third parties.",
     "info-psw": "Password must be 8 to 20 characters long. It cannot contain spaces.",
     "not-reg": "Not registered?",
+    "hold": "Hold down to show your password",
     "reg": "Sign in"
   },
   "it": {
     "info": "Non condivideremo mai la tua email con terze parti.",
     "info-psw": "La password deve essere lunga tra 8 e 20 caratteri. Non può contenere spazi.",
     "not-reg":"Non sei ancora registrato?",
+    "hold": "Clicca per mostrare la tua password",
     "reg": "Registrati"
   }
 }

@@ -1,4 +1,3 @@
-import datePicker from 'vue-bootstrap-datetimepicker';
 import Multiselect from 'vue-multiselect';
 import allergensList from '../../allergens.json';
 
@@ -31,6 +30,20 @@ export default {
         showClear: false,
         showClose: true,
       },
+      optionSex: [
+        { name: 'Gender', label: 'sex', $isDisabled: true },
+        { name: 'f', label: 'female' },
+        { name: 'm', label: 'male' },
+      ],
+      attributes: [
+        {
+          key: 'today',
+          dot: {
+            color: 'red',
+            contentClass: 'italic',
+          },
+        },
+      ],
       selectedAllergens: [],
       optionsMS: [],
       correctUser: true,
@@ -40,7 +53,6 @@ export default {
     };
   },
   components: {
-    datePicker,
     Multiselect,
   },
   mounted() {
@@ -53,6 +65,9 @@ export default {
   methods: {
     allT(all) {
       return this.$i18n.t(all.name);
+    },
+    sexLabel(sex) {
+      return this.$i18n.t(sex.label);
     },
     onSubmit(evt) {
       if (this.form.email.trim().length === 0) this.correctEmail = false;
@@ -70,7 +85,7 @@ export default {
           name: this.form.name,
           surname: this.form.surname,
           birth_date: this.form.dateOfBirth,
-          sex: this.form.sex.value,
+          sex: this.form.sex.value.name,
           weight: this.form.weight,
           height: this.form.height,
           allergens: tmp,
