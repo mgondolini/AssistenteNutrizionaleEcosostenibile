@@ -85,7 +85,7 @@ export default {
           name: this.form.name,
           surname: this.form.surname,
           birth_date: this.form.dateOfBirth,
-          sex: this.form.sex.value,
+          sex: this.form.sex.value.name,
           weight: this.form.weight,
           height: this.form.height,
           allergens: tmp,
