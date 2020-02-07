@@ -183,7 +183,13 @@ export default {
         this.inputMode = 'SELECT';
       }
     },
-  },
+    mostFrequentElement(arr) {
+      // Sorts and array based on a custom comparator
+      // the comparator returns the element with most occurrence between two
+      // pop() returns the most frequent (or the latest seen in case of a tie)
+      return arr.sort((a, b) => arr.filter(v => v === a).length
+            - arr.filter(v => v === b).length).pop();
+    },
 };
 </script>
 
