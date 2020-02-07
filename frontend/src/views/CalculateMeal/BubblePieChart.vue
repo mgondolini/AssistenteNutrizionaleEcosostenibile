@@ -79,7 +79,7 @@ export default {
         },
         plot: {
           values: [
-            [3, 3, 34],
+            [0, 0, 0],
           ],
           dataBubble: null,
           tooltip: {
@@ -95,11 +95,7 @@ export default {
           sizeFactor: 4,
         },
       },
-      series: [
-        { 'data-v': [15, 37, 7, 3, 14] },
-      ],
-
-      ready: false,
+      series: [],
     };
   },
   computed: {
@@ -157,7 +153,7 @@ export default {
       console.log(this.chartData.plot.values);
       console.log('OLD SERIES');
       console.log(this.series);
-      alert('REPLACING STUBS WITH REAL VALUES IN GRAPH');
+      // alert('REPLACING STUBS WITH REAL VALUES IN GRAPH');
       this.chartData.plot.values = [];
       this.series = null;
 
