@@ -67,7 +67,7 @@ export default {
       aspectRatio: { min: 1, max: 100 },
       detecteds: [],
       barcodeFound: Boolean(false),
-      readerQuorum: 7,
+      readerQuorum: 5,
 
       // ean dropdown selector facility
       eanOptions: [
@@ -112,9 +112,6 @@ export default {
     barcodeDetected(data) {
       if (this.barcodeFound === Boolean(true)) return;
 
-      // console.log('EAN detected', data);
-      console.log(data.codeResult.code.trim());
-
       if (Object.prototype.hasOwnProperty.call(data, 'codeResult')
        && Object.prototype.hasOwnProperty.call(data.codeResult, 'code')
        && (data.codeResult.code.trim().length === 13 || data.codeResult.code.trim().length === 8)) {
@@ -125,16 +122,15 @@ export default {
 
         const ean = data.codeResult.code.trim();
         this.detecteds.push(ean);
-
-        console.log(this.detecteds.length);
-
+        console.log(ean);
+        // The array is filled with quorum elements
         if (this.detecteds.length >= this.readerQuorum) {
           this.barcodeFound = Boolean(true);
+          // The most frequent is selected and popped from the array
           this.ean = this.mostFrequentElement(this.detecteds);
-          console.log('REACHED QUORUM');
           console.log(this.detecteds);
           this.loadProductInfo(this.ean);
-          // this.toggleScannerStream();
+          this.toggleScannerStream();
         }
       }
     },
@@ -183,25 +179,9 @@ export default {
         this.barcodeFound = false;
         this.detecteds = [];
         this.ean = '';
-        this.testQuorum();
       } else if (x === 'btnBack') {
         document.getElementById('selectionInputMode').classList.remove('scanning');
         this.inputMode = 'SELECT';
-      }
-    },
-    testQuorum() {
-      const data = { codeResult: { code: '0199541230790' } };
-
-      this.barcodeDetected(data);
-      this.barcodeDetected(data);
-      this.barcodeDetected(data);
-
-      let value = Number(1234567890123);
-      for (let i = 0; i < 5; i += Number(1)) {
-        value += i;
-        console.log(value);
-        data.codeResult.code = String(value);
-        this.barcodeDetected(data);
       }
     },
     mostFrequentElement(arr) {
