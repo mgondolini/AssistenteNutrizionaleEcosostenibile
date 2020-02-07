@@ -9,6 +9,9 @@
   </div>
 </template>
 
+    <!-- Bubble pie chart-->
+<script src="https://cdn.zingchart.com/zingchart.min.js"></script>
+
 <script>
 import Vue from 'vue';
 import zingchartVue from 'zingchart-vue';
