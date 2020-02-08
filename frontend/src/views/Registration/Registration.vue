@@ -117,11 +117,11 @@
                             </div>
                             <div class="col-md-8 col-8">
                               <b-form-input
-                                  id="input-surname"
-                                  v-model="form.surname"
-                                  required
-                                  :placeholder="$t('enterS')"
-                                ></b-form-input>
+                                id="input-surname"
+                                v-model="form.surname"
+                                required
+                                :placeholder="$t('enterS')"
+                              ></b-form-input>
                             </div>
                           </div>
                           <hr/>
@@ -174,13 +174,15 @@
                               <label class="labelText">{{ $t('sex') }}</label>
                             </div>
                             <div class="col-md-8 col-8">
-                              <b-form-select id="input-sex" required v-model="form.sex.value">
-                                <option disabled value=""> {{ $t(`${form.sex.key}`) }}</option>
-                                <option v-for="opt in form.sex.ar"
-                                  :key="opt" :value="opt">
-                                  {{ opt.toUpperCase() }}
-                                </option>
-                              </b-form-select>
+                              <multiselect v-model="form.sex.value"
+                              track-by="name" :placeholder="$t('sexPlaceholder')"
+                              :deselect-label="$t('cannotDeselect')"
+                              :custom-label="sexLabel"
+                              :selected-label="$t('selectedOpt')"
+                              :select-label="$t('selectLabel')"
+                              :options="optionSex" :searchable="false"
+                              :allow-empty="false">
+                              </multiselect>
                             </div>
                           </div>
                           <hr/>
@@ -189,10 +191,26 @@
                               <label class="labelText">{{ $t('DOB') }}</label>
                             </div>
                             <div class="col-md-8 col-8">
-                              <date-picker name="date"
+                              <!--<date-picker name="date"
                                 required v-model="form.dateOfBirth"
                                 :config="options"
-                                :placeholder="datePlaceholder"></date-picker>
+                                :placeholder="datePlaceholder"></date-picker>-->
+
+                              <v-date-picker v-model="form.dateOfBirth"
+                                class="card-input-date"
+                                :popover="{ placement: 'top', visibility: 'click' }"
+                                :masks="{ title: 'YYYY MMM' }"
+                                :locale='$root.$i18n.locale'
+                                :max-date="new Date()"
+                                :is-dark="$store.state.darkMode"
+                                :attributes="attributes"
+                                :is-required="true">
+                                <p class="date-picker reg buttonCalendar">
+                                  <b-icon icon="calendar" class="calIco"
+                                    font-scale="1.5"></b-icon>
+                                    <span class="trasp">{{ $d(form.dateOfBirth, 'short') }}</span>
+                                </p>
+                              </v-date-picker>
                             </div>
                           </div>
                           <hr/>
@@ -210,14 +228,6 @@
         </div>
       </div>
     </b-form>
-    <b-modal id="modal-error" :title="$i18n.t('errorModalTitle')"
-      hide-footer v-model="modalErrorShow">
-      <div class="d-block text-center">
-        <img src="../../assets/restrictionShield.png">
-        {{ this.errorMsgModal }}
-      </div>
-      <b-button class="mt-3" block @click="hideModal">{{ $t('closeBtn')}}</b-button>
-    </b-modal>
     <b-modal id="modal-ach" :title="$i18n.t('achModalTitle')" hide-footer>
       <div class="d-block text-center">
         {{ $t('achMsgModal') }}
@@ -228,12 +238,10 @@
 </template>
 
 <script src="./Registration.js">
-
 </script>
 
 <i18n  src="./languageText.json"></i18n>
 <i18n  src="../Profile/languageText.json"></i18n>
-<i18n src='../../locales/errorMessages.json'></i18n>
 
 <style lang="sass">
   @import './registration'

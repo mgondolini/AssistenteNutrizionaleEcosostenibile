@@ -5,21 +5,25 @@
       <b-button @click="decrementDate" variant="link">
         <b-icon icon="chevron-left" font-scale="1.5" variant="info"></b-icon>
       </b-button>
-      <p class="date-p text-center">{{ $d(currentDate, 'short') }}</p>
+
+      <v-date-picker v-model="calendar.value"
+        :popover="{ placement: 'bottom', visibility: 'click' }"
+        :masks="{ title: 'YYYY MMM' }"
+        :locale='$root.$i18n.locale' :max-date="new Date()"
+        :attributes="this.attributes"
+        :is-dark="this.$store.state.darkMode"
+        :is-required="true"
+        @dayclick="setDateAndShowMeals">
+        <p class="date-p text-center ">
+          <b-icon icon="calendar" font-scale="1.5" variant="secondary"></b-icon>
+          {{ $d(calendar.value, 'short') }}
+        </p>
+      </v-date-picker>
+
       <b-button :disabled="disableBtn" @click="incrementDate" variant="link">
         <b-icon icon="chevron-right" font-scale="1.5" :variant="arrowRightVariant"></b-icon>
       </b-button>
-      <b-button variant="link"
-        @click="$refs.calendar.dp.show()"
-      ><b-icon icon="calendar" font-scale="1.5" variant="secondary"></b-icon>
-      </b-button>
-      <date-picker v-model="calendar.value"
-        ref="calendar"
-        :config="options"
-        value="calendar"
-        class="meals-datepicker"
-        @dp-change="setDateAndShowMeals(calendar.value)">
-      </date-picker>
+
     </b-card>
     <div class="containerMeal">
       <b-tabs content-class="mt-3" id="myTabContent" justified>
@@ -118,7 +122,7 @@
                   </div>
                   <b-button v-if="!meal.is_closed"
                     variant="info"
-                    @click="completeMeal(meal)"
+                    @click="completeMealModal(meal)"
                   > {{ $t('complete_meal') }}
                   </b-button>
                 </div>
@@ -149,15 +153,12 @@
         </b-tab>
       </b-tabs>
     </div>
-    <ModalError></ModalError>
   </div>
 </template>
 
 <script>
 import Vue from 'vue';
-import datePicker from 'vue-bootstrap-datetimepicker';
 import VueApexCharts from 'vue-apexcharts';
-import ModalError from '../../components/ModalError/ModalError.vue';
 
 Vue.use(VueApexCharts);
 
@@ -167,9 +168,7 @@ const imagesContext = require.context('@/assets/productInfo/', true, /\.svg$/);
 export default {
   name: 'meals',
   components: {
-    datePicker,
     apexchart: VueApexCharts,
-    ModalError,
   },
   data() {
     return {
@@ -197,8 +196,17 @@ export default {
       // DateTimePicker
       calendar: {
         key: 'calendar',
-        value: '',
+        value: undefined,
       },
+      attributes: [
+        {
+          key: 'today',
+          dot: {
+            color: 'red',
+            contentClass: 'italic', // Class provided by TailwindCSS
+          },
+        },
+      ],
       options: {
         format: 'YYYY-MM-DD',
         maxDate: new Date(),
@@ -335,6 +343,9 @@ export default {
       if (dateFromProductInfo !== undefined) {
         this.currentDate = new Date(dateFromProductInfo);
         this.calendar.value = this.currentDate;
+      } else {
+        this.currentDate = new Date();
+        this.calendar.value = this.currentDate;
       }
 
       this.$store.state.http.get(`api/meals/${this.currentDate}`)
@@ -443,29 +454,28 @@ export default {
 
       if (!found) this.noMeals = 'no_meals';
     },
-    setDateAndShowMeals(date) {
-      this.currentDate = new Date(date);
+    setDateAndShowMeals(day) {
+      this.currentDate = day.date;
       console.log(`Current date: ${this.currentDate}`);
       this.showMealsByDate(this.currentDate);
       this.computeDayNutritionFact(this.currentDate);
       this.triggerChartTab();
     },
     incrementDate() {
-      if (this.currentDate.getDate() === this.options.maxDate.getDate()
-      && this.currentDate.getMonth() === this.options.maxDate.getMonth()) {
+      if (this.currentDate.getDate() + 1 === new Date().getDate()) {
         this.disableBtn = true;
       } else {
-        this.currentDate.setDate(this.currentDate.getDate() + 1);
-        this.calendar.value = this.currentDate;
-        this.setDateAndShowMeals(this.currentDate);
         this.disableBtn = false;
       }
+      this.currentDate.setDate(this.currentDate.getDate() + 1);
+      this.calendar.value = this.currentDate;
+      this.setDateAndShowMeals({ date: this.currentDate });
     },
     decrementDate() {
       this.disableBtn = false;
       this.currentDate.setDate(this.currentDate.getDate() - 1);
       this.calendar.value = this.currentDate;
-      this.setDateAndShowMeals(this.currentDate);
+      this.setDateAndShowMeals({ date: this.currentDate });
     },
     getUserDailyRequirement() {
       this.$store.state.http.get('/api/user')
@@ -531,7 +541,7 @@ export default {
     },
     deleteMealModal(meal) {
       this.$bvModal.msgBoxConfirm(this.$i18n.t('confirm_meal_deletion'), {
-        title: this.$i18n.t('complete_meal'),
+        title: this.$i18n.t('delete_meal'),
         okVariant: 'primary',
         okTitle: this.$i18n.t('yes'),
         cancelTitle: this.$i18n.t('no'),
@@ -596,7 +606,7 @@ export default {
     },
     completeMealModal(meal) {
       this.$bvModal.msgBoxConfirm(this.$i18n.t('save_meal'), {
-        title: this.$i18n.t('delete_meal'),
+        title: this.$i18n.t('complete_meal'),
         okVariant: 'primary',
         okTitle: this.$i18n.t('yes'),
         cancelTitle: this.$i18n.t('no'),
@@ -622,11 +632,10 @@ export default {
       this.$store.state.http.put(`api/meals/${body.meal_name}/${body.timestamp}`, body)
         .then((response) => {
           this.mealsList = [];
-          console.log('saveMeal resposnse: ');
+          console.log('saveMeal response: ');
           console.log(response.data);
           this.mealsList = response.data.userMeals.meals;
           this.showMealsByDate(this.currentDate);
-          this.hideModal();
           const c = response.data.countNewAch;
           if (c > 0) {
             // new achievements, show modal
@@ -635,9 +644,6 @@ export default {
           }
         })
         .catch(error => this.checkError(error.response.data.description));
-    },
-    hideModal() {
-      this.$refs['modal-save'].hide();
     },
     hideAchModal() {
       this.$bvModal.hide('modal-ach');
@@ -667,7 +673,7 @@ export default {
     "complete_meal": "Complete meal",
     "save_meal": "If you complete the meal you will not be able to edit it again.\nConfirm?",
     "delete_meal": "Delete meal?",
-    "confirm_meal_deletion": "If you complete the meal you you can no longer recover it.\nConfirm?",
+    "confirm_meal_deletion": "If you delete the meal you can no longer recover it.\nConfirm?",
     "yes": "Yes",
     "no": "No",
     "overrun": "Overrun Daily Value %",

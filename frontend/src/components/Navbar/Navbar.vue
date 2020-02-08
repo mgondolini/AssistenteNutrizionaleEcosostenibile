@@ -26,16 +26,18 @@
               <template v-slot:button-content>
                 <em>{{ getUsername }}</em>
               </template>
-                <b-dropdown-item href="profile">{{ $t('profile') }}</b-dropdown-item>
-                <b-dropdown-item href="meals">{{ $t('meals') }}</b-dropdown-item>
-                <b-dropdown-item @click.prevent="signout">{{ $t('signout') }}</b-dropdown-item>
+                <b-dropdown-item href="profile"><span>{{ $t('profile') }}</span></b-dropdown-item>
+                <b-dropdown-item href="meals"><span>{{ $t('meals') }}</span></b-dropdown-item>
+                <b-dropdown-item @click.prevent="signout">
+                  <span>{{ $t('signout') }}</span>
+                </b-dropdown-item>
             </b-nav-item-dropdown>
             <b-nav-item-dropdown class="localeID" v-bind:text="$root.$i18n.locale" right>
               <b-dropdown-item-button
                 v-for="(lang, i) in langs"
                 :key="`Lang${i}`"
                 :value="lang"
-                @click="$root.$i18n.locale = lang">
+                @click="changeLang(lang)">
                 <img class="localeFlag" :src="getLocaleFlagPath(lang)" alt="flag">
                 <span class="localeID"> {{ lang }} </span>
               </b-dropdown-item-button>
@@ -75,6 +77,10 @@ export default {
     },
   },
   methods: {
+    changeLang(l) {
+      this.$root.$i18n.locale = l;
+      localStorage.lang = l;
+    },
     getLocaleFlagPath(lang) {
       return localeFlagsContext(`./${lang}${localeFlagsExt}`);
     },

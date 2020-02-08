@@ -9,7 +9,7 @@
     <div id="selectionInputMode">
       <div v-if="inputMode === 'SELECT'" class="buttonContainerVertical">
           <b-button v-on:click="inputMode = 'MANUAL'">{{$t('input_btn_manual')}}</b-button>
-          <b-button id="buttonScanner" class="btnAR" v-on:click="addRemoveClass">
+          <b-button id="buttonScanner" class="btnAR" v-on:click="toggleScannerStream">
             {{$t('input_btn_scan_barcode')}}</b-button>
           <b-button v-on:click="uploadFile()">{{$t('input_btn_upload')}}</b-button>
           <b-button v-on:click="scanNutriTable()">{{$t('input_btn_scan_nutri')}}</b-button>
@@ -36,8 +36,9 @@
           :readerTypes="['ean_reader']"
           :aspectRatio="aspectRatio"
         ></v-quagga>
-        <b-button id="btnBack" class="btnAR" v-on:click="addRemoveClass">{{$t('back')}}</b-button>
-
+        <b-button id="btnBack" class="btnAR" v-on:click="toggleScannerStream">
+          {{$t('back')}}
+        </b-button>
       </div>
     </div>
   </b-modal>
@@ -65,6 +66,8 @@ export default {
       },
       aspectRatio: { min: 1, max: 100 },
       detecteds: [],
+      barcodeFound: Boolean(false),
+      readerQuorum: 5,
 
       // ean dropdown selector facility
       eanOptions: [
@@ -107,9 +110,7 @@ export default {
       this.$bvModal.hide('modal-selectProduct');
     },
     barcodeDetected(data) {
-      console.log('EAN detected', data);
-      console.log(data.codeResult.code.trim());
-      console.log(data.codeResult.code.trim().length);
+      if (this.barcodeFound === Boolean(true)) return;
 
       if (Object.prototype.hasOwnProperty.call(data, 'codeResult')
        && Object.prototype.hasOwnProperty.call(data.codeResult, 'code')
@@ -119,10 +120,18 @@ export default {
         // reached a threshold of readings stored, the most popular value is the correct ean
         // if no majority is reached, keep storing until it does
 
-        // alert(data.codeResult.code);
-        // Quagga.stop();
-        this.ean = data.codeResult.code.trim();
-        this.loadProductInfo(this.ean);
+        const ean = data.codeResult.code.trim();
+        this.detecteds.push(ean);
+        console.log(ean);
+        // The array is filled with quorum elements
+        if (this.detecteds.length >= this.readerQuorum) {
+          this.barcodeFound = Boolean(true);
+          // The most frequent is selected and popped from the array
+          this.ean = this.mostFrequentElement(this.detecteds);
+          console.log(this.detecteds);
+          this.loadProductInfo(this.ean);
+          this.toggleScannerStream();
+        }
       }
     },
     loadProductInfo(ean) {
@@ -160,16 +169,27 @@ export default {
         okVariant: 'danger',
         centered: true,
       });
+      // this.toggleScannerStream();
     },
-    addRemoveClass() {
+    toggleScannerStream() {
       const x = document.getElementsByClassName('btnAR')[0].id;
       if (x === 'buttonScanner') {
         document.getElementById('selectionInputMode').classList.add('scanning');
         this.inputMode = 'STREAM';
+        this.barcodeFound = false;
+        this.detecteds = [];
+        this.ean = '';
       } else if (x === 'btnBack') {
         document.getElementById('selectionInputMode').classList.remove('scanning');
         this.inputMode = 'SELECT';
       }
+    },
+    mostFrequentElement(arr) {
+      // Sorts and array based on a custom comparator
+      // the comparator returns the element with most occurrence between two
+      // pop() returns the most frequent (or the latest seen in case of a tie)
+      return arr.sort((a, b) => arr.filter(v => v === a).length
+            - arr.filter(v => v === b).length).pop();
     },
   },
 };

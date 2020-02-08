@@ -11,7 +11,10 @@
           {{Text}}
         </span>
       </div>
-      <b-button class="mt-3" block @click="defaultCB">{{ $t('closeBtn')}}</b-button>
+      <div class="buttonsDiv">
+        <b-button class="mt-3 sim-button button1"
+          block @click="defaultCB">{{ $t('closeBtn')}}</b-button>
+      </div>
     </b-modal>
   </div>
 </template>

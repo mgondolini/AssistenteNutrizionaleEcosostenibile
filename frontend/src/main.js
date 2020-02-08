@@ -4,6 +4,7 @@ import Axios from 'axios';
 import Vuex from 'vuex';
 import VueCarousel from 'vue-carousel';
 import VueQuagga from 'vue-quaggajs';
+import VCalendar from 'v-calendar';
 import App from './App.vue';
 import router from './router';
 import './custom.sass';
@@ -22,11 +23,11 @@ Vue.use(VueCarousel);
 Vue.use(BootstrapVue);
 Vue.use(BootstrapVueIcons);
 Vue.use(Vuex);
+Vue.use(VCalendar);
 
-let tmpDark = false;
-if (localStorage.darkMode !== undefined) {
-  tmpDark = localStorage.darkMode === 'true';
-}
+const tmpDark = localStorage.darkMode !== undefined ? localStorage.darkMode === 'true' : false;
+
+i18n.locale = localStorage.lang !== undefined ? localStorage.lang : 'en';
 
 const store = new Vuex.Store({
   state: {
@@ -88,6 +89,19 @@ if (localStorage.ecoAssToken !== 'InvalidToken') {
 } else {
   store.commit('logout');
 }
+
+router.beforeEach((to, from, next) => {
+  const realRoute = ['/', '/login', '/info_prod', '/profile', '/meals', '/calculate_meal_composition', '/registration'];
+  const loggedRoute = ['/profile', '/meals', '/calculate_meal_composition'];
+  const p = to.path;
+  if (!realRoute.includes(p)) {
+    next('/');
+  } else if (loggedRoute.includes(p) && !store.state.isLogged) {
+    next('/login');
+  } else {
+    next();
+  }
+});
 
 new Vue({
   router,

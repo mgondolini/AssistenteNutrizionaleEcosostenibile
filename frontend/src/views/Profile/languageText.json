@@ -41,8 +41,11 @@
     "enterS": "Enter your surname",
     "enterE": "Enter your email",
     "enterH": "Enter your height",
-    "errorModalTitle": "Error"
-
+    "cannotDeselect": "Can't deselect",
+    "selectedOpt": "Selected",
+    "female": "Female",
+    "male": "Male",
+    "sexPlaceholder": "Select your gender"
   },
   "it": {
     "info": "Le tue informazioni",
@@ -86,6 +89,10 @@
     "enterS": "Inserisci il tuo cognome",
     "enterE": "Inserisci la tua email",
     "enterH": "Inserisci la tua altezza",
-    "errorModalTitle": "Errore"
+    "cannotDeselect": "Non puoi deselezionare",
+    "selectedOpt": "Selezionato",
+    "female": "Femmina",
+    "male": "Maschio",
+    "sexPlaceholder": "Seleziona il tuo genere"
   }
 }
