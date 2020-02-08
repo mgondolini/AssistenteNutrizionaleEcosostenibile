@@ -16,7 +16,7 @@
       </div>
       <div v-else-if="inputMode === 'MANUAL'" id="insertEAN" class="buttonContainer">
         <div>
-          <label for="ean">{{$t('ean_code')}}</label>
+          <label class="eanCodeLabel" for="ean">{{$t('ean_code')}}</label>
           <input
             id="ean"
             v-model="ean"
