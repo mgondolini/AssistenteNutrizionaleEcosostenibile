@@ -54,6 +54,8 @@ export default {
       fibers: [],
       values: [],
 
+      ready: false,
+
       // Bubble dimension
       radius: [],
 
@@ -61,8 +63,23 @@ export default {
       bubbleLabels: [],
 
       // Chart
-      chartData: {
+
+      series: [],
+      // [ // (2) Provide your pie chart data.
+      //   { 'data-v': [null, null, null, null, null] }, // slice1
+      //   // { 'data-v': [13, 34, 21, 7, 8] }, // slice2
+      //   // { 'data-v': [6, 30, 31, 5, 8] }, // slice3
+      //   // { 'data-v': [5, 29, null, 3, 13] }, // slice4
+      //   // { 'data-v': [3, 25, 19, 3, null] }, // slice5
+      // ],
+    };
+  },
+  computed: {
+    chartData() {
+      return {
         type: 'bubble-pie',
+        height: '100%',
+        width: '100%',
         scaleX: {
           lineColor: 'none',
           guide: {
@@ -81,38 +98,24 @@ export default {
           },
         },
         plot: {
-          values: [
-            [3, 3, 34], // for bubble-pie 1
-            [5, 12, 101], // for bubble-pie 2
-            [9, 7, 59], // for bubble-pie 3
-            [11, 5, 15], // for bubble-pie 4
-            [14, 14, 30],
-          ],
-          dataBubble: ['a', 'b', 'c', 'd', 'e'],
+          values: this.values,
+          dataBubble: this.bubbleLabels,
           tooltip: {
             text: '%data-pie: %data-v',
-            'font-color': 'blue',
-            'font-family': 'Georgia, serif',
-            'background-color': 'white',
-            'border-color': 'pink',
-            'border-width': 2,
-            'line-style': 'dashed',
+            fontColor: 'blue',
+            fontFamily: 'Georgia, serif',
+            backgroundColor: 'white',
+            borderColor: 'pink',
+            borderWidth: 2,
+            lineStyle: 'dashed',
           },
-          scaling: 'area',
-          sizeFactor: 4,
+          minSize: 30,
+          maxSize: 50,
+          // scaling: 'radius',
+          sizeFactor: 5,
         },
-      },
-      series: [ // (2) Provide your pie chart data.
-        { 'data-v': [null, null, null, null, null] }, // slice1
-        { 'data-v': [13, 34, 21, 7, 8] }, // slice2
-        { 'data-v': [6, 30, 31, 5, 8] }, // slice3
-        { 'data-v': [5, 29, null, 3, 13] }, // slice4
-        { 'data-v': [3, 25, 19, 3, null] }, // slice5
-      ],
-    };
-  },
-  computed: {
-
+      };
+    },
   },
   methods: {
     loadMeal() {
@@ -162,13 +165,16 @@ export default {
 
       let j = 0;
 
+      console.log("Radius");
+      console.log(this.radius);
+
       console.log('OLD VALUES');
       console.log(this.chartData.plot.values);
       console.log('OLD SERIES');
       console.log(this.series);
-      alert('REPLACING STUBS WITH REAL VALUES IN GRAPH');
-      this.chartData.plot.values = [];
-      this.chartData.plot.dataBubble = [];
+      // alert('REPLACING STUBS WITH REAL VALUES IN GRAPH');
+      this.values = [];
+      this.dataBubble = [];
       this.series = null;
 
       this.ingredients.forEach((i) => {
@@ -183,9 +189,8 @@ export default {
         this.alcohol.push(Number((i.alcohol_tot).toFixed(2)));
         this.fibers.push(Number((i.fiber_tot).toFixed(2)));
 
-        // this.values.push([x, y, this.radius[j]]);
-        this.chartData.plot.values.push([x, y, this.radius[j]]);
-        this.chartData.plot.dataBubble.push(i.product_name);
+        this.values.push([x, y, this.radius[j]]);
+        this.bubbleLabels.push(i.product_name);
 
         x += 10;
         y += 10;
@@ -218,10 +223,6 @@ export default {
       // this.$refs.bubblepie.update();
 
       this.ready = true;
-
-      // non funziona così
-      // this.chartData.plot.dataBubble = this.bubbleLabels;
-      // console.log(this.chartData.plot.dataBubble);
     },
     populateSeries() {
       return [
