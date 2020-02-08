@@ -9,9 +9,6 @@
   </div>
 </template>
 
-    <!-- Bubble pie chart-->
-<script src="https://cdn.zingchart.com/zingchart.min.js"></script>
-
 <script>
 import Vue from 'vue';
 import zingchartVue from 'zingchart-vue';
@@ -52,8 +49,11 @@ export default {
       calcium: [],
       alcohol: [],
       fibers: [],
+
+      // Coordinates and radius of the bubbles
       values: [],
 
+      // Flag
       ready: false,
 
       // Bubble dimension
@@ -62,16 +62,9 @@ export default {
       // Labels
       bubbleLabels: [],
 
-      // Chart
-
+      // Series
       series: [],
-      // [ // (2) Provide your pie chart data.
-      //   { 'data-v': [null, null, null, null, null] }, // slice1
-      //   // { 'data-v': [13, 34, 21, 7, 8] }, // slice2
-      //   // { 'data-v': [6, 30, 31, 5, 8] }, // slice3
-      //   // { 'data-v': [5, 29, null, 3, 13] }, // slice4
-      //   // { 'data-v': [3, 25, 19, 3, null] }, // slice5
-      // ],
+
     };
   },
   computed: {
@@ -80,13 +73,17 @@ export default {
         type: 'bubble-pie',
         height: '100%',
         width: '100%',
+        x: '0%',
+        y: '0%',
         scaleX: {
+          values: '0:40:1', // min:max:step
           lineColor: 'none',
           guide: {
             lineColor: 'none',
           },
         },
         scaleY: {
+          values: '0:50:1',
           lineColor: 'none',
           guide: {
             lineColor: 'none',
@@ -111,7 +108,7 @@ export default {
           },
           minSize: 30,
           maxSize: 50,
-          // scaling: 'radius',
+          scaling: 'radius',
           sizeFactor: 5,
         },
       };
@@ -165,7 +162,7 @@ export default {
 
       let j = 0;
 
-      console.log("Radius");
+      console.log('Radius');
       console.log(this.radius);
 
       console.log('OLD VALUES');
@@ -197,30 +194,11 @@ export default {
         j += 1;
       });
 
-
       console.log('NEW VALUES');
       console.log(this.chartData.plot.values);
       console.log('NEW SERIES');
       this.series = this.populateSeries();
       console.log(this.series);
-
-      /*
-      this.$refs.bubblepie.modifyplot({
-        graphid: 0,
-        plotindex: 1,
-        data: { chartData: { plot: { values: this.values } } },
-      });
-      */
-      /*
-      this.$refs.bubblepie.setdata({
-        data: { plot: { values: this.values } },
-      });
-      this.$refs.bubblepie.reload();
-      console.log(this.$refs.bubblepie.chartData.plot);
-
-      this.series = this.populateSeries();
-      */
-      // this.$refs.bubblepie.update();
 
       this.ready = true;
     },
@@ -239,10 +217,29 @@ export default {
       ];
     },
     createObject(name, values) {
-      return {
-        'data-v': values,
-        'data-pie': name,
+      let obj;
+      const firstObject = {
+        dataV: values,
+        dataPie: name,
+        valueBox: {
+          text: '%data-bubble',
+          placement: 'top',
+          fontColor: 'black',
+          fontFamily: 'Arial',
+          fontWeight: 'bold',
+          fontSize: '13',
+        },
       };
+
+      if (name === 'Carbohydrates') obj = firstObject;
+      else {
+        obj = {
+          dataV: values,
+          dataPie: name,
+        };
+      }
+
+      return obj;
     },
   },
   created() {
