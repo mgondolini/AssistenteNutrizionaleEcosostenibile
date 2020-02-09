@@ -76,14 +76,14 @@ export default {
         x: '0%',
         y: '0%',
         scaleX: {
-          values: '0:40:1', // min:max:step
+          values: '0:80:5', // min:max:step
           lineColor: 'none',
           guide: {
             lineColor: 'none',
           },
         },
         scaleY: {
-          values: '0:50:1',
+          values: '0:80:5',
           lineColor: 'none',
           guide: {
             lineColor: 'none',
@@ -93,6 +93,8 @@ export default {
           item: {
             text: '%data-pie',
           },
+          align: 'right',
+          verticalAlign: 'middle',
         },
         plot: {
           values: this.values,
@@ -111,6 +113,41 @@ export default {
           scaling: 'radius',
           sizeFactor: 5,
         },
+        mediaRules: [
+          {
+            legend: {
+              align: 'right',
+              verticalAlign: 'top',
+              layout: '5x2',
+              item: {
+                fontSize: 7,
+              },
+            },
+            plot: {
+              values: this.values,
+              dataBubble: this.bubbleLabels,
+              tooltip: {
+                text: '%data-pie: %data-v',
+                fontColor: 'blue',
+                fontFamily: 'Georgia, serif',
+                backgroundColor: 'white',
+                borderColor: 'green',
+                borderWidth: 2,
+                lineStyle: 'normal',
+              },
+              minSize: 10,
+              maxSize: 20,
+              scaling: 'radius',
+              sizeFactor: 3,
+            },
+          },
+          {
+            maxWidth: 300,
+            label: {
+              visible: false,
+            },
+          },
+        ],
       };
     },
   },
@@ -227,7 +264,7 @@ export default {
           fontColor: 'black',
           fontFamily: 'Arial',
           fontWeight: 'bold',
-          fontSize: '13',
+          fontSize: '12',
         },
       };
 
