@@ -86,38 +86,42 @@
                 </b-button>
                 <div v-if="meal.components.length > 0">
                   <div v-for="component in meal.components" v-bind:key="component.product_name">
-                    <b-card :img-src="component.image_url"
-                      img-alt="Card image" img-left
-                      class="card-components mb-3"
-                    ><b-card-text align="center" class="card-components-text m-0 p-0">
-                        <p class="component-p">
-                          <b>
-                            <b-link href="#" @click="goToInfoProd(component.barcode)">
-                              {{ component.product_name }}
-                            </b-link>
-                          </b>
-                        </p>
-                        <p class="component-p">
-                          {{ component.quantity }} {{component.measure_unit}}
-                        </p>
-                        <p class="component-p">
-                          {{ (component.energy_kcal).toFixed(2) }} kcal
-                        </p>
-                      </b-card-text>
-                      <b-img v-if="component.nutrition_score"
-                        class="nutri-score-img"
-                        :src='getNutriScoreImage(component.nutrition_score)'
-                        alt="Nutri score image">
-                      </b-img>
-                      <b-button v-if="!meal.is_closed"
-                        class="remove-btn p-0"
-                        variant="link"
-                        @click="removeComponent(
-                          component.barcode,
-                          component.quantity,
-                          meal.meal_name)"
-                      ><b-icon icon="x-circle" variant="danger"></b-icon>
-                      </b-button>
+                    <b-card>
+                      <div class="card-img-left"><b-img :src="component.image_url"
+                        alt="Card image"
+                        class="card-img-left mb-3">
+                      </b-img></div>
+                      <div align="center" class="card-components-text m-0 p-0">
+                          <p class="component-p">
+                            <b>
+                              <b-link href="#" @click="goToInfoProd(component.barcode)">
+                                {{ component.product_name }}
+                              </b-link>
+                            </b>
+                          </p>
+                          <p class="component-p">
+                            {{ component.quantity }} {{component.measure_unit}}
+                          </p>
+                          <p class="component-p">
+                            {{ (component.energy_kcal).toFixed(2) }} kcal
+                          </p>
+                        </div>
+                        <div>
+                          <b-img v-if="component.nutrition_score"
+                            class="nutri-score-img"
+                            :src='getNutriScoreImage(component.nutrition_score)'
+                            alt="Nutri score image">
+                          </b-img>
+                          <b-button v-if="!meal.is_closed"
+                            class="remove-btn p-0"
+                            variant="link"
+                            @click="removeComponent(
+                              component.barcode,
+                              component.quantity,
+                              meal.meal_name)"
+                          ><b-icon icon="x-circle" variant="danger"></b-icon>
+                          </b-button>
+                        </div>
                     </b-card>
                   </div>
                   <b-button v-if="!meal.is_closed"
