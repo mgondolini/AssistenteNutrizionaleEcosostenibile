@@ -72,18 +72,23 @@ export default {
       return {
         type: 'bubble-pie',
         height: '100%',
-        width: '100%',
+        width: '80%',
         x: '0%',
         y: '0%',
         scaleX: {
-          values: '0:80:5', // min:max:step
+          minValue: 0,
+          maxValue: 50,
+          step: 5,
           lineColor: 'none',
           guide: {
             lineColor: 'none',
           },
         },
         scaleY: {
-          values: '0:80:5',
+          // values: '0:80:5',
+          minValue: 0,
+          maxValue: 50,
+          step: 1,
           lineColor: 'none',
           guide: {
             lineColor: 'none',
@@ -92,6 +97,7 @@ export default {
         legend: {
           item: {
             text: '%data-pie',
+            fontSize: 12,
           },
           align: 'right',
           verticalAlign: 'middle',
@@ -115,6 +121,8 @@ export default {
         },
         mediaRules: [
           {
+            maxWidth: 500,
+            width: '100%',
             legend: {
               align: 'right',
               verticalAlign: 'top',
@@ -138,7 +146,7 @@ export default {
               minSize: 10,
               maxSize: 20,
               scaling: 'radius',
-              sizeFactor: 3,
+              sizeFactor: 4,
             },
           },
           {
