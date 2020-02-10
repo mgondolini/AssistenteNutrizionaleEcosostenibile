@@ -29,21 +29,25 @@
       <b-tabs content-class="mt-3" id="myTabContent" justified>
         <b-tab :title="$t('meals')" class="tab-content-info" active>
           <b-card class="card-new-meal">
-            <b-form-input id="input-new-meal"
-              v-model="mealName"
-              :state="mealNameState"
-              aria-describedby="input-live-feedback"
-              :placeholder="$t('meal_name_enter')"
-              class="input-new-meal"
-              trim
-              @input="onMealNameChange"
-            ></b-form-input>
-            <b-button variant="link"
-              class="button-add p-0"
-              @click="addMeal(mealName)"
-            ><b-icon icon="plus" variant="info" font-scale="2.3"
-            class="border border-info rounded p-0"></b-icon>
-            </b-button>
+            <b-input-group class="input-new-meal mt-3">
+              <b-form-input id="input-new-meal"
+                v-model="mealName"
+                :state="mealNameState"
+                aria-describedby="input-live-feedback"
+                :placeholder="$t('meal_name_enter')"
+                @keyup.enter="addMeal(mealName)"
+                trim
+                @input="onMealNameChange"
+              ></b-form-input>
+              <b-input-group-append>
+                <b-button variant="link"
+                  class="button-add p-0"
+                  @click="addMeal(mealName)"
+                ><b-icon icon="plus" font-scale="2.3"
+                class="border plus-icon rounded p-0"></b-icon>
+                </b-button>
+              </b-input-group-append>
+            </b-input-group>
             <b-form-invalid-feedback id="input-live-feedback">
               {{ $t(inputCheckMessage) }}
             </b-form-invalid-feedback>
@@ -79,7 +83,7 @@
               <b-card-body class="components-card">
                 <b-button v-if="!meal.is_closed"
                   variant="link"
-                  class="add-component border-info"
+                  class="add-component"
                   @click="addComponent(meal.meal_name, meal.timestamp)"
                 ><b-icon icon="plus" variant="success" font-scale="2" shift-v="+2"></b-icon>
                   <p color="info">{{ $t('add_component') }}</p>
@@ -547,7 +551,7 @@ export default {
     deleteMealModal(meal) {
       this.$bvModal.msgBoxConfirm(this.$i18n.t('confirm_meal_deletion'), {
         title: this.$i18n.t('delete_meal'),
-        okVariant: 'primary',
+        okVariant: 'success',
         okTitle: this.$i18n.t('yes'),
         cancelTitle: this.$i18n.t('no'),
         footerClass: 'p-2',
