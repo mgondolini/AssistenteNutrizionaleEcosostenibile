@@ -94,7 +94,7 @@
                     <b-card>
                       <div class="card-img-left"><b-img :src="component.image_url"
                         alt="Card image"
-                        class="card-img-left mb-3">
+                        class="img-left mb-3">
                       </b-img></div>
                       <div align="center" class="card-components-text m-0 p-0">
                           <p class="component-p">
