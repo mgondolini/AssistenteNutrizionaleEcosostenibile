@@ -41,16 +41,17 @@
               ></b-form-input>
               <b-input-group-append>
                 <b-button variant="link"
-                  class="button-add p-0"
+                  class="plus-button p-0"
                   @click="addMeal(mealName)"
-                ><b-icon icon="plus" font-scale="2.3"
-                class="border plus-icon rounded p-0"></b-icon>
+                ><b-icon icon="plus" font-scale="2"
+                class="plus-icon p-0"></b-icon>
                 </b-button>
               </b-input-group-append>
+              <b-form-invalid-feedback id="input-live-feedback">
+                {{ $t(inputCheckMessage) }}
+              </b-form-invalid-feedback>
             </b-input-group>
-            <b-form-invalid-feedback id="input-live-feedback">
-              {{ $t(inputCheckMessage) }}
-            </b-form-invalid-feedback>
+
           </b-card>
 
           <div v-if="mealsListByDate.length > 0"
