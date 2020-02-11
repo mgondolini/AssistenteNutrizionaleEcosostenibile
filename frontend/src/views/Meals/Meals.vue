@@ -83,7 +83,7 @@
             <b-collapse :id="'accordion-' + index" visible accordion="my-accordion" role="tabpanel">
               <b-card-body class="components-card">
                 <b-button v-if="!meal.is_closed" variant="light"
-                  class="add-component"
+                  class="add-component mb-3"
                   @click="addComponent(meal.meal_name, meal.timestamp)"
                 ><b-icon icon="plus" variant="success" font-scale="2" shift-v="+2"></b-icon>
                   {{ $t('add_component') }}
@@ -110,7 +110,7 @@
                             {{ (component.energy_kcal).toFixed(2) }} kcal
                           </p>
                         </div>
-                        <div class="nutri-img div">
+                        <div class="nutri-img-div">
                           <b-img v-if="component.nutrition_score"
                             class="nutri-score-img"
                             :src='getNutriScoreImage(component.nutrition_score)'
