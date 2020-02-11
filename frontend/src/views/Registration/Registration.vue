@@ -191,10 +191,6 @@
                               <label class="labelText">{{ $t('DOB') }}</label>
                             </div>
                             <div class="col-md-8 col-8">
-                              <!--<date-picker name="date"
-                                required v-model="form.dateOfBirth"
-                                :config="options"
-                                :placeholder="datePlaceholder"></date-picker>-->
 
                               <v-date-picker v-model="form.dateOfBirth"
                                 class="card-input-date"
