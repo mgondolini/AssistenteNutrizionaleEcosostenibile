@@ -133,7 +133,7 @@
                     </b-card>
                   </div>
                   <b-button v-if="!meal.is_closed"
-                    class="accordion-bgn"
+                    class="accordion-bgn mt-3"
                     variant="success"
                     @click="completeMealModal(meal)"
                   > {{ $t('complete_meal') }}
