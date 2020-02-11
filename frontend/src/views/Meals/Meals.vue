@@ -82,18 +82,19 @@
 
             <b-collapse :id="'accordion-' + index" visible accordion="my-accordion" role="tabpanel">
               <b-card-body class="components-card">
-                <b-button v-if="!meal.is_closed" variant="light" class="add-component"
+                <b-button v-if="!meal.is_closed" variant="light"
+                  class="add-component"
                   @click="addComponent(meal.meal_name, meal.timestamp)"
                 ><b-icon icon="plus" variant="success" font-scale="2" shift-v="+2"></b-icon>
                   {{ $t('add_component') }}
                 </b-button>
                 <div v-if="meal.components.length > 0">
                   <div v-for="component in meal.components" v-bind:key="component.product_name">
-                    <b-card>
-                      <div class="card-img-left"><b-img :src="component.image_url"
-                        alt="Card image"
-                        class="img-left mb-3">
-                      </b-img></div>
+                    <b-card class="card-components mb-2">
+                      <div class="card-img-left">
+                        <b-img :src="component.image_url" alt="Component Image" class="img-left">
+                        </b-img>
+                      </div>
                       <div align="center" class="card-components-text m-0 p-0">
                           <p class="component-p">
                             <b>
@@ -109,12 +110,14 @@
                             {{ (component.energy_kcal).toFixed(2) }} kcal
                           </p>
                         </div>
-                        <div>
+                        <div class="nutri-img div">
                           <b-img v-if="component.nutrition_score"
                             class="nutri-score-img"
                             :src='getNutriScoreImage(component.nutrition_score)'
                             alt="Nutri score image">
                           </b-img>
+                        </div>
+                        <div class="remove-btn-div">
                           <b-button v-if="!meal.is_closed"
                             class="remove-btn p-0"
                             variant="link"
