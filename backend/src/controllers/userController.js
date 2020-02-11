@@ -144,19 +144,28 @@ exports.update_user = async (req, res) => {
 
   const update = req.body; // passare il json utente con tutti i campi (aggiornati e non)
 
-  await User.findOneAndUpdate(query, update, { new: true })
+  Who.findOne(getDailyRequirementQuery(new Date(update.birth_date).getTime(), update.sex))
     .exec()
-    .then((user) => {
-      if (user == null) {
-        res.status(400).send({ description: 'user_not_found' });
-        global.log('User not found'); // DEBUG
-      } else {
-        res.status(200).json(user);
-        global.log('user updated'); // DEBUG
-      }
+    .then(async (dailyreq) => {
+      update.daily_requirement = dailyreq;
+      await User.findOneAndUpdate(query, update, { new: true })
+        .exec()
+        .then((user) => {
+          if (user == null) {
+            res.status(400).send({ description: 'user_not_found' });
+            global.log('User not found'); // DEBUG
+          } else {
+            res.status(200).json(user);
+            global.log('user updated'); // DEBUG
+          }
+        })
+        .catch((err) => {
+          global.log(`Error while updating user: ${err}`); // DEBUG
+          res.status(500).send({ description: 'internal_server_error' });
+        });
     })
     .catch((err) => {
-      global.log(`Error while updating user: ${err}`); // DEBUG
+      global.log(`Error while reading user: ${err}`); // DEBUG
       res.status(500).send({ description: 'internal_server_error' });
     });
 };
