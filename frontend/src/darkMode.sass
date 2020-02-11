@@ -7,6 +7,8 @@
   // Darkmode navbar
   .nav-bar 
     .navbarChangeColor
+      .navbar-toggler
+        border-color: $white
       .nav-router
         .navbar-nav
           .info_prod, .dropdown, .loginSpan
@@ -144,6 +146,8 @@
             color: $white !important
           .pers
             color: $white
+          .ingredients
+            color: $white
         .nav-tabs
           .nav-link
             background-color: $dark_bg_link
@@ -177,13 +181,14 @@
             #ean
               background-color: rgba($dark_bg_link_not_active, .2)
               border: 1px solid $dark_bg_link_not_active !important
+              color: $white
+              padding-left: 2%
           .custom-select
             background-color: rgba($dark_bg_link_not_active, .2)
+            color: $white
             option
               background-color: rgba($dark_bg_card, 1)
               color: $white
-
-
   .productInfo
     .productData
       .productCard

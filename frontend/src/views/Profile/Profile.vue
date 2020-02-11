@@ -30,7 +30,7 @@
             </div>
           </div>
           <div class="row">
-            <div class="col-12">
+            <div class="col-12 column12">
               <b-tabs class="tab-content mt-3" id="myTabContent">
                 <b-tab class="tab-content-info" :title="$t('info')" active>
                   <div v-for="tmp in campi"
@@ -46,7 +46,7 @@
                         <span v-else-if="tmp.key == 'dateOfBirth'" class="profileSpan">
                           {{ $d(tmp.value, 'short')}}
                         </span>
-                        <div class="col-md-4 col-4 listAll" v-else-if="tmp.key == 'allergen'">
+                        <div class="listAll" v-else-if="tmp.key == 'allergen'">
                           <ul v-for="a in tmp.value" v-bind:key="a">
                             <li class="elemList">{{$t(`${a}`)}}</li>
                           </ul>
