@@ -56,16 +56,16 @@
               v-for="(meal, index) in mealsListByDate.slice().reverse()"
               v-bind:key="index"
             ><b-card-header header-tag="header" class="p-0" role="tab">
-                <b-button class="headerTitle" block href="#"
-                v-b-toggle="'accordion-' + index" variant="info">
+                <b-button class="headerTitle accordion-bgn" block href="#"
+                v-b-toggle="'accordion-' + index" variant="success">
                   <p class="meal-name-p text-center m-0">{{ meal.meal_name }}</p>
-                  <b-button class="p-0 mr-2" variant="info"
+                  <b-button class="p-0 mr-3 accordion-bgn" variant="success"
                     @click="calculateMeal(meal.meal_name, meal.timestamp)"
                   ><b-icon icon="pie-chart-fill"
                     class="border border-light rounded p-1"
                     font-scale="2"></b-icon>
                   </b-button>
-                  <b-button class="p-0" variant="info"
+                  <b-button class="p-0 accordion-bgn" variant="success"
                     @click="deleteMealModal(meal.meal_name)"
                   ><b-icon icon="trash-fill"
                     class="border border-light rounded p-1"
@@ -121,7 +121,8 @@
                     </b-card>
                   </div>
                   <b-button v-if="!meal.is_closed"
-                    variant="info"
+                    class="accordion-bgn"
+                    variant="success"
                     @click="completeMealModal(meal)"
                   > {{ $t('complete_meal') }}
                   </b-button>
