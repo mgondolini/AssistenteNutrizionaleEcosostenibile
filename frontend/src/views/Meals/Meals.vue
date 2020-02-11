@@ -96,17 +96,17 @@
                         </b-img>
                       </div>
                       <div align="center" class="card-components-text m-0 p-0">
-                          <p class="component-p">
+                          <p class="component-p mb-1">
                             <b>
                               <b-link href="#" @click="goToInfoProd(component.barcode)">
                                 {{ component.product_name }}
                               </b-link>
                             </b>
                           </p>
-                          <p class="component-p">
+                          <p class="component-p mb-1">
                             {{ component.quantity }} {{component.measure_unit}}
                           </p>
-                          <p class="component-p">
+                          <p class="component-p mb-1">
                             {{ (component.energy_kcal).toFixed(2) }} kcal
                           </p>
                         </div>
