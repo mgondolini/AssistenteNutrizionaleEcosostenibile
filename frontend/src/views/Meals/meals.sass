@@ -89,12 +89,6 @@
       &:hover
         background-color: $bg_light_mission !important
   
-    .img-left
-      width: auto
-      max-width: 10em
-      max-height: 10em
-
-
     .add-component
       display: flex
       max-width: 15em
@@ -109,15 +103,32 @@
     .card-components
       vertical-align: middle
       position: relative
+      .card-body
+        padding: 1em !important
 
+    .col
+      width: auto
 
     @media only screen and (min-width: 380px)
       .card-img-left
         display: inline-block
-        align-self: center
-        max-height: 8em
-        width: 6em
+        position: relative
+        height: 8em
+        width: 8em
         float: left
+
+        .img-left
+          width: auto
+          max-width: 8em
+          max-height: 8em
+          vertical-align: middle
+          height: auto
+          position: absolute
+          top: 0
+          bottom: 0
+          left: 1em
+          margin: auto
+
 
       .card-calendar
         margin-bottom: 1rem
@@ -176,11 +187,22 @@
 
     @media only screen and (max-width: 480px)
       .card-img-left
-        display: inline-block 
-        align-self: center
-        max-height: 8em
-        width: 6em
+        display: inline-block
+        position: relative
+        height: 8em
+        width: 8em
         float: left
+
+        .img-left
+          width: auto
+          max-width: 8em
+          max-height: 8em
+          height: auto
+          position: absolute
+          top: 0
+          bottom: 0
+          left: 0
+          margin: auto
 
       .card-calendar
         margin-bottom: 1rem
@@ -254,10 +276,21 @@
 
       .card-img-left
         display: inline-block
-        align-self: center
-        max-height: 10em
+        position: relative
+        height: 10em
         width: 10em
         float: left
+
+        .img-left
+          width: auto
+          max-width: 10em
+          max-height: 10em
+          height: auto
+          position: absolute
+          top: 0
+          bottom: 0
+          left: 0
+          margin: auto
 
       .input-new-meal
         width: 60%
@@ -269,8 +302,8 @@
 
       .card-components-text
         float: left
-        width: 80%
-        font-size: normal
+        width: 50%
+        font-size: medium 
         display: inline-block
 
       .nutri-score-img
@@ -312,11 +345,23 @@
           margin-left: 1.5rem
 
       .card-img-left
-        align-self: center
-        max-height: 10em
-        width: 10em
         display: inline-block
+        position: relative
+        height: 10em
+        width: 10em
         float: left
+
+        .img-left
+          width: auto
+          max-width: 10em
+          max-height: 10em
+          height: auto
+          position: absolute
+          top: 0
+          bottom: 0
+          left: 0
+          margin: auto
+
 
       .input-new-meal
         width: 60%
@@ -328,9 +373,9 @@
 
       .card-components-text
         float: left
-        width: 80%
+        width: 70%
         display: inline-block
-        font-size: normal
+        font-size: medium
       
       .nutri-score-img
         float: left
