@@ -12,6 +12,7 @@
 <script>
 import Vue from 'vue';
 import zingchartVue from 'zingchart-vue';
+import CirclePacker from 'circlepacker';
 
 Vue.component('zingchart', zingchartVue);
 
@@ -286,12 +287,82 @@ export default {
 
       return obj;
     },
+    createCirclePacker() {
+      const circles = [];
+
+      let i = 0;
+      this.ingredients.forEach(() => {
+        const v = this.values[i];
+        circles.push(this.createCircle(v.x, v.y, v.radius));
+        i += 1;
+      });
+
+      console.log(circles);
+
+      // const rect = containerEl.getBoundingClientRect(); //container è il grafico
+      // const bounds = { width: rect.width, height: rect.height }; // grandezza grafico
+      // const target = { x: bounds.width / 2, y: bounds.height / 2 };
+
+      const packer = new CirclePacker({
+        // bounds,
+        // target,
+        circles,
+        // onMove: render,
+        continuousMode: false,
+        collisionPasses: 5,
+        centeringPasses: 200,
+      });
+
+      console.log(packer);
+    },
+    createCircle(x, y, radius) {
+      radius = radius || CirclePacker.random(10, 40);
+      x = x || CirclePacker.random(radius, 500 - radius);
+      y = y || CirclePacker.random(radius, 500 - radius);
+
+      const diameter = radius * 2;
+      const circleEl = document.createElement('div');
+
+      // need some sort of unique id...
+      const id = `circle-${CirclePacker.random(0, 1000, true)}-${Date.now()}`;
+
+      const circle = {
+        id,
+        radius,
+        position: {
+          x: CirclePacker.random(radius, 500 - radius),
+          y: CirclePacker.random(radius, 500 - radius),
+        },
+      };
+
+      // create circle el
+
+      circleEl.id = id;
+      circleEl.style.width = `${diameter}px`;
+      circleEl.style.height = `${diameter}px`;
+      circleEl.style.borderRadius = `${diameter}px`;
+      circleEl.classList.add('circle');
+
+      // containerEl.appendChild(circleEl);
+
+      // circleEls[id] = circleEl;
+
+      return circle;
+    },
   },
   created() {
     this.loadMeal();
   },
   mounted() {
     // this.loadMeal();
+    this.zingchart.loadModules('bubblepie', () => { // Load Modules Method
+      this.zingchart.render({ // Render Method
+        id: 'myChart1',
+        data: this.chartData(),
+        height: 400,
+        width: 600,
+      });
+    });
   },
 };
 </script>
