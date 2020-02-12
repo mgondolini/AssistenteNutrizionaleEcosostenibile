@@ -115,10 +115,14 @@
 </template>
 
 <script>
-const productIDTest = '737628064502';
-const imagesExt = '.svg';
+const seedrandom = require('seedrandom');
+
 const imagesContext = require.context('@/assets/productInfo/', true, /\.svg$/);
+const imagesExt = '.svg';
+const productIDTest = '737628064502';
 const calToJ = 4.184;
+const maxCo2 = 30;
+const maxH2o = 15;
 
 // TODO add function to format numbers (trim decimals and add dots for thousands)
 
@@ -168,6 +172,9 @@ export default {
       proteins: '',
       sodium: '',
       fiber: '',
+
+      carbon_footprint_100g: 0,
+      water_footprint_100g: 0,
 
       nutritionTableFields: [
         { key: 'nutriFactLocalized', label: 'Nutritional fact' },
@@ -302,6 +309,11 @@ export default {
       // TODO use placeholder if nova score is missing
       this.novaGroupImgPath = this.novaGroup ? imagesContext(`./novaGroup/${this.novaGroup}${imagesExt}`) : '';
 
+      const impact = this.generateCo2H2o(this.ean, this.novaGroup);
+
+      this.carbon_footprint_100g = impact.co2;
+      this.water_footprint_100g = impact.h2o;
+
       const { ingredients } = product;
       const ingredientsTexts = [];
 
@@ -312,6 +324,16 @@ export default {
         }
       });
       this.ingredientsText = ingredientsTexts.join(', ');
+    },
+    generateCo2H2o(ean, novaScore) {
+      const rndGen = seedrandom(ean);
+      const co2Span = maxCo2 / 4;
+      const h2oSpan = maxH2o / 4;
+      const novaValue = parseInt(novaScore, 10) || 4;
+      return {
+        co2: (co2Span * (rndGen() + novaValue - 1)),
+        h2o: (h2oSpan * (rndGen() + novaValue - 1)),
+      };
     },
     productNotFound() {
       this.$bvModal.show('modal-product-not-found');
@@ -346,8 +368,8 @@ export default {
         calcium_100g: Number(0),
         nutrition_score_uk_100g: this.nutriScore,
         nova_group: this.nova_group,
-        carbon_footprint_100g: 0,
-        water_footprint_100g: 0,
+        carbon_footprint_100g: Number(this.carbon_footprint_100g),
+        water_footprint_100g: Number(this.water_footprint_100g),
         measure_unit: this.productBaseUnitMeasure,
       };
       this.$store.state.http.post('api/product', body)
