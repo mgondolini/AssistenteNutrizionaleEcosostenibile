@@ -29,24 +29,29 @@
       <b-tabs content-class="mt-3" id="myTabContent" justified>
         <b-tab :title="$t('meals')" class="tab-content-info" active>
           <b-card class="card-new-meal">
-            <b-form-input id="input-new-meal"
-              v-model="mealName"
-              :state="mealNameState"
-              aria-describedby="input-live-feedback"
-              :placeholder="$t('meal_name_enter')"
-              class="input-new-meal"
-              trim
-              @input="onMealNameChange"
-            ></b-form-input>
-            <b-button variant="link"
-              class="button-add p-0"
-              @click="addMeal(mealName)"
-            ><b-icon icon="plus" variant="info" font-scale="2.3"
-            class="border border-info rounded p-0"></b-icon>
-            </b-button>
-            <b-form-invalid-feedback id="input-live-feedback">
-              {{ $t(inputCheckMessage) }}
-            </b-form-invalid-feedback>
+            <b-input-group class="input-new-meal mt-3">
+              <b-form-input id="input-new-meal"
+                v-model="mealName"
+                :state="mealNameState"
+                aria-describedby="input-live-feedback"
+                :placeholder="$t('meal_name_enter')"
+                @keyup.enter="addMeal(mealName)"
+                trim
+                @input="onMealNameChange"
+              ></b-form-input>
+              <b-input-group-append>
+                <b-button variant="link"
+                  class="plus-button p-0"
+                  @click="addMeal(mealName)"
+                ><b-icon icon="plus" font-scale="2"
+                class="plus-icon p-0"></b-icon>
+                </b-button>
+              </b-input-group-append>
+              <b-form-invalid-feedback id="input-live-feedback">
+                {{ $t(inputCheckMessage) }}
+              </b-form-invalid-feedback>
+            </b-input-group>
+
           </b-card>
 
           <div v-if="mealsListByDate.length > 0"
@@ -77,51 +82,58 @@
 
             <b-collapse :id="'accordion-' + index" visible accordion="my-accordion" role="tabpanel">
               <b-card-body class="components-card">
-                <b-button v-if="!meal.is_closed"
-                  variant="link"
-                  class="add-component border-info"
+                <b-button v-if="!meal.is_closed" variant="light"
+                  class="add-component mb-3"
                   @click="addComponent(meal.meal_name, meal.timestamp)"
                 ><b-icon icon="plus" variant="success" font-scale="2" shift-v="+2"></b-icon>
-                  <p color="info">{{ $t('add_component') }}</p>
+                  {{ $t('add_component') }}
                 </b-button>
                 <div v-if="meal.components.length > 0">
                   <div v-for="component in meal.components" v-bind:key="component.product_name">
-                    <b-card :img-src="component.image_url"
-                      img-alt="Card image" img-left
-                      class="card-components mb-3"
-                    ><b-card-text align="center" class="card-components-text m-0 p-0">
-                        <p class="component-p">
-                          <b>
-                            <b-link href="#" @click="goToInfoProd(component.barcode)">
-                              {{ component.product_name }}
-                            </b-link>
-                          </b>
-                        </p>
-                        <p class="component-p">
-                          {{ component.quantity }} {{component.measure_unit}}
-                        </p>
-                        <p class="component-p">
-                          {{ (component.energy_kcal).toFixed(2) }} kcal
-                        </p>
-                      </b-card-text>
-                      <b-img v-if="component.nutrition_score"
-                        class="nutri-score-img"
-                        :src='getNutriScoreImage(component.nutrition_score)'
-                        alt="Nutri score image">
-                      </b-img>
-                      <b-button v-if="!meal.is_closed"
-                        class="remove-btn p-0"
-                        variant="link"
-                        @click="removeComponent(
-                          component.barcode,
-                          component.quantity,
-                          meal.meal_name)"
-                      ><b-icon icon="x-circle" variant="danger"></b-icon>
-                      </b-button>
+                    <b-card class="card-components mb-2 pb-1 pl-0 pt-1 pr-1">
+                      <div class="card-img-left">
+                        <b-img :src="component.image_url" alt="Component Image" class="img-left">
+                        </b-img>
+                      </div>
+                      <div align="center" class="card-components-text m-0 p-0">
+                        <b-col>
+                          <p class="component-p mb-1">
+                            <b>
+                              <b-link href="#" @click="goToInfoProd(component.barcode)">
+                                {{ component.product_name }}
+                              </b-link>
+                            </b>
+                          </p>
+                          <p class="component-p mb-1">
+                            {{ component.quantity }} {{component.measure_unit}}
+                          </p>
+                          <p class="component-p mb-1">
+                            {{ (component.energy_kcal).toFixed(2) }} kcal
+                          </p>
+                        </b-col>
+                        <b-col class="nutri-img-div">
+                          <b-img v-if="component.nutrition_score"
+                            class="nutri-score-img"
+                            :src='getNutriScoreImage(component.nutrition_score)'
+                            alt="Nutri score image">
+                          </b-img>
+                        </b-col>
+                      </div>
+                        <div class="remove-btn-div">
+                          <b-button v-if="!meal.is_closed"
+                            class="remove-btn p-0"
+                            variant="link"
+                            @click="removeComponent(
+                              component.barcode,
+                              component.quantity,
+                              meal.meal_name)"
+                          ><b-icon icon="x-circle" variant="danger"></b-icon>
+                          </b-button>
+                        </div>
                     </b-card>
                   </div>
                   <b-button v-if="!meal.is_closed"
-                    class="accordion-bgn"
+                    class="accordion-bgn mt-3"
                     variant="success"
                     @click="completeMealModal(meal)"
                   > {{ $t('complete_meal') }}
@@ -543,7 +555,7 @@ export default {
     deleteMealModal(meal) {
       this.$bvModal.msgBoxConfirm(this.$i18n.t('confirm_meal_deletion'), {
         title: this.$i18n.t('delete_meal'),
-        okVariant: 'primary',
+        okVariant: 'success',
         okTitle: this.$i18n.t('yes'),
         cancelTitle: this.$i18n.t('no'),
         footerClass: 'p-2',
