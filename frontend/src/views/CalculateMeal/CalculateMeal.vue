@@ -1,7 +1,7 @@
 <template>
   <div class="containerFather">
     <h3 class="chartTitle">{{ $t('intro') }}</h3>
-    <b-tabs>
+    <b-tabs class="tabsContainer">
       <b-tab :title="$t('info')">
         <div class="buttonsDisposition">
           <b-button id="button" class="sim-button button1 buttonCalculate"
@@ -34,7 +34,7 @@
         </div>
       </b-tab>
     </b-tabs>
-    <b-modal id="modal-error" title="Error"
+    <b-modal id="modal-error" :title="$i18n.t('errorModalTitle')"
       hide-footer v-model="modalErrorShow">
       <div class="d-block text-center">
         <img src="../../assets/restrictionShield.png">
@@ -97,6 +97,7 @@ export default {
     },
     chartBubbleCO2Options() {
       return {
+        height: 500,
         dataLabels: {
           enabled: false,
         },
@@ -145,6 +146,7 @@ export default {
     },
     chartBubbleWaterOptions() {
       return {
+        height: 500,
         dataLabels: {
           enabled: false,
         },

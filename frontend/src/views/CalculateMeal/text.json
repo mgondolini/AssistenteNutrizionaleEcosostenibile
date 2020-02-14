@@ -8,10 +8,11 @@
     "emission": "Emission Graph",
     "closeBtn": "Close me!",
     "h2o": "H2O consumption for your meal",
-    "co2": "CO2 consumption for your meal"
+    "co2": "CO2 consumption for your meal",
+    "errorModalTitle": "Error"
   },
   "it": {
-    "intro": "Coposizione del tuo pasto",
+    "intro": "Composizione del tuo pasto",
     "CO2grams": "CO2 per grammi",
     "gCons":"Grammi consumati",
     "watergrams": "Acqua per grammi",
@@ -19,6 +20,7 @@
     "emission": "Grafici Emissioni",
     "closeBtn": "Chiudi!",
     "h2o": "Consumo di H2O per il tuo pasto",
-    "co2": "Consumo di CO2 per il tuo pasto"
+    "co2": "Consumo di CO2 per il tuo pasto",
+    "errorModalTitle": "Errore"
   }
 }
