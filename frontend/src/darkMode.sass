@@ -1,12 +1,16 @@
 @import './custom.sass'
 .dark
   background-color: rgba($dark_bg, .9)
+  .apexcharts-canvas 
+    background-color: rgba($dark_bg_link_not_active, .7)
   .multiselect__placeholder
     color: $text_color
     font-size: 16px
   // Darkmode navbar
   .nav-bar 
     .navbarChangeColor
+      .navbar-toggler
+        border-color: $white
       .nav-router
         .navbar-nav
           .info_prod, .dropdown, .loginSpan
@@ -19,6 +23,8 @@
                   color: $white
                   &:hover
                     background-color: transparent
+                .dropdown-item:hover, .dropdown-item:focus
+                  background-color: transparent
   .listAll
     color: $white
   .multiselect__option, .multiselect__single
@@ -45,6 +51,8 @@
     .containerMeal, .containerProd
       background-color: $dark_bg_card
       #myTabContent
+        .apexcharts-canvas 
+          background-color: rgba($dark_bg_link_not_active, .7)
         .nav-justified
           .nav-link
             background-color: $dark_bg_link
@@ -66,6 +74,9 @@
           .components-card
             background-color: $color_bg_card
             .contentCard
+              color: $white
+            .add-component
+              background-color: $text_color
               color: $white
           .card-components
             background-color: $dark_bg_card
@@ -142,6 +153,8 @@
             color: $white !important
           .pers
             color: $white
+          .ingredients
+            color: $white
         .nav-tabs
           .nav-link
             background-color: $dark_bg_link
@@ -167,7 +180,22 @@
           color: $white
         .close
           color: $white
-
+      .modal-body
+        #selectionInputMode
+          #insertEAN
+            .eanCodeLabel
+              color: $white
+            #ean
+              background-color: rgba($dark_bg_link_not_active, .2)
+              border: 1px solid $dark_bg_link_not_active !important
+              color: $white
+              padding-left: 2%
+          .custom-select
+            background-color: rgba($dark_bg_link_not_active, .2)
+            color: $white
+            option
+              background-color: rgba($dark_bg_card, 1)
+              color: $white
   .productInfo
     .productData
       .productCard

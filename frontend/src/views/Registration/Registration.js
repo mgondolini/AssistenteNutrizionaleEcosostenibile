@@ -5,7 +5,6 @@ export default {
   name: 'registration',
   data() {
     return {
-      datePlaceholder: new Date().toISOString().split('T')[0],
       form: {
         email: '',
         password: '',
@@ -15,7 +14,7 @@ export default {
         surname: '',
         height: 170,
         weight: 70,
-        dateOfBirth: '',
+        dateOfBirth: new Date(),
         sex: {
           key: 'gender',
           value: '',
@@ -91,7 +90,6 @@ export default {
           allergens: tmp,
         };
         this.$store.state.http.post('api/user', b).then(() => {
-          // console.log(res);
           this.$store.state.http.post('api/auth', { email: this.form.email, key: this.form.password })
             .then((response) => {
               const t = response.data.token.toString();
