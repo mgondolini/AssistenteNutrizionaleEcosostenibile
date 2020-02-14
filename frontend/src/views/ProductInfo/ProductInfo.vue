@@ -200,8 +200,9 @@ export default {
   created() {
     this.initializeContent();
   },
-  beforeRouteUpdate() {
+  beforeRouteUpdate(to, from, next) {
     console.log('Router update');
+    next();
     this.initializeContent();
   },
   methods: {
