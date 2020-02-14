@@ -90,7 +90,7 @@ export default {
     this.$root.$on('openProductSelection', (mealName, timestamp) => {
       this.mealName = mealName;
       this.mealDate = timestamp;
-      console.log(`${this.mealName} ${this.mealDate}`);
+      console.log(`Called openProdSel with: ${this.mealName} ${this.mealDate}`);
       this.openModal();
     });
     this.$root.$on('selectProduct', (ean) => {
@@ -120,16 +120,16 @@ export default {
         // reached a threshold of readings stored, the most popular value is the correct ean
         // if no majority is reached, keep storing until it does
 
-        const ean = data.codeResult.code.trim();
-        this.detecteds.push(ean);
-        console.log(ean);
+        const code = data.codeResult.code.trim();
+        this.detecteds.push(code);
+        // console.log(ean);
         // The array is filled with quorum elements
         if (this.detecteds.length >= this.readerQuorum) {
           this.barcodeFound = Boolean(true);
           // The most frequent is selected and popped from the array
-          this.ean = this.mostFrequentElement(this.detecteds);
-          console.log(this.detecteds);
-          this.loadProductInfo(this.ean);
+          const ean = this.mostFrequentElement(this.detecteds);
+          // console.log(this.detecteds);
+          this.loadProductInfo(ean);
           this.toggleScannerStream();
         }
       }
@@ -139,7 +139,7 @@ export default {
       console.log(offApiPath + ean + offApiSuffix);
       axios.get(offApiPath + ean + offApiSuffix)
         .then((response) => {
-          console.log(response);
+          // console.log(response);
 
           // Status === 1 means the product has been found
           // some random EANs can also return a status 1 so we check the code not to be empty
@@ -152,6 +152,7 @@ export default {
             return;
           }
           const { product } = response.data;
+          product.ean = ean;
           localStorage.setItem('product', JSON.stringify(product));
           this.gotoProductInfo();
         }).catch((error) => {
@@ -178,7 +179,6 @@ export default {
         this.inputMode = 'STREAM';
         this.barcodeFound = false;
         this.detecteds = [];
-        this.ean = '';
       } else if (x === 'btnBack') {
         document.getElementById('selectionInputMode').classList.remove('scanning');
         this.inputMode = 'SELECT';

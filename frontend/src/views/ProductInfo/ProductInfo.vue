@@ -208,11 +208,10 @@ export default {
     initializeContent() {
       this.mealName = this.$route.query.mealName || '';
       this.mealDate = this.$route.query.date || '';
-      this.ean = this.$route.query.ean || '';
-      console.log(`Initialized ProductInfo. EAN: ${this.ean} Meal: ${this.mealName} Date: ${this.mealDate}`);
-      // this.submitEan();
       const product = JSON.parse(localStorage.getItem('product'));
-      console.log(product);
+      this.ean = product.ean;
+      console.log(`Initialized ProductInfo. EAN: ${this.ean} Meal: ${this.mealName} Date: ${this.mealDate}`);
+      console.log(`LocalStorage contains: ${product.ean} : ${product.product_name}`);
       this.loadProductInfo();
     },
     loadProductInfo() {
@@ -340,7 +339,7 @@ export default {
       this.inputMode = 'SELECT';
     },
     insertProductInMeal() {
-      console.log(`${this.ean} ${this.productName} ${this.mealName} ${this.mealDate}`);
+      console.log(`Inserting ${this.ean} ${this.productName} in meal ${this.mealName} ${this.mealDate}`);
       // Creation of the new product
       const body = {
         code: Number(this.ean),
