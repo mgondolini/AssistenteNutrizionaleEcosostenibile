@@ -555,6 +555,7 @@ export default {
     deleteMealModal(meal) {
       this.$bvModal.msgBoxConfirm(this.$i18n.t('confirm_meal_deletion'), {
         title: this.$i18n.t('delete_meal'),
+        id: 'deleteModal',
         okVariant: 'success',
         okTitle: this.$i18n.t('yes'),
         cancelTitle: this.$i18n.t('no'),
@@ -621,6 +622,7 @@ export default {
       this.$bvModal.msgBoxConfirm(this.$i18n.t('save_meal'), {
         title: this.$i18n.t('complete_meal'),
         okVariant: 'primary',
+        id: 'completeMeal',
         okTitle: this.$i18n.t('yes'),
         cancelTitle: this.$i18n.t('no'),
         footerClass: 'p-2',
