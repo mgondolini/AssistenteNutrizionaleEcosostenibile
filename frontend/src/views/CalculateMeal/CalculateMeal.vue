@@ -1,8 +1,8 @@
 <template>
   <div class="containerFather">
     <h3 class="chartTitle">{{ $t('intro') }}</h3>
-    <b-tabs class="tabsContainer">
-      <b-tab :title="$t('info')">
+    <b-tabs class="tabsContainer" id="myTabContent">
+      <b-tab class="tab-content-info" :title="$t('info')" active>
         <div class="buttonsDisposition">
           <b-button id="button" class="sim-button button1 buttonCalculate"
             v-on:click='changeGraphGlobal'>
@@ -18,16 +18,16 @@
             :series="chart.av" />
         </div>
       </b-tab>
-      <b-tab :title="$t('emission')">
+      <b-tab class="tab-content-info" :title="$t('emission')">
         <div class="chart-box">
           <div id="bubble-chart">
-            <span class="paddingTop chartTitle">{{$t('co2')}}</span>
+            <h5 class="paddingTop chartTitle">{{$t('co2')}}</h5>
             <hr/>
             <apexchart class="co2" type=bubble height=400 :options="chartBubbleCO2Options"
               :series="series">
             </apexchart>
             <hr/>
-            <span class="paddingTop chartTitle">{{$t('h2o')}}</span>
+            <h5 class="paddingTop chartTitle">{{$t('h2o')}}</h5>
             <apexchart class="h2o" type=bubble height=400 :options="chartBubbleWaterOptions"
             :series="series2" />
           </div>
