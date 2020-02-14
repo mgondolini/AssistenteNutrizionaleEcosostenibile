@@ -200,8 +200,8 @@ export default {
   created() {
     this.initializeContent();
   },
-  beforeRouteUpdate() {
-    console.log('Router update');
+  beforeRouteUpdate(to, from, next) {
+    next();
     this.initializeContent();
   },
   methods: {
@@ -209,16 +209,19 @@ export default {
       this.mealName = this.$route.query.mealName || '';
       this.mealDate = this.$route.query.date || '';
       this.ean = this.$route.query.ean || '';
-      console.log(`Initialized ProductInfo. EAN: ${this.ean} Meal: ${this.mealName} Date: ${this.mealDate}`);
-      // this.submitEan();
-      const product = JSON.parse(localStorage.getItem('product'));
-      console.log(product);
-      this.loadProductInfo();
+      if (!sessionStorage[this.ean]) {
+        console.log('Routing to ad InfoProd not previously loaded. Redirecting home...');
+        this.$router.push('/');
+        return;
+      }
+      const product = JSON.parse(sessionStorage.getItem(this.ean));
+      // console.log(`Init InfoProd. EAN:${this.ean} Meal:${this.mealName} Date:${this.mealDate}`);
+      // console.log(`SessionStorage contains: ${product.ean} : ${product.product_name}`);
+      const storageEan = product.ean;
+      if (this.ean !== storageEan) console.log('Inconsistency between localstorage and querystring!');
+      this.loadProductInfo(product);
     },
-    loadProductInfo() {
-      // Get productInfos from localStorage
-      const product = JSON.parse(localStorage.getItem('product'));
-
+    loadProductInfo(product) {
       // PRODUCT CARD
       this.imgPath = product.image_thumb_url.replace('100.jpg', 'full.jpg');
       this.productName = product.product_name;
@@ -340,7 +343,8 @@ export default {
       this.inputMode = 'SELECT';
     },
     insertProductInMeal() {
-      console.log(`${this.ean} ${this.productName} ${this.mealName} ${this.mealDate}`);
+      // eslint-disable-next-line max-len
+      // console.log(`Inserting ${this.ean} ${this.productName} in meal ${this.mealName} ${this.mealDate}`);
       // Creation of the new product
       const body = {
         code: Number(this.ean),
@@ -372,10 +376,11 @@ export default {
         water_footprint_100g: Number(this.water_footprint_100g),
         measure_unit: this.productBaseUnitMeasure,
       };
+      /* eslint-disable no-unused-vars */
       this.$store.state.http.post('api/product', body)
         .then((response) => {
-          console.log('Product created!');
-          console.log(response);
+          // console.log('Product created!');
+          // console.log(response);
 
           // Insertion of the new product into the meal
           const body2 = {
@@ -386,25 +391,26 @@ export default {
             },
             timestamp: this.mealDate,
           };
-          console.log('Adding product to meal');
-          console.log(body2);
+          // console.log('Adding product to meal');
+          // console.log(body2);
 
           this.$store.state.http.put(`api/meals/${body2.mealName}/${body2.timestamp}/components`, body2)
             .then((response2) => {
-              console.log('Product added to meal!');
-              console.log(response2);
+              // console.log('Product added to meal!');
+              // console.log(response2);
               this.$router.push({ path: '/meals', query: { date: this.mealDate } });
               // TODO refactor with AWAIT
             })
             .catch((error) => {
-              console.log('Failed to add product to meal');
-              console.log(error);
+              // console.log('Failed to add product to meal');
+              // console.log(error);
             });
         })
         .catch((error) => {
-          console.log('Failed to create product');
-          console.log(error);
+          // console.log('Failed to create product');
+          // console.log(error);
         });
+      /* eslint-enable no-unused-vars */
     },
     scanAnother() {
       this.$root.$emit('openProductSelection', this.mealName, this.mealDate);
