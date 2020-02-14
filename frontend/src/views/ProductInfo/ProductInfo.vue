@@ -209,17 +209,19 @@ export default {
       this.mealName = this.$route.query.mealName || '';
       this.mealDate = this.$route.query.date || '';
       this.ean = this.$route.query.ean || '';
-      const product = JSON.parse(sessionStorage.getItem('product'));
+      if (!sessionStorage[this.ean]) {
+        console.log('Routing to ad InfoProd not previously loaded. Redirecting home...');
+        this.$router.push('/');
+        return;
+      }
+      const product = JSON.parse(sessionStorage.getItem(this.ean));
       console.log(`Initialized ProductInfo. EAN: ${this.ean} Meal: ${this.mealName} Date: ${this.mealDate}`);
       console.log(`SessionStorage contains: ${product.ean} : ${product.product_name}`);
       const storageEan = product.ean;
-      if (this.ean !== storageEan) this.$root.$emit('selectProduct', this.ean);
-      else this.loadProductInfo();
+      if (this.ean !== storageEan) console.log('Inconsistency between localstorage and querystring!');
+      this.loadProductInfo(product);
     },
-    loadProductInfo() {
-      // Get productInfos from sessionStorage
-      const product = JSON.parse(sessionStorage.getItem('product'));
-
+    loadProductInfo(product) {
       // PRODUCT CARD
       this.imgPath = product.image_thumb_url.replace('100.jpg', 'full.jpg');
       this.productName = product.product_name;

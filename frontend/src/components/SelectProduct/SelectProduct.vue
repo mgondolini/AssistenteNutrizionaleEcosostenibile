@@ -155,7 +155,7 @@ export default {
           const { product } = response.data;
           product.ean = ean;
           this.ean = ean;
-          sessionStorage.setItem('product', JSON.stringify(product));
+          sessionStorage.setItem(ean, JSON.stringify(product));
           this.gotoProductInfo();
         }).catch((error) => {
           console.log(error);
