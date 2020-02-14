@@ -97,6 +97,7 @@ export default {
     },
     chartBubbleCO2Options() {
       return {
+        height: 500,
         dataLabels: {
           enabled: false,
         },
@@ -145,6 +146,7 @@ export default {
     },
     chartBubbleWaterOptions() {
       return {
+        height: 500,
         dataLabels: {
           enabled: false,
         },

@@ -33,14 +33,15 @@
                 </b-dropdown-item>
             </b-nav-item-dropdown>
             <b-nav-item-dropdown class="localeID" v-bind:text="$root.$i18n.locale" right>
-              <b-dropdown-item-button
+              <b-dropdown-item
                 v-for="(lang, i) in langs"
                 :key="`Lang${i}`"
                 :value="lang"
+                class="localeSelection"
                 @click="changeLang(lang)">
                 <img class="localeFlag" :src="getLocaleFlagPath(lang)" alt="flag">
                 <span class="localeID"> {{ lang }} </span>
-              </b-dropdown-item-button>
+              </b-dropdown-item>
             </b-nav-item-dropdown>
             <b-nav-item>
               <b-icon class="backIcon border rounded" :icon="nameIcon"

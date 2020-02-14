@@ -6,15 +6,30 @@
 .profileIntro
   padding-bottom: 30px
 
-.listAll
-  margin: 0 auto
-  line-height: .8em
-  .elemList
-    list-style: circle
-  
-#imgProfile
-  width: 9em
-  height: 10em
+  .listAll
+    margin: 0 auto
+    line-height: .8em
+    ul
+      margin: 0 auto
+      .elemList
+        list-style: circle
+    
+  .column12
+    padding: 1% 
+
+  .image-container
+    position: relative
+    max-width: 50%
+    
+    #imgProfile
+      width: fill-available
+      width: -webkit-fill-available
+      width: -moz-available
+      height: auto
+
+  @media screen and ( min-width: 760px )
+    .image-container
+      max-width: 20%
 
 #profilePicture
   display: none
@@ -54,8 +69,7 @@
   &:focus
     background: transparent
 
-.image-container
-  position: relative
+
 
 .image
   opacity: 1
@@ -87,8 +101,8 @@
   width: 20%
   .card-avatar--circle
   border-radius: 50%
-  width: 9em
-  height: 10em
+  width: 35vw
+  height: 35vw
 
 .nsError
   border-color: $error !important
