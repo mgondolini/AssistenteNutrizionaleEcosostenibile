@@ -2,7 +2,7 @@
 .dark
   background-color: rgba($dark_bg, .9)
   .apexcharts-canvas 
-    background-color: rgba($dark_bg_link_not_active, .7)
+    background-color: rgba($dark_bg_link_not_active, 1)
   .multiselect__placeholder
     color: $text_color
     font-size: 16px
@@ -172,7 +172,7 @@
     .textBlock
       color: $white
   // Modal DarkMode
-  #modal-error, #modal-selectProduct
+  #modal-error, #modal-selectProduct, #deleteModal, #completeMeal, #modal-ach
     .modal-content
       background-color: $dark_bg_card
       .modal-header
@@ -181,6 +181,7 @@
         .close
           color: $white
       .modal-body
+        color: $white
         #selectionInputMode
           #insertEAN
             .eanCodeLabel
