@@ -123,7 +123,7 @@
                           <b-button v-if="!meal.is_closed"
                             class="remove-btn p-0"
                             variant="link"
-                            @click="removeComponent(
+                            @click="removeComponentModal(
                               component.barcode,
                               component.quantity,
                               meal.meal_name)"
@@ -552,6 +552,25 @@ export default {
     goToInfoProd(barcode) {
       this.$root.$emit('selectProduct', barcode);
     },
+    removeComponentModal(barcode, quantity, mealName) {
+      this.$bvModal.msgBoxConfirm(this.$i18n.t('confirm_component_deletion'), {
+        title: this.$i18n.t('delete_component'),
+        id: 'deleteModal',
+        okVariant: 'success',
+        okTitle: this.$i18n.t('yes'),
+        cancelTitle: this.$i18n.t('no'),
+        footerClass: 'p-2',
+        hideHeaderClose: false,
+      })
+        .then((value) => {
+          if (value === true) this.removeComponent(barcode, quantity, mealName);
+          else console.log('Componente non cancellato');
+        })
+        .catch((err) => {
+          console.log(err);
+          // An error occurred
+        });
+    },
     deleteMealModal(meal) {
       this.$bvModal.msgBoxConfirm(this.$i18n.t('confirm_meal_deletion'), {
         title: this.$i18n.t('delete_meal'),
@@ -688,7 +707,9 @@ export default {
     "complete_meal": "Complete meal",
     "save_meal": "If you complete the meal you will not be able to edit it again.\nConfirm?",
     "delete_meal": "Delete meal?",
+    "delete_component": "Remove component?",
     "confirm_meal_deletion": "If you delete the meal you can no longer recover it.\nConfirm?",
+    "confirm_component_deletion": "If you remove this component you can not go back.\nConfirm?",
     "yes": "Yes",
     "no": "No",
     "overrun": "Overrun Daily Value %",
@@ -721,7 +742,9 @@ export default {
     "complete_meal": "Completa il pasto",
     "save_meal": "Se completi il pasto non potrai più modificarlo\nConfermi?",
     "delete_meal": "Eliminare pasto?",
+    "delete_component": "Rimuovere componente?",
     "confirm_meal_deletion": "Se elimini il pasto non lo potrai più recuperare\n Confermi?",
+    "confirm_component_deletion": "Se rimuovi il componente non puoi tornare indietro.\n Confermi?",
     "yes": "Si",
     "no": "No",
     "overrun": "Superamento del fabbisogno giornaliero %",
