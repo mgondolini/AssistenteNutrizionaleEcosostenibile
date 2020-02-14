@@ -96,16 +96,16 @@ export default {
     this.$root.$on('selectProduct', (ean) => {
       this.loadProductInfo(ean);
     });
+    // sessionStorage.removeItem('product');
   },
   mounted() {
-    localStorage.removeItem('product');
   },
   methods: {
     openModal() {
       this.$bvModal.show('modal-selectProduct');
     },
     gotoProductInfo() {
-      // console.log(`PUSH: ${this.ean}${this.mealName}${this.mealDate}`);
+      console.log(`PUSH: ${this.ean}${this.mealName}${this.mealDate}`);
       this.$router.push({ path: '/info_prod', query: { ean: this.ean, mealName: this.mealName, date: this.mealDate } });
       // Keep this AFTER the router push
       this.$bvModal.hide('modal-selectProduct');
@@ -154,7 +154,8 @@ export default {
           }
           const { product } = response.data;
           product.ean = ean;
-          localStorage.setItem('product', JSON.stringify(product));
+          this.ean = ean;
+          sessionStorage.setItem('product', JSON.stringify(product));
           this.gotoProductInfo();
         }).catch((error) => {
           console.log(error);

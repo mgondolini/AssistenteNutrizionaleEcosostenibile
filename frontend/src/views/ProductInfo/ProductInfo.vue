@@ -201,7 +201,6 @@ export default {
     this.initializeContent();
   },
   beforeRouteUpdate(to, from, next) {
-    console.log('Router update');
     next();
     this.initializeContent();
   },
@@ -209,15 +208,17 @@ export default {
     initializeContent() {
       this.mealName = this.$route.query.mealName || '';
       this.mealDate = this.$route.query.date || '';
-      const product = JSON.parse(localStorage.getItem('product'));
-      this.ean = product.ean;
+      this.ean = this.$route.query.ean || '';
+      const product = JSON.parse(sessionStorage.getItem('product'));
       console.log(`Initialized ProductInfo. EAN: ${this.ean} Meal: ${this.mealName} Date: ${this.mealDate}`);
-      console.log(`LocalStorage contains: ${product.ean} : ${product.product_name}`);
-      this.loadProductInfo();
+      console.log(`SessionStorage contains: ${product.ean} : ${product.product_name}`);
+      const storageEan = product.ean;
+      if (this.ean !== storageEan) this.$root.$emit('selectProduct', this.ean);
+      else this.loadProductInfo();
     },
     loadProductInfo() {
-      // Get productInfos from localStorage
-      const product = JSON.parse(localStorage.getItem('product'));
+      // Get productInfos from sessionStorage
+      const product = JSON.parse(sessionStorage.getItem('product'));
 
       // PRODUCT CARD
       this.imgPath = product.image_thumb_url.replace('100.jpg', 'full.jpg');
