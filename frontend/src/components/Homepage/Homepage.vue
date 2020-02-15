@@ -1,21 +1,20 @@
 <template>
   <div class="hello">
-    <!--<img class="loginImg" center src="../../assets/ecology.png" />-->
     <h1 class="msgTitle">{{ $t('title') }}</h1>
     <SliderImage/>
     <br/>
     <div class="our_mission">
-      <h3 class="mis">
-        <span class="mission"> {{ $t('mission') }} </span><br/>
+      <div class="mis">
+        <h1 class="mission homeMission"> {{ $t('mission') }} </h1>
         <img src="../../assets/Immagine.png" alt="separator">
-      </h3>
+      </div>
       <br/>
       <h5 class="missionText">
-        <span> {{ $t('text1') }}  <strong> {{ $t('text2') }} </strong>
+        <span class="homeMission"> {{ $t('text1') }}  <strong> {{ $t('text2') }} </strong>
          {{ $t('text3') }}
       </span></h5>
       <h5 class="missionText" style="text-align: center;">
-        <span> {{ $t('text4') }} </span>
+        <span class="homeMission"> {{ $t('text4') }} </span>
       </h5>
       <div class="row middleBan">
         <div class="wpb_column vc_column_container vc_col-sm-4 vc_hidden-sm vc_hidden-xs">
@@ -32,9 +31,9 @@
                 </div>
               <div class="wpb_text_column wpb_content_element  ombraBox vc_custom_1548165107261">
                 <div class="wpb_wrapper">
-                  <h1 style="text-align: center;">
-                    <span class="titleBanner">{{ $t('educate') }} </span>
-                  </h1>
+                  <div style="text-align: center;">
+                    <h1 class="titleBanner">{{ $t('educate') }} </h1>
+                  </div>
                   <p class="textBlock" style="text-align: center;">
                     {{ $t('educapop') }}
                   </p>
@@ -58,9 +57,9 @@
                 </div>
               <div class="wpb_text_column wpb_content_element  ombraBox vc_custom_1548165107261">
                 <div class="wpb_wrapper">
-                  <h1 style="text-align: center;">
-                    <span class="titleBanner">{{ $t('save') }}</span>
-                  </h1>
+                  <div style="text-align: center;">
+                    <h1 class="titleBanner">{{ $t('save') }}</h1>
+                  </div>
                   <p class="textBlock" style="text-align: center;">
                     {{ $t('saveplanet') }}
                   </p>
@@ -84,9 +83,9 @@
                 </div>
               <div class="wpb_text_column wpb_content_element  ombraBox vc_custom_1548165107261">
                 <div class="wpb_wrapper">
-                  <h1 style="text-align: center;">
-                    <span class="titleBanner">{{ $t('respect') }}</span>
-                  </h1>
+                  <div style="text-align: center;">
+                    <h1 class="titleBanner">{{ $t('respect') }}</h1>
+                  </div>
                   <p class="textBlock" style="text-align: center;">
                    {{ $t('respEarth') }}
                   </p>

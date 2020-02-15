@@ -13,13 +13,21 @@
           margin: auto 0
           .nav-link
             color: rgba($white, 0.8) !important   
+          .dropdown-menu-right
+            background-color: $white
+            li
+              a, span
+                &:hover
+                  background-color: $lightgreen
   .bg-info
     background-color: $background_color_1 !important
   .bg-dark
-    background-color: #474748 !important
+    background-color: $dark_bg_card !important
+  
   a
     &.router-link-exact-active 
-      color: $selectedText !important
+      color: rgba($white, 1) !important
+      font-weight: bolder
   img.localeFlag 
     width: 25px
     margin-right: 5%

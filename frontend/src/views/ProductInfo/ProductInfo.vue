@@ -16,7 +16,8 @@
         <b-tabs content-class="mt-3" justified id="myTabContent">
           <b-tab class="tab-content-info" :title="$t('tab_nutrition_title')" active>
             <div class="firstInfo">
-              <b-img center :src="nutriScoreImgPath" alt="Nutri score image"></b-img>
+              <b-img v-if="nutriScore" center :src="nutriScoreImgPath" alt="Nutri score image">
+              </b-img>
               <!-- use vue slots to dynamically generate the table
                   with img path inside the rows -->
               <!--
@@ -27,14 +28,14 @@
                 <span> 8.97 g Fat in moderate quantity </span>
               </div>
               -->
-              <div class="nutritionIndicators">
+              <div v-if="fatLvl" class="nutritionIndicators">
                 <table>
                   <tr>
                     <td>
                       <b-img center :src="fatLvlImgPath" alt="Fat level indicator"></b-img>
                     </td>
                     <td class="infoNutrTable">
-                      {{ fat }} g Fat in {{ fatLvl }} quantity
+                      {{ fat }} g {{$t('fat')}} in {{ $t(fatLvl) }}
                     </td>
                   </tr>
                   <tr>
@@ -42,7 +43,7 @@
                       <b-img center :src="satFatLvlImgPath" alt="Fat level indicator"></b-img>
                     </td>
                     <td class="infoNutrTable">
-                      {{ saturatedFat }} g Saturated fat in {{ satFatLvl }} quantity
+                      {{ saturatedFat }} g {{$t('saturatedFat')}} in {{ $t(satFatLvl) }}
                     </td>
                   </tr>
                   <tr>
@@ -50,7 +51,7 @@
                       <b-img center :src="sugarLvlImgPath" alt="Fat level indicator"></b-img>
                     </td>
                     <td class="infoNutrTable">
-                      {{ sugar }} g Sugar in {{ sugarLvl }} quantity
+                      {{ sugar }} g {{$t('sugar')}} in {{ $t(sugarLvl) }}
                     </td>
                   </tr>
                   <tr>
@@ -58,7 +59,7 @@
                       <b-img center :src="saltLvlImgPath" alt="Fat level indicator"></b-img>
                     </td>
                     <td class="infoNutrTable">
-                      {{ salt }} g Salt in {{ saltLvl }} quantity
+                      {{ salt }} g {{$t('salt')}} in {{ $t(saltLvl) }}
                     </td>
                   </tr>
 
@@ -67,13 +68,19 @@
             </div>
             <div class="nutritionTable">
               <div class="portion">
-                <p>
-                  <label class="labelPortion" for="qty"> {{ $t('portion') }} </label>
-                  <input
-                    id="qty"
-                    v-model="qty"
-                  >
-                </p>
+                  <b-input-group size="lg"
+                    :prepend="$t('portion')" :append="productBaseUnitMeasure">
+                    <b-form-input
+                     id="qty-input"
+                     type="number"
+                     v-model="qty"
+                      aria-describedby="qty-input-help qty-input-feedback"
+                      :placeholder="$t('qty_input_placeholder')">
+                    </b-form-input>
+                    <b-form-invalid-feedback id="qty-input-feedback">
+                      {{ $t('qty_input_desc') }}
+                    </b-form-invalid-feedback>
+                  </b-input-group>
               </div>
               <b-table class="tableNutri" striped hover :fields="nutritionTableFields"
               :items="nutritionTableItems">
@@ -99,31 +106,44 @@
               </b-table>
             </div>
           </b-tab>
-          <b-tab class="tab-content-info"  :title="$t('tab_ingredients_title')">
-            <b-img center :src="novaGroupImgPath" alt="Nova group image"></b-img>
-            <span> Ingredients: {{ ingredientsText }}
+          <b-tab class="tab-content-info" id="tabIngredients"  :title="$t('tab_ingredients_title')">
+            <b-img v-if="novaGroup" class="imgNova" center
+            :src="novaGroupImgPath" alt="Nova group image">
+            </b-img>
+            <span class="ingredients"> {{$t('ingredients')}}: {{ ingredientsText }}
             </span>
           </b-tab>
         </b-tabs>
       </div>
-      <b-button v-on:click="scanAnother()">Scan another product</b-button>
+      <b-button v-on:click="scanAnother()"> {{$t('btn_scan_another')}} </b-button>
       <b-button v-if="mealName && mealDate"
                 v-on:click="insertProductInMeal()">
-        Add product to "{{mealName}}"</b-button>
+        {{$t('btn_add_to_meal')+' '+mealName}}
+      </b-button>
     </div>
   </div>
 </template>
 
 <script>
-const productIDTest = '737628064502';
-const imagesExt = '.svg';
+const seedrandom = require('seedrandom');
+
 const imagesContext = require.context('@/assets/productInfo/', true, /\.svg$/);
+const imagesExt = '.svg';
+const productIDTest = '737628064502';
 const calToJ = 4.184;
+const maxCo2 = 30;
+const maxH2o = 15;
 
 // TODO add function to format numbers (trim decimals and add dots for thousands)
 
 export default {
   name: 'productInfo',
+  computed: {
+    qtyState() {
+      // eslint-disable-next-line no-restricted-globals
+      return !isNaN(this.qty);
+    },
+  },
   data() {
     return {
       // TODO add control to verify that ean is indeed in number format
@@ -169,6 +189,9 @@ export default {
       sodium: '',
       fiber: '',
 
+      carbon_footprint_100g: 0,
+      water_footprint_100g: 0,
+
       nutritionTableFields: [
         { key: 'nutriFactLocalized', label: 'Nutritional fact' },
         { key: 'value', label: 'For 100 g' },
@@ -193,8 +216,8 @@ export default {
   created() {
     this.initializeContent();
   },
-  beforeRouteUpdate() {
-    console.log('Router update');
+  beforeRouteUpdate(to, from, next) {
+    next();
     this.initializeContent();
   },
   methods: {
@@ -202,16 +225,19 @@ export default {
       this.mealName = this.$route.query.mealName || '';
       this.mealDate = this.$route.query.date || '';
       this.ean = this.$route.query.ean || '';
-      console.log(`Initialized ProductInfo. EAN: ${this.ean} Meal: ${this.mealName} Date: ${this.mealDate}`);
-      // this.submitEan();
-      const product = JSON.parse(localStorage.getItem('product'));
-      console.log(product);
-      this.loadProductInfo();
+      if (!sessionStorage[this.ean]) {
+        console.log('Routing to ad InfoProd not previously loaded. Redirecting home...');
+        this.$router.push('/');
+        return;
+      }
+      const product = JSON.parse(sessionStorage.getItem(this.ean));
+      // console.log(`Init InfoProd. EAN:${this.ean} Meal:${this.mealName} Date:${this.mealDate}`);
+      // console.log(`SessionStorage contains: ${product.ean} : ${product.product_name}`);
+      const storageEan = product.ean;
+      if (this.ean !== storageEan) console.log('Inconsistency between localstorage and querystring!');
+      this.loadProductInfo(product);
     },
-    loadProductInfo() {
-      // Get productInfos from localStorage
-      const product = JSON.parse(localStorage.getItem('product'));
-
+    loadProductInfo(product) {
       // PRODUCT CARD
       this.imgPath = product.image_thumb_url.replace('100.jpg', 'full.jpg');
       this.productName = product.product_name;
@@ -240,14 +266,14 @@ export default {
       }
 
       // NUTRITION TAB
-      this.nutriScore = product.nutriscore_grade;
-      this.nutriScoreImgPath = imagesContext(`./nutriScore/${this.nutriScore}${imagesExt}`);
+      this.nutriScore = product.nutriscore_grade || '';
+      this.nutriScoreImgPath = this.nutriScore ? imagesContext(`./nutriScore/${this.nutriScore}${imagesExt}`) : '';
 
       // nutritional levels
-      this.fatLvl = product.nutrient_levels.fat;
-      this.satFatLvl = product.nutrient_levels['saturated-fat'];
-      this.sugarLvl = product.nutrient_levels.sugars;
-      this.saltLvl = product.nutrient_levels.salt;
+      this.fatLvl = product.nutrient_levels.fat || '';
+      this.satFatLvl = product.nutrient_levels['saturated-fat'] || '';
+      this.sugarLvl = product.nutrient_levels.sugars || '';
+      this.saltLvl = product.nutrient_levels.salt || '';
 
       // nutritional values
       this.fat = product.nutriments.fat_100g || 0;
@@ -292,15 +318,20 @@ export default {
       this.nutritionTableItems.push({ nutriFact: 'proteins', for100g: this.proteins, unit: proteinsUnit });
       this.nutritionTableItems.push({ nutriFact: 'fiber', for100g: this.fiber, unit: fiberUnit });
 
-      this.fatLvlImgPath = imagesContext(`./nutrientLevels/${this.fatLvl}${imagesExt}`);
-      this.satFatLvlImgPath = imagesContext(`./nutrientLevels/${this.satFatLvl}${imagesExt}`);
-      this.sugarLvlImgPath = imagesContext(`./nutrientLevels/${this.sugarLvl}${imagesExt}`);
-      this.saltLvlImgPath = imagesContext(`./nutrientLevels/${this.saltLvl}${imagesExt}`);
+      this.fatLvlImgPath = this.fatLvl ? imagesContext(`./nutrientLevels/${this.fatLvl}${imagesExt}`) : '';
+      this.satFatLvlImgPath = this.satFatLvl ? imagesContext(`./nutrientLevels/${this.satFatLvl}${imagesExt}`) : '';
+      this.sugarLvlImgPath = this.sugarLvl ? imagesContext(`./nutrientLevels/${this.sugarLvl}${imagesExt}`) : '';
+      this.saltLvlImgPath = this.saltLvl ? imagesContext(`./nutrientLevels/${this.saltLvl}${imagesExt}`) : '';
 
       // INGREDIENTS TAB
-      this.novaGroup = product.nova_group;
+      this.novaGroup = product.nova_group || '';
       // TODO use placeholder if nova score is missing
       this.novaGroupImgPath = this.novaGroup ? imagesContext(`./novaGroup/${this.novaGroup}${imagesExt}`) : '';
+
+      const impact = this.generateCo2H2o(this.ean, this.novaGroup);
+
+      this.carbon_footprint_100g = impact.co2;
+      this.water_footprint_100g = impact.h2o;
 
       const { ingredients } = product;
       const ingredientsTexts = [];
@@ -313,12 +344,23 @@ export default {
       });
       this.ingredientsText = ingredientsTexts.join(', ');
     },
+    generateCo2H2o(ean, novaScore) {
+      const rndGen = seedrandom(ean);
+      const co2Span = maxCo2 / 4;
+      const h2oSpan = maxH2o / 4;
+      const novaValue = parseInt(novaScore, 10) || 4;
+      return {
+        co2: (co2Span * (rndGen() + novaValue - 1)),
+        h2o: (h2oSpan * (rndGen() + novaValue - 1)),
+      };
+    },
     productNotFound() {
       this.$bvModal.show('modal-product-not-found');
       this.inputMode = 'SELECT';
     },
     insertProductInMeal() {
-      console.log(`${this.ean} ${this.productName} ${this.mealName} ${this.mealDate}`);
+      // eslint-disable-next-line max-len
+      // console.log(`Inserting ${this.ean} ${this.productName} in meal ${this.mealName} ${this.mealDate}`);
       // Creation of the new product
       const body = {
         code: Number(this.ean),
@@ -346,14 +388,15 @@ export default {
         calcium_100g: Number(0),
         nutrition_score_uk_100g: this.nutriScore,
         nova_group: this.nova_group,
-        carbon_footprint_100g: 0,
-        water_footprint_100g: 0,
+        carbon_footprint_100g: Number(this.carbon_footprint_100g),
+        water_footprint_100g: Number(this.water_footprint_100g),
         measure_unit: this.productBaseUnitMeasure,
       };
+      /* eslint-disable no-unused-vars */
       this.$store.state.http.post('api/product', body)
         .then((response) => {
-          console.log('Product created!');
-          console.log(response);
+          // console.log('Product created!');
+          // console.log(response);
 
           // Insertion of the new product into the meal
           const body2 = {
@@ -364,25 +407,26 @@ export default {
             },
             timestamp: this.mealDate,
           };
-          console.log('Adding product to meal');
-          console.log(body2);
+          // console.log('Adding product to meal');
+          // console.log(body2);
 
           this.$store.state.http.put(`api/meals/${body2.mealName}/${body2.timestamp}/components`, body2)
             .then((response2) => {
-              console.log('Product added to meal!');
-              console.log(response2);
+              // console.log('Product added to meal!');
+              // console.log(response2);
               this.$router.push({ path: '/meals', query: { date: this.mealDate } });
               // TODO refactor with AWAIT
             })
             .catch((error) => {
-              console.log('Failed to add product to meal');
-              console.log(error);
+              // console.log('Failed to add product to meal');
+              // console.log(error);
             });
         })
         .catch((error) => {
-          console.log('Failed to create product');
-          console.log(error);
+          // console.log('Failed to create product');
+          // console.log(error);
         });
+      /* eslint-enable no-unused-vars */
     },
     scanAnother() {
       this.$root.$emit('openProductSelection', this.mealName, this.mealDate);
@@ -407,7 +451,15 @@ export default {
     "proteins" : "Proteins",
     "fiber" : "Fiber",
     "nutriFacts" : "Nutritional facts",
-    "portion" : "Portion"
+    "portion" : "Portion",
+    "qty_input_desc" : "Insert a number.",
+    "qty_input_placeholder" : "The portion consumed",
+    "btn_scan_another" : "Scan another product",
+    "btn_add_to_meal" : "Add product to",
+    "low" : "low quantity.",
+    "moderate" : "moderate quantity.",
+    "high" : "high quantity.",
+    "ingredients" : "Ingredients"
   },
   "it": {
     "tab_nutrition_title" : "Valori nutrizionali",
@@ -423,7 +475,15 @@ export default {
     "proteins" : "Proteine",
     "fiber" : "Fibre",
     "nutriFacts": "Composizione",
-    "portion": "Porzione"
+    "portion": "Porzione",
+    "qty_input_desc" : "Inserisci un numero.",
+    "qty_input_placeholder" : "La porzione consumata",
+    "btn_scan_another" : "Altro prodotto",
+    "btn_add_to_meal" : "Aggiungi a",
+    "low" : "scarsa quantità.",
+    "moderate" : "quantità moderata.",
+    "high" : "alta quantità.",
+    "ingredients" : "Ingredienti"
   }
 }
 </i18n>
