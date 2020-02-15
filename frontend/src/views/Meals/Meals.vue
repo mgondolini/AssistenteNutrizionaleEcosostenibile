@@ -13,7 +13,7 @@
         :attributes="this.attributes"
         :is-dark="this.$store.state.darkMode"
         :is-required="true"
-        @dayclick="setDateAndShowMeals">
+        @dayclick="setDate">
         <p class="date-p text-center ">
           <b-icon icon="calendar" font-scale="1.5" variant="secondary"></b-icon>
           {{ $d(calendar.value, 'short') }}
@@ -503,13 +503,13 @@ export default {
       }
       this.currentDate.setDate(this.currentDate.getDate() + 1);
       this.calendar.value = this.currentDate;
-      this.setDateAndShowMeals({ date: this.currentDate });
+      this.setDate({ date: this.currentDate });
     },
     decrementDate() {
       this.disableBtn = false;
       this.currentDate.setDate(this.currentDate.getDate() - 1);
       this.calendar.value = this.currentDate;
-      this.setDateAndShowMeals({ date: this.currentDate });
+      this.setDate({ date: this.currentDate });
     },
     getUserDailyRequirement() {
       this.$store.state.http.get('/api/user')
