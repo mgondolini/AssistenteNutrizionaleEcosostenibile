@@ -262,7 +262,11 @@ export default {
         },
       ],
 
-      chartOptions: {
+    };
+  },
+  computed: {
+    chartOptions() {
+      return {
         chart: {
           type: 'bar',
           height: 500,
@@ -349,8 +353,8 @@ export default {
             this.$i18n.t('nutritionFact.sodium'),
           ],
         },
-      },
-    };
+      };
+    },
   },
   methods: {
     // Main methods
@@ -711,7 +715,7 @@ export default {
     "meal_name_null": "Meal name cannot be null",
     "no_meals": "No meals inserted on this date yet\n",
     "choose_name": "1. Choose a name.",
-    "click_on_plus": "2. Click on + button to insert it.",
+    "click_on_plus": "2. Click on + button to add the meal.",
     "error_meals": "Error!",
     "complete_meal": "Complete meal",
     "save_meal": "If you complete the meal you will not be able to edit it again.\nConfirm?",
@@ -748,7 +752,7 @@ export default {
     "meal_name_null": "Il nome del pasto non può essere nullo",
     "no_meals": "Non sono ancora stati inseriti pasti in questa data.\n",
     "choose_name": "1. Scegli un nome.",
-    "click_on_plus": "2. Clicca sul + per aggiungerlo.",
+    "click_on_plus": "2. Clicca sul + per aggiungere il pasto.",
     "error_meals": "Errore!",
     "complete_meal": "Completa il pasto",
     "save_meal": "Se completi il pasto non potrai più modificarlo\nConfermi?",
