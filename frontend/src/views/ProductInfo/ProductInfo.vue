@@ -35,7 +35,7 @@
                       <b-img center :src="fatLvlImgPath" alt="Fat level indicator"></b-img>
                     </td>
                     <td class="infoNutrTable">
-                      {{ fat }} g Fat in {{ fatLvl }} quantity
+                      {{ fat }} g {{$t('fat')}} in {{ $t(fatLvl) }}
                     </td>
                   </tr>
                   <tr>
@@ -43,7 +43,7 @@
                       <b-img center :src="satFatLvlImgPath" alt="Fat level indicator"></b-img>
                     </td>
                     <td class="infoNutrTable">
-                      {{ saturatedFat }} g Saturated fat in {{ satFatLvl }} quantity
+                      {{ saturatedFat }} g {{$t('saturatedFat')}} in {{ $t(satFatLvl) }}
                     </td>
                   </tr>
                   <tr>
@@ -51,7 +51,7 @@
                       <b-img center :src="sugarLvlImgPath" alt="Fat level indicator"></b-img>
                     </td>
                     <td class="infoNutrTable">
-                      {{ sugar }} g Sugar in {{ sugarLvl }} quantity
+                      {{ sugar }} g {{$t('sugar')}} in {{ $t(sugarLvl) }}
                     </td>
                   </tr>
                   <tr>
@@ -59,7 +59,7 @@
                       <b-img center :src="saltLvlImgPath" alt="Fat level indicator"></b-img>
                     </td>
                     <td class="infoNutrTable">
-                      {{ salt }} g Salt in {{ saltLvl }} quantity
+                      {{ salt }} g {{$t('salt')}} in {{ $t(saltLvl) }}
                     </td>
                   </tr>
 
@@ -68,7 +68,6 @@
             </div>
             <div class="nutritionTable">
               <div class="portion">
-
                   <b-input-group size="lg"
                     :prepend="$t('portion')" :append="productBaseUnitMeasure">
                     <b-form-input
@@ -82,7 +81,6 @@
                       {{ $t('qty_input_desc') }}
                     </b-form-invalid-feedback>
                   </b-input-group>
-
               </div>
               <b-table class="tableNutri" striped hover :fields="nutritionTableFields"
               :items="nutritionTableItems">
@@ -112,15 +110,16 @@
             <b-img v-if="novaGroup" class="imgNova" center
             :src="novaGroupImgPath" alt="Nova group image">
             </b-img>
-            <span class="ingredients"> Ingredients: {{ ingredientsText }}
+            <span class="ingredients"> {{$t('ingredients')}}: {{ ingredientsText }}
             </span>
           </b-tab>
         </b-tabs>
       </div>
-      <b-button v-on:click="scanAnother()">Scan another product</b-button>
+      <b-button v-on:click="scanAnother()"> {{$t('btn_scan_another')}} </b-button>
       <b-button v-if="mealName && mealDate"
                 v-on:click="insertProductInMeal()">
-        Add product to "{{mealName}}"</b-button>
+        {{$t('btn_add_to_meal')+' '+mealName}}
+      </b-button>
     </div>
   </div>
 </template>
@@ -454,7 +453,13 @@ export default {
     "nutriFacts" : "Nutritional facts",
     "portion" : "Portion",
     "qty_input_desc" : "Insert a number.",
-    "qty_input_placeholder" : "The portion consumed"
+    "qty_input_placeholder" : "The portion consumed",
+    "btn_scan_another" : "Scan another product",
+    "btn_add_to_meal" : "Add product to",
+    "low" : "low quantity.",
+    "moderate" : "moderate quantity.",
+    "high" : "high quantity.",
+    "ingredients" : "Ingredients"
   },
   "it": {
     "tab_nutrition_title" : "Valori nutrizionali",
@@ -472,7 +477,13 @@ export default {
     "nutriFacts": "Composizione",
     "portion": "Porzione",
     "qty_input_desc" : "Inserisci un numero.",
-    "qty_input_placeholder" : "La porzione consumata"
+    "qty_input_placeholder" : "La porzione consumata",
+    "btn_scan_another" : "Altro prodotto",
+    "btn_add_to_meal" : "Aggiungi a",
+    "low" : "scarsa quantità.",
+    "moderate" : "quantità moderata.",
+    "high" : "alta quantità.",
+    "ingredients" : "Ingredienti"
   }
 }
 </i18n>
