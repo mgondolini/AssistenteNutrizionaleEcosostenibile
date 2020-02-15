@@ -174,10 +174,10 @@
                 :options="chartOptions"
                 :series="series">
               </apexchart>
-              <p class="noMeals mt-5"> {{$t("barchart_description")}} </p>
-              <li class="noMeals"> {{$t("barchart_green")}} </li>
-              <li class="noMeals"> {{$t("barchart_orange")}} </li>
-              <li class="noMeals">{{$t("barchart_red")}} </li>
+              <p class="chartDesc mt-5"> {{ $t("barchart_description") }} </p>
+              <li class="chartDesc"> {{ $t("barchart_green") }} </li>
+              <li class="chartDesc"> {{ $t("barchart_orange") }} </li>
+              <li class="chartDesc"> {{ $t("barchart_red") }} </li>
             </div>
           </div>
         </b-tab>
