@@ -6,41 +6,49 @@
     hide-footer
     @hidden="inputMode = 'SELECT'"
     >
-    <div v-if="inputMode === 'SELECT'" class="buttonContainerVertical">
-        <b-button v-on:click="inputMode = 'MANUAL'">{{$t('input_btn_manual')}}</b-button>
-        <b-button v-on:click="inputMode = 'STREAM'">{{$t('input_btn_scan_barcode')}}</b-button>
-        <b-button v-on:click="uploadFile()">{{$t('input_btn_upload')}}</b-button>
-        <b-button v-on:click="scanNutriTable()">{{$t('input_btn_scan_nutri')}}</b-button>
-    </div>
-    <div v-else-if="inputMode === 'MANUAL'" id="insertEAN" class="buttonContainer">
-      <div>
-        <label for="ean">{{$t('ean_code')}}</label>
-        <input
-          id="ean"
-          v-model="ean"
-          value=""
-        >
+    <div id="selectionInputMode">
+      <div v-if="inputMode === 'SELECT'" class="buttonContainerVertical">
+          <b-button v-on:click="inputMode = 'MANUAL'">{{$t('input_btn_manual')}}</b-button>
+          <b-button id="buttonScanner" class="btnAR" v-on:click="toggleScannerStream">
+            {{$t('input_btn_scan_barcode')}}</b-button>
+          <b-button v-on:click="uploadFile()">{{$t('input_btn_upload')}}</b-button>
+          <input v-show="false" type="file"
+            id="barcodePicture" @change="uploadBarcodeImg" name="file" />
+          <b-button v-on:click="scanNutriTable()">{{$t('input_btn_scan_nutri')}}</b-button>
       </div>
-      <b-form-select v-model="ean" :options="eanOptions"></b-form-select>
-      <div>
-        <b-button v-on:click="loadProductInfo()">{{$t('lookup')}}</b-button>
-        <b-button v-on:click="inputMode = 'SELECT'">{{$t('back')}}</b-button>
+      <div v-else-if="inputMode === 'MANUAL'" id="insertEAN" class="buttonContainer">
+        <div>
+          <label class="eanCodeLabel" for="ean">{{$t('ean_code')}}</label>
+          <input
+            id="ean"
+            v-model="ean"
+            value=""
+          >
+        </div>
+        <b-form-select v-model="ean" :options="eanOptions"></b-form-select>
+        <div>
+          <b-button v-on:click="loadProductInfo(ean)">{{$t('lookup')}}</b-button>
+          <b-button v-on:click="inputMode = 'SELECT'">{{$t('back')}}</b-button>
+        </div>
       </div>
-    </div>
-    <div v-else-if="inputMode === 'STREAM'" id="videoStream" class="buttonContainer">
-      <v-quagga
-        :onDetected="barcodeDetected"
-        :readerSize="readerSize"
-        :readerTypes="['ean_reader']"
-        :aspectRatio="aspectRatio"
-      ></v-quagga>
-      <b-button v-on:click="inputMode = 'SELECT'">{{$t('back')}}</b-button>
+      <div v-else-if="inputMode === 'STREAM'" id="videoStream" class="buttonContainer">
+        <v-quagga
+          :onDetected="barcodeDetected"
+          :readerSize="readerSize"
+          :readerTypes="['ean_reader']"
+          :aspectRatio="aspectRatio"
+        ></v-quagga>
+        <b-button id="btnBack" class="btnAR" v-on:click="toggleScannerStream">
+          {{$t('back')}}
+        </b-button>
+      </div>
     </div>
   </b-modal>
 </template>
 
 <script>
 const axios = require('axios');
+const Quagga = require('quagga');
 
 const offApiPath = 'https://world.openfoodfacts.org/api/v0/product/';
 const offApiSuffix = '.json';
@@ -61,6 +69,8 @@ export default {
       },
       aspectRatio: { min: 1, max: 100 },
       detecteds: [],
+      barcodeFound: Boolean(false),
+      readerQuorum: 5,
 
       // ean dropdown selector facility
       eanOptions: [
@@ -80,29 +90,33 @@ export default {
     };
   },
   created() {
-    this.$root.$on('openProductSelection', (mealName, timestamp) => {
+    this.$root.$on('openProductSelection', (mealName, timeStamp) => {
       this.mealName = mealName;
-      this.mealDate = timestamp;
-      console.log(`${this.mealName} ${this.mealDate}`);
+      this.mealDate = timeStamp;
+      // console.log(`Called openProdSel with: ${this.mealName} ${this.mealDate}`);
       this.openModal();
     });
+    this.$root.$on('selectProduct', (ean, mealName, timeStamp) => {
+      this.mealName = mealName;
+      this.mealDate = timeStamp;
+      this.loadProductInfo(ean);
+    });
+    // sessionStorage.removeItem('product');
   },
   mounted() {
-    localStorage.removeItem('product');
   },
   methods: {
     openModal() {
       this.$bvModal.show('modal-selectProduct');
     },
     gotoProductInfo() {
+      // console.log(`PUSH: ${this.ean}${this.mealName}${this.mealDate}`);
       this.$router.push({ path: '/info_prod', query: { ean: this.ean, mealName: this.mealName, date: this.mealDate } });
       // Keep this AFTER the router push
       this.$bvModal.hide('modal-selectProduct');
     },
     barcodeDetected(data) {
-      console.log('EAN detected', data);
-      console.log(data.codeResult.code.trim());
-      console.log(data.codeResult.code.trim().length);
+      if (this.barcodeFound === Boolean(true)) return;
 
       if (Object.prototype.hasOwnProperty.call(data, 'codeResult')
        && Object.prototype.hasOwnProperty.call(data.codeResult, 'code')
@@ -112,22 +126,29 @@ export default {
         // reached a threshold of readings stored, the most popular value is the correct ean
         // if no majority is reached, keep storing until it does
 
-        // alert(data.codeResult.code);
-        // Quagga.stop();
-        this.ean = data.codeResult.code.trim();
-        this.loadProductInfo();
+        const code = data.codeResult.code.trim();
+        this.detecteds.push(code);
+        // console.log(ean);
+        // The array is filled with quorum elements
+        if (this.detecteds.length >= this.readerQuorum) {
+          this.barcodeFound = Boolean(true);
+          // The most frequent is selected and popped from the array
+          const ean = this.mostFrequentElement(this.detecteds);
+          // console.log(this.detecteds);
+          this.loadProductInfo(ean);
+          this.toggleScannerStream();
+        }
       }
     },
-    loadProductInfo() {
-      console.log(`Requesting infos about ean ${this.ean}`);
-      console.log(offApiPath + this.ean + offApiSuffix);
-      axios.get(offApiPath + this.ean + offApiSuffix)
+    loadProductInfo(ean) {
+      console.log(`Requesting infos about ean ${ean}`);
+      console.log(offApiPath + ean + offApiSuffix);
+      axios.get(offApiPath + ean + offApiSuffix)
         .then((response) => {
-          console.log(response);
+          // console.log(response);
 
           // Status === 1 means the product has been found
           // some random EANs can also return a status 1 so we check the code not to be empty
-
           const status = (response.data.status === 1)
                         && (response.data.code !== '')
                         && (Object.prototype.hasOwnProperty.call(response.data, 'product'));
@@ -137,7 +158,9 @@ export default {
             return;
           }
           const { product } = response.data;
-          localStorage.setItem('product', JSON.stringify(product));
+          product.ean = ean;
+          this.ean = ean;
+          sessionStorage.setItem(ean, JSON.stringify(product));
           this.gotoProductInfo();
         }).catch((error) => {
           console.log(error);
@@ -152,8 +175,61 @@ export default {
       this.$bvModal.msgBoxOk(this.$i18n.t(errorTextKey), {
         title: this.$i18n.t('modal_title_error'),
         okVariant: 'danger',
+        id: 'notFound',
         centered: true,
       });
+      // this.toggleScannerStream();
+    },
+    toggleScannerStream() {
+      const x = document.getElementsByClassName('btnAR')[0].id;
+      if (x === 'buttonScanner') {
+        document.getElementById('selectionInputMode').classList.add('scanning');
+        this.inputMode = 'STREAM';
+        this.barcodeFound = false;
+        this.detecteds = [];
+      } else if (x === 'btnBack') {
+        document.getElementById('selectionInputMode').classList.remove('scanning');
+        this.inputMode = 'SELECT';
+      }
+    },
+    mostFrequentElement(arr) {
+      // Sorts and array based on a custom comparator
+      // the comparator returns the element with most occurrence between two
+      // pop() returns the most frequent (or the latest seen in case of a tie)
+      return arr.sort((a, b) => arr.filter(v => v === a).length
+            - arr.filter(v => v === b).length).pop();
+    },
+    uploadFile() {
+      document.getElementById('barcodePicture').click();
+    },
+    uploadBarcodeImg(img) {
+      const i = img.target.files[0];
+      const reader = new FileReader();
+      reader.readAsDataURL(i);
+      reader.onload = (image) => {
+        // console.log(image);
+        // console.log(Quagga);
+        // image.target.result contiene l'immagine in base64 e può essere usata come url
+
+        Quagga.decodeSingle({
+          src: image.target.result,
+          numOfWorkers: 0, // Needs to be 0 when used within node
+          inputStream: {
+            size: 800, // restrict input-size to be 800px in width (long-side)
+          },
+          decoder: {
+            readers: ['ean_reader'], // List of active readers
+          },
+        }, (result) => {
+          if (result.codeResult) {
+            const ean = result.codeResult.code;
+            console.log('result', ean);
+            this.loadProductInfo(ean);
+          } else {
+            console.log('not detected');
+          }
+        });
+      };
     },
   },
 };
@@ -191,5 +267,5 @@ export default {
 </i18n>
 
 <style lang="sass">
-  @import './SelectProduct.sass';
+  @import './SelectProduct.sass'
 </style>

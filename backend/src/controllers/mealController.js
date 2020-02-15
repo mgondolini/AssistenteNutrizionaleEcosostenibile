@@ -2,6 +2,7 @@
 const mongoose = require('mongoose');
 const authController = require('./authController');
 const mealControllerUtils = require('./utils/mealControllerUtils.js');
+const achievementController = require('./achievementController.js');
 
 const Meals = mongoose.model('Meals');
 
@@ -165,6 +166,26 @@ exports.delete_meal = async (req, res) => {
 
   global.log(`UPDATE QUERY -> ${JSON.stringify(update)}`); // DEBUG
 
+  await Meals.findOne(query)
+    .exec()
+    .then((uMeal) => {
+      const first = uMeal.meals.length === 1;
+      const myDate = new Date(date);
+      uMeal.meals.forEach((m) => {
+        if ((m.meal_name === mealName)
+          && (m.timestamp.getUTCDate() === myDate.getUTCDate())
+          && (m.timestamp.getUTCMonth() === myDate.getUTCMonth())
+          && (m.timestamp.getUTCFullYear() === myDate.getUTCFullYear())) {
+          if (m.is_closed) {
+            achievementController.deleteAchievements(m, username, first);
+          }
+        }
+      });
+    })
+    .catch((err) => {
+      global.log(err);
+    });
+
   await Meals.updateOne(query, update)
     .exec()
     .then((meal) => {
@@ -210,6 +231,7 @@ exports.delete_component = async (req, res) => {
   const { mealName } = req.query;
   const { date } = req.query;
   const { barcode } = req.query;
+  const { quantity } = req.query;
 
   const query = { username };
 
@@ -223,7 +245,7 @@ exports.delete_component = async (req, res) => {
       } else {
         // Se esistono pasti chiamo questa funzione che: cerca il pasto corrispondente al nome dato,
         // cerca il componente e lo elimina
-        mealControllerUtils.pullComponent(userMeals, date, mealName, barcode, res);
+        mealControllerUtils.pullComponent(userMeals, date, mealName, barcode, quantity, res);
       }
     })
     .catch((err) => {

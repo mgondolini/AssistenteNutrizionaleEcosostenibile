@@ -15,7 +15,7 @@ const WhoSchema = new Schema({
   saturated_fat_perc: Number,
   calcium_g: Number,
   sodium: Number,
-});
+}, { _id: false });
 
 const UserSchema = new Schema({
   username: { type: String, required: true },
@@ -29,8 +29,9 @@ const UserSchema = new Schema({
   user_img_url: String,
   weight: Number,
   height: Number,
-  allergens: String,
-  fabbisogno: [WhoSchema],
+  allergens: Array,
+  daily_requirement: WhoSchema,
+  achievements: [],
 });
 
 module.exports = mongoose.model('User', UserSchema, 'Users');

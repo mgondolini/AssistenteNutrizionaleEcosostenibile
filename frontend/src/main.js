@@ -1,12 +1,18 @@
 import Vue from 'vue';
-import BootstrapVue from 'bootstrap-vue';
+import { BootstrapVue, BootstrapVueIcons } from 'bootstrap-vue';
 import Axios from 'axios';
 import Vuex from 'vuex';
 import VueCarousel from 'vue-carousel';
 import VueQuagga from 'vue-quaggajs';
+import VCalendar from 'v-calendar';
 import App from './App.vue';
 import router from './router';
 import './custom.sass';
+import './lightMode.sass';
+import './darkMode.sass';
+import 'bootstrap/dist/css/bootstrap.css';
+import 'pc-bootstrap4-datetimepicker/build/css/bootstrap-datetimepicker.css';
+import '@fortawesome/fontawesome-free/css/all.css';
 import i18n from './i18n';
 
 global.config = require('../config.json');
@@ -15,14 +21,20 @@ Vue.config.productionTip = false;
 Vue.use(VueQuagga);
 Vue.use(VueCarousel);
 Vue.use(BootstrapVue);
+Vue.use(BootstrapVueIcons);
 Vue.use(Vuex);
+Vue.use(VCalendar);
+
+const tmpDark = localStorage.darkMode !== undefined ? localStorage.darkMode === 'true' : false;
+
+i18n.locale = localStorage.lang !== undefined ? localStorage.lang : 'en';
 
 const store = new Vuex.Store({
   state: {
     isLogged: false,
+    darkMode: tmpDark,
     username: '',
     http: Axios.create({
-      baseURL: 'http://localhost:8081/',
       timeout: 10000,
       headers: { token: 'InvalidToken' },
     }),
@@ -34,7 +46,6 @@ const store = new Vuex.Store({
       state.isLogged = true;
       state.username = newState.user;
       state.http = Axios.create({
-        baseURL: 'http://localhost:8081/',
         timeout: 10000,
         headers: { token: newState.token },
       });
@@ -45,14 +56,24 @@ const store = new Vuex.Store({
       state.isLogged = false;
       state.username = '';
       state.http = Axios.create({
-        baseURL: 'http://localhost:8081/',
         timeout: 10000,
         headers: { token: 'InvalidToken' },
       });
     },
+    switchMode(state) {
+      state.darkMode = !state.darkMode;
+      if (state.darkMode) {
+        localStorage.darkMode = 'true';
+      } else {
+        localStorage.darkMode = 'false';
+      }
+    },
   },
 });
 
+if (localStorage.ecoAssToken === undefined) {
+  localStorage.ecoAssToken = 'InvalidToken';
+}
 if (localStorage.ecoAssToken !== 'InvalidToken') {
   const t = localStorage.ecoAssToken;
   const u = localStorage.ecoAssUser;
@@ -68,6 +89,19 @@ if (localStorage.ecoAssToken !== 'InvalidToken') {
 } else {
   store.commit('logout');
 }
+
+router.beforeEach((to, from, next) => {
+  const realRoute = ['/', '/login', '/info_prod', '/profile', '/meals', '/calculate_meal_composition', '/registration'];
+  const loggedRoute = ['/profile', '/meals', '/calculate_meal_composition'];
+  const p = to.path;
+  if (!realRoute.includes(p)) {
+    next('/');
+  } else if (loggedRoute.includes(p) && !store.state.isLogged) {
+    next('/login');
+  } else {
+    next();
+  }
+});
 
 new Vue({
   router,
