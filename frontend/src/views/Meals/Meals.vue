@@ -174,6 +174,10 @@
                 :options="chartOptions"
                 :series="series">
               </apexchart>
+              <p class="noMeals mt-5"> {{$t("barchart_description")}} </p>
+              <li class="noMeals"> {{$t("barchart_green")}} </li>
+              <li class="noMeals"> {{$t("barchart_orange")}} </li>
+              <li class="noMeals">{{$t("barchart_red")}} </li>
             </div>
           </div>
         </b-tab>
@@ -269,7 +273,11 @@ export default {
         },
       ],
 
-      chartOptions: {
+    };
+  },
+  computed: {
+    chartOptions() {
+      return {
         chart: {
           type: 'bar',
           height: 500,
@@ -356,8 +364,8 @@ export default {
             this.$i18n.t('nutritionFact.sodium'),
           ],
         },
-      },
-    };
+      };
+    },
   },
   methods: {
     // Main methods
@@ -708,6 +716,7 @@ export default {
     this.loadMealsList();
   },
 };
+/* eslint-disable max-len */
 </script>
 
 <i18n src='../../locales/errorMessages.json'></i18n>
@@ -722,7 +731,7 @@ export default {
     "meal_name_null": "Meal name cannot be null",
     "no_meals": "No meals inserted on this date yet\n",
     "choose_name": "1. Choose a name.",
-    "click_on_plus": "2. Click on + button to insert it.",
+    "click_on_plus": "2. Click on + button to add the meal.",
     "complete_to_achieve": "3. Complete a meal to receive achievements.",
     "error_meals": "Error!",
     "complete_meal": "Complete meal",
@@ -749,7 +758,11 @@ export default {
     },
     "newAchTxt": "new achievements!",
     "achModalBtn": "Great!",
-    "newAchievement": "New achievement"
+    "newAchievement": "New achievement",
+    "barchart_description": "With this chart you can keep an eye on your daily requiement achievement, and the positive and negative overruns.",
+    "barchart_green": "GREEN: you achieved your daily requirements.",
+    "barchart_orange": "ORANGE: be careful, you're overruning your daily requirements.",
+    "barchart_red": "RED: not good, you are far from achieving your daily requirements."
   },
   "it": {
     "your_meals": "I tuoi pasti",
@@ -760,7 +773,7 @@ export default {
     "meal_name_null": "Il nome del pasto non può essere nullo",
     "no_meals": "Non sono ancora stati inseriti pasti in questa data.\n",
     "choose_name": "1. Scegli un nome.",
-    "click_on_plus": "2. Clicca sul + per aggiungerlo.",
+    "click_on_plus": "2. Clicca sul + per aggiungere il pasto.",
     "complete_to_achieve": "3. Completa i pasti per ottenere ricompense.",
     "error_meals": "Errore!",
     "complete_meal": "Completa il pasto",
@@ -787,7 +800,11 @@ export default {
     },
     "newAchTxt": "Nuovi obiettivi raggiunti!",
     "achModalBtn": "Fantastico!",
-    "newAchievement": "Nuovi obiettivi raggiunti"
+    "newAchievement": "Nuovi obiettivi raggiunti",
+    "barchart_description": "Con questo grafico puoi tenere d'occhio il raggiungimento del fabbisogno nutrizionale e lo sforamento in negativo e positivo.",
+    "barchart_green":"VERDE: stai rispettando il tuo fabbisogno giornaliero",
+    "barchart_orange":"ARANCIO: attenzione, stai sforandoil fabbisogno giornaliero",
+    "barchart_red":"ROSSO: molto male, sei lontato dal tuo fabbisogno giornaliero"
   }
 }
 </i18n>
