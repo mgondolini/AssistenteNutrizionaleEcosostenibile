@@ -14,6 +14,10 @@ import Vue from 'vue';
 import zingchartVue from 'zingchart-vue';
 import CirclePacker from 'circlepacker';
 
+// TODO: trovare un modo di importarlo migliore
+// eslint-disable-next-line import/extensions
+import '../../../node_modules/zingchart/modules/zingchart-bubblepie.min.js';
+
 Vue.component('zingchart', zingchartVue);
 
 
@@ -129,7 +133,7 @@ export default {
               verticalAlign: 'top',
               layout: '5x2',
               item: {
-                fontSize: 7,
+                fontSize: 6,
               },
             },
             plot: {
