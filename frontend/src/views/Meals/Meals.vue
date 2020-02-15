@@ -143,7 +143,10 @@
             </b-collapse>
           </b-card>
         </div>
-        <div v-else><p class="noMeals">{{ $t(this.noMeals) }}</p></div>
+        <div v-else>
+          <p class="noMeals"> {{ $t(this.noMeals) }} </p>
+          <p class="noMeals"> {{ $t("click_on_plus") }}</p>
+        </div>
         <b-modal id="modal-ach" :title="$i18n.t('newAchievement')" hide-footer>
           <div class="d-block text-center">
             {{ this.achMsgModal }}
@@ -702,7 +705,8 @@ export default {
     "date": "Date",
     "calculate_meal": "Calculate meal",
     "meal_name_null": "Meal name cannot be null",
-    "no_meals": "No meals inserted on this date yet",
+    "no_meals": "No meals inserted on this date yet\n",
+    "click_on_plus": "Choose a name and click on + button to insert one.",
     "error_meals": "Error!",
     "complete_meal": "Complete meal",
     "save_meal": "If you complete the meal you will not be able to edit it again.\nConfirm?",
@@ -737,7 +741,8 @@ export default {
     "date": "Data",
     "calculate_meal": "Calcola pasto",
     "meal_name_null": "Il nome del pasto non può essere nullo",
-    "no_meals": "Non sono ancora stati inseriti pasti in questa data",
+    "no_meals": "Non sono ancora stati inseriti pasti in questa data.\n",
+    "click_on_plus": "Scegli un nome e clicca sul + per aggiungerne uno.",
     "error_meals": "Errore!",
     "complete_meal": "Completa il pasto",
     "save_meal": "Se completi il pasto non potrai più modificarlo\nConfermi?",
