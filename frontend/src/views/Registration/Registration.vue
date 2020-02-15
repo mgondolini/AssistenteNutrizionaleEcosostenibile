@@ -226,6 +226,7 @@
     </b-form>
     <b-modal id="modal-ach" :title="$i18n.t('achModalTitle')" hide-footer>
       <div class="d-block text-center">
+        <img class="icoAchiev" src="../../assets/achievement/success.svg" alt="anchievementImg">
         {{ $t('achMsgModal') }}
       </div>
       <b-button class="mt-3" block @click="hideModalAch">{{ $t('achBtnModal')}}</b-button>
