@@ -761,7 +761,7 @@ export default {
     "no": "No",
     "overrun": "Superamento del fabbisogno giornaliero %",
     "meals": "Pasti",
-    "meals_graph": "Fabbisogno giornaliero",
+    "meals_graph": "Fabbisogno",
     "nutritionFact": {
       "energy_kj": "Energia_kj",
       "energy_kcal": "Energia_kcal",
