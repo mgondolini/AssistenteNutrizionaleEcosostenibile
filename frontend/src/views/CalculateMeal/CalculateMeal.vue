@@ -7,11 +7,11 @@
           <div class="buttonsDisposition">
             <b-button id="button" class="sim-button button1 buttonCalculate"
               v-on:click='changeGraphGlobal'>
-              Global
+              {{ this.$i18n.t('global') }}
             </b-button>
             <b-button id="button" class="sim-button button1 buttonCalculate"
               v-on:click='changeGraphComponent'>
-              Component
+               {{ this.$i18n.t('component') }}
             </b-button>
           </div>
           <div class="container">
@@ -22,13 +22,13 @@
         <b-tab class="tab-content-info" :title="$t('emission')">
           <div class="chart-box">
             <div id="bubble-chart">
-              <h5 class="paddingTop chartTitle">{{$t('co2')}}</h5>
+              <h5 class="paddingTop chartTitleCC">{{$t('co2')}}</h5>
               <hr/>
               <apexchart class="co2" type=bubble height=400 :options="chartBubbleCO2Options"
                 :series="series">
               </apexchart>
               <hr/>
-              <h5 class="paddingTop chartTitle">{{$t('h2o')}}</h5>
+              <h5 class="paddingTop chartTitleCC">{{$t('h2o')}}</h5>
               <apexchart class="h2o" type=bubble height=400 :options="chartBubbleWaterOptions"
               :series="series2" />
             </div>
