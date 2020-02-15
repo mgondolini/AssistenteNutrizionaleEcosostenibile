@@ -13,7 +13,7 @@
         :attributes="this.attributes"
         :is-dark="this.$store.state.darkMode"
         :is-required="true"
-        @dayclick="setDateAndShowMeals">
+        @dayclick="setDate">
         <p class="date-p text-center ">
           <b-icon icon="calendar" font-scale="1.5" variant="secondary"></b-icon>
           {{ $d(calendar.value, 'short') }}
@@ -86,7 +86,9 @@
                 <b-button v-if="!meal.is_closed" variant="light"
                   class="add-component mb-3"
                   @click="addComponent(meal.meal_name, meal.timestamp)"
-                ><b-icon icon="plus" variant="success" font-scale="2" shift-v="+2"></b-icon>
+                >
+                <b-icon icon="plus" variant="success" scale="1.7" shift-v="-1" shift-h="-2">
+                </b-icon>
                   {{ $t('add_component') }}
                 </b-button>
                 <div v-if="meal.components.length > 0">
@@ -100,7 +102,10 @@
                         <b-col>
                           <p class="component-p mb-1">
                             <b>
-                              <b-link href="#" @click="goToInfoProd(component.barcode)">
+                              <b-link href="#"
+                              @click="goToInfoProd(component.barcode,
+                              meal.meal_name,
+                              meal.timestamp)">
                                 {{ component.product_name }}
                               </b-link>
                             </b>
@@ -149,6 +154,7 @@
           <p class="noMeals"> {{ $t(this.noMeals) }} </p>
           <p class="noMeals"> {{ $t("choose_name") }}</p>
           <p class="noMeals"> {{ $t("click_on_plus") }}</p>
+          <p class="noMeals"> {{ $t("complete_to_achieve") }}</p>
         </div>
         <b-modal id="modal-ach" :title="$i18n.t('newAchievement')" hide-footer>
           <div class="d-block text-center">
@@ -355,10 +361,9 @@ export default {
   methods: {
     // Main methods
     loadMealsList() {
-      console.log(this.currentDate);
-
+      // console.log(this.currentDate);
       const dateFromProductInfo = this.$route.query.date;
-      console.log(`dateFromProductInfo ${dateFromProductInfo}`);
+      // console.log(`dateFromProductInfo ${dateFromProductInfo}`);
 
       if (dateFromProductInfo !== undefined) {
         this.currentDate = new Date(dateFromProductInfo);
@@ -413,9 +418,7 @@ export default {
         mealName,
         date: new Date(this.UTCDate),
       };
-
-      console.log(`remove meal ${JSON.stringify(params)}`); // DEBUG
-
+      // console.log(`remove meal ${JSON.stringify(params)}`); // DEBUG
       this.$store.state.http.delete(`api/meals/${params.mealName}/${params.date}`, { params })
         .then(() => this.loadMealsList())
         .catch(error => this.checkError(error));
@@ -430,8 +433,7 @@ export default {
         mealName,
         date: new Date(this.UTCDate),
       };
-
-      console.log(params); // DEBUG
+      // console.log(params); // DEBUG
       this.$store.state.http.delete(`api/meals/${params.mealName}/${params.date}/components`, { params })
         .then((response) => {
           this.mealsList = [];
@@ -474,9 +476,17 @@ export default {
 
       if (!found) this.noMeals = 'no_meals';
     },
-    setDateAndShowMeals(day) {
+    setDate(day) {
       this.currentDate = day.date;
-      console.log(`Current date: ${this.currentDate}`);
+      const timeStamp = (new Date(Date.UTC(
+        this.currentDate.getFullYear(),
+        this.currentDate.getMonth(),
+        this.currentDate.getDate(),
+      ))).toISOString();
+      this.$router.push({ path: '/meals', query: { date: timeStamp } });
+      this.showMeals();
+    },
+    showMeals() {
       this.showMealsByDate(this.currentDate);
       this.computeDayNutritionFact(this.currentDate);
       this.triggerChartTab();
@@ -489,26 +499,26 @@ export default {
       }
       this.currentDate.setDate(this.currentDate.getDate() + 1);
       this.calendar.value = this.currentDate;
-      this.setDateAndShowMeals({ date: this.currentDate });
+      this.setDate({ date: this.currentDate });
     },
     decrementDate() {
       this.disableBtn = false;
       this.currentDate.setDate(this.currentDate.getDate() - 1);
       this.calendar.value = this.currentDate;
-      this.setDateAndShowMeals({ date: this.currentDate });
+      this.setDate({ date: this.currentDate });
     },
     getUserDailyRequirement() {
       this.$store.state.http.get('/api/user')
         .then((response) => {
           this.dailyRequirement = response.data.daily_requirement;
-          console.log('Daily Requirement'); // DEBUG
-          console.log(this.dailyRequirement); // DEBUG
+          // console.log('Daily Requirement'); // DEBUG
+          // console.log(this.dailyRequirement); // DEBUG
           this.computeDayNutritionFact(this.currentDate);
         })
         .catch(error => this.checkError(error));
     },
     computeDayNutritionFact(date) {
-      console.log('Get nutrition fact'); // DEBUG
+      // console.log('Get nutrition fact'); // DEBUG
       let mealDate;
 
       this.initNutritionFact();
@@ -530,24 +540,24 @@ export default {
 
       let dailyRequirementValues = Object.values(this.dailyRequirement);
       dailyRequirementValues = dailyRequirementValues.splice(3, 10);
-      console.log(this.dailyRequirement);
-      console.log('dailyRequirementValues');
-      console.log(dailyRequirementValues);
+      // console.log(this.dailyRequirement);
+      // console.log('dailyRequirementValues');
+      // console.log(dailyRequirementValues);
 
       this.nutritionKeys = Object.keys(this.nutritionFact);
-      console.log('nutritionKeys');
-      console.log(this.nutritionKeys);
+      // console.log('nutritionKeys');
+      // console.log(this.nutritionKeys);
 
       this.nutritionValues = Object.values(this.nutritionFact);
-      console.log('nutritionValues');
-      console.log(this.nutritionValues);
+      // console.log('nutritionValues');
+      // console.log(this.nutritionValues);
 
       this.nutritionValues = this.nutritionValues
         .map((val, i) => this.getDailyNutritionRatio(val, dailyRequirementValues[i]))
         .map(val => (val - 100).toFixed(2));
 
-      console.log('nutritionValues mapped');
-      console.log(this.nutritionValues);
+      // console.log('nutritionValues mapped');
+      // console.log(this.nutritionValues);
     },
     triggerChartTab() {
       console.log('Chart tab triggered');
@@ -556,8 +566,8 @@ export default {
         this.$refs.barchart.updateSeries([{ name: '', data: this.nutritionValues }]);
       }, 500);
     },
-    goToInfoProd(barcode) {
-      this.$root.$emit('selectProduct', barcode);
+    goToInfoProd(barcode, mealName, timeStamp) {
+      this.$root.$emit('selectProduct', barcode, mealName, timeStamp);
     },
     removeComponentModal(barcode, quantity, mealName) {
       this.$bvModal.msgBoxConfirm(this.$i18n.t('confirm_component_deletion'), {
@@ -666,15 +676,15 @@ export default {
     saveMeal(meal) {
       this.mealToClose = meal;
       this.mealToClose.is_closed = true;
-      console.log(this.mealToClose.is_closed);
+      // console.log(this.mealToClose.is_closed);
       const body = this.mealToClose;
 
-      console.log(body); // DEBUG
+      // console.log(body); // DEBUG
       this.$store.state.http.put(`api/meals/${body.meal_name}/${body.timestamp}`, body)
         .then((response) => {
           this.mealsList = [];
-          console.log('saveMeal response: ');
-          console.log(response.data);
+          // console.log('saveMeal response: ');
+          // console.log(response.data);
           this.mealsList = response.data.userMeals.meals;
           this.showMealsByDate(this.currentDate);
           const c = response.data.countNewAch;
@@ -712,6 +722,7 @@ export default {
     "no_meals": "No meals inserted on this date yet\n",
     "choose_name": "1. Choose a name.",
     "click_on_plus": "2. Click on + button to insert it.",
+    "complete_to_achieve": "3. Complete a meal to receive achievements.",
     "error_meals": "Error!",
     "complete_meal": "Complete meal",
     "save_meal": "If you complete the meal you will not be able to edit it again.\nConfirm?",
@@ -749,6 +760,7 @@ export default {
     "no_meals": "Non sono ancora stati inseriti pasti in questa data.\n",
     "choose_name": "1. Scegli un nome.",
     "click_on_plus": "2. Clicca sul + per aggiungerlo.",
+    "complete_to_achieve": "3. Completa i pasti per ottenere ricompense.",
     "error_meals": "Errore!",
     "complete_meal": "Completa il pasto",
     "save_meal": "Se completi il pasto non potrai più modificarlo\nConfermi?",

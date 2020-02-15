@@ -90,13 +90,15 @@ export default {
     };
   },
   created() {
-    this.$root.$on('openProductSelection', (mealName, timestamp) => {
+    this.$root.$on('openProductSelection', (mealName, timeStamp) => {
       this.mealName = mealName;
-      this.mealDate = timestamp;
+      this.mealDate = timeStamp;
       // console.log(`Called openProdSel with: ${this.mealName} ${this.mealDate}`);
       this.openModal();
     });
-    this.$root.$on('selectProduct', (ean) => {
+    this.$root.$on('selectProduct', (ean, mealName, timeStamp) => {
+      this.mealName = mealName;
+      this.mealDate = timeStamp;
       this.loadProductInfo(ean);
     });
     // sessionStorage.removeItem('product');
