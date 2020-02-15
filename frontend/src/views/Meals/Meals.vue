@@ -154,6 +154,7 @@
           <p class="noMeals"> {{ $t(this.noMeals) }} </p>
           <p class="noMeals"> {{ $t("choose_name") }}</p>
           <p class="noMeals"> {{ $t("click_on_plus") }}</p>
+          <p class="noMeals"> {{ $t("complete_to_achieve") }}</p>
         </div>
         <b-modal id="modal-ach" :title="$i18n.t('newAchievement')" hide-footer>
           <div class="d-block text-center">
@@ -721,6 +722,7 @@ export default {
     "no_meals": "No meals inserted on this date yet\n",
     "choose_name": "1. Choose a name.",
     "click_on_plus": "2. Click on + button to insert it.",
+    "complete_to_achieve": "3. Complete a meal to receive achievements.",
     "error_meals": "Error!",
     "complete_meal": "Complete meal",
     "save_meal": "If you complete the meal you will not be able to edit it again.\nConfirm?",
@@ -758,6 +760,7 @@ export default {
     "no_meals": "Non sono ancora stati inseriti pasti in questa data.\n",
     "choose_name": "1. Scegli un nome.",
     "click_on_plus": "2. Clicca sul + per aggiungerlo.",
+    "complete_to_achieve": "3. Completa i pasti per ottenere ricompense.",
     "error_meals": "Errore!",
     "complete_meal": "Completa il pasto",
     "save_meal": "Se completi il pasto non potrai più modificarlo\nConfermi?",
