@@ -173,6 +173,10 @@
                 :options="chartOptions"
                 :series="series">
               </apexchart>
+              <p class="noMeals mt-5"> {{$t("barchart_description")}} </p>
+              <li class="noMeals"> {{$t("barchart_green")}} </li>
+              <li class="noMeals"> {{$t("barchart_orange")}} </li>
+              <li class="noMeals">{{$t("barchart_red")}} </li>
             </div>
           </div>
         </b-tab>
@@ -711,6 +715,7 @@ export default {
     this.loadMealsList();
   },
 };
+/* eslint-disable max-len */
 </script>
 
 <i18n src='../../locales/errorMessages.json'></i18n>
@@ -752,7 +757,11 @@ export default {
     },
     "newAchTxt": "new achievements!",
     "achModalBtn": "Great!",
-    "newAchievement": "New achievement"
+    "newAchievement": "New achievement",
+    "barchart_description": "With this chart you can keep an eye on your daily requiement achievement, and the positive and negative overruns.",
+    "barchart_green": "GREEN: you achieved your daily requirements.",
+    "barchart_orange": "ORANGE: be careful, you're overruning your daily requirements.",
+    "barchart_red": "RED: not good, you are far from achieving your daily requirements."
   },
   "it": {
     "your_meals": "I tuoi pasti",
@@ -790,7 +799,11 @@ export default {
     },
     "newAchTxt": "nuovi obiettivi raggiunti!",
     "achModalBtn": "Fantastico!",
-    "newAchievement": "Nuovi obiettivi raggiunti"
+    "newAchievement": "Nuovi obiettivi raggiunti",
+    "barchart_description": "Con questo grafico puoi tenere d'occhio il raggiungimento del fabbisogno nutrizionale e lo sforamento in negativo e positivo.",
+    "barchart_green":"VERDE: stai rispettando il tuo fabbisogno giornaliero",
+    "barchart_orange":"ARANCIO: attenzione, stai sforandoil fabbisogno giornaliero",
+    "barchart_red":"ROSSO: molto male, sei lontato dal tuo fabbisogno giornaliero"
   }
 }
 </i18n>
