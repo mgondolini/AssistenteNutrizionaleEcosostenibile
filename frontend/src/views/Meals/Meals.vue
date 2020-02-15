@@ -144,8 +144,9 @@
             </b-collapse>
           </b-card>
         </div>
-        <div v-else class="mt-5">
-          <b-icon icon="alert-triangle" scale="2" class="mb-3" color="slategrey"></b-icon>
+        <div v-else class="mt-5 infoNoMeals">
+          <b-icon icon="alert-triangle" scale="2"
+            class="mb-3 iconTriangle" color="slategrey"></b-icon>
           <p class="noMeals"> {{ $t(this.noMeals) }} </p>
           <p class="noMeals"> {{ $t("choose_name") }}</p>
           <p class="noMeals"> {{ $t("click_on_plus") }}</p>
@@ -760,7 +761,7 @@ export default {
     "no": "No",
     "overrun": "Superamento del fabbisogno giornaliero %",
     "meals": "Pasti",
-    "meals_graph": "Fabbisogno giornaliero",
+    "meals_graph": "Fabbisogno",
     "nutritionFact": {
       "energy_kj": "Energia_kj",
       "energy_kcal": "Energia_kcal",
@@ -772,7 +773,7 @@ export default {
       "calcium": "Calcio",
       "sodium": "Sodio"
     },
-    "newAchTxt": "nuovi obiettivi raggiunti!",
+    "newAchTxt": "Nuovi obiettivi raggiunti!",
     "achModalBtn": "Fantastico!",
     "newAchievement": "Nuovi obiettivi raggiunti"
   }

@@ -14,38 +14,28 @@
     </slide>
     <slide
         data-index="1"
-        data-name="Cheese">
-        <img class="homeImagesScroll" src="../../assets/home/cheese.png" alt="cheese">
+        data-name="addMeal">
+        <img class="homeImagesScroll" src="../../assets/home/infoAddMeal.jpg" alt="addMeal">
     </slide>
     <slide
         data-index="2"
-        data-name="Rice">
-        <img class="homeImagesScroll" src="../../assets/home/rice.png" alt="rice">
+        data-name="scanning">
+        <img class="homeImagesScroll" src="../../assets/home/scanning.jpg" alt="scanning">
     </slide>
     <slide
         data-index="3"
-        data-name="Carrots">
-        <img class="homeImagesScroll" src="../../assets/home/carrots.jpg" alt="Corrots">
+        data-name="lightDark">
+        <img class="homeImagesScroll" src="../../assets/home/lightDark.jpg" alt="lightDark">
     </slide>
     <slide
         data-index="4"
-        data-name="Bread">
-        <img class="homeImagesScroll" src="../../assets/home/bread.jpg" alt="bread">
+        data-name="graphs">
+        <img class="homeImagesScroll" src="../../assets/home/graphs.jpg" alt="graphs">
     </slide>
     <slide
         data-index="5"
-        data-name="Chickpeas">
-        <img class="homeImagesScroll" src="../../assets/home/chickpeas.jpg" alt="chickpeas">
-    </slide>
-    <slide
-        data-index="6"
-        data-name="Eggs">
-        <img class="homeImagesScroll" src="../../assets/home/eggs.jpg" alt="eggs">
-    </slide>
-    <slide
-        data-index="7"
-        data-name="Soup">
-        <img class="homeImagesScroll" src="../../assets/home/soup.jpg" alt="soup">
+        data-name="ach">
+        <img class="homeImagesScroll" src="../../assets/home/info.jpg" alt="ach">
     </slide>
   </carousel>
 </template>
