@@ -100,7 +100,7 @@
             </div>
           </b-tab>
           <b-tab class="tab-content-info"  :title="$t('tab_ingredients_title')">
-            <b-img center :src="novaGroupImgPath" alt="Nova group image"></b-img>
+            <b-img class="imgNova" center :src="novaGroupImgPath" alt="Nova group image"></b-img>
             <span class="ingredients"> Ingredients: {{ ingredientsText }}
             </span>
           </b-tab>
