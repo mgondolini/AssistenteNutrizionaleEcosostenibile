@@ -175,6 +175,7 @@ export default {
       this.$bvModal.msgBoxOk(this.$i18n.t(errorTextKey), {
         title: this.$i18n.t('modal_title_error'),
         okVariant: 'danger',
+        id: 'notFound',
         centered: true,
       });
       // this.toggleScannerStream();
