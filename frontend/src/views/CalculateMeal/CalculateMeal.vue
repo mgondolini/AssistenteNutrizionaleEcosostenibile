@@ -107,7 +107,7 @@ export default {
           opacity: 0.8,
         },
         title: {
-          text: 'Carbon Footprint',
+          text: this.$i18n.t('carbonFootprint'),
         },
         xaxis: {
           tickAmount: 10,
@@ -156,7 +156,7 @@ export default {
           opacity: 0.8,
         },
         title: {
-          text: 'Water Footprint',
+          text: this.$i18n.t('waterFootprint'),
         },
         xaxis: {
           tickAmount: 10,
@@ -223,7 +223,7 @@ export default {
 
         Object.keys(response.data.meals[0]).forEach((k, i) => {
           if (i > 2 && i < 13) {
-            this.componentsMeal.al.push(k);
+            this.componentsMeal.al.push(this.$i18n.t(k));
           }
         });
 
