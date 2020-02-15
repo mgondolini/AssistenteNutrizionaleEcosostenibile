@@ -174,10 +174,13 @@
                 :options="chartOptions"
                 :series="series">
               </apexchart>
-              <p class="noMeals mt-5"> {{$t("barchart_description")}} </p>
-              <li class="noMeals"> {{$t("barchart_green")}} </li>
-              <li class="noMeals"> {{$t("barchart_orange")}} </li>
-              <li class="noMeals">{{$t("barchart_red")}} </li>
+              <p class="chartDesc mt-5"> {{ $t("barchart_description") }} </p>
+              <li class="chartDesc">
+                <b class="green">{{$t("green")}}: </b>{{ $t("barchart_green") }} </li>
+              <li class="chartDesc">
+                <b class="orange"> {{$t("orange")}}: </b>{{ $t("barchart_orange") }} </li>
+              <li class="chartDesc">
+                <b class="red">{{$t("red")}}: </b>{{ $t("barchart_red") }} </li>
             </div>
           </div>
         </b-tab>
@@ -760,9 +763,12 @@ export default {
     "achModalBtn": "Great!",
     "newAchievement": "New achievement",
     "barchart_description": "With this chart you can keep an eye on your daily requiement achievement, and the positive and negative overruns.",
-    "barchart_green": "GREEN: you achieved your daily requirements.",
-    "barchart_orange": "ORANGE: be careful, you're overruning your daily requirements.",
-    "barchart_red": "RED: not good, you are far from achieving your daily requirements."
+    "barchart_green": "you achieved your daily requirements.",
+    "barchart_orange": "be careful, you're overruning your daily requirements.",
+    "barchart_red": "not good, you are far from achieving your daily requirements.",
+    "green": "GREEN",
+    "orange": "ORANGE",
+    "red": "RED"
   },
   "it": {
     "your_meals": "I tuoi pasti",
@@ -802,9 +808,12 @@ export default {
     "achModalBtn": "Fantastico!",
     "newAchievement": "Nuovi obiettivi raggiunti",
     "barchart_description": "Con questo grafico puoi tenere d'occhio il raggiungimento del fabbisogno nutrizionale e lo sforamento in negativo e positivo.",
-    "barchart_green":"VERDE: stai rispettando il tuo fabbisogno giornaliero",
-    "barchart_orange":"ARANCIO: attenzione, stai sforandoil fabbisogno giornaliero",
-    "barchart_red":"ROSSO: molto male, sei lontato dal tuo fabbisogno giornaliero"
+    "barchart_green":"stai rispettando il tuo fabbisogno giornaliero",
+    "barchart_orange":"attenzione, stai sforandoil fabbisogno giornaliero",
+    "barchart_red":"molto male, sei lontato dal tuo fabbisogno giornaliero",
+    "green": "VERDE",
+    "orange": "ARANCIONE",
+    "red": "ROSSO"
   }
 }
 </i18n>
