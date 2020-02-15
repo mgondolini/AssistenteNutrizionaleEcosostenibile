@@ -106,7 +106,7 @@
               </b-table>
             </div>
           </b-tab>
-          <b-tab class="tab-content-info"  :title="$t('tab_ingredients_title')">
+          <b-tab class="tab-content-info" id="tabIngredients"  :title="$t('tab_ingredients_title')">
             <b-img v-if="novaGroup" class="imgNova" center
             :src="novaGroupImgPath" alt="Nova group image">
             </b-img>
