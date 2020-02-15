@@ -4,58 +4,58 @@
 
 .containerFather
   padding-top: 30px!important
-  margin: 0 auto
   max-width: 95%
-  
-  .chartTitle
-    color: #17a2b8
-    font-size: 4.5vh
-    display: flex
-    justify-content: center
-
-  .buttonsDisposition
-    float: left
-    display: flex
-    flex-direction: row
-    margin-left: 3em
-  
-  #button
-    margin-right: 15px
-
-  .buttonCalculate
-    width:7em !important
-    
-  &:hover
-    cursor: pointer
-
-    
-.container
-  display: flex
-  flex-direction: column
   margin: 0 auto
-
-  .changeableGraph
-    padding-top: 4em
-    display: flex
-    justify-content: center
-    padding-bottom: 30px
-  
-    .apexcharts-legend 
-    .center
-    .position-bottom
+  .chartTitle
+      color: $background_color_1
+      font-size: 4.5vh
+      display: flex
       justify-content: center
-      display: inline-grid
+      padding-bottom: 30px
+  .containerGraphs
+    .tabsContainer
+      .buttonsDisposition
+        float: left
+        display: flex
+        flex-direction: row
+        margin-left: 3em
+      
+      #button
+        margin-right: 15px
 
-    .apexcharts-legend-series
-      text-align: justify
-    
-@media (min-width: 768px)
-  h3
-    font-size: 2.5rem !important
+      .buttonCalculate
+        width:7em !important
+        
+      &:hover
+        cursor: pointer
 
-  .container
-    margin: 0 auto!important
-    padding-top: 30px
+      .container
+        display: flex
+        flex-direction: column
+        justify-content: center
+
+        .changeableGraph
+          padding-top: 4em
+          display: flex
+          justify-content: center
+          padding-bottom: 30px
+        
+          .apexcharts-legend 
+          .center
+          .position-bottom
+            justify-content: center
+            display: inline-grid
+
+          .apexcharts-legend-series
+            text-align: justify
+      
+  @media (min-width: 768px)
+    h3
+      font-size: 2.5rem !important
+
+    .container
+      margin: 0 auto!important
+      padding-top: 30px
   
   
 

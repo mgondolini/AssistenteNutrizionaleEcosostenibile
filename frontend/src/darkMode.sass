@@ -38,7 +38,7 @@
   .noMeals
     color: $white
   // Meals & infoProd page DarkMode
-  .meals, .productInfo
+  .meals, .productInfo, .containerFather
     .mealTitle
       color: $white
     .card-calendar
@@ -48,12 +48,18 @@
       .datePicker
         .buttonCalendar
           color: $white
-    .containerMeal, .containerProd
+    .containerGraphs
+      #myTabContent
+        background-color: $color_bg_card
+    .containerMeal, .containerProd, .containerGraphs
       background-color: $dark_bg_card
       #myTabContent
+        .infoNoMeals
+          .iconTriangle, .noMeals
+            color: $white !important
         .apexcharts-canvas 
           background-color: rgba($dark_bg_link_not_active, .7)
-        .nav-justified
+        .nav-justified, .nav-tabs
           .nav-link
             background-color: $dark_bg_link
             border-bottom: 1px solid $border_color
@@ -114,10 +120,10 @@
     .homeMission
       color: $white
   // Other pages darkMode
-  .login, .registration, .container, .productInfo, .containerFather
+  .login, .registration, .container, .productInfo, .containerFather 
     .card-edit
       color: $white
-    .cardLogin, .cardR
+    .cardLogin, .cardR, .containerGraps
       background-color: $dark_bg_card
       .card-title
         color: $white
@@ -175,7 +181,7 @@
     .textBlock
       color: $white
   // Modal DarkMode
-  #modal-error, #modal-selectProduct, #deleteModal, #completeMeal, #modal-ach
+  #modal-error, #modal-selectProduct, #deleteModal, #completeMeal, #modal-ach, #notFound
     .modal-content
       background-color: $dark_bg_card
       .modal-header
