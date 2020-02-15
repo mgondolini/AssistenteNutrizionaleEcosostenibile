@@ -28,7 +28,7 @@
                 <span> 8.97 g Fat in moderate quantity </span>
               </div>
               -->
-              <div class="nutritionIndicators">
+              <div v-if="fatLvl" class="nutritionIndicators">
                 <table>
                   <tr>
                     <td>
@@ -254,13 +254,13 @@ export default {
 
       // NUTRITION TAB
       this.nutriScore = product.nutriscore_grade || '';
-      this.nutriScoreImgPath = imagesContext(`./nutriScore/${this.nutriScore}${imagesExt}`);
+      this.nutriScoreImgPath = this.nutriScore ? imagesContext(`./nutriScore/${this.nutriScore}${imagesExt}`) : '';
 
       // nutritional levels
-      this.fatLvl = product.nutrient_levels.fat;
-      this.satFatLvl = product.nutrient_levels['saturated-fat'];
-      this.sugarLvl = product.nutrient_levels.sugars;
-      this.saltLvl = product.nutrient_levels.salt;
+      this.fatLvl = product.nutrient_levels.fat || '';
+      this.satFatLvl = product.nutrient_levels['saturated-fat'] || '';
+      this.sugarLvl = product.nutrient_levels.sugars || '';
+      this.saltLvl = product.nutrient_levels.salt || '';
 
       // nutritional values
       this.fat = product.nutriments.fat_100g || 0;
@@ -305,10 +305,10 @@ export default {
       this.nutritionTableItems.push({ nutriFact: 'proteins', for100g: this.proteins, unit: proteinsUnit });
       this.nutritionTableItems.push({ nutriFact: 'fiber', for100g: this.fiber, unit: fiberUnit });
 
-      this.fatLvlImgPath = imagesContext(`./nutrientLevels/${this.fatLvl}${imagesExt}`);
-      this.satFatLvlImgPath = imagesContext(`./nutrientLevels/${this.satFatLvl}${imagesExt}`);
-      this.sugarLvlImgPath = imagesContext(`./nutrientLevels/${this.sugarLvl}${imagesExt}`);
-      this.saltLvlImgPath = imagesContext(`./nutrientLevels/${this.saltLvl}${imagesExt}`);
+      this.fatLvlImgPath = this.fatLvl ? imagesContext(`./nutrientLevels/${this.fatLvl}${imagesExt}`) : '';
+      this.satFatLvlImgPath = this.satFatLvl ? imagesContext(`./nutrientLevels/${this.satFatLvl}${imagesExt}`) : '';
+      this.sugarLvlImgPath = this.sugarLvl ? imagesContext(`./nutrientLevels/${this.sugarLvl}${imagesExt}`) : '';
+      this.saltLvlImgPath = this.saltLvl ? imagesContext(`./nutrientLevels/${this.saltLvl}${imagesExt}`) : '';
 
       // INGREDIENTS TAB
       this.novaGroup = product.nova_group || '';
