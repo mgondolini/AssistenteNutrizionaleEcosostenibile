@@ -32,7 +32,7 @@
             <b-form-input v-model="ean" type="number"></b-form-input>
           </b-input-group>
 -->
-          <b-input-group>
+          <b-input-group class="inputClass">
             <b-input-group-prepend is-text>
               <i class="fa fa-barcode" aria-hidden="true"></i>
             </b-input-group-prepend>
