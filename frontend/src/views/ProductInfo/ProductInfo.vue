@@ -68,13 +68,21 @@
             </div>
             <div class="nutritionTable">
               <div class="portion">
-                <p>
-                  <label class="labelPortion" for="qty"> {{ $t('portion') }} </label>
-                  <input
-                    id="qty"
-                    v-model="qty"
-                  >
-                </p>
+
+                  <b-input-group size="lg"
+                    :prepend="$t('portion')" :append="productBaseUnitMeasure">
+                    <b-form-input
+                     id="qty-input"
+                     type="number"
+                     v-model="qty"
+                      aria-describedby="qty-input-help qty-input-feedback"
+                      :placeholder="$t('qty_input_placeholder')">
+                    </b-form-input>
+                    <b-form-invalid-feedback id="qty-input-feedback">
+                      {{ $t('qty_input_desc') }}
+                    </b-form-invalid-feedback>
+                  </b-input-group>
+
               </div>
               <b-table class="tableNutri" striped hover :fields="nutritionTableFields"
               :items="nutritionTableItems">
@@ -131,6 +139,12 @@ const maxH2o = 15;
 
 export default {
   name: 'productInfo',
+  computed: {
+    qtyState() {
+      // eslint-disable-next-line no-restricted-globals
+      return !isNaN(this.qty);
+    },
+  },
   data() {
     return {
       // TODO add control to verify that ean is indeed in number format
@@ -438,7 +452,9 @@ export default {
     "proteins" : "Proteins",
     "fiber" : "Fiber",
     "nutriFacts" : "Nutritional facts",
-    "portion" : "Portion"
+    "portion" : "Portion",
+    "qty_input_desc" : "Insert a number.",
+    "qty_input_placeholder" : "The portion consumed"
   },
   "it": {
     "tab_nutrition_title" : "Valori nutrizionali",
@@ -454,7 +470,9 @@ export default {
     "proteins" : "Proteine",
     "fiber" : "Fibre",
     "nutriFacts": "Composizione",
-    "portion": "Porzione"
+    "portion": "Porzione",
+    "qty_input_desc" : "Inserisci un numero.",
+    "qty_input_placeholder" : "La porzione consumata"
   }
 }
 </i18n>
