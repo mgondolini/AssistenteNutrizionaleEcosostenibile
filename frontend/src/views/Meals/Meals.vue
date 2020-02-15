@@ -479,7 +479,7 @@ export default {
 
       if (!found) this.noMeals = 'no_meals';
     },
-    setDateAndShowMeals(day) {
+    setDate(day) {
       this.currentDate = day.date;
       const timeStamp = (new Date(Date.UTC(
         this.currentDate.getFullYear(),
@@ -488,6 +488,9 @@ export default {
       ))).toISOString();
       this.$router.push({ path: '/meals', query: { date: timeStamp } });
       console.log(`Current date: ${this.currentDate}`);
+      this.showMeals();
+    },
+    showMeals() {
       this.showMealsByDate(this.currentDate);
       this.computeDayNutritionFact(this.currentDate);
       this.triggerChartTab();
