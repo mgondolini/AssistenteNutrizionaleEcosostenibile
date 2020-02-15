@@ -219,7 +219,9 @@ export default {
           },
         }, (result) => {
           if (result.codeResult) {
-            console.log('result', result.codeResult.code);
+            const ean = result.codeResult.code;
+            console.log('result', ean);
+            this.loadProductInfo(ean);
           } else {
             console.log('not detected');
           }
