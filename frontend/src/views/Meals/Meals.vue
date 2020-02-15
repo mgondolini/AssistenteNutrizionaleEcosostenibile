@@ -64,7 +64,8 @@
                 <b-button class="headerTitle accordion-bgn" block href="#"
                 v-b-toggle="'accordion-' + index" variant="success">
                   <p class="meal-name-p text-center m-0">{{ meal.meal_name }}</p>
-                  <b-button class="p-0 mr-3 accordion-bgn" variant="success"
+                  <b-button :disabled="meal.components.length <= 0"
+                    class="p-0 mr-3 accordion-bgn" variant="success"
                     @click="calculateMeal(meal.meal_name, meal.timestamp)"
                   ><b-icon icon="pie-chart-fill"
                     class="border border-light rounded p-1"
@@ -143,7 +144,12 @@
             </b-collapse>
           </b-card>
         </div>
-        <div v-else><p class="noMeals">{{ $t(this.noMeals) }}</p></div>
+        <div v-else class="mt-5">
+          <b-icon icon="alert-triangle" scale="2" class="mb-3" color="slategrey"></b-icon>
+          <p class="noMeals"> {{ $t(this.noMeals) }} </p>
+          <p class="noMeals"> {{ $t("choose_name") }}</p>
+          <p class="noMeals"> {{ $t("click_on_plus") }}</p>
+        </div>
         <b-modal id="modal-ach" :title="$i18n.t('newAchievement')" hide-footer>
           <div class="d-block text-center">
             {{ this.achMsgModal }}
@@ -229,6 +235,7 @@ export default {
       },
       disableBtn: false,
       arrowRightVariant: 'info',
+
 
       // Daily nutrition values
       nutritionFact: {
@@ -702,7 +709,9 @@ export default {
     "date": "Date",
     "calculate_meal": "Calculate meal",
     "meal_name_null": "Meal name cannot be null",
-    "no_meals": "No meals inserted on this date yet",
+    "no_meals": "No meals inserted on this date yet\n",
+    "choose_name": "1. Choose a name.",
+    "click_on_plus": "2. Click on + button to insert it.",
     "error_meals": "Error!",
     "complete_meal": "Complete meal",
     "save_meal": "If you complete the meal you will not be able to edit it again.\nConfirm?",
@@ -737,7 +746,9 @@ export default {
     "date": "Data",
     "calculate_meal": "Calcola pasto",
     "meal_name_null": "Il nome del pasto non può essere nullo",
-    "no_meals": "Non sono ancora stati inseriti pasti in questa data",
+    "no_meals": "Non sono ancora stati inseriti pasti in questa data.\n",
+    "choose_name": "1. Scegli un nome.",
+    "click_on_plus": "2. Clicca sul + per aggiungerlo.",
     "error_meals": "Errore!",
     "complete_meal": "Completa il pasto",
     "save_meal": "Se completi il pasto non potrai più modificarlo\nConfermi?",
