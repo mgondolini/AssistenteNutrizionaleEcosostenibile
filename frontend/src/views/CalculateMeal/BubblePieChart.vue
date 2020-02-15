@@ -207,8 +207,8 @@ export default {
       return http.get(`api/product/${params.barcode}/${params.quantity}`, { params });
     },
     createGraphData() {
-      let x = 20;
-      let y = 20;
+      let x;
+      let y;
 
       let j = 0;
 
@@ -236,11 +236,14 @@ export default {
         this.alcohol.push(Number((i.alcohol_tot).toFixed(2)));
         this.fibers.push(Number((i.fiber_tot).toFixed(2)));
 
+        x = i.carbon_footprint_tot;
+        y = i.water_footprint_tot;
+
+        console.log(`coords (${x}, ${y})`);
+
         this.values.push([x, y, this.radius[j]]);
         this.bubbleLabels.push(i.product_name);
 
-        x += 10;
-        y += 10;
         j += 1;
       });
 
