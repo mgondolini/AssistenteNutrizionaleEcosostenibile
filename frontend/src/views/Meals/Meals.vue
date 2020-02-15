@@ -86,7 +86,9 @@
                 <b-button v-if="!meal.is_closed" variant="light"
                   class="add-component mb-3"
                   @click="addComponent(meal.meal_name, meal.timestamp)"
-                ><b-icon icon="plus" variant="success" font-scale="2" shift-v="+2"></b-icon>
+                >
+                <b-icon icon="plus" variant="success" scale="1.7" shift-v="-1" shift-h="-2">
+                </b-icon>
                   {{ $t('add_component') }}
                 </b-button>
                 <div v-if="meal.components.length > 0">
