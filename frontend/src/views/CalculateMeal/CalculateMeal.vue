@@ -1,47 +1,49 @@
 <template>
   <div class="containerFather">
     <h3 class="chartTitle">{{ $t('intro') }}</h3>
-    <b-tabs class="tabsContainer">
-      <b-tab :title="$t('info')">
-        <div class="buttonsDisposition">
-          <b-button id="button" class="sim-button button1 buttonCalculate"
-            v-on:click='changeGraphGlobal'>
-            Global
-          </b-button>
-          <b-button id="button" class="sim-button button1 buttonCalculate"
-            v-on:click='changeGraphComponent'>
-            Component
-          </b-button>
-        </div>
-        <div class="container">
-          <apexchart class="changeableGraph" type=pie height=450 width=800 :options="chartOptions"
-            :series="chart.av" />
-        </div>
-      </b-tab>
-      <b-tab :title="$t('emission')">
-        <div class="chart-box">
-          <div id="bubble-chart">
-            <span class="paddingTop chartTitle">{{$t('co2')}}</span>
-            <hr/>
-            <apexchart class="co2" type=bubble height=400 :options="chartBubbleCO2Options"
-              :series="series">
-            </apexchart>
-            <hr/>
-            <span class="paddingTop chartTitle">{{$t('h2o')}}</span>
-            <apexchart class="h2o" type=bubble height=400 :options="chartBubbleWaterOptions"
-            :series="series2" />
+    <div class="containerGraphs">
+      <b-tabs class="tabsContainer" id="myTabContent">
+        <b-tab class="tab-content-info" :title="$t('info')" active>
+          <div class="buttonsDisposition">
+            <b-button id="button" class="sim-button button1 buttonCalculate"
+              v-on:click='changeGraphGlobal'>
+              Global
+            </b-button>
+            <b-button id="button" class="sim-button button1 buttonCalculate"
+              v-on:click='changeGraphComponent'>
+              Component
+            </b-button>
           </div>
+          <div class="container">
+            <apexchart class="changeableGraph" type=pie height=450 width=800 :options="chartOptions"
+              :series="chart.av" />
+          </div>
+        </b-tab>
+        <b-tab class="tab-content-info" :title="$t('emission')">
+          <div class="chart-box">
+            <div id="bubble-chart">
+              <h5 class="paddingTop chartTitle">{{$t('co2')}}</h5>
+              <hr/>
+              <apexchart class="co2" type=bubble height=400 :options="chartBubbleCO2Options"
+                :series="series">
+              </apexchart>
+              <hr/>
+              <h5 class="paddingTop chartTitle">{{$t('h2o')}}</h5>
+              <apexchart class="h2o" type=bubble height=400 :options="chartBubbleWaterOptions"
+              :series="series2" />
+            </div>
+          </div>
+        </b-tab>
+      </b-tabs>
+      <b-modal id="modal-error" :title="$i18n.t('errorModalTitle')"
+        hide-footer v-model="modalErrorShow">
+        <div class="d-block text-center">
+          <img src="../../assets/restrictionShield.png">
+          {{ this.errorMsgModal }}
         </div>
-      </b-tab>
-    </b-tabs>
-    <b-modal id="modal-error" :title="$i18n.t('errorModalTitle')"
-      hide-footer v-model="modalErrorShow">
-      <div class="d-block text-center">
-        <img src="../../assets/restrictionShield.png">
-        {{ this.errorMsgModal }}
-      </div>
-      <b-button class="mt-3" block @click="hideModal">{{ $t('closeBtn')}}</b-button>
-    </b-modal>
+        <b-button class="mt-3" block @click="hideModal">{{ $t('closeBtn')}}</b-button>
+      </b-modal>
+    </div>
   </div>
 </template>
 

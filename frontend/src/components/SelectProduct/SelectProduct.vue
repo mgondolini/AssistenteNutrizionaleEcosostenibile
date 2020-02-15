@@ -12,6 +12,8 @@
           <b-button id="buttonScanner" class="btnAR" v-on:click="toggleScannerStream">
             {{$t('input_btn_scan_barcode')}}</b-button>
           <b-button v-on:click="uploadFile()">{{$t('input_btn_upload')}}</b-button>
+          <input v-show="false" type="file"
+            id="barcodePicture" @change="uploadBarcodeImg" name="file" />
           <b-button v-on:click="scanNutriTable()">{{$t('input_btn_scan_nutri')}}</b-button>
       </div>
       <div v-else-if="inputMode === 'MANUAL'" id="insertEAN" class="buttonContainer">
@@ -46,6 +48,7 @@
 
 <script>
 const axios = require('axios');
+const Quagga = require('quagga');
 
 const offApiPath = 'https://world.openfoodfacts.org/api/v0/product/';
 const offApiSuffix = '.json';
@@ -87,13 +90,15 @@ export default {
     };
   },
   created() {
-    this.$root.$on('openProductSelection', (mealName, timestamp) => {
+    this.$root.$on('openProductSelection', (mealName, timeStamp) => {
       this.mealName = mealName;
-      this.mealDate = timestamp;
+      this.mealDate = timeStamp;
       // console.log(`Called openProdSel with: ${this.mealName} ${this.mealDate}`);
       this.openModal();
     });
-    this.$root.$on('selectProduct', (ean) => {
+    this.$root.$on('selectProduct', (ean, mealName, timeStamp) => {
+      this.mealName = mealName;
+      this.mealDate = timeStamp;
       this.loadProductInfo(ean);
     });
     // sessionStorage.removeItem('product');
@@ -170,6 +175,7 @@ export default {
       this.$bvModal.msgBoxOk(this.$i18n.t(errorTextKey), {
         title: this.$i18n.t('modal_title_error'),
         okVariant: 'danger',
+        id: 'notFound',
         centered: true,
       });
       // this.toggleScannerStream();
@@ -192,6 +198,38 @@ export default {
       // pop() returns the most frequent (or the latest seen in case of a tie)
       return arr.sort((a, b) => arr.filter(v => v === a).length
             - arr.filter(v => v === b).length).pop();
+    },
+    uploadFile() {
+      document.getElementById('barcodePicture').click();
+    },
+    uploadBarcodeImg(img) {
+      const i = img.target.files[0];
+      const reader = new FileReader();
+      reader.readAsDataURL(i);
+      reader.onload = (image) => {
+        // console.log(image);
+        // console.log(Quagga);
+        // image.target.result contiene l'immagine in base64 e può essere usata come url
+
+        Quagga.decodeSingle({
+          src: image.target.result,
+          numOfWorkers: 0, // Needs to be 0 when used within node
+          inputStream: {
+            size: 800, // restrict input-size to be 800px in width (long-side)
+          },
+          decoder: {
+            readers: ['ean_reader'], // List of active readers
+          },
+        }, (result) => {
+          if (result.codeResult) {
+            const ean = result.codeResult.code;
+            console.log('result', ean);
+            this.loadProductInfo(ean);
+          } else {
+            console.log('not detected');
+          }
+        });
+      };
     },
   },
 };
