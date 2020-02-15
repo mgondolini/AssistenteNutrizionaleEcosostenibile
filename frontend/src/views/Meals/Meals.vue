@@ -152,10 +152,12 @@
         <div v-else class="mt-5 infoNoMeals">
           <b-icon icon="alert-triangle" scale="2"
             class="mb-3 iconTriangle" color="slategrey"></b-icon>
-          <p class="noMeals"> {{ $t(this.noMeals) }} </p>
-          <p class="noMeals"> {{ $t("choose_name") }}</p>
-          <p class="noMeals"> {{ $t("click_on_plus") }}</p>
-          <p class="noMeals"> {{ $t("complete_to_achieve") }}</p>
+          <div class="noMealsText">
+            <p class="noMeals"> {{ $t(this.noMeals) }} </p>
+            <p class="noMeals"> {{ $t("choose_name") }}</p>
+            <p class="noMeals"> {{ $t("click_on_plus") }}</p>
+            <p class="noMeals"> {{ $t("complete_to_achieve") }}</p>
+          </div>
         </div>
         <b-modal id="modal-ach" :title="$i18n.t('newAchievement')" hide-footer>
           <div class="d-block text-center">
@@ -174,13 +176,17 @@
                 :options="chartOptions"
                 :series="series">
               </apexchart>
-              <p class="chartDesc mt-5"> {{ $t("barchart_description") }} </p>
-              <li class="chartDesc">
-                <b class="green">{{$t("green")}}: </b>{{ $t("barchart_green") }} </li>
-              <li class="chartDesc">
-                <b class="orange"> {{$t("orange")}}: </b>{{ $t("barchart_orange") }} </li>
-              <li class="chartDesc">
-                <b class="red">{{$t("red")}}: </b>{{ $t("barchart_red") }} </li>
+              <div class="information">
+                <p class="chartDesc mt-5"> {{ $t("barchart_description") }} </p>
+                <ul class="listColor">
+                  <li class="chartDesc">
+                    <b class="green">{{$t("green")}}: </b>{{ $t("barchart_green") }} </li>
+                  <li class="chartDesc">
+                    <b class="orange"> {{$t("orange")}}: </b>{{ $t("barchart_orange") }} </li>
+                  <li class="chartDesc">
+                    <b class="red">{{$t("red")}}: </b>{{ $t("barchart_red") }} </li>
+                </ul>
+              </div>
             </div>
           </div>
         </b-tab>
