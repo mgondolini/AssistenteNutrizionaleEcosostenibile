@@ -16,7 +16,8 @@
         <b-tabs content-class="mt-3" justified id="myTabContent">
           <b-tab class="tab-content-info" :title="$t('tab_nutrition_title')" active>
             <div class="firstInfo">
-              <b-img center :src="nutriScoreImgPath" alt="Nutri score image"></b-img>
+              <b-img v-if="nutriScore" center :src="nutriScoreImgPath" alt="Nutri score image">
+              </b-img>
               <!-- use vue slots to dynamically generate the table
                   with img path inside the rows -->
               <!--
@@ -100,7 +101,9 @@
             </div>
           </b-tab>
           <b-tab class="tab-content-info"  :title="$t('tab_ingredients_title')">
-            <b-img class="imgNova" center :src="novaGroupImgPath" alt="Nova group image"></b-img>
+            <b-img v-if="novaGroup" class="imgNova" center
+            :src="novaGroupImgPath" alt="Nova group image">
+            </b-img>
             <span class="ingredients"> Ingredients: {{ ingredientsText }}
             </span>
           </b-tab>
@@ -250,7 +253,7 @@ export default {
       }
 
       // NUTRITION TAB
-      this.nutriScore = product.nutriscore_grade;
+      this.nutriScore = product.nutriscore_grade || '';
       this.nutriScoreImgPath = imagesContext(`./nutriScore/${this.nutriScore}${imagesExt}`);
 
       // nutritional levels
@@ -308,7 +311,7 @@ export default {
       this.saltLvlImgPath = imagesContext(`./nutrientLevels/${this.saltLvl}${imagesExt}`);
 
       // INGREDIENTS TAB
-      this.novaGroup = product.nova_group;
+      this.novaGroup = product.nova_group || '';
       // TODO use placeholder if nova score is missing
       this.novaGroupImgPath = this.novaGroup ? imagesContext(`./novaGroup/${this.novaGroup}${imagesExt}`) : '';
 
