@@ -1,8 +1,19 @@
-.buttonContainer
-  padding: 10px
+@import '../../custom.sass'
+@import '../../lightMode.sass'
+@import '../../darkMode.sass'
   
-  button, input
-    margin: 10px
+.buttonContainer
+  //padding: 10px
+  
+  button
+    margin-right: 10px
+
+  input, input:focus
+    background-color: rgba($dark_bg_link_not_active, .2)
+    color: $white
+
+  .input-group, select
+    margin-bottom: 15px
 
 .buttonContainerVertical
 

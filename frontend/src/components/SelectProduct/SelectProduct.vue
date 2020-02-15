@@ -18,12 +18,32 @@
       </div>
       <div v-else-if="inputMode === 'MANUAL'" id="insertEAN" class="buttonContainer">
         <div>
+          <!--
           <label class="eanCodeLabel" for="ean">{{$t('ean_code')}}</label>
           <input
             id="ean"
             v-model="ean"
             value=""
           >
+          <b-input-group>
+            <b-input-group-prepend>
+              <b-icon icon="justify"></b-icon>
+            </b-input-group-prepend>
+            <b-form-input v-model="ean" type="number"></b-form-input>
+          </b-input-group>
+-->
+          <b-input-group class="inputClass">
+            <b-input-group-prepend is-text>
+              <i class="fa fa-barcode" aria-hidden="true"></i>
+            </b-input-group-prepend>
+            <b-form-input
+              type="number"
+              v-model="ean"
+              value=""
+              placeholder="EAN">
+            </b-form-input>
+          </b-input-group>
+
         </div>
         <b-form-select v-model="ean" :options="eanOptions"></b-form-select>
         <div>
