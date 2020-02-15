@@ -151,9 +151,24 @@ export default {
           // some random EANs can also return a status 1 so we check the code not to be empty
           const status = (response.data.status === 1)
                         && (response.data.code !== '')
-                        && (Object.prototype.hasOwnProperty.call(response.data, 'product'));
+                        && (Object.prototype.hasOwnProperty.call(response.data, 'product'))
+                        && (Object.prototype.hasOwnProperty.call(response.data.product, 'nutriments'));
 
-          if (!status) {
+          let dataPresent = false;
+
+          if (status) {
+            const nutri = response.data.product.nutriments;
+            dataPresent = Boolean(nutri.energy);
+            // More restrictive requisites to show products below
+            /*
+            dataPresent = (nutri.fat_100g
+            && nutri['saturated-fat_100g']
+            && nutri.sugars_100g
+            && nutri.salt_100g);
+            */
+          }
+
+          if (!(status && dataPresent)) {
             this.productNotFound();
             return;
           }
