@@ -100,7 +100,10 @@
                         <b-col>
                           <p class="component-p mb-1">
                             <b>
-                              <b-link href="#" @click="goToInfoProd(component.barcode)">
+                              <b-link href="#"
+                              @click="goToInfoProd(component.barcode,
+                              meal.meal_name,
+                              meal.timestamp)">
                                 {{ component.product_name }}
                               </b-link>
                             </b>
@@ -556,8 +559,8 @@ export default {
         this.$refs.barchart.updateSeries([{ name: '', data: this.nutritionValues }]);
       }, 500);
     },
-    goToInfoProd(barcode) {
-      this.$root.$emit('selectProduct', barcode);
+    goToInfoProd(barcode, mealName, timeStamp) {
+      this.$root.$emit('selectProduct', barcode, mealName, timeStamp);
     },
     removeComponentModal(barcode, quantity, mealName) {
       this.$bvModal.msgBoxConfirm(this.$i18n.t('confirm_component_deletion'), {
