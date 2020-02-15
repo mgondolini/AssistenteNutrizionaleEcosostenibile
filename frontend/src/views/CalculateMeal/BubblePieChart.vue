@@ -219,7 +219,8 @@ export default {
       console.log(this.chartData.plot.values);
       console.log('OLD SERIES');
       console.log(this.series);
-      // alert('REPLACING STUBS WITH REAL VALUES IN GRAPH');
+
+
       this.values = [];
       this.dataBubble = [];
       this.series = null;
