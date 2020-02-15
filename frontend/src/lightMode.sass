@@ -14,18 +14,29 @@
   .our_mission
     background-color: $bg_light_mission
   //Start Login Style
-  .login
-    .cardLogin
+  .meals, .productInfo, .containerFather
+    .containerMeal, .containerProd, .containerGraphs
+      #myTabContent
+        .nav-justified, .nav-tabs
+          .nav-link
+            border-bottom: 1px solid $border_color
+            color: $text-color
+            font-weight: normal
+          .active
+            color: $dark_bg_card
+            font-weight: bolder
+  .login, .registration, .container, .productInfo
+    .cardLogin, .cardR
       background-color: $white
       .card-title
         color: $black
-      .formIns, #myTabContent
+      .formIns, #myTabContent, .tabsContainer
         .grey-text
           .form-group
             color: $black
             .text-muted
               color: $black
-        #basicInfo
+        #basicInfo, .tab-content-info
           .row
             .labelText
               color: $black
@@ -33,6 +44,14 @@
             color: $black !important
           .pers
             color: $black
+        .nav-tabs
+          .nav-link
+            border-bottom: 1px solid $border_color
+            color: $text_color
+            font-weight: normal
+          .active
+            color: $black
+            font-weight: bolder
 
   .vc_custom_1548165107261
     background-color: $white !important
