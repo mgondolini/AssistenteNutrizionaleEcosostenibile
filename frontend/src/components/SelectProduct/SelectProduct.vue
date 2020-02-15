@@ -204,10 +204,10 @@ export default {
       const reader = new FileReader();
       reader.readAsDataURL(i);
       reader.onload = (image) => {
-        console.log(image);
-        console.log(Quagga);
+        // console.log(image);
+        // console.log(Quagga);
         // image.target.result contiene l'immagine in base64 e può essere usata come url
-        /*
+
         Quagga.decodeSingle({
           src: image.target.result,
           numOfWorkers: 0, // Needs to be 0 when used within node
@@ -215,7 +215,7 @@ export default {
             size: 800, // restrict input-size to be 800px in width (long-side)
           },
           decoder: {
-            readers: ['code_128_reader'], // List of active readers
+            readers: ['ean_reader'], // List of active readers
           },
         }, (result) => {
           if (result.codeResult) {
@@ -224,7 +224,6 @@ export default {
             console.log('not detected');
           }
         });
-        */
       };
     },
   },
