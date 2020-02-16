@@ -51,6 +51,9 @@
     .containerGraphs
       #myTabContent
         background-color: $color_bg_card
+    .informations
+      .chartDescription
+        color: $white
     .containerMeal, .containerProd, .containerGraphs
       background-color: $dark_bg_card
       #myTabContent
@@ -190,10 +193,14 @@
             .col-md-8, .col-6, .col-8
               .profileSpan
                 color: $white
+              
               .card-input-ns, .card-input-date, .form-control,
               .form-control-sm, .custom-select-sm, .multiselect__tags
                 background-color: rgba($dark_bg_link_not_active, .2)
                 color: $white
+                .multiselect__input
+                  background-color: transparent
+                  background: transparent !important
                 .multiselect--active
                   background-color: transparent
                 .multiselect__placeholder

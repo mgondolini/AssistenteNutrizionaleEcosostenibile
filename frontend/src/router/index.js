@@ -8,7 +8,6 @@ import Meals from '../views/Meals/Meals.vue';
 import CalculateMeal from '../views/CalculateMeal/CalculateMeal.vue';
 import Profile from '../views/Profile/Profile.vue';
 
-
 Vue.use(VueRouter);
 
 const routes = [

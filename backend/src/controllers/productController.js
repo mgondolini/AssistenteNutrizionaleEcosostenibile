@@ -1,6 +1,7 @@
 const mongoose = require('mongoose');
 
 const Product = mongoose.model('Product');
+const productControllerUtils = require('./utils/productControllerUtils.js');
 
 /** Loads a product given its barcode */
 exports.load_product = async (req, res) => {
@@ -23,6 +24,19 @@ exports.load_product = async (req, res) => {
       global.log(`Error while loading product: ${err}`); // DEBUG
       res.status(500).send({ description: 'internal_server_error' });
     });
+};
+
+/** Loads a product given its barcode and quantity */
+exports.load_product_quantity = async (req, res) => {
+  global.log(`Looking for barcode: ${req.query.barcode}...`); // DEBUG
+  const { barcode } = req.query;
+  const { quantity } = req.query;
+
+  const values = await productControllerUtils.computeProductValues(barcode, quantity, res);
+  console.log('product controller values');
+  console.log(values);
+  if (values !== null || values !== undefined) res.status(200).send(values);
+  else res.status(500).send({ description: 'internal_server_error' });
 };
 
 /** Inserts a new product if not found in the database */
