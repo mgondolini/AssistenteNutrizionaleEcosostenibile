@@ -15,7 +15,7 @@
             </b-button>
           </div>
           <div class="container">
-            <apexchart class="changeableGraph" type=pie height=450 width=800 :options="chartOptions"
+            <apexchart class="changeableGraph" type=pie height=450 :options="chartOptions"
               :series="chart.av" />
           </div>
         </b-tab>
@@ -35,14 +35,6 @@
           </div>
         </b-tab>
       </b-tabs>
-      <b-modal id="modal-error" :title="$i18n.t('errorModalTitle')"
-        hide-footer v-model="modalErrorShow">
-        <div class="d-block text-center">
-          <img src="../../assets/restrictionShield.png">
-          {{ this.errorMsgModal }}
-        </div>
-        <b-button class="mt-3" block @click="hideModal">{{ $t('closeBtn')}}</b-button>
-      </b-modal>
     </div>
   </div>
 </template>
@@ -59,9 +51,6 @@ export default {
       composition: { al: [], av: [] },
       arr: [],
       waterFootprint: [],
-      errorMsgModal: '',
-      modalErrorShow: false,
-      toLogin: false,
       series: [{
         name: '',
         data: [],
@@ -144,6 +133,12 @@ export default {
             showDuplicates: false,
           },
         },
+        plotOptions: {
+          bubble: {
+            minBubbleRadius: 2,
+            maxBubbleRadius: 50,
+          },
+        },
       };
     },
     chartBubbleWaterOptions() {
@@ -191,6 +186,12 @@ export default {
           },
           title: { text: this.$i18n.t('gCons') },
         },
+        plotOptions: {
+          bubble: {
+            minBubbleRadius: 2,
+            maxBubbleRadius: 50,
+          },
+        },
       };
     },
   },
@@ -199,7 +200,6 @@ export default {
   },
   mounted() {
     const params = { mealName: this.$route.query.mealName, date: this.$route.query.date };
-    this.toLogin = false;
     this.$store.state.http.get('api/meal', { params })
       .then((response) => {
         response.data.meals[0].components.forEach((elem) => {
@@ -225,7 +225,7 @@ export default {
           if (i > 2 && i < 13) {
             if (m[k] > 0.0001) {
               this.componentsMeal.al.push(this.$i18n.t(k));
-              this.componentsMeal.av.push(m[k]);
+              this.componentsMeal.av.push(parseFloat(m[k].toFixed(2)));
             }
           }
         });
@@ -236,23 +236,22 @@ export default {
   },
   methods: {
     checkError(error, status) {
-      if (error === 'internal_server_error' || error === 'meal_not_found') {
-        this.errorMsgModal = error;
-        this.$bvModal.show('modal-error');
-        this.toLogin = false;
+      if (error === 'internal_server_error') {
+        this.$root.$emit('openModalError', 'internal_server_errorTitle', 'internal_server_error',
+          () => this.$router.push('/meals'));
+      } else if (error === 'meal_not_found') {
+        this.$root.$emit('openModalError', 'meal_not_foundTitle', 'meal_not_found',
+          () => this.$router.push('/meals'));
       } else if (status === 401) {
-        this.errorMsgModal = this.$i18n.t('unauthorized');
-        this.$bvModal.show('modal-error');
-        this.toLogin = true;
+        this.$root.$emit('openModalError', 'unauthorizedTitle', 'unauthorized',
+          () => this.$router.push('/login'));
+      } else if (error === undefined) {
+        this.$root.$emit('openModalError', 'noAnswerTitle', 'noAnswer',
+          () => this.$router.push('/meals'));
       } else {
-        this.toLogin = false;
-        this.errorMsgModal = this.$i18n.t('internal_server_error');
+        this.$root.$emit('openModalError', 'internal_server_errorTitle', 'internal_server_error',
+          () => this.$router.push('/meals'));
       }
-    },
-    hideModal() {
-      this.$bvModal.hide('modal-error');
-      if (this.toLogin) this.$router.push('/login');
-      else this.$router.push('/meals');
     },
     changeGraphGlobal() {
       this.chart.al = this.composition.al;
@@ -265,36 +264,16 @@ export default {
     calculate() {
       const tmp = [];
       const tmp2 = [];
-      let tmpMaxArea = 0;
       this.arr.forEach((elem) => {
         const area = Math.round(elem.carbon * elem.qnt);
-        if (area > tmpMaxArea) {
-          tmpMaxArea = area;
-        }
         tmp.push({ name: elem.name, data: [[elem.carbon, elem.qnt, area]] });
       });
-      let minArea = Math.round(tmpMaxArea / 10);
-      const tmpF = tmp.map((t) => {
-        const r = t;
-        r.data[0][2] = t.data[0][2] < minArea ? minArea : t.data[0][2];
-        return r;
-      });
-      this.series = tmpF;
-      tmpMaxArea = 0;
+      this.series = tmp;
       this.waterFootprint.forEach((elem) => {
         const area = Math.round(elem.water * elem.qnt);
-        if (area > tmpMaxArea) {
-          tmpMaxArea = area;
-        }
         tmp2.push({ name: elem.name, data: [[elem.water, elem.qnt, area]] });
       });
-      minArea = Math.round(tmpMaxArea / 10);
-      const tmpQ = tmp2.map((t) => {
-        const r = t;
-        r.data[0][2] = t.data[0][2] < minArea ? minArea : t.data[0][2];
-        return r;
-      });
-      this.series2 = tmpQ;
+      this.series2 = tmp2;
     },
   },
 };
@@ -308,5 +287,5 @@ export default {
 @import './calculateMeal.sass'
 @import './bubbleChartEmissions.sass'
 .apexcharts-toolbar
-  display: none
+  display: none !important
 </style>
