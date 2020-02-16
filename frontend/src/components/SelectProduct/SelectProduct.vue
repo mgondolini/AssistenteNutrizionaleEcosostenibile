@@ -280,16 +280,6 @@ export default {
       };
     },
     loadRecentProducts() {
-      /*
-      Object.keys(sessionStorage).forEach((key) => {
-        const product = JSON.parse(sessionStorage.getItem(key));
-        if (product) {
-          console.log(product);
-          if (product.ean && product.name) console.log(product.ean + product.name);
-        }
-      });
-      */
-
       for (let i = 0; i < sessionStorage.length; i += 1) {
         const productKey = sessionStorage.key(i);
         const productString = sessionStorage.getItem(productKey);
@@ -297,18 +287,17 @@ export default {
           const product = JSON.parse(productString);
           console.log(product);
           if (product.ean && product.product_name) {
-            this.recentProducts.push({ value: product.ean, text: product.product_name });
-            console.log(product.ean + product.product_name);
+            let alreadyPresent = false;
+            Object.values(this.recentProducts).forEach((p) => {
+              if (p.value === product.ean) alreadyPresent = true;
+            });
+            if (!alreadyPresent) {
+              this.recentProducts.push({ value: product.ean, text: product.product_name });
+              console.log(product.ean + product.product_name);
+            }
           }
         }
       }
-
-      /*
-      for (product in sessionStorage) {
-        console.log(product);
-        if (product.ean && product.name) console.log(product.ean + product.name);
-      }
-      */
     },
   },
 };
