@@ -132,7 +132,7 @@ export default {
         labels: this.chart.al,
         dataLabels: {
           formatter(val, opts) {
-            return `${opts.w.config.series[opts.seriesIndex].toFixed(2)} g`;
+            return `${opts.w.config.series[opts.seriesIndex].toFixed(0)} g`;
           },
         },
         legend: {
@@ -426,8 +426,11 @@ export default {
     this.$store.state.http.get('api/meal', { params })
       .then((response) => {
         response.data.meals[0].components.forEach((elem) => {
-          this.composition.al.push(elem.product_name.concat(' - ').concat(elem.quantity).concat(' g'));
-          this.composition.av.push(elem.quantity);
+          this.composition.al.push(elem.product_name
+            .concat(' - ')
+            .concat(Math.round(elem.quantity))
+            .concat(' g'));
+          this.composition.av.push(Math.round(elem.quantity));
           this.arr.push({
             name: elem.product_name,
             qnt: elem.quantity,
