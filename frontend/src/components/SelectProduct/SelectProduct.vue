@@ -8,30 +8,37 @@
     >
     <div id="selectionInputMode">
       <div v-if="inputMode === 'SELECT'" class="buttonContainerVertical">
-          <b-button v-on:click="inputMode = 'MANUAL'">{{$t('input_btn_manual')}}</b-button>
+          <b-button id="buttonManual" v-on:click="inputMode = 'MANUAL'">
+            {{$t('input_btn_manual')}}
+          </b-button>
           <b-button id="buttonScanner" class="btnAR" v-on:click="toggleScannerStream">
-            {{$t('input_btn_scan_barcode')}}</b-button>
-          <b-button v-on:click="uploadFile()">{{$t('input_btn_upload')}}</b-button>
+            {{$t('input_btn_scan_barcode')}}
+          </b-button>
+          <b-button id="buttonUpload" v-on:click="uploadFile()">
+            {{$t('input_btn_upload')}}
+          </b-button>
           <input v-show="false" type="file"
             id="barcodePicture" @change="uploadBarcodeImg" name="file" />
-          <b-button v-on:click="scanNutriTable()">{{$t('input_btn_scan_nutri')}}</b-button>
+          <!--
+            <b-button v-on:click="scanNutriTable()">{{$t('input_btn_scan_nutri')}}</b-button>
+          -->
       </div>
       <div v-else-if="inputMode === 'MANUAL'" id="insertEAN" class="buttonContainer">
         <div>
           <!--
-          <label class="eanCodeLabel" for="ean">{{$t('ean_code')}}</label>
-          <input
-            id="ean"
-            v-model="ean"
-            value=""
-          >
-          <b-input-group>
-            <b-input-group-prepend>
-              <b-icon icon="justify"></b-icon>
-            </b-input-group-prepend>
-            <b-form-input v-model="ean" type="number"></b-form-input>
-          </b-input-group>
--->
+            <label class="eanCodeLabel" for="ean">{{$t('ean_code')}}</label>
+            <input
+              id="ean"
+              v-model="ean"
+              value=""
+            >
+            <b-input-group>
+              <b-input-group-prepend>
+                <b-icon icon="justify"></b-icon>
+              </b-input-group-prepend>
+              <b-form-input v-model="ean" type="number"></b-form-input>
+            </b-input-group>
+          -->
           <b-input-group>
             <b-input-group-prepend is-text>
               <i class="fa fa-barcode" aria-hidden="true"></i>
@@ -45,7 +52,9 @@
           </b-input-group>
 
         </div>
-        <b-form-select v-model="ean" :options="eanOptions"></b-form-select>
+        <b-form-select v-model="ean" :options="eanOptions" v-if="DEBUG"></b-form-select>
+        <b-form-select v-model="ean" :options="recentProducts" placeholder="Recents">
+        </b-form-select>
         <div>
           <b-button v-on:click="loadProductInfo(ean)">{{$t('lookup')}}</b-button>
           <b-button v-on:click="inputMode = 'SELECT'">{{$t('back')}}</b-button>
@@ -77,6 +86,7 @@ export default {
   name: 'SelectProduct',
   data() {
     return {
+      DEBUG: false,
       inputMode: 'SELECT',
       ean: '',
       mealName: '',
@@ -107,6 +117,8 @@ export default {
         { value: '5449000000996', text: 'CocaCola 330ml' },
         { value: '5411188110835', text: 'Latte 1L' },
       ],
+
+      recentProducts: [],
     };
   },
   created() {
@@ -127,6 +139,7 @@ export default {
   },
   methods: {
     openModal() {
+      this.loadRecentProducts();
       this.$bvModal.show('modal-selectProduct');
     },
     gotoProductInfo() {
@@ -265,6 +278,37 @@ export default {
           }
         });
       };
+    },
+    loadRecentProducts() {
+      /*
+      Object.keys(sessionStorage).forEach((key) => {
+        const product = JSON.parse(sessionStorage.getItem(key));
+        if (product) {
+          console.log(product);
+          if (product.ean && product.name) console.log(product.ean + product.name);
+        }
+      });
+      */
+
+      for (let i = 0; i < sessionStorage.length; i += 1) {
+        const productKey = sessionStorage.key(i);
+        const productString = sessionStorage.getItem(productKey);
+        if (productString) {
+          const product = JSON.parse(productString);
+          console.log(product);
+          if (product.ean && product.product_name) {
+            this.recentProducts.push({ value: product.ean, text: product.product_name });
+            console.log(product.ean + product.product_name);
+          }
+        }
+      }
+
+      /*
+      for (product in sessionStorage) {
+        console.log(product);
+        if (product.ean && product.name) console.log(product.ean + product.name);
+      }
+      */
     },
   },
 };
