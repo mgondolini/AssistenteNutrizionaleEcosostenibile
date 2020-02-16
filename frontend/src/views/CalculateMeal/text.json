@@ -34,7 +34,8 @@
     "salt": "Salt",
     "alcohol": "Alcohol",
     "sugars": "Sugars",
-    "ingredients": "Ingredients"
+    "ingredients": "Ingredients",
+    "bubblepie_chart": "Representation of meal's ingredients in terms of quantity and display of their components"
   },
   "it": {
     "intro": "Composizione del tuo pasto",
@@ -70,6 +71,7 @@
     "salt": "Sale",
     "alcohol": "Alcool",
     "sugars": "Zuccheri",
-    "ingredients": "Ingredienti"
+    "ingredients": "Ingredienti",
+    "bubblepie_chart": "Rappresentazione degli ingredienti del pasto in termine di quantità e visualizzazione dei loro componenti "
   }
 }

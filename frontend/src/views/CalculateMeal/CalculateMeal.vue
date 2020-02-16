@@ -35,6 +35,7 @@
           </div>
         </b-tab>
         <b-tab class="tab-content-info" :title="$t('ingredients')">
+          <p class="chartDesc mt-3 mb-5"> {{ $t("bubblepie_chart")}} </p>
           <div class="chart-box">
             <zingchart ref="bubblepie" :data="bubbleChartData" :series="bubbleSeries"></zingchart>
           </div>
