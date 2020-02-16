@@ -20,13 +20,13 @@
 
   .image-container
     position: relative
-    max-width: 50%
     
     #imgProfile
       width: fill-available
       width: -webkit-fill-available
       width: -moz-available
       height: auto
+      image-rendering: -webkit-optimize-contrast
 
   @media screen and ( min-width: 760px )
     .image-container
@@ -102,8 +102,8 @@
   width: 20%
   .card-avatar--circle
   border-radius: 50%
-  width: 35vw
-  height: 35vw
+  width: 11em !important
+  height: 11em !important
 
 .nsError
   border-color: $error !important
