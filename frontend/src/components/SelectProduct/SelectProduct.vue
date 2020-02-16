@@ -52,7 +52,9 @@
           </b-input-group>
 
         </div>
-        <b-form-select v-model="ean" :options="eanOptions"></b-form-select>
+        <b-form-select v-model="ean" :options="eanOptions" v-if="DEBUG"></b-form-select>
+        <b-form-select v-model="ean" :options="recentProducts" placeholder="Recents">
+        </b-form-select>
         <div>
           <b-button v-on:click="loadProductInfo(ean)">{{$t('lookup')}}</b-button>
           <b-button v-on:click="inputMode = 'SELECT'">{{$t('back')}}</b-button>
@@ -84,6 +86,7 @@ export default {
   name: 'SelectProduct',
   data() {
     return {
+      DEBUG: false,
       inputMode: 'SELECT',
       ean: '',
       mealName: '',
@@ -114,6 +117,8 @@ export default {
         { value: '5449000000996', text: 'CocaCola 330ml' },
         { value: '5411188110835', text: 'Latte 1L' },
       ],
+
+      recentProducts: [],
     };
   },
   created() {
@@ -134,6 +139,7 @@ export default {
   },
   methods: {
     openModal() {
+      this.loadRecentProducts();
       this.$bvModal.show('modal-selectProduct');
     },
     gotoProductInfo() {
@@ -272,6 +278,37 @@ export default {
           }
         });
       };
+    },
+    loadRecentProducts() {
+      /*
+      Object.keys(sessionStorage).forEach((key) => {
+        const product = JSON.parse(sessionStorage.getItem(key));
+        if (product) {
+          console.log(product);
+          if (product.ean && product.name) console.log(product.ean + product.name);
+        }
+      });
+      */
+
+      for (let i = 0; i < sessionStorage.length; i += 1) {
+        const productKey = sessionStorage.key(i);
+        const productString = sessionStorage.getItem(productKey);
+        if (productString) {
+          const product = JSON.parse(productString);
+          console.log(product);
+          if (product.ean && product.product_name) {
+            this.recentProducts.push({ value: product.ean, text: product.product_name });
+            console.log(product.ean + product.product_name);
+          }
+        }
+      }
+
+      /*
+      for (product in sessionStorage) {
+        console.log(product);
+        if (product.ean && product.name) console.log(product.ean + product.name);
+      }
+      */
     },
   },
 };
