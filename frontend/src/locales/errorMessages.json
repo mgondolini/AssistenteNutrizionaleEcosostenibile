@@ -1,7 +1,8 @@
 {
     "en": {
         "meal_name_exists": "Meal name already in use.",
-        "meal_not_found": "Meal not found.",
+        "meal_not_foundTitle": "Meal not found",
+        "meal_not_found": "Can not found the meal",
         "mealslist_not_found": "Meals list not found.",
         "product_not_found": "Product not found.",
         "user_not_foundTitle": "User not found",
@@ -17,7 +18,8 @@
     },
     "it": {
         "meal_name_exists": "Nome pasto già esistente.",
-        "meal_not_found": "Pasto non trovato.",
+        "meal_not_foundTitle": "Pasto non trovato",
+        "meal_not_found": "Non ho trovato il pasto",
         "mealslist_not_found": "Lista pasti non trovata.",
         "product_not_found": "Prodotto non trovato.",
         "user_not_foundTitle": "Utente non trovato",

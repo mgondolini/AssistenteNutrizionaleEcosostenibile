@@ -7,42 +7,34 @@
           <div class="buttonsDisposition">
             <b-button id="button" class="sim-button button1 buttonCalculate"
               v-on:click='changeGraphGlobal'>
-              Global
+              {{ this.$i18n.t('global') }}
             </b-button>
             <b-button id="button" class="sim-button button1 buttonCalculate"
               v-on:click='changeGraphComponent'>
-              Component
+               {{ this.$i18n.t('component') }}
             </b-button>
           </div>
           <div class="container">
-            <apexchart class="changeableGraph" type=pie height=450 width=800 :options="chartOptions"
+            <apexchart class="changeableGraph" type=pie height=450 :options="chartOptions"
               :series="chart.av" />
           </div>
         </b-tab>
         <b-tab class="tab-content-info" :title="$t('emission')">
           <div class="chart-box">
             <div id="bubble-chart">
-              <h5 class="paddingTop chartTitle">{{$t('co2')}}</h5>
+              <h5 class="paddingTop chartTitleCC">{{$t('co2')}}</h5>
               <hr/>
               <apexchart class="co2" type=bubble height=400 :options="chartBubbleCO2Options"
                 :series="series">
               </apexchart>
               <hr/>
-              <h5 class="paddingTop chartTitle">{{$t('h2o')}}</h5>
+              <h5 class="paddingTop chartTitleCC">{{$t('h2o')}}</h5>
               <apexchart class="h2o" type=bubble height=400 :options="chartBubbleWaterOptions"
               :series="series2" />
             </div>
           </div>
         </b-tab>
       </b-tabs>
-      <b-modal id="modal-error" :title="$i18n.t('errorModalTitle')"
-        hide-footer v-model="modalErrorShow">
-        <div class="d-block text-center">
-          <img src="../../assets/restrictionShield.png">
-          {{ this.errorMsgModal }}
-        </div>
-        <b-button class="mt-3" block @click="hideModal">{{ $t('closeBtn')}}</b-button>
-      </b-modal>
     </div>
   </div>
 </template>
@@ -59,9 +51,6 @@ export default {
       composition: { al: [], av: [] },
       arr: [],
       waterFootprint: [],
-      errorMsgModal: '',
-      modalErrorShow: false,
-      toLogin: false,
       series: [{
         name: '',
         data: [],
@@ -111,11 +100,10 @@ export default {
         },
         xaxis: {
           tickAmount: 10,
-          min: 0,
+          min: 0.1,
           max: 50,
 
           labels: {
-            showDuplicates: false,
             rotate: -45,
             rotateAlways: true,
           },
@@ -138,10 +126,17 @@ export default {
           title: { text: this.$i18n.t('CO2grams') },
         },
         yaxis: {
-          max: 600,
+          min: 0,
+          max: 300,
           title: { text: this.$i18n.t('gCons') },
           labels: {
             showDuplicates: false,
+          },
+        },
+        plotOptions: {
+          bubble: {
+            minBubbleRadius: 2,
+            maxBubbleRadius: 50,
           },
         },
       };
@@ -160,10 +155,9 @@ export default {
         },
         xaxis: {
           tickAmount: 10,
-          min: 0,
+          min: 0.1,
           max: 50,
           labels: {
-            showDuplicates: false,
             rotate: -45,
             rotateAlways: true,
           },
@@ -186,11 +180,17 @@ export default {
           title: { text: this.$i18n.t('watergrams') },
         },
         yaxis: {
-          max: 600,
+          max: 300,
           labels: {
             showDuplicates: false,
           },
           title: { text: this.$i18n.t('gCons') },
+        },
+        plotOptions: {
+          bubble: {
+            minBubbleRadius: 2,
+            maxBubbleRadius: 50,
+          },
         },
       };
     },
@@ -200,7 +200,6 @@ export default {
   },
   mounted() {
     const params = { mealName: this.$route.query.mealName, date: this.$route.query.date };
-    this.toLogin = false;
     this.$store.state.http.get('api/meal', { params })
       .then((response) => {
         response.data.meals[0].components.forEach((elem) => {
@@ -221,42 +220,38 @@ export default {
         this.chart.al = this.composition.al;
         this.chart.av = this.composition.av;
 
-        Object.keys(response.data.meals[0]).forEach((k, i) => {
+        const m = response.data.meals[0];
+        Object.keys(m).forEach((k, i) => {
           if (i > 2 && i < 13) {
-            this.componentsMeal.al.push(this.$i18n.t(k));
-          }
-        });
-
-        Object.values(response.data.meals[0]).forEach((v, i) => {
-          if (i > 2 && i < 13) {
-            if (v > 0.0001) {
-              this.componentsMeal.av.push(v);
+            if (m[k] > 0.0001) {
+              this.componentsMeal.al.push(this.$i18n.t(k));
+              this.componentsMeal.av.push(parseFloat(m[k].toFixed(2)));
             }
           }
         });
+
         this.calculate();
       }).catch(error => this.checkError(error.response.data.description,
         error.response.status));
   },
   methods: {
     checkError(error, status) {
-      if (error === 'internal_server_error' || error === 'meal_not_found') {
-        this.errorMsgModal = error;
-        this.$bvModal.show('modal-error');
-        this.toLogin = false;
+      if (error === 'internal_server_error') {
+        this.$root.$emit('openModalError', 'internal_server_errorTitle', 'internal_server_error',
+          () => this.$router.push('/meals'));
+      } else if (error === 'meal_not_found') {
+        this.$root.$emit('openModalError', 'meal_not_foundTitle', 'meal_not_found',
+          () => this.$router.push('/meals'));
       } else if (status === 401) {
-        this.errorMsgModal = this.$i18n.t('unauthorized');
-        this.$bvModal.show('modal-error');
-        this.toLogin = true;
+        this.$root.$emit('openModalError', 'unauthorizedTitle', 'unauthorized',
+          () => this.$router.push('/login'));
+      } else if (error === undefined) {
+        this.$root.$emit('openModalError', 'noAnswerTitle', 'noAnswer',
+          () => this.$router.push('/meals'));
       } else {
-        this.toLogin = false;
-        this.errorMsgModal = this.$i18n.t('internal_server_error');
+        this.$root.$emit('openModalError', 'internal_server_errorTitle', 'internal_server_error',
+          () => this.$router.push('/meals'));
       }
-    },
-    hideModal() {
-      this.$bvModal.hide('modal-error');
-      if (this.toLogin) this.$router.push('/login');
-      else this.$router.push('/meals');
     },
     changeGraphGlobal() {
       this.chart.al = this.composition.al;
@@ -270,12 +265,13 @@ export default {
       const tmp = [];
       const tmp2 = [];
       this.arr.forEach((elem) => {
-        tmp.push({ name: elem.name, data: [[elem.carbon, elem.qnt, elem.carbon * elem.qnt]] });
+        const area = Math.round(elem.carbon * elem.qnt);
+        tmp.push({ name: elem.name, data: [[elem.carbon, elem.qnt, area]] });
       });
       this.series = tmp;
-
       this.waterFootprint.forEach((elem) => {
-        tmp2.push({ name: elem.name, data: [[elem.water, elem.qnt, elem.water * elem.qnt]] });
+        const area = Math.round(elem.water * elem.qnt);
+        tmp2.push({ name: elem.name, data: [[elem.water, elem.qnt, area]] });
       });
       this.series2 = tmp2;
     },
@@ -291,5 +287,5 @@ export default {
 @import './calculateMeal.sass'
 @import './bubbleChartEmissions.sass'
 .apexcharts-toolbar
-  display: none
+  display: none !important
 </style>

@@ -21,7 +21,9 @@
     "sodium_tot": "Sodium",
     "alcohol_tot": "Alcohol",
     "waterFootprint": "Water Footprint",
-    "carbonFootprint": "Carbon Footprint"
+    "carbonFootprint": "Carbon Footprint",
+    "global": "Global",
+    "component": "Components"
   },
   "it": {
     "intro": "Composizione del tuo pasto",
@@ -45,6 +47,8 @@
     "sodium_tot": "Sodio",
     "alcohol_tot": "Alcohol",
     "waterFootprint": "Consumo d'acqua",
-    "carbonFootprint": "Consumo CO2"
+    "carbonFootprint": "Consumo CO2",
+    "global": "Globale",
+    "component": "Componenti"
   }
 }
