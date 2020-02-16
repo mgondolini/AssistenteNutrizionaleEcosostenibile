@@ -161,6 +161,7 @@
         </div>
         <b-modal id="modal-ach" :title="$i18n.t('newAchievement')" hide-footer>
           <div class="d-block text-center">
+            <img class="icoAchiev" src="../../assets/achievement/success.svg" alt="anchievementImg">
             {{ this.achMsgModal }}
           </div>
           <b-button class="mt-3" block @click="hideAchModal">{{ $t('achModalBtn')}}</b-button>

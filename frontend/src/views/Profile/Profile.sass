@@ -8,12 +8,14 @@
 
   .listAll
     margin: 0 auto
-    width: 25%
+    width: fit-content
     line-height: .8em
     ul
       margin: 0 auto
       .elemList
         list-style: circle
+  
+
     
   .column12
     padding: 1% 
@@ -29,6 +31,8 @@
       image-rendering: -webkit-optimize-contrast
 
   @media screen and ( min-width: 760px )
+    .listAll
+      width: 25%
     .image-container
       max-width: 20%
 
