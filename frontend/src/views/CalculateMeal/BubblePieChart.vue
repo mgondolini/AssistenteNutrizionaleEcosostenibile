@@ -12,7 +12,6 @@
 <script>
 import Vue from 'vue';
 import zingchartVue from 'zingchart-vue';
-import CirclePacker from 'circlepacker';
 
 // TODO: trovare un modo di importarlo migliore
 // eslint-disable-next-line import/extensions
@@ -133,7 +132,7 @@ export default {
               verticalAlign: 'top',
               layout: '5x2',
               item: {
-                fontSize: 6,
+                fontSize: 10,
               },
             },
             plot: {
@@ -151,7 +150,7 @@ export default {
               minSize: 10,
               maxSize: 20,
               scaling: 'radius',
-              sizeFactor: 4,
+              sizeFactor: 5,
             },
           },
           {
@@ -167,7 +166,8 @@ export default {
   methods: {
     loadMeal() {
       const params = { mealName: this.$route.query.mealName, date: this.$route.query.date };
-      // Array to store pending promises
+
+
       const promises = [];
       const { http } = this.$store.state;
 
@@ -258,23 +258,23 @@ export default {
     },
     populateSeries() {
       return [
-        this.createObject('Carbohydrates', this.carbohydrates),
-        this.createObject('Sugars', this.sugars),
-        this.createObject('Fats', this.fats),
-        this.createObject('SaturatedFats', this.saturatedFats),
-        this.createObject('Proteins', this.proteins),
-        this.createObject('Salt', this.salt),
-        this.createObject('Sodium', this.sodium),
-        this.createObject('Calcium', this.calcium),
-        this.createObject('Alcohol', this.alcohol),
-        this.createObject('Fibers', this.fibers),
+        this.createObject('carbohydrates', this.carbohydrates),
+        this.createObject('sugars', this.sugars),
+        this.createObject('total_fats', this.fats),
+        this.createObject('saturated_fats', this.saturatedFats),
+        this.createObject('proteins', this.proteins),
+        this.createObject('salt', this.salt),
+        this.createObject('sodium', this.sodium),
+        this.createObject('calcium', this.calcium),
+        this.createObject('alcohol', this.alcohol),
+        this.createObject('fibers', this.fibers),
       ];
     },
     createObject(name, values) {
       let obj;
       const firstObject = {
         dataV: values,
-        dataPie: name,
+        dataPie: this.$i18n.t(name),
         valueBox: {
           text: '%data-bubble',
           placement: 'top',
@@ -289,73 +289,11 @@ export default {
       else {
         obj = {
           dataV: values,
-          dataPie: name,
+          dataPie: this.$i18n.t(name),
         };
       }
 
       return obj;
-    },
-    createCirclePacker() {
-      const circles = [];
-
-      let i = 0;
-      this.ingredients.forEach(() => {
-        const v = this.values[i];
-        circles.push(this.createCircle(v.x, v.y, v.radius));
-        i += 1;
-      });
-
-      console.log(circles);
-
-      // const rect = containerEl.getBoundingClientRect(); //container è il grafico
-      // const bounds = { width: rect.width, height: rect.height }; // grandezza grafico
-      // const target = { x: bounds.width / 2, y: bounds.height / 2 };
-
-      const packer = new CirclePacker({
-        // bounds,
-        // target,
-        circles,
-        // onMove: render,
-        continuousMode: false,
-        collisionPasses: 5,
-        centeringPasses: 200,
-      });
-
-      console.log(packer);
-    },
-    createCircle(x, y, radius) {
-      radius = radius || CirclePacker.random(10, 40);
-      x = x || CirclePacker.random(radius, 500 - radius);
-      y = y || CirclePacker.random(radius, 500 - radius);
-
-      const diameter = radius * 2;
-      const circleEl = document.createElement('div');
-
-      // need some sort of unique id...
-      const id = `circle-${CirclePacker.random(0, 1000, true)}-${Date.now()}`;
-
-      const circle = {
-        id,
-        radius,
-        position: {
-          x: CirclePacker.random(radius, 500 - radius),
-          y: CirclePacker.random(radius, 500 - radius),
-        },
-      };
-
-      // create circle el
-
-      circleEl.id = id;
-      circleEl.style.width = `${diameter}px`;
-      circleEl.style.height = `${diameter}px`;
-      circleEl.style.borderRadius = `${diameter}px`;
-      circleEl.classList.add('circle');
-
-      // containerEl.appendChild(circleEl);
-
-      // circleEls[id] = circleEl;
-
-      return circle;
     },
   },
   created() {
@@ -374,6 +312,37 @@ export default {
   },
 };
 </script>
+
+
+<i18n>
+{
+  "en": {
+    "carbohydrates": "Carbohydrates",
+    "proteins": "Proteins",
+    "fibers": "Fibers",
+    "total_fats": "Fats",
+    "saturated_fats": "Saturated fats",
+    "calcium": "Calcium",
+    "sodium": "Sodium",
+    "salt": "Salt",
+    "alcohol": "Alcohol",
+    "sugars": "Sugars"
+  },
+  "it": {
+    "carbohydrates": "Carboidrati",
+    "proteins": "Proteine",
+    "fibers": "Fibre",
+    "total_fats": "Grassi",
+    "saturated_fats": "Grassi saturi",
+    "calcium": "Calcio",
+    "sodium": "Sodio",
+    "salt": "Sale",
+    "alcohol": "Alcool",
+    "sugars": "Zuccheri"
+  }
+}
+</i18n>
+
 
 <style>
 </style>
