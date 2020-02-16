@@ -19,6 +19,15 @@
     display: flex
     justify-content: center
     padding-bottom: 30px
+  .informations
+    border-radius: 5px
+    border: 1px solid $border_color
+    margin-bottom: 30px
+    .chartDesc
+      margin: 2% !important
+    .listInfo
+      text-align: left
+
   .chartDesc
     text-align: justify
     color: slategrey
@@ -50,14 +59,15 @@
           justify-content: center
           padding-bottom: 30px
         
-          .apexcharts-legend 
-          .center
-          .position-bottom
+          .apexcharts-legend, .center, .position-bottom
             justify-content: center
             display: inline-grid
 
-          .apexcharts-legend-series
-            text-align: justify
+            .apexcharts-legend-series
+              text-align: justify
+              .apexcharts-legend-text
+                font-size: 1em !important
+                font-family: 'Raleway', sans-serif !important
       
   @media (min-width: 768px)
     h3
@@ -71,6 +81,8 @@
     .nav-link
       font-size: small !important
   
+
+
 
 
 

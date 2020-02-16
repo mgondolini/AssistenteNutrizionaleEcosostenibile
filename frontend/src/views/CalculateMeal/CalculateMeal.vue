@@ -40,7 +40,29 @@
             <zingchart ref="bubblepie" :data="bubbleChartData" :series="bubbleSeries"></zingchart>
           </div>
         </b-tab>
+        <b-tab class="tab-content-info" :title="$t('calories')">
+          <div class="chart-box">
+            <div id="bubble-chart">
+              <h5 class="paddingTop chartTitleCC">{{$t('calTitle')}}</h5>
+              <hr/>
+              <apexchart class="cal" type=bar height=400 :options="caloriesOptions"
+                :series="caloriesMeal">
+              </apexchart>
+            </div>
+          </div>
+        </b-tab>
       </b-tabs>
+    </div>
+    <div class="informations">
+      <p class="chartDesc chartDescription mt-5"> {{ $t("piechart_description") }} </p>
+      <ul class="listInfo">
+        <li class="chartDescription">
+          <b>{{$t("info")}}: </b>{{ $t("info_text") }} </li>
+        <li class="chartDescription">
+          <b> {{$t("emission")}}: </b>{{ $t("emission_text") }} </li>
+        <li class="chartDescription">
+          <b>{{$t("calories")}}: </b>{{ $t("calories_text") }} </li>
+      </ul>
     </div>
   </div>
 </template>
@@ -69,6 +91,10 @@ export default {
       }],
       series2: [{
         name: '',
+        data: [],
+      }],
+      caloriesMeal: [{
+        name: 'Kcal',
         data: [],
       }],
 
@@ -108,6 +134,10 @@ export default {
             return `${opts.w.config.series[opts.seriesIndex].toFixed(2)} g`;
           },
         },
+        legend: {
+          position: 'bottom',
+          fontSize: '1em',
+        },
         colors: ['#F3B415', '#F27036', '#663F59', '#6A6E94', '#4E88B4', '#00A7C6', '#18D8D8',
           '#A9D794', '#46AF78', '#A93F55', '#8C5E58', '#2176FF', '#33A1FD', '#7A918D', '#BAFF29',
         ],
@@ -119,9 +149,43 @@ export default {
             },
             legend: {
               position: 'bottom',
+              fontSize: '1em',
             },
           },
         }],
+      };
+    },
+    caloriesOptions() {
+      return {
+        dataLabels: {
+          enabled: true,
+          formatter(val) {
+            return `${val}Kcal`;
+          },
+          offsetY: -20,
+          style: {
+            fontSize: '1em',
+            colors: ['#304758'],
+          },
+        },
+        colors: ['#0abfc8'],
+        xaxis: {
+          categories: [],
+          labels: {
+            style: {
+              fontSize: '1em',
+            },
+
+          },
+        },
+        plotOptions: {
+          bar: {
+            columnWidth: '30%',
+            dataLabels: {
+              position: 'top', // top, center, bottom
+            },
+          },
+        },
       };
     },
     chartBubbleCO2Options() {
@@ -132,9 +196,6 @@ export default {
         },
         fill: {
           opacity: 0.8,
-        },
-        title: {
-          text: this.$i18n.t('carbonFootprint'),
         },
         xaxis: {
           tickAmount: 10,
@@ -161,12 +222,26 @@ export default {
             offsetX: 0,
             offsetY: 0,
           },
-          title: { text: this.$i18n.t('CO2grams') },
+          title: {
+            text: this.$i18n.t('CO2grams'),
+            style: {
+              fontSize: '1em',
+              fontFamily: 'Raleway',
+              color: '#263238',
+            },
+          },
         },
         yaxis: {
           min: 0,
           max: 300,
-          title: { text: this.$i18n.t('gCons') },
+          title: {
+            text: this.$i18n.t('gCons'),
+            style: {
+              fontSize: '1em',
+              fontFamily: 'Raleway',
+              color: '#263238',
+            },
+          },
           labels: {
             showDuplicates: false,
           },
@@ -187,9 +262,6 @@ export default {
         },
         fill: {
           opacity: 0.8,
-        },
-        title: {
-          text: this.$i18n.t('waterFootprint'),
         },
         xaxis: {
           tickAmount: 10,
@@ -215,14 +287,28 @@ export default {
             offsetX: 0,
             offsetY: 0,
           },
-          title: { text: this.$i18n.t('watergrams') },
+          title: {
+            text: this.$i18n.t('watergrams'),
+            style: {
+              fontSize: '1em',
+              fontFamily: 'Raleway',
+              color: '#263238',
+            },
+          },
         },
         yaxis: {
           max: 300,
           labels: {
             showDuplicates: false,
           },
-          title: { text: this.$i18n.t('gCons') },
+          title: {
+            text: this.$i18n.t('gCons'),
+            style: {
+              fontSize: '1em',
+              fontFamily: 'Raleway',
+              color: '#263238',
+            },
+          },
         },
         plotOptions: {
           bubble: {
@@ -358,12 +444,17 @@ export default {
 
         const m = response.data.meals[0];
         Object.keys(m).forEach((k, i) => {
-          if (i > 2 && i < 13) {
+          if (i > 3 && i < 13) {
             if (m[k] > 0.0001) {
               this.componentsMeal.al.push(this.$i18n.t(k));
               this.componentsMeal.av.push(parseFloat(m[k].toFixed(2)));
             }
           }
+        });
+
+        m.components.forEach((comp) => {
+          this.caloriesMeal[0].data.push(Math.round(comp.energy_kcal));
+          this.caloriesOptions.xaxis.categories.push(comp.product_name);
         });
 
         this.calculate();
@@ -497,15 +588,29 @@ export default {
     calculate() {
       const tmp = [];
       const tmp2 = [];
+      let max = 0;
       this.arr.forEach((elem) => {
+        if (elem.carbon > max) {
+          max = elem.carbon;
+        }
         const area = Math.round(elem.carbon * elem.qnt);
         tmp.push({ name: elem.name, data: [[elem.carbon, elem.qnt, area]] });
       });
+      if (max > 45) {
+        this.chartBubbleCO2Options.xaxis.max = Math.round(max * 1.1);
+      }
       this.series = tmp;
+      max = 0;
       this.waterFootprint.forEach((elem) => {
+        if (elem.water > max) {
+          max = elem.water;
+        }
         const area = Math.round(elem.water * elem.qnt);
         tmp2.push({ name: elem.name, data: [[elem.water, elem.qnt, area]] });
       });
+      if (max > 45) {
+        this.chartBubbleWaterOptions.xaxis.max = Math.round(max * 1.1);
+      }
       this.series2 = tmp2;
     },
   },
