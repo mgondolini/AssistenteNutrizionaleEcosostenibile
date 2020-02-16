@@ -8,30 +8,37 @@
     >
     <div id="selectionInputMode">
       <div v-if="inputMode === 'SELECT'" class="buttonContainerVertical">
-          <b-button v-on:click="inputMode = 'MANUAL'">{{$t('input_btn_manual')}}</b-button>
+          <b-button id="buttonManual" v-on:click="inputMode = 'MANUAL'">
+            {{$t('input_btn_manual')}}
+          </b-button>
           <b-button id="buttonScanner" class="btnAR" v-on:click="toggleScannerStream">
-            {{$t('input_btn_scan_barcode')}}</b-button>
-          <b-button v-on:click="uploadFile()">{{$t('input_btn_upload')}}</b-button>
+            {{$t('input_btn_scan_barcode')}}
+          </b-button>
+          <b-button id="buttonUpload" v-on:click="uploadFile()">
+            {{$t('input_btn_upload')}}
+          </b-button>
           <input v-show="false" type="file"
             id="barcodePicture" @change="uploadBarcodeImg" name="file" />
-          <b-button v-on:click="scanNutriTable()">{{$t('input_btn_scan_nutri')}}</b-button>
+          <!--
+            <b-button v-on:click="scanNutriTable()">{{$t('input_btn_scan_nutri')}}</b-button>
+          -->
       </div>
       <div v-else-if="inputMode === 'MANUAL'" id="insertEAN" class="buttonContainer">
         <div>
           <!--
-          <label class="eanCodeLabel" for="ean">{{$t('ean_code')}}</label>
-          <input
-            id="ean"
-            v-model="ean"
-            value=""
-          >
-          <b-input-group>
-            <b-input-group-prepend>
-              <b-icon icon="justify"></b-icon>
-            </b-input-group-prepend>
-            <b-form-input v-model="ean" type="number"></b-form-input>
-          </b-input-group>
--->
+            <label class="eanCodeLabel" for="ean">{{$t('ean_code')}}</label>
+            <input
+              id="ean"
+              v-model="ean"
+              value=""
+            >
+            <b-input-group>
+              <b-input-group-prepend>
+                <b-icon icon="justify"></b-icon>
+              </b-input-group-prepend>
+              <b-form-input v-model="ean" type="number"></b-form-input>
+            </b-input-group>
+          -->
           <b-input-group>
             <b-input-group-prepend is-text>
               <i class="fa fa-barcode" aria-hidden="true"></i>
