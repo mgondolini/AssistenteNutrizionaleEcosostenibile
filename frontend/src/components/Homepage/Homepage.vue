@@ -106,7 +106,7 @@
       <router-link to='registration' class="wrapper-inner-tab-backgrounds-first"
         v-if='this.$store.state.isLogged === false'
         style="text-decoration:none; margin-bottom:30px;">
-        <b-button class="sim-button button1" >{{ $t('reg') }} </b-button>
+        <b-button class="sim-button button1 reg" >{{ $t('reg') }} </b-button>
       </router-link>
     </div>
   </div>
