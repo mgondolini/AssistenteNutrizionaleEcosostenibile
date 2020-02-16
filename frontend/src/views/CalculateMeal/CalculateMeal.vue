@@ -47,14 +47,14 @@
         </b-tab>
       </b-tabs>
     </div>
-    <div class="information">
-      <p class="chartDescription mt-5"> {{ $t("piechart_description") }} </p>
+    <div class="informations">
+      <p class="chartDesc chartDescription mt-5"> {{ $t("piechart_description") }} </p>
       <ul class="listInfo">
-        <li class="chartDesc">
+        <li class="chartDescription">
           <b>{{$t("info")}}: </b>{{ $t("info_text") }} </li>
-        <li class="chartDesc">
+        <li class="chartDescription">
           <b> {{$t("emission")}}: </b>{{ $t("emission_text") }} </li>
-        <li class="chartDesc">
+        <li class="chartDescription">
           <b>{{$t("calories")}}: </b>{{ $t("calories_text") }} </li>
       </ul>
     </div>
