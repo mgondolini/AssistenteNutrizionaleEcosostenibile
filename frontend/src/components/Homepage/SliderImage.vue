@@ -14,29 +14,30 @@
     </slide>
     <slide
         data-index="1"
-        data-name="addMeal">
-        <img class="homeImagesScroll" src="../../assets/home/infoAddMeal.jpg" alt="addMeal">
+        data-name="1">
+        <img class="homeImagesScroll" src="../../assets/home/merged/12.png" alt="1">
     </slide>
     <slide
         data-index="2"
-        data-name="scanning">
-        <img class="homeImagesScroll" src="../../assets/home/scanning.jpg" alt="scanning">
+        data-name="2">
+        <img class="homeImagesScroll" src="../../assets/home/merged/34.png" alt="2">
     </slide>
     <slide
         data-index="3"
-        data-name="lightDark">
-        <img class="homeImagesScroll" src="../../assets/home/lightDark.jpg" alt="lightDark">
+        data-name="3">
+        <img class="homeImagesScroll" src="../../assets/home/merged/56.png" alt="3">
     </slide>
     <slide
         data-index="4"
-        data-name="graphs">
-        <img class="homeImagesScroll" src="../../assets/home/graphs.jpg" alt="graphs">
+        data-name="4">
+        <img class="homeImagesScroll" src="../../assets/home/merged/78.png" alt="4">
     </slide>
     <slide
         data-index="5"
-        data-name="ach">
-        <img class="homeImagesScroll" src="../../assets/home/info.jpg" alt="ach">
+        data-name="5">
+        <img class="homeImagesScroll" src="../../assets/home/merged/910.png" alt="5">
     </slide>
+
   </carousel>
 </template>
 
