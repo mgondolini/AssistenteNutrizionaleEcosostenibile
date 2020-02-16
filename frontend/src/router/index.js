@@ -8,6 +8,7 @@ import Meals from '../views/Meals/Meals.vue';
 import CalculateMeal from '../views/CalculateMeal/CalculateMeal.vue';
 import Profile from '../views/Profile/Profile.vue';
 
+import BubblePieChart from '../views/CalculateMeal/BubblePieChart.vue';
 
 Vue.use(VueRouter);
 
@@ -46,6 +47,12 @@ const routes = [
     path: '/calculate_meal_composition',
     name: 'calculate_meal_composition',
     component: CalculateMeal,
+  },
+
+  {
+    path: '/bubblepie',
+    name: 'BubblePieChart',
+    component: BubblePieChart,
   },
 ];
 

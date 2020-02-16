@@ -23,14 +23,25 @@
     "waterFootprint": "Water Footprint",
     "carbonFootprint": "Carbon Footprint",
     "global": "Global",
-    "component": "Components"
+    "component": "Components",
+    "carbohydrates": "Carbohydrates",
+    "proteins": "Proteins",
+    "fibers": "Fibers",
+    "total_fats": "Fats",
+    "saturated_fats": "Saturated fats",
+    "calcium": "Calcium",
+    "sodium": "Sodium",
+    "salt": "Salt",
+    "alcohol": "Alcohol",
+    "sugars": "Sugars",
+    "ingredients": "Ingredients"
   },
   "it": {
     "intro": "Composizione del tuo pasto",
     "CO2grams": "CO2 per grams",
     "gCons":"Grammi consumati",
     "watergrams": "Acqua",
-    "info": "Grafici dei tuoi pasti",
+    "info": "Grafici pasti",
     "emission": "Grafici Emissioni",
     "closeBtn": "Chiudi!",
     "h2o": "Consumo di H2O per il tuo pasto",
@@ -49,6 +60,16 @@
     "waterFootprint": "Consumo d'acqua",
     "carbonFootprint": "Consumo CO2",
     "global": "Globale",
-    "component": "Componenti"
+    "component": "Componenti",
+    "carbohydrates": "Carboidrati", 
+    "fibers": "Fibre",
+    "total_fats": "Grassi",
+    "saturated_fats": "Grassi saturi",
+    "calcium": "Calcio",
+    "sodium": "Sodio",
+    "salt": "Sale",
+    "alcohol": "Alcool",
+    "sugars": "Zuccheri",
+    "ingredients": "Ingredienti"
   }
 }
