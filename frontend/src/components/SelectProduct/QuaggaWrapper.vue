@@ -11,10 +11,55 @@ import Quagga from 'quagga';
 export default {
   name: 'QuaggaScanner',
   props: {
+    onStart: {
+      type: Function,
+    },
     onDetected: {
       type: Function,
       default(result) {
         console.log('detected: ', result);
+      },
+    },
+    onProcessed: {
+      type: Function,
+      default(result) {
+        const drawingCtx = Quagga.canvas.ctx.overlay;
+
+        const drawingCanvas = Quagga.canvas.dom.overlay;
+
+        if (result) {
+          if (result.boxes) {
+            drawingCtx.clearRect(
+              0,
+              0,
+              parseInt(drawingCanvas.getAttribute('width'), 10),
+              parseInt(drawingCanvas.getAttribute('height'), 10),
+            );
+            result.boxes
+              .filter(box => box !== result.box)
+              .forEach((box) => {
+                Quagga.ImageDebug.drawPath(box, { x: 0, y: 1 }, drawingCtx, {
+                  color: 'green',
+                  lineWidth: 2,
+                });
+              });
+          }
+          if (result.box) {
+            Quagga.ImageDebug.drawPath(result.box, { x: 0, y: 1 }, drawingCtx, {
+              color: '#00F',
+              lineWidth: 2,
+            });
+          }
+
+          if (result.codeResult && result.codeResult.code) {
+            Quagga.ImageDebug.drawPath(
+              result.line,
+              { x: 'x', y: 'y' },
+              drawingCtx,
+              { color: 'red', lineWidth: 3 },
+            );
+          }
+        }
       },
     },
     readerTypes: {
@@ -36,10 +81,6 @@ export default {
         max: 2,
       }),
       validator: o => typeof o.min === 'number' && typeof o.max === 'number',
-    },
-    resizer: {
-      type: Function,
-      default: () => {},
     },
   },
   data() {
@@ -65,7 +106,6 @@ export default {
         },
         locate: true,
       },
-      resized: false,
     };
   },
   mounted() {
@@ -81,50 +121,6 @@ export default {
   },
   destroyed() {
     Quagga.stop();
-  },
-  methods: {
-    onProcessed(result) {
-      if (!this.resized) {
-        this.$props.resizer();
-        this.resized = true;
-      }
-      const drawingCtx = Quagga.canvas.ctx.overlay;
-      const drawingCanvas = Quagga.canvas.dom.overlay;
-
-      if (result) {
-        if (result.boxes) {
-          drawingCtx.clearRect(
-            0,
-            0,
-            parseInt(drawingCanvas.getAttribute('width'), 10),
-            parseInt(drawingCanvas.getAttribute('height'), 10),
-          );
-          result.boxes
-            .filter(box => box !== result.box)
-            .forEach((box) => {
-              Quagga.ImageDebug.drawPath(box, { x: 0, y: 1 }, drawingCtx, {
-                color: 'green',
-                lineWidth: 2,
-              });
-            });
-        }
-        if (result.box) {
-          Quagga.ImageDebug.drawPath(result.box, { x: 0, y: 1 }, drawingCtx, {
-            color: '#00F',
-            lineWidth: 2,
-          });
-        }
-
-        if (result.codeResult && result.codeResult.code) {
-          Quagga.ImageDebug.drawPath(
-            result.line,
-            { x: 'x', y: 'y' },
-            drawingCtx,
-            { color: 'red', lineWidth: 3 },
-          );
-        }
-      }
-    },
   },
 };
 </script>

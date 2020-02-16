@@ -61,11 +61,11 @@
         ></v-quagga>
         -->
         <quaggaWrap
+          :onStart="resizeDrawingBuffer"
           :onDetected="barcodeDetected"
           :readerSize="readerSize"
           :readerTypes="['ean_reader']"
           :aspectRatio="aspectRatio"
-          :resizer="resizeDrawingBuffer"
         ></quaggaWrap>
         <b-button id="btnBack" class="btnAR" v-on:click="toggleScannerStream">
           {{$t('back')}}
@@ -281,10 +281,6 @@ export default {
       };
     },
     resizeDrawingBuffer() {
-      console.log('RESIZED!');
-      const buffer = document.getElementsByClassName('drawingBuffer')[0];
-      console.log(buffer);
-      console.log(buffer.width);
     },
   },
 };
