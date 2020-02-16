@@ -89,7 +89,6 @@ export default {
           },
         },
         scaleY: {
-          // values: '0:80:5',
           minValue: 0,
           maxValue: 50,
           step: 1,
@@ -103,6 +102,7 @@ export default {
             text: '%data-pie',
             fontSize: 12,
           },
+          width: '10%',
           align: 'right',
           verticalAlign: 'middle',
         },
@@ -114,9 +114,8 @@ export default {
             fontColor: 'blue',
             fontFamily: 'Georgia, serif',
             backgroundColor: 'white',
-            borderColor: 'pink',
+            borderColor: 'blue',
             borderWidth: 2,
-            lineStyle: 'dashed',
           },
           minSize: 30,
           maxSize: 50,
@@ -131,6 +130,7 @@ export default {
               align: 'right',
               verticalAlign: 'top',
               layout: '5x2',
+              width: '60%',
               item: {
                 fontSize: 10,
               },
@@ -143,7 +143,7 @@ export default {
                 fontColor: 'blue',
                 fontFamily: 'Georgia, serif',
                 backgroundColor: 'white',
-                borderColor: 'green',
+                borderColor: 'blue',
                 borderWidth: 2,
                 lineStyle: 'normal',
               },
@@ -247,7 +247,8 @@ export default {
 
         j += 1;
       });
-
+      console.log('bubble labels');
+      console.log(this.bubbleLabels);
       console.log('NEW VALUES');
       console.log(this.chartData.plot.values);
       console.log('NEW SERIES');
@@ -277,15 +278,15 @@ export default {
         dataPie: this.$i18n.t(name),
         valueBox: {
           text: '%data-bubble',
-          placement: 'top',
+          placement: 'bottom',
           fontColor: 'black',
           fontFamily: 'Arial',
           fontWeight: 'bold',
-          fontSize: '12',
+          fontSize: '10',
         },
       };
 
-      if (name === 'Carbohydrates') obj = firstObject;
+      if (name === 'carbohydrates') obj = firstObject;
       else {
         obj = {
           dataV: values,
@@ -300,15 +301,6 @@ export default {
     this.loadMeal();
   },
   mounted() {
-    // this.loadMeal();
-    this.zingchart.loadModules('bubblepie', () => { // Load Modules Method
-      this.zingchart.render({ // Render Method
-        id: 'myChart1',
-        data: this.chartData(),
-        height: 400,
-        width: 600,
-      });
-    });
   },
 };
 </script>
