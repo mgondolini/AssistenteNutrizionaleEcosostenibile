@@ -7,11 +7,11 @@
           <div class="buttonsDisposition">
             <b-button id="button" class="sim-button button1 buttonCalculate"
               v-on:click='changeGraphGlobal'>
-              Global
+              {{ this.$i18n.t('global') }}
             </b-button>
             <b-button id="button" class="sim-button button1 buttonCalculate"
               v-on:click='changeGraphComponent'>
-              Component
+               {{ this.$i18n.t('component') }}
             </b-button>
           </div>
           <div class="container">
@@ -22,13 +22,13 @@
         <b-tab class="tab-content-info" :title="$t('emission')">
           <div class="chart-box">
             <div id="bubble-chart">
-              <h5 class="paddingTop chartTitle">{{$t('co2')}}</h5>
+              <h5 class="paddingTop chartTitleCC">{{$t('co2')}}</h5>
               <hr/>
               <apexchart class="co2" type=bubble height=400 :options="chartBubbleCO2Options"
                 :series="series">
               </apexchart>
               <hr/>
-              <h5 class="paddingTop chartTitle">{{$t('h2o')}}</h5>
+              <h5 class="paddingTop chartTitleCC">{{$t('h2o')}}</h5>
               <apexchart class="h2o" type=bubble height=400 :options="chartBubbleWaterOptions"
               :series="series2" />
             </div>
@@ -107,15 +107,14 @@ export default {
           opacity: 0.8,
         },
         title: {
-          text: 'Carbon Footprint',
+          text: this.$i18n.t('carbonFootprint'),
         },
         xaxis: {
           tickAmount: 10,
-          min: 0,
+          min: 0.1,
           max: 50,
 
           labels: {
-            showDuplicates: false,
             rotate: -45,
             rotateAlways: true,
           },
@@ -138,7 +137,8 @@ export default {
           title: { text: this.$i18n.t('CO2grams') },
         },
         yaxis: {
-          max: 600,
+          min: 0,
+          max: 300,
           title: { text: this.$i18n.t('gCons') },
           labels: {
             showDuplicates: false,
@@ -156,14 +156,13 @@ export default {
           opacity: 0.8,
         },
         title: {
-          text: 'Water Footprint',
+          text: this.$i18n.t('waterFootprint'),
         },
         xaxis: {
           tickAmount: 10,
-          min: 0,
+          min: 0.1,
           max: 50,
           labels: {
-            showDuplicates: false,
             rotate: -45,
             rotateAlways: true,
           },
@@ -186,7 +185,7 @@ export default {
           title: { text: this.$i18n.t('watergrams') },
         },
         yaxis: {
-          max: 600,
+          max: 300,
           labels: {
             showDuplicates: false,
           },
@@ -221,19 +220,16 @@ export default {
         this.chart.al = this.composition.al;
         this.chart.av = this.composition.av;
 
-        Object.keys(response.data.meals[0]).forEach((k, i) => {
+        const m = response.data.meals[0];
+        Object.keys(m).forEach((k, i) => {
           if (i > 2 && i < 13) {
-            this.componentsMeal.al.push(k);
-          }
-        });
-
-        Object.values(response.data.meals[0]).forEach((v, i) => {
-          if (i > 2 && i < 13) {
-            if (v > 0.0001) {
-              this.componentsMeal.av.push(v);
+            if (m[k] > 0.0001) {
+              this.componentsMeal.al.push(this.$i18n.t(k));
+              this.componentsMeal.av.push(m[k]);
             }
           }
         });
+
         this.calculate();
       }).catch(error => this.checkError(error.response.data.description,
         error.response.status));
@@ -269,15 +265,36 @@ export default {
     calculate() {
       const tmp = [];
       const tmp2 = [];
+      let tmpMaxArea = 0;
       this.arr.forEach((elem) => {
-        tmp.push({ name: elem.name, data: [[elem.carbon, elem.qnt, elem.carbon * elem.qnt]] });
+        const area = Math.round(elem.carbon * elem.qnt);
+        if (area > tmpMaxArea) {
+          tmpMaxArea = area;
+        }
+        tmp.push({ name: elem.name, data: [[elem.carbon, elem.qnt, area]] });
       });
-      this.series = tmp;
-
+      let minArea = Math.round(tmpMaxArea / 10);
+      const tmpF = tmp.map((t) => {
+        const r = t;
+        r.data[0][2] = t.data[0][2] < minArea ? minArea : t.data[0][2];
+        return r;
+      });
+      this.series = tmpF;
+      tmpMaxArea = 0;
       this.waterFootprint.forEach((elem) => {
-        tmp2.push({ name: elem.name, data: [[elem.water, elem.qnt, elem.water * elem.qnt]] });
+        const area = Math.round(elem.water * elem.qnt);
+        if (area > tmpMaxArea) {
+          tmpMaxArea = area;
+        }
+        tmp2.push({ name: elem.name, data: [[elem.water, elem.qnt, area]] });
       });
-      this.series2 = tmp2;
+      minArea = Math.round(tmpMaxArea / 10);
+      const tmpQ = tmp2.map((t) => {
+        const r = t;
+        r.data[0][2] = t.data[0][2] < minArea ? minArea : t.data[0][2];
+        return r;
+      });
+      this.series2 = tmpQ;
     },
   },
 };

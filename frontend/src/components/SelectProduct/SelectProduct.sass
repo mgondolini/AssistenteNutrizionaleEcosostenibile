@@ -1,8 +1,19 @@
-.buttonContainer
-  padding: 10px
+@import '../../custom.sass'
+@import '../../lightMode.sass'
+@import '../../darkMode.sass'
   
-  button, input
-    margin: 10px
+.buttonContainer
+  //padding: 10px
+  
+  button
+    margin-right: 10px
+
+  //input, input:focus
+  //  background-color: rgba($dark_bg_link_not_active, .2)
+  //  color: $white
+
+  .input-group, select
+    margin-bottom: 15px
 
 .buttonContainerVertical
 
@@ -11,21 +22,22 @@
     display: block
 
 .scanning
-  height: 300px
+  height: 475px
   .buttonContainer
     .viewport
-      /*  video, canvas
-            width: -webkit-fill-available
-            width: -moz-available
-            width: fill-available
-            height: -webkit-fill-available
-            height: -moz-available
-            height: fill-available
-            max-width: 450px */
+      video, canvas
+        width: -webkit-fill-available
+        width: -moz-available
+        width: fill-available
+        height: -webkit-fill-available
+        height: -moz-available
+        height: fill-available
+        max-width: 450px
     #btnBack
       position: absolute
       bottom: 0
       left: 0
+      margin: 15px
 @media screen and ( min-width: 760px )
   .scanning
     height: 400px

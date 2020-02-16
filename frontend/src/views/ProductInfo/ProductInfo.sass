@@ -6,8 +6,14 @@
   .buttonContainer
     padding: 10px
 
-  input
-    margin: 10px
+  //input
+  //  margin: 10px
+
+  .portion
+    padding: 25px
+    margin-right: auto
+    margin-left: auto
+    width: 400px
 
   button
     margin: 10px
@@ -20,14 +26,17 @@
 
     .media
       align-items: center
+      display: -webkit-box
     p
       text-align: left   
 
     // TODO prevent the image to expand further vertically once the max-width is reached, breaking the proportions
     img 
       //height: 250px  
-      height: 30vh
-      max-width: 40vw
+      //height: 30vh
+      //max-width: 40vw
+      max-height: 15em
+      max-width: 50vw
 
     div
       max-width: inherit
@@ -36,8 +45,10 @@
   .containerProd
     max-width: 95%
     margin: 0 auto
+    #tabIngredients
+      padding: 2em
     .firstInfo
-      padding: 10px 0 30px 0
+      padding: 10px 0 0 0
       .nutritionIndicators
         margin: 0 auto
         line-height: 1.8em
