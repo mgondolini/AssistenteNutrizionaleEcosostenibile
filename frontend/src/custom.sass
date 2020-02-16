@@ -3,7 +3,8 @@
 @import url("https://fonts.googleapis.com/css?family=Source+Sans+Pro:400,700")
 @import url(https://fonts.googleapis.com/icon?family=Material+Icons)
 @import url('https://fonts.googleapis.com/css?family=Open+Sans:400,300')
-@import url('https://fonts.googleapis.com/css?family=Kalam&display=swap')
+@import url('https://fonts.googleapis.com/css?family=Kalam:300,400,700&display=swap')
+@import url('https://fonts.googleapis.com/css?family=Raleway:400,400i,500&display=swap')
 
 $white: #fff
 $background_color_1: #2EA968
@@ -20,6 +21,7 @@ $text-color: #2c3e50
 $black: #000000
 $error: #ff0000
 $bg_dark_mission: #177f48
+$text_color_dark: #00AF9D
 $selectedText: antiquewhite
 $components-card-background: #17a2b80a
 $color_bg_card: #343434
@@ -28,14 +30,23 @@ $card_mission_dark: #0D6B54
 $text_color: #495057
 
 #app 
-  font-family: 'Avenir', Helvetica, Arial, sans-serif
+  font-family: 'Raleway', sans-serif
   -webkit-font-smoothing: antialiased
   -moz-osx-font-smoothing: grayscale
   text-align: center
   color: $text-color
+  cursor: default
 
-h1
+p, span, li, button, .modal-body, label
+  font-family: 'Raleway', sans-serif
+  font-size: 16px
+  
+h1, h2, h3, h5
   font-family: 'Kalam', cursive
+
+.icoAchiev
+  height: 3.5em
+  width: 3.5em
 
 .buttonsDiv, .buttonsDisposition
   margin: 0 auto
@@ -54,6 +65,7 @@ h1
 
   .button1
     color: $white
+    font-size: 20px
     -webkit-transition: all 0.5s !important
     -moz-transition: all 0.5s !important
     -o-transition: all 0.5s !important
@@ -63,10 +75,11 @@ h1
 
     &:hover
       background-color: $white
-      color: $background_color_1
+      color: $bg_dark_mission
       -webkit-border-radius: 25px
       -moz-border-radius: 25px
       border-radius: 25px
+      font-weight: bolder
 
   .disabled
     pointer-events: none

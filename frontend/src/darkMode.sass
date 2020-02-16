@@ -2,7 +2,7 @@
 .dark
   background-color: rgba($dark_bg, .9)
   .apexcharts-canvas 
-    background-color: rgba($dark_bg_link_not_active, .7)
+    background-color: rgba($dark_bg_link_not_active, 1)
   .multiselect__placeholder
     color: $text_color
     font-size: 16px
@@ -38,7 +38,7 @@
   .noMeals
     color: $white
   // Meals & infoProd page DarkMode
-  .meals, .productInfo
+  .meals, .productInfo, .containerFather
     .mealTitle
       color: $white
     .card-calendar
@@ -48,12 +48,18 @@
       .datePicker
         .buttonCalendar
           color: $white
-    .containerMeal, .containerProd
+    .containerGraphs
+      #myTabContent
+        background-color: $color_bg_card
+    .containerMeal, .containerProd, .containerGraphs
       background-color: $dark_bg_card
       #myTabContent
+        .infoNoMeals
+          .iconTriangle, .noMeals
+            color: $white !important
         .apexcharts-canvas 
           background-color: rgba($dark_bg_link_not_active, .7)
-        .nav-justified
+        .nav-justified, .nav-tabs
           .nav-link
             background-color: $dark_bg_link
             border-bottom: 1px solid $border_color
@@ -65,6 +71,18 @@
             font-weight: bolder
         .card-new-meal
           background-color: transparent
+          .form-control
+            background-color: rgba($dark_bg_link_not_active, .2)
+            color: $white
+          ::-webkit-input-placeholder  /* Chrome/Opera/Safari */
+            color: $white
+          ::-moz-placeholder  /* Firefox 19+ */
+            color: $white
+          :-ms-input-placeholder  /* IE 10+ */
+            color: $white
+          :-moz-placeholder  /* Firefox 18- */
+            color: $white
+            
         .card-last-meals
           .headerTitle
             background-color: $dark_bg_card
@@ -101,6 +119,14 @@
             tr:hover
               td
                 background-color: $dark_bg_link
+      .tab-content-info
+        .imgNova
+          margin-bottom: 2%
+        .ingredients
+          color: $white
+      .chartDesc
+        color: $white !important
+        
   // Home darkeMode
   .msgTitle
     color: $white
@@ -109,10 +135,10 @@
     .homeMission
       color: $white
   // Other pages darkMode
-  .login, .registration, .container, .productInfo, .containerFather
+  .login, .registration, .container, .productInfo, .containerFather 
     .card-edit
       color: $white
-    .cardLogin, .cardR
+    .cardLogin, .cardR, .containerGraps
       background-color: $dark_bg_card
       .card-title
         color: $white
@@ -120,6 +146,17 @@
         .grey-text
           .form-group
             color: $white
+            .form-control
+              background-color: rgba($dark_bg_link_not_active, .2)
+              color: $white
+            ::-webkit-input-placeholder  /* Chrome/Opera/Safari */
+              color: $white
+            ::-moz-placeholder  /* Firefox 19+ */
+              color: $white
+            :-ms-input-placeholder  /* IE 10+ */
+              color: $white
+            :-moz-placeholder  /* Firefox 18- */
+              color: $white
             .text-muted
               color: $white !important
         #basicInfo, .tab-content-info
@@ -140,6 +177,14 @@
                   background-color: transparent
                 .multiselect__single
                   background-color: transparent
+              ::-webkit-input-placeholder  /* Chrome/Opera/Safari */
+                color: $white
+              ::-moz-placeholder  /* Firefox 19+ */
+                color: $white
+              :-ms-input-placeholder  /* IE 10+ */
+                color: $white
+              :-moz-placeholder  /* Firefox 18- */
+                color: $white
               .colorSelectGender
                 .optgender
                   color: $black
@@ -149,11 +194,17 @@
             .form-control-sm, .custom-select-sm, .multiselect__tags
               background-color: rgba($dark_bg_link_not_active, .2)
               color: $white
+            ::-webkit-input-placeholder  /* Chrome/Opera/Safari */
+              color: $white
+            ::-moz-placeholder  /* Firefox 19+ */
+              color: $white
+            :-ms-input-placeholder  /* IE 10+ */
+              color: $white
+            :-moz-placeholder  /* Firefox 18- */
+              color: $white
           .text-muted
             color: $white !important
           .pers
-            color: $white
-          .ingredients
             color: $white
         .nav-tabs
           .nav-link
@@ -172,7 +223,7 @@
     .textBlock
       color: $white
   // Modal DarkMode
-  #modal-error, #modal-selectProduct
+  #modal-error, #modal-selectProduct, #deleteModal, #completeMeal, #modal-ach, #notFound
     .modal-content
       background-color: $dark_bg_card
       .modal-header
@@ -181,6 +232,7 @@
         .close
           color: $white
       .modal-body
+        color: $white
         #selectionInputMode
           #insertEAN
             .eanCodeLabel

@@ -16,7 +16,8 @@
         <b-tabs content-class="mt-3" justified id="myTabContent">
           <b-tab class="tab-content-info" :title="$t('tab_nutrition_title')" active>
             <div class="firstInfo">
-              <b-img center :src="nutriScoreImgPath" alt="Nutri score image"></b-img>
+              <b-img v-if="nutriScore" center :src="nutriScoreImgPath" alt="Nutri score image">
+              </b-img>
               <!-- use vue slots to dynamically generate the table
                   with img path inside the rows -->
               <!--
@@ -27,14 +28,14 @@
                 <span> 8.97 g Fat in moderate quantity </span>
               </div>
               -->
-              <div class="nutritionIndicators">
+              <div v-if="fatLvl" class="nutritionIndicators">
                 <table>
                   <tr>
                     <td>
                       <b-img center :src="fatLvlImgPath" alt="Fat level indicator"></b-img>
                     </td>
                     <td class="infoNutrTable">
-                      {{ fat }} g Fat in {{ fatLvl }} quantity
+                      {{ fat }} g {{$t('fat')}} in {{ $t(fatLvl) }}
                     </td>
                   </tr>
                   <tr>
@@ -42,7 +43,7 @@
                       <b-img center :src="satFatLvlImgPath" alt="Fat level indicator"></b-img>
                     </td>
                     <td class="infoNutrTable">
-                      {{ saturatedFat }} g Saturated fat in {{ satFatLvl }} quantity
+                      {{ saturatedFat }} g {{$t('saturatedFat')}} in {{ $t(satFatLvl) }}
                     </td>
                   </tr>
                   <tr>
@@ -50,7 +51,7 @@
                       <b-img center :src="sugarLvlImgPath" alt="Fat level indicator"></b-img>
                     </td>
                     <td class="infoNutrTable">
-                      {{ sugar }} g Sugar in {{ sugarLvl }} quantity
+                      {{ sugar }} g {{$t('sugar')}} in {{ $t(sugarLvl) }}
                     </td>
                   </tr>
                   <tr>
@@ -58,7 +59,7 @@
                       <b-img center :src="saltLvlImgPath" alt="Fat level indicator"></b-img>
                     </td>
                     <td class="infoNutrTable">
-                      {{ salt }} g Salt in {{ saltLvl }} quantity
+                      {{ salt }} g {{$t('salt')}} in {{ $t(saltLvl) }}
                     </td>
                   </tr>
 
@@ -67,13 +68,19 @@
             </div>
             <div class="nutritionTable">
               <div class="portion">
-                <p>
-                  <label class="labelPortion" for="qty"> {{ $t('portion') }} </label>
-                  <input
-                    id="qty"
-                    v-model="qty"
-                  >
-                </p>
+                  <b-input-group size="lg"
+                    :prepend="$t('portion')" :append="productBaseUnitMeasure">
+                    <b-form-input
+                     id="qty-input"
+                     type="number"
+                     v-model="qty"
+                      aria-describedby="qty-input-help qty-input-feedback"
+                      :placeholder="$t('qty_input_placeholder')">
+                    </b-form-input>
+                    <b-form-invalid-feedback id="qty-input-feedback">
+                      {{ $t('qty_input_desc') }}
+                    </b-form-invalid-feedback>
+                  </b-input-group>
               </div>
               <b-table class="tableNutri" striped hover :fields="nutritionTableFields"
               :items="nutritionTableItems">
@@ -99,17 +106,20 @@
               </b-table>
             </div>
           </b-tab>
-          <b-tab class="tab-content-info"  :title="$t('tab_ingredients_title')">
-            <b-img center :src="novaGroupImgPath" alt="Nova group image"></b-img>
-            <span class="ingredients"> Ingredients: {{ ingredientsText }}
+          <b-tab class="tab-content-info" id="tabIngredients"  :title="$t('tab_ingredients_title')">
+            <b-img v-if="novaGroup" class="imgNova" center
+            :src="novaGroupImgPath" alt="Nova group image">
+            </b-img>
+            <span class="ingredients"> {{$t('ingredients')}}: {{ ingredientsText }}
             </span>
           </b-tab>
         </b-tabs>
       </div>
-      <b-button v-on:click="scanAnother()">Scan another product</b-button>
+      <b-button v-on:click="scanAnother()"> {{$t('btn_scan_another')}} </b-button>
       <b-button v-if="mealName && mealDate"
                 v-on:click="insertProductInMeal()">
-        Add product to "{{mealName}}"</b-button>
+        {{$t('btn_add_to_meal')+' '+mealName}}
+      </b-button>
     </div>
   </div>
 </template>
@@ -128,6 +138,12 @@ const maxH2o = 15;
 
 export default {
   name: 'productInfo',
+  computed: {
+    qtyState() {
+      // eslint-disable-next-line no-restricted-globals
+      return !isNaN(this.qty);
+    },
+  },
   data() {
     return {
       // TODO add control to verify that ean is indeed in number format
@@ -250,14 +266,14 @@ export default {
       }
 
       // NUTRITION TAB
-      this.nutriScore = product.nutriscore_grade;
-      this.nutriScoreImgPath = imagesContext(`./nutriScore/${this.nutriScore}${imagesExt}`);
+      this.nutriScore = product.nutriscore_grade || '';
+      this.nutriScoreImgPath = this.nutriScore ? imagesContext(`./nutriScore/${this.nutriScore}${imagesExt}`) : '';
 
       // nutritional levels
-      this.fatLvl = product.nutrient_levels.fat;
-      this.satFatLvl = product.nutrient_levels['saturated-fat'];
-      this.sugarLvl = product.nutrient_levels.sugars;
-      this.saltLvl = product.nutrient_levels.salt;
+      this.fatLvl = product.nutrient_levels.fat || '';
+      this.satFatLvl = product.nutrient_levels['saturated-fat'] || '';
+      this.sugarLvl = product.nutrient_levels.sugars || '';
+      this.saltLvl = product.nutrient_levels.salt || '';
 
       // nutritional values
       this.fat = product.nutriments.fat_100g || 0;
@@ -302,13 +318,13 @@ export default {
       this.nutritionTableItems.push({ nutriFact: 'proteins', for100g: this.proteins, unit: proteinsUnit });
       this.nutritionTableItems.push({ nutriFact: 'fiber', for100g: this.fiber, unit: fiberUnit });
 
-      this.fatLvlImgPath = imagesContext(`./nutrientLevels/${this.fatLvl}${imagesExt}`);
-      this.satFatLvlImgPath = imagesContext(`./nutrientLevels/${this.satFatLvl}${imagesExt}`);
-      this.sugarLvlImgPath = imagesContext(`./nutrientLevels/${this.sugarLvl}${imagesExt}`);
-      this.saltLvlImgPath = imagesContext(`./nutrientLevels/${this.saltLvl}${imagesExt}`);
+      this.fatLvlImgPath = this.fatLvl ? imagesContext(`./nutrientLevels/${this.fatLvl}${imagesExt}`) : '';
+      this.satFatLvlImgPath = this.satFatLvl ? imagesContext(`./nutrientLevels/${this.satFatLvl}${imagesExt}`) : '';
+      this.sugarLvlImgPath = this.sugarLvl ? imagesContext(`./nutrientLevels/${this.sugarLvl}${imagesExt}`) : '';
+      this.saltLvlImgPath = this.saltLvl ? imagesContext(`./nutrientLevels/${this.saltLvl}${imagesExt}`) : '';
 
       // INGREDIENTS TAB
-      this.novaGroup = product.nova_group;
+      this.novaGroup = product.nova_group || '';
       // TODO use placeholder if nova score is missing
       this.novaGroupImgPath = this.novaGroup ? imagesContext(`./novaGroup/${this.novaGroup}${imagesExt}`) : '';
 
@@ -435,7 +451,15 @@ export default {
     "proteins" : "Proteins",
     "fiber" : "Fiber",
     "nutriFacts" : "Nutritional facts",
-    "portion" : "Portion"
+    "portion" : "Portion",
+    "qty_input_desc" : "Insert a number.",
+    "qty_input_placeholder" : "The portion consumed",
+    "btn_scan_another" : "Scan another product",
+    "btn_add_to_meal" : "Add product to",
+    "low" : "low quantity.",
+    "moderate" : "moderate quantity.",
+    "high" : "high quantity.",
+    "ingredients" : "Ingredients"
   },
   "it": {
     "tab_nutrition_title" : "Valori nutrizionali",
@@ -451,7 +475,15 @@ export default {
     "proteins" : "Proteine",
     "fiber" : "Fibre",
     "nutriFacts": "Composizione",
-    "portion": "Porzione"
+    "portion": "Porzione",
+    "qty_input_desc" : "Inserisci un numero.",
+    "qty_input_placeholder" : "La porzione consumata",
+    "btn_scan_another" : "Altro prodotto",
+    "btn_add_to_meal" : "Aggiungi a",
+    "low" : "scarsa quantità.",
+    "moderate" : "quantità moderata.",
+    "high" : "alta quantità.",
+    "ingredients" : "Ingredienti"
   }
 }
 </i18n>
