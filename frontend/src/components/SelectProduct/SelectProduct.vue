@@ -52,12 +52,21 @@
         </div>
       </div>
       <div v-else-if="inputMode === 'STREAM'" id="videoStream" class="buttonContainer">
+        <!--
         <v-quagga
           :onDetected="barcodeDetected"
           :readerSize="readerSize"
           :readerTypes="['ean_reader']"
           :aspectRatio="aspectRatio"
         ></v-quagga>
+        -->
+        <quaggaWrap
+          :onStart="resizeDrawingBuffer"
+          :onDetected="barcodeDetected"
+          :readerSize="readerSize"
+          :readerTypes="['ean_reader']"
+          :aspectRatio="aspectRatio"
+        ></quaggaWrap>
         <b-button id="btnBack" class="btnAR" v-on:click="toggleScannerStream">
           {{$t('back')}}
         </b-button>
@@ -67,6 +76,8 @@
 </template>
 
 <script>
+import QuaggaWrapper from './QuaggaWrapper.vue';
+
 const axios = require('axios');
 const Quagga = require('quagga');
 
@@ -75,6 +86,9 @@ const offApiSuffix = '.json';
 
 export default {
   name: 'SelectProduct',
+  components: {
+    quaggaWrap: QuaggaWrapper,
+  },
   data() {
     return {
       inputMode: 'SELECT',
@@ -265,6 +279,8 @@ export default {
           }
         });
       };
+    },
+    resizeDrawingBuffer() {
     },
   },
 };
