@@ -15,7 +15,7 @@
     "allergens": "Allergens",
     "sex": "Gender",
     "DOB": "Date of Birth",
-    "reg-me":"Sign in",
+    "reg-me":"Sign up",
     "username": "Username already in use",
     "mail": "Email already in use",
     "pwd": "The password must be between 8 and 20 characters long, may contain special characters but not white spaces.",
