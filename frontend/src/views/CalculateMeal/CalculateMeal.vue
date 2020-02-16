@@ -52,8 +52,6 @@ import zingchartVue from 'zingchart-vue';
 // eslint-disable-next-line import/extensions
 import '../../../node_modules/zingchart/modules/zingchart-bubblepie.min.js';
 
-// Vue.component('zingchart', zingchartVue);
-
 
 export default {
   name: 'CalculateMeal',
@@ -243,6 +241,9 @@ export default {
         scaleX: {
           minValue: 0,
           maxValue: 50,
+          label: {
+            text: 'CO2 footprint',
+          },
           step: 5,
           // lineColor: 'none',
           guide: {
@@ -254,6 +255,9 @@ export default {
           maxValue: 50,
           step: 5,
           // lineColor: 'none',
+          label: {
+            text: 'Water footprint',
+          },
           guide: {
             lineColor: 'none',
           },
@@ -397,15 +401,6 @@ export default {
 
       let j = 0;
 
-      console.log('Radius');
-      console.log(this.radius);
-
-      // console.log('OLD VALUES');
-      // console.log(this.bubbleChartData.plot.values);
-      // console.log('OLD SERIES');
-      console.log(this.series);
-
-
       this.values = [];
       this.dataBubble = [];
       this.bubbleSeries = null;
@@ -425,22 +420,13 @@ export default {
         x = i.carbon_footprint_tot;
         y = i.water_footprint_tot;
 
-        console.log(`coords (${x}, ${y})`);
-
         this.values.push([x, y, this.radius[j]]);
         this.bubbleLabels.push(i.product_name);
 
         j += 1;
       });
-      console.log('bubble labels');
-      console.log(this.bubbleLabels);
-      // console.log('NEW VALUES');
-      // console.log(this.BubbleChartData.plot.values);
-      console.log('NEW SERIES');
-      this.bubbleSeries = this.populateSeries();
-      console.log(this.bubbleSeries);
 
-      this.ready = true;
+      this.bubbleSeries = this.populateSeries();
     },
     populateSeries() {
       return [
