@@ -15,7 +15,7 @@
             </b-button>
           </div>
           <div class="container">
-            <apexchart class="changeableGraph" type=pie height=450 width=800 :options="chartOptions"
+            <apexchart class="changeableGraph" type=pie height=450 :options="chartOptions"
               :series="chart.av" />
           </div>
         </b-tab>
@@ -225,7 +225,7 @@ export default {
           if (i > 2 && i < 13) {
             if (m[k] > 0.0001) {
               this.componentsMeal.al.push(this.$i18n.t(k));
-              this.componentsMeal.av.push(m[k]);
+              this.componentsMeal.av.push(parseFloat(m[k].toFixed(2)));
             }
           }
         });
@@ -308,5 +308,5 @@ export default {
 @import './calculateMeal.sass'
 @import './bubbleChartEmissions.sass'
 .apexcharts-toolbar
-  display: none
+  display: none !important
 </style>
