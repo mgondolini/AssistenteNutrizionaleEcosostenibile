@@ -245,7 +245,7 @@ export default {
           minValue: 0,
           maxValue: 50,
           step: 5,
-          lineColor: 'none',
+          // lineColor: 'none',
           guide: {
             lineColor: 'none',
           },
@@ -253,8 +253,8 @@ export default {
         scaleY: {
           minValue: 0,
           maxValue: 50,
-          step: 1,
-          lineColor: 'none',
+          step: 5,
+          // lineColor: 'none',
           guide: {
             lineColor: 'none',
           },
