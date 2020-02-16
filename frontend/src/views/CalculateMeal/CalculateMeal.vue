@@ -36,9 +36,7 @@
         </b-tab>
         <b-tab class="tab-content-info" :title="$t('ingredients')">
           <div class="chart-box">
-            <!-- <div id="bubble-chart"> -->
-              <zingchart ref="bubblepie" :data="bubbleChartData" :series="bubbleSeries"></zingchart>
-            <!-- </div> -->
+            <zingchart ref="bubblepie" :data="bubbleChartData" :series="bubbleSeries"></zingchart>
           </div>
         </b-tab>
       </b-tabs>
