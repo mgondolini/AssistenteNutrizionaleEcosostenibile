@@ -18,7 +18,7 @@ global.log = function log(msg) {
   }
 };
 
-mongoose.connect('mongodb://admin:teamASW1920@ds241688.mlab.com:41688/eco-assistant', { useNewUrlParser: true, useUnifiedTopology: true });
+mongoose.connect('mongodb+srv://admin:teamASW1920@eco-assistant.jgitr.mongodb.net/eco-assistant?retryWrites=true&w=majority', { useNewUrlParser: true, useUnifiedTopology: true });
 mongoose.set('useFindAndModify', false);
 
 // 'mongodb://admin:teamASW1920@ds241688.mlab.com:41688/eco-assistant'
