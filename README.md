@@ -5,11 +5,11 @@ https://nutritional-assistant.herokuapp.com/
 ## Build and run script:
 
 ### Backend
-`cd AssistenteNutrizionaleEcosostenibile/backend`  
+`cd AssistenteNutrizionaleEcosostenibile\backend`  
 `npm install & npm run start`
 
 ### Frontend
-`cd AssistenteNutrizionaleEcosostenibile/frontend`  
+`cd AssistenteNutrizionaleEcosostenibile\frontend`  
 `npm install & npm run serve`
 
 ## Deploy
