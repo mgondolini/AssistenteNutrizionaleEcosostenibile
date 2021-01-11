@@ -1,6 +1,8 @@
 # AssistenteNutrizionaleEcosostenibile
-Assistente nutrizionale ecosostenibile: 
-https://nutritional-assistant.herokuapp.com/
+Website:
+[Assistente nutrizionale ecosostenibile](https://nutritional-assistant.herokuapp.com/)
+
+Project introduction: [Presentation](https://github.com/T0-B1/AssistenteNutrizionaleEcosostenibile/blob/master/Presentazione.pdf)
 
 ## Build and run script:
 
